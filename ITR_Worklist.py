@@ -129,8 +129,11 @@ class Login:
         #    testlink.reportTCResult(2316, testPlanID, buildName, 'p', "Remember me Test Passed")
 
 class TOPMENU:
-    def Badge_Emergency(cmr):
+    def Badge_Emergency():
         testResult=""
+
+        # 캡처 초기화
+        del driver.requests
         # badge 클릭
         driver.find_element(By.XPATH, '/html/body/nav/div/div[2]/div[1]/div/div[2]/div[1]').click()
         # waiting loading
@@ -138,6 +141,12 @@ class TOPMENU:
             WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
         except:
             print("waitng 1.5 s")
+
+        # Badge의 표시 갯수 획득
+        request = driver.wait_for_request('.*AllInstitutionList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        cmr = data['TotalPriorityCount']
 
         # worklist record Total 획득
         request = driver.wait_for_request('.*E&JobStatus=200&JobStartDate.*')
@@ -157,28 +166,170 @@ class TOPMENU:
         #else:
         #    testlink.reportTCResult(2351, testPlanID, buildName, 'p', "Badge Emergency Test Passed")
 
-    def Badge():
-        # 정상적인 계정으로 로그인
-        signInOut.normal_login()
+    def Badge_Refer():
+        testResult=""
+
+        # 캡처 초기화
+        del driver.requests
+        # badge 클릭
+        driver.find_element(By.XPATH, '/html/body/nav/div/div[2]/div[2]/div/div[2]/div[1]').click()
         # waiting loading
         try:
             WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
         except:
             print("waitng 1.5 s")
 
-        # 각 Badge의 표시 갯수 획득
-        driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[6]/ul/li[9]/a").click()
+        # Badge의 표시 갯수 획득
         request = driver.wait_for_request('.*AllInstitutionList.*')
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
 
-        TotalPriorityCount = data['TotalPriorityCount']
-        TotalReferCount = data['TotalReferCount']
-        TotalAutoReferCount = data['TotalAutoReferCount']
+        cmr = data['TotalReferCount']
+
+        # worklist record Total 획득
+        request = driver.wait_for_request('./GetReferCurrentJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        recordTotal = data['recordsTotal']
+
+        # 비교
+        try:
+            assert (cmr == recordTotal)
+        except:
+            testResult = 'failed'
+
+        ## Badge_Emergency 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2354, testPlanID, buildName, 'f', "Badge Emergency Test Failed")            
+        #else:
+        #    testlink.reportTCResult(2354, testPlanID, buildName, 'p', "Badge Emergency Test Passed")
+
+    def Badge_AutoRefer():
+        testResult=""
+
+        # 캡처 초기화
+        del driver.requests
+        # badge 클릭
+        driver.find_element(By.XPATH, '/html/body/nav/div/div[2]/div[3]/div/div[2]/div[1]').click()
+        # waiting loading
+        try:
+            WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            print("waitng 1.5 s")
+
+        # Badge의 표시 갯수 획득
+        request = driver.wait_for_request('.*AllInstitutionList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+
+        cmr = data['TotalAutoReferCount']
         TotalScheduleReferCount = data['TotalScheduleReferCount']
         TotalReportedCompletedCount = data['TotalReportedCompletedCount']
 
-        TOPMENU.Badge_Emergency(TotalPriorityCount)
+        # worklist record Total 획득
+        request = driver.wait_for_request('.*NotRefered=true.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        recordTotal = data['recordsTotal']
+
+        # 비교
+        try:
+            assert (cmr == recordTotal)
+        except:
+            testResult = 'failed'
+
+        ## Badge_Emergency 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2357, testPlanID, buildName, 'f', "Badge Emergency Test Failed")            
+        #else:
+        #    testlink.reportTCResult(2357, testPlanID, buildName, 'p', "Badge Emergency Test Passed")
+
+    def Badge_Schedule():
+        testResult=""
+
+        # 캡처 초기화
+        del driver.requests
+        # badge 클릭
+        driver.find_element(By.XPATH, '/html/body/nav/div/div[2]/div[4]/div/div[2]/div[1]').click()
+        # waiting loading
+        try:
+            WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            print("waitng 1.5 s")
+
+        # Badge의 표시 갯수 획득
+        request = driver.wait_for_request('.*AllInstitutionList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+
+        cmr = data['TotalScheduleReferCount']
+        TotalReportedCompletedCount = data['TotalReportedCompletedCount']
+
+        # worklist record Total 획득
+        request = driver.wait_for_request('./GetScheduleReferCurrentJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        recordTotal = data['recordsTotal']
+
+        # 비교
+        try:
+            assert (cmr == recordTotal)
+        except:
+            testResult = 'failed'
+
+        ## Badge_Emergency 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2360, testPlanID, buildName, 'f', "Badge Emergency Test Failed")            
+        #else:
+        #    testlink.reportTCResult(2360, testPlanID, buildName, 'p', "Badge Emergency Test Passed")
+
+    def Badge_Today():
+        testResult=""
+
+        # 캡처 초기화
+        del driver.requests
+        # badge 클릭
+        driver.find_element(By.XPATH, '/html/body/nav/div/div[2]/div[5]/div/div[2]/div[1]').click()
+        # waiting loading
+        try:
+            WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            print("waitng 1.5 s")
+
+        # Badge의 표시 갯수 획득
+        request = driver.wait_for_request('.*AllInstitutionList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+
+        cmr = data['TotalReportedCompletedCount']
+
+        # worklist record Total 획득
+        request = driver.wait_for_request('./GetCompletedReportedJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        recordTotal = data['recordsTotal']
+
+        # 비교
+        try:
+            assert (cmr == recordTotal)
+        except:
+            testResult = 'failed'
+
+        ## Badge_Emergency 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2363, testPlanID, buildName, 'f', "Badge Emergency Test Failed")            
+        #else:
+        #    testlink.reportTCResult(2363, testPlanID, buildName, 'p', "Badge Emergency Test Passed")
+
+    def Badge():
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+
+        TOPMENU.Badge_Emergency()
+        TOPMENU.Badge_Refer()
+        TOPMENU.Badge_AutoRefer()
+        TOPMENU.Badge_Schedule()
+        TOPMENU.Badge_Today()
 
 
 TOPMENU.Badge()
