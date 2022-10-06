@@ -786,6 +786,91 @@ class TOPMENU:
         #else:
         #    testlink.reportTCResult(2371, testPlanID, buildName, 'p', "new_message Test Passed")
 
+    def Message():
+        testResult=""
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.25).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+        
+        # 1,2는 new_message와 동일
+
+        # Direct Message 아이콘을 클릭 및 리스트 확인 #3
+        driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]/span")))
+        except:
+            pass
+        
+        # 10개 이상인 경우 확인
+        request = driver.wait_for_request('.*/GetDirectMessageList')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        read_count=0
+        for n in data:
+            if(n['READ_FLAG'] == 'F'):
+                read_count = read_count + 1
+
+        if(read_count >= 10):
+            try:
+                WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li[10]/a")))
+            except:
+                testResult = 'failed'
+
+        # View more messages확인 
+        try:
+            assert(driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/ul/li[4]/a/div/p").get_property("outerText")=="View more messages")
+        except:
+            testResult = 'failed'
+
+        # 임의의 메시지를 클릭 #4
+        # 패킷에서 정보 획득
+        sender = data[0]["WRITER_NAME"]
+        sender_time = data[0]["WRITE_DTTM"]
+        sender_time = sender_time.replace('T',' ')
+        sender_msg = data[0]["MESSAGE_TEXT_LOB"]
+
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li[1]/a/div[1]/i").click()
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.25).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+        # 비교
+        try:
+            assert(sender == driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/div[1]/div[2]/span").get_property("value") and
+                   sender_time == driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/div[2]/div[2]/span").get_property("value") and
+                   sender_msg == driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/div[3]/textarea").get_property("value"))
+        except:
+            testResult = 'failed'
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[3]/button").click()
+
+        ## message 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2384, testPlanID, buildName, 'f', "Message Test Failed")            
+        #else:
+        #    testlink.reportTCResult(2384, testPlanID, buildName, 'p', "Message Test Passed")
+
+    def View_More_Messages():
+        testResult=""
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.25).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        print(testResult)
+
         
 
     ## 전체 긁는 방식
@@ -863,4 +948,4 @@ class TOPMENU:
     #    #driver.close()
 
 
-TOPMENU.new_message()
+TOPMENU.View_More_Messages()
