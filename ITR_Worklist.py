@@ -869,6 +869,34 @@ class TOPMENU:
         except:
             pass
 
+        # View more messages 접속
+        driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]/span")))
+        except:
+            pass
+        element = driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/ul/li[4]/a/div/p")
+        driver.execute_script("arguments[0].click();", element)
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[1]/div")))
+        except:
+            pass
+
+        # 리스트 및 아이콘 확인 #1 ##리스트확인도 수정해야함
+        print(driver.find_element(By.XPATH,"/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button").text)
+        try:
+            assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button/span[1]".text == "Direct Message List"))
+        except:
+            testResult = 'failed'
+
+        request = driver.wait_for_request('.*/GetDirectMessageList')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        read_flag = []
+        for n in data:
+            read_flag.append(data["READ_FLAG"])####여기부터 수정
         print(testResult)
 
         
