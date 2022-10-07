@@ -884,20 +884,158 @@ class TOPMENU:
         except:
             pass
 
-        # 리스트 및 아이콘 확인 #1 ##리스트확인도 수정해야함
-        print(driver.find_element(By.XPATH,"/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button").text)
+        # 리스트 및 아이콘 확인 / 읽지 않은 메시지 클릭 #1 #2
+        # 1 - 리스트 확인
         try:
-            assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button/span[1]".text == "Direct Message List"))
+            assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button").get_property("id") == "direct_message_all_list_tab")
         except:
             testResult = 'failed'
+        print("4"+testResult)
+        # 2 - read unread_count at icon
+        unread_count = driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/sup/span").text
 
+        # 1 - Read 정보 획득 (패킷)
         request = driver.wait_for_request('.*/GetDirectMessageList')
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
         read_flag = []
+        list_len = len(data)
         for n in data:
-            read_flag.append(data["READ_FLAG"])####여기부터 수정
-        print(testResult)
+            read_flag.append(n["READ_FLAG"])
+
+        # 2 - 
+        non_read_index = read_flag.index('F')
+        non_read_name_pack = data[non_read_index]["WRITER_NAME"]
+        non_read_dtm_pack = (data[non_read_index]["WRITE_DTTM"]).replace('T', ' ')
+        non_read_msg_pack = data[non_read_index]["MESSAGE_TEXT_LOB"]
+
+        # 1 - 아이콘 정보 획득
+        request = driver.wait_for_request('.*/GetDirectMessageListForTable.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        total_list = data["recordsFiltered"] 
+        remain_list = total_list 
+        max_length = data["Length"]
+
+        # 2 -
+        first_non_read_loc = (non_read_index) % max_length
+        first_non_read_page = (int)((non_read_index) / max_length) + 1
+        current_page = 1
+
+        # 1 - 
+        icon=[]
+        if remain_list <= max_length:
+            for i in range(1,remain_list+1):
+                icon.append(driver.find_element(By.XPATH, ("/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/table/tbody/tr["+str(i)+"]/td[1]/span/i")).value_of_css_property("color"))
+        # 2 - Get First Non Read Msg Info at First Page
+        if first_non_read_page == 1:
+            driver.find_element(By.XPATH, ("/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/table/tbody/tr["+str(int(first_non_read_loc)+1)+"]/td[1]/span/i")).click()
+            # waiting loading
+            try:
+                WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[3]/div/div[3]/textarea")))
+            except:
+                testResult = 'failed'
+            non_read_name = data["data"][first_non_read_loc]["WRITER_NAME"]
+            non_read_dtm = (data["data"][first_non_read_loc]["WRITE_DTTM"]).replace('T', ' ')
+            non_read_msg = data["data"][first_non_read_loc]["MESSAGE_TEXT_LOB"]
+        print("3"+testResult)
+
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/div[3]")))
+        except:
+            pass
+
+        # 1 - Get Icon Info
+        while (1):
+            for i in range(1,15):
+                icon.append(driver.find_element(By.CSS_SELECTOR, "#message_list_group > tbody > tr:nth-child("+str(i)+") > td:nth-child(1) > span > i").value_of_css_property("color"))
+
+            # 2 - 캡처 초기화
+            del driver.requests
+
+            # Next 클릭
+            element = driver.find_element(By.CSS_SELECTOR, "#message_list_group_next > a")
+            driver.execute_script("arguments[0].click();", element)
+            # waiting loading
+            try:
+                WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/div[3]")))
+            except:
+                pass
+
+            # 2 - Get First Non Read Msg Info at First(X) Page
+            current_page += 1
+            if(current_page == first_non_read_page):
+                request = driver.wait_for_request('.*/GetDirectMessageListForTable.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)
+                driver.find_element(By.XPATH, ("/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/table/tbody/tr["+str(int(first_non_read_loc)+1)+"]/td[1]/span/i")).click()
+                try:
+                    WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[3]/div/div[3]/textarea")))
+                except:
+                    testResult = 'failed'
+                non_read_name = data["data"][first_non_read_loc]["WRITER_NAME"]
+                non_read_dtm = (data["data"][first_non_read_loc]["WRITE_DTTM"]).replace('T', ' ')
+                non_read_msg = data["data"][first_non_read_loc]["MESSAGE_TEXT_LOB"]
+
+            remain_list = remain_list - max_length
+            if (remain_list - max_length) <= 0:
+                break
+        for i in range(1,remain_list+1):
+            icon.append(driver.find_element(By.CSS_SELECTOR, "#message_list_group > tbody > tr:nth-child("+str(i)+") > td:nth-child(1) > span > i").value_of_css_property("color"))
+        print("2"+testResult)
+        # style="color:grey" - rgba(128, 128, 128, 1) / style="color:orange" - rgba(255, 165, 0, 1)
+        # 1-아이콘 비교
+        for i in range(0,list_len):
+            if(read_flag[i]=='T'):
+                if(icon[i] != "rgba(128, 128, 128, 1)"):
+                    testResult = 'failed'
+            else:
+                if(icon[i] != "rgba(255, 165, 0, 1)"):
+                    testResult = 'failed'
+        print("1"+testResult) ######################
+        # 2 & 3 - 
+        if (int(driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/sup/span").get_property("textContent")) == (int(unread_count)-1)):
+            print("check1")
+        if (non_read_name == non_read_name_pack ):
+            print("check2")
+        if(non_read_dtm == non_read_dtm_pack):
+            print("check3")
+        if(non_read_msg == non_read_msg_pack):
+            print("check4")
+        if(int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button/span[2]").text) == (int(unread_count)-1)):
+            print("check5")
+        print(int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button/span[2]").text))
+        print((int(unread_count)-1))
+        try:
+            assert(int(driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/sup/span").get_property("textContent")) == (int(unread_count)-1) and
+                   non_read_name == non_read_name_pack and 
+                   non_read_dtm == non_read_dtm_pack and
+                   non_read_msg == non_read_msg_pack and
+                   int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button/span[2]").text) == (int(unread_count)-1))
+        except:
+            testResult = 'failed'
+        
+        # Direct Message 리스트에서 Next를 클릭 #3
+        # View more messages 접속
+        driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]/span")))
+        except:
+            pass
+        element = driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/ul/li[4]/a/div/p")
+        driver.execute_script("arguments[0].click();", element)
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.2).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#message_list_group_next > a")))
+        except:
+            testResult = 'failed'
+        
+
+        print(testResult) ##########################
+
+
 
         
 
