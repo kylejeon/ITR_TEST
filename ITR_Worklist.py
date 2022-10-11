@@ -4,6 +4,7 @@
 from ast import Try
 from doctest import TestResults
 from mailbox import Babyl
+from pickle import NONE
 from unittest import TestResult, TextTestResult
 from bs4 import BeautifulSoup
 from urllib.parse import quote_plus
@@ -30,6 +31,19 @@ WorklistUrl = 'http://vm-onpacs'
 AdminUrl = 'http://vm-onpacs:8082'
 #WorklistUrl = 'https://stagingworklist.onpacs.com'
 #AdminUrl = 'http://stagingadmin.onpacs.com/'
+
+#id password
+worklist_id = "testInfReporter"
+worklist_pw = "Server123!@#"
+remember_id = "testInfReporter"
+admin_id = "testSubadmin"
+admin_pw = "Server123!@#"
+#worklist_id = "yhjeon"
+#worklist_pw = "1"
+#remember_id = "yhjeon"
+#admin_id = "INF_JH"
+#admin_pw = "Server123!@#"
+
 #url = baseUrl + quote_plus(plusUrl)
 driver = webdriver.Chrome()
 driver.get(WorklistUrl)
@@ -48,18 +62,6 @@ html = driver.page_source
 # TestPlanID = AutoTest 버전 테스트
 testPlanID = 2996
 buildName = 1
-
-#id password
-worklist_id = "testInfReporter"
-worklist_pw = "Server123!@#"
-remember_id = "testInfReporter"
-admin_id = "testSubadmin"
-admin_pw = "Server123!@#"
-#worklist_id = "yhjeon"
-#worklist_pw = "1"
-#remember_id = "yhjeon"
-#admin_id = "INF_JH"
-#admin_pw = "Server123!@#"
  
 class signInOut:
     def admin_sign_in(id, password):
@@ -89,6 +91,7 @@ class windowSize:
 class Login:
     def sign_InOut():
         testResult=""
+        Result_msg = "failed at "
 
         # 잘못된 user ID를 입력하고 sign in을 클릭한다
         signInOut.admin_sign_in('administrator','Server123!@#')
@@ -98,6 +101,7 @@ class Login:
             assert driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/label").text=="Please confirm the password by retyping it in the confirm field."
         except:
             testResult = 'failed'
+            Result_msg+="#3 "
 
         # 정상적인 계정으로 로그인 한다.
         signInOut.normal_login()
@@ -105,6 +109,7 @@ class Login:
             assert driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[7]/a/span").text == "Logout"
         except:
             testResult = 'failed'
+            Result_msg+="#2 "
 
         # 로그아웃 후, 로그인 페이지를 확인한다.
         driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[7]/a/span").click()
@@ -113,15 +118,17 @@ class Login:
             assert driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[1]").text == "Sign in to start your session"
         except:
             testResult = 'failed'
+            Result_msg+="#4 "
 
         ## sign_InOut 결과 전송
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2309, testPlanID, buildName, 'f', "Sign In/Out Test Failed")            
+        #    testlink.reportTCResult(2309, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2309, testPlanID, buildName, 'p', "Sign In/Out Test Passed")
     
     def Remember_me():
         testResult=""
+        Result_msg = "failed at "
 
         # Remember Me 클릭 후, 정상적인 계정으로 로그인 한다.
         driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[4]/div[1]/label").click()
@@ -134,16 +141,18 @@ class Login:
                     driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div/form/div[4]/div[1]/input').get_property("checked")) == (remember_id, True)
         except:
             testResult = 'failed'
+            Result_msg+="#1 "
 
         ## Remember_me 결과 전송
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2316, testPlanID, buildName, 'f', "Remember me Test Failed")            
+        #    testlink.reportTCResult(2316, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2316, testPlanID, buildName, 'p', "Remember me Test Passed")
 
 class TOPMENU:
     def Badge_Emergency():
         testResult=""
+        Result_msg = "failed at "
 
         # 캡처 초기화
         del driver.requests
@@ -172,15 +181,17 @@ class TOPMENU:
             assert (cmr == recordTotal)
         except:
             testResult = 'failed'
+            Result_msg+="#1 "
 
         ## Badge_Emergency 결과 전송
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2351, testPlanID, buildName, 'f', "Badge Emergency Test Failed")            
+        #    testlink.reportTCResult(2351, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2351, testPlanID, buildName, 'p', "Badge Emergency Test Passed")
 
     def Badge_Refer():
         testResult=""
+        Result_msg = "failed at "
 
         # 캡처 초기화
         del driver.requests
@@ -210,15 +221,17 @@ class TOPMENU:
             assert (cmr == recordTotal)
         except:
             testResult = 'failed'
+            Result_msg+="#1 "
 
         ## Badge_Refer 결과 전송
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2354, testPlanID, buildName, 'f', "Badge Refer Test Failed")            
+        #    testlink.reportTCResult(2354, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2354, testPlanID, buildName, 'p', "Badge Refer Test Passed")
 
     def Badge_AutoRefer():
         testResult=""
+        Result_msg = "failed at "
 
         # 캡처 초기화
         del driver.requests
@@ -250,15 +263,17 @@ class TOPMENU:
             assert (cmr == recordTotal)
         except:
             testResult = 'failed'
+            Result_msg+="#1 "
 
         ## Badge_AutoRefer 결과 전송
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2357, testPlanID, buildName, 'f', "Badge AutoRefer Test Failed")            
+        #    testlink.reportTCResult(2357, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2357, testPlanID, buildName, 'p', "Badge AutoRefer Test Passed")
 
     def Badge_Schedule():
         testResult=""
+        Result_msg = "failed at "
 
         # 캡처 초기화
         del driver.requests
@@ -289,15 +304,17 @@ class TOPMENU:
             assert (cmr == recordTotal)
         except:
             testResult = 'failed'
+            Result_msg+="#1 "
 
         ## Badge_Schedule 결과 전송
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2360, testPlanID, buildName, 'f', "Badge Schedule Test Failed")            
+        #    testlink.reportTCResult(2360, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2360, testPlanID, buildName, 'p', "Badge Schedule Test Passed")
 
     def Badge_Today():
         testResult=""
+        Result_msg = "failed at "
 
         # 캡처 초기화
         del driver.requests
@@ -327,10 +344,11 @@ class TOPMENU:
             assert (cmr == recordTotal)
         except:
             testResult = 'failed'
+            Result_msg+="#1 "
 
         ## Badge_Today 결과 전송
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2363, testPlanID, buildName, 'f', "Badge Today Test Failed")            
+        #    testlink.reportTCResult(2363, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2363, testPlanID, buildName, 'p', "Badge Today Test Passed")
 
@@ -346,6 +364,7 @@ class TOPMENU:
 
     def Home():
         testResult=""
+        Result_msg = "failed at "
 
         # 정상적인 계정으로 로그인
         signInOut.normal_login()
@@ -368,6 +387,7 @@ class TOPMENU:
             assert driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[2]/div[1]/div[1]/div/div[1]/div/h2").text == "All Hospital"
         except:
             testResult = 'failed'
+            Result_msg+="#1 "
 
         try:
             WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/nav/div/div[2]/ul/li[5]/a")))
@@ -385,6 +405,7 @@ class TOPMENU:
             assert driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[2]/div[1]/div[1]/div/div[1]/div/h2").text == "All Hospital"
         except:
             testResult = 'failed'
+            Result_msg+="#1 "
 
         try:
             WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/nav/div/div[2]/ul/li[6]/a")))
@@ -401,15 +422,17 @@ class TOPMENU:
             assert driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[2]/div[1]/div[1]/div/div[1]/div/h2").text == "All Hospital"
         except:
             testResult = 'failed'
+            Result_msg+="#1 "
 
         ## Home 결과 전송
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2367, testPlanID, buildName, 'f', "Home Test Failed")            
+        #    testlink.reportTCResult(2367, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2367, testPlanID, buildName, 'p', "Home Test Passed")
 
     def new_message():
         testResult=""
+        Result_msg = "failed at "
 
         # 정상적인 계정으로 로그인
         signInOut.normal_login()
@@ -438,12 +461,14 @@ class TOPMENU:
                 pass
             else:
                 testResult="failed"
+                Result_msg+="#2 "
 
         # 메인화면 읽지 않은 메시지 수 존재 확인 #1
         try:
             assert (int(driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/sup/span").text) == read_count)
         except:
             testResult = 'failed'
+            Result_msg+="#1 "
         
 
         # 캡처 초기화
@@ -581,6 +606,7 @@ class TOPMENU:
             assert((msg_center == adm_center) and (msg_insti == adm_insti) and (msg_reporter == adm_reporter))
         except:
             testResult = 'failed'
+            Result_msg+="#3 "
 
         # 체크 및 체크 해제 #4
         # Institution
@@ -589,10 +615,12 @@ class TOPMENU:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
         except:
             testResult = 'failed'
+            Result_msg+="#4 "
         driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr[1]/td[1]/label").click()
         try:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
             testResult = 'failed'
+            Result_msg+="#4 "
         except:
             pass
 
@@ -604,10 +632,12 @@ class TOPMENU:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
         except:
             testResult = 'failed'
+            Result_msg+="#4 "
         driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label").click()
         try:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
             testResult = 'failed'
+            Result_msg+="#4 "
         except:
             pass
 
@@ -619,10 +649,12 @@ class TOPMENU:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
         except:
             testResult = 'failed'
+            Result_msg+="#4 "
         driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label").click()
         try:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
             testResult = 'failed'
+            Result_msg+="#4 "
         except:
             pass
 
@@ -635,10 +667,12 @@ class TOPMENU:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
         except:
             testResult = 'failed'
+            Result_msg+="#5 "
         driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i").click()
         try:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
             testResult = 'failed'
+            Result_msg+="#5 "
         except:
             pass
 
@@ -650,10 +684,12 @@ class TOPMENU:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
         except:
             testResult = 'failed'
+            Result_msg+="#5 "
         driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i").click()
         try:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
             testResult = 'failed'
+            Result_msg+="#5 "
         except:
             pass
 
@@ -665,10 +701,12 @@ class TOPMENU:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
         except:
             testResult = 'failed'
+            Result_msg+="#5 "
         driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i").click()
         try:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
             testResult = 'failed'
+            Result_msg+="#5 "
         except:
             pass
 
@@ -679,6 +717,7 @@ class TOPMENU:
             driver.find_element(By.XPATH, "/html/body/div[13]/div[7]/div/button").click()
         except:
             testResult = 'failed' 
+            Result_msg+="#7 "
       
         # Recipient 선택 후, 다음 버튼 클릭 #6
         # Institution
@@ -691,6 +730,7 @@ class TOPMENU:
             driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]").click()
         except:
             testResult = 'failed' 
+            Result_msg+="#6 "
         driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i").click()
         
         # Center
@@ -703,6 +743,7 @@ class TOPMENU:
             driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]").click()
         except:
             testResult = 'failed'
+            Result_msg+="#6 "
         driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i").click()
 
         # Reporter
@@ -714,7 +755,8 @@ class TOPMENU:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]")))
             driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]").click()
         except:
-            testResult = 'failed' 
+            testResult = 'failed'
+            Result_msg+="#6 "
 
         # Message 입력창에 메시지를 입력하지 않고, 전송 버튼을 클릭 #10
         driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[4]").click()
@@ -726,8 +768,10 @@ class TOPMENU:
                 driver.find_element(By.XPATH, "/html/body/div[13]/div[7]/div/button").click()
             except:
                 testResult='failed'
+                Result_msg+="#10 "
         except:
             testResult = 'failed' 
+            Result_msg+="#10 "
 
         # 임의의 메시지를 입력하고, 이전 버튼을 클릭, 그리고 다시 다음 버튼 클릭 #8
         if(testResult == ''):
@@ -742,8 +786,10 @@ class TOPMENU:
                     assert(driver.find_element(By.XPATH,"/html/body/div[8]/div/div/div[2]/section[2]/div/div/div[2]/textarea").get_property("value")==rnd_msg)
                 except:
                     testResult = 'failed'
+                    Result_msg+="#8 "
             except:
                 testResult = 'failed'
+                Result_msg+="#8 "
         
         # Message 입력창에 메시지를 입력하고, 전송 버튼을 클릭 #9
         if(testResult == ''):
@@ -753,6 +799,7 @@ class TOPMENU:
                 driver.find_element(By.XPATH,"/html/body/div[12]/div[7]/div/button").click()
             except:
                 testResult = 'failed'
+                Result_msg+="#9 "
         
         # Message 입력창에 메시지를 입력하고, 취소 버튼을 클릭 #11
         if(testResult == ''):
@@ -779,15 +826,17 @@ class TOPMENU:
                 driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[1]").click()
             except:
                 testResult = 'failed'
+                Result_msg+="#11 "
 
         ## new_message 결과 전송
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2371, testPlanID, buildName, 'f', "new_message Test Failed")            
+        #    testlink.reportTCResult(2371, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2371, testPlanID, buildName, 'p', "new_message Test Passed")
 
     def Message():
         testResult=""
+        Result_msg = "failed at "
 
         # 정상적인 계정으로 로그인
         signInOut.normal_login()
@@ -822,12 +871,14 @@ class TOPMENU:
                 WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li[10]/a")))
             except:
                 testResult = 'failed'
+                Result_msg+="#0 "
 
         # View more messages확인 
         try:
             assert(driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/ul/li[4]/a/div/p").get_property("outerText")=="View more messages")
         except:
             testResult = 'failed'
+            Result_msg+="#3 "
 
         # 임의의 메시지를 클릭 #4
         # 패킷에서 정보 획득
@@ -849,16 +900,18 @@ class TOPMENU:
                    sender_msg == driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/div[3]/textarea").get_property("value"))
         except:
             testResult = 'failed'
+            Result_msg+="#4 "
         driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[3]/button").click()
 
         ## message 결과 전송
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2384, testPlanID, buildName, 'f', "Message Test Failed")            
+        #    testlink.reportTCResult(2384, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2384, testPlanID, buildName, 'p', "Message Test Passed")
 
     def View_More_Messages():
         testResult=""
+        Result_msg = "failed at "
 
         # 정상적인 계정으로 로그인
         signInOut.normal_login()
@@ -890,6 +943,7 @@ class TOPMENU:
             assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button").get_property("id") == "direct_message_all_list_tab")
         except:
             testResult = 'failed'
+            Result_msg+="#1 "
 
         # 2 - read unread_count at icon
         unread_count = driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/sup/span").text
@@ -935,6 +989,7 @@ class TOPMENU:
                 WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[3]/div/div[3]/textarea")))
             except:
                 testResult = 'failed'
+                Result_msg+="#2 "
             non_read_name = data["data"][first_non_read_loc]["WRITER_NAME"]
             non_read_dtm = (data["data"][first_non_read_loc]["WRITE_DTTM"]).replace('T', ' ')
             non_read_msg = data["data"][first_non_read_loc]["MESSAGE_TEXT_LOB"]
@@ -971,6 +1026,7 @@ class TOPMENU:
                     WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[3]/div/div[3]/textarea")))
                 except:
                     testResult = 'failed'
+                    Result_msg+="#2 "
                 non_read_name = data["data"][first_non_read_loc]["WRITER_NAME"]
                 non_read_dtm = (data["data"][first_non_read_loc]["WRITE_DTTM"]).replace('T', ' ')
                 non_read_msg = data["data"][first_non_read_loc]["MESSAGE_TEXT_LOB"]
@@ -988,9 +1044,11 @@ class TOPMENU:
             if(read_flag[i]=='T'):
                 if(icon[i] != "rgba(128, 128, 128, 1)"):
                     testResult = 'failed'
+                    Result_msg+="#1 "
             else:
                 if(icon[i] != "rgba(255, 165, 0, 1)"):
                     testResult = 'failed'
+                    Result_msg+="#1 "
 
         # 2 & 3 - 
         try:
@@ -1001,6 +1059,7 @@ class TOPMENU:
                    int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button/span[2]").text) == (int(unread_count)-1))
         except:
             testResult = 'failed'
+            Result_msg+="#2 #3 "
 
         # Direct Message 리스트에서 Next를 클릭 #3
         # View more messages 접속
@@ -1018,9 +1077,251 @@ class TOPMENU:
             driver.execute_script("arguments[0].click();", element)
         except:
             testResult = 'failed'
-        
+            Result_msg+="#3 "
 
-        print(testResult)
+        ## View_More_Message 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2390, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2390, testPlanID, buildName, 'p', "View_More_Message Test Passed")
+        
+    def Setting():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
+        driver.execute_script("arguments[0].click();", element)
+
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+        except:
+            testResult = 'failed'
+            Result_msg+="#1 "
+
+        ## Setting 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2404, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2404, testPlanID, buildName, 'p', "Setting Test Passed")
+
+    def Report_Search_Filter():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        # 캡처 초기화
+        del driver.requests
+
+        # Setting 접속
+        element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
+        driver.execute_script("arguments[0].click();", element)
+
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+        except:
+            testResult = 'failed'
+            Result_msg+="#0 "
+
+        # Select Group 코드 #1
+        request = driver.wait_for_request('.*/GetGroupCode.*')
+        body = request.response.body.decode('utf-8')
+        data = (json.loads(body))
+        # 2 - 준비
+        search_group = data[0]
+
+        for n in range(0, len(data)):
+            if(data[n]==None):
+                data[n]='ETC-Group'
+
+        gr_list = []
+        driver.find_element(By.CSS_SELECTOR, "#stdreport-group-code").click()
+        for n in range(2,len(data)+2):
+            temp_group = driver.find_element(By.CSS_SELECTOR, "#stdreport-group-code > option:nth-child("+str(n)+")").text
+            if temp_group not in gr_list:
+                gr_list.append(temp_group)
+        
+        data.sort()
+        gr_list.sort()
+
+        try:
+            assert (data == gr_list)
+        except:
+            testResult="failed"
+            Result_msg+="#1 "
+        
+        # 3 - 준비
+        request = driver.wait_for_request('.*/GetReportCode.*')
+        body = request.response.body.decode('utf-8')
+        report_list_pk = (json.loads(body))
+        
+        # Group Code Search #2
+        if(len(data) < 2):
+            testResult="failed"
+            Result_msg+="#2-pre_condition "
+
+        if(testResult == ''):
+            # 캡처 초기화
+            del driver.requests
+
+            driver.find_element(By.CSS_SELECTOR, "#stdreport-group-code").click()
+            driver.find_element(By.CSS_SELECTOR, "#stdreport-group-code > option:nth-child(2)").click()
+            driver.find_element(By.CSS_SELECTOR, "#stdreport_search_btn > span").click()
+            time.sleep(0.3)
+
+            request = driver.wait_for_request('.*/GetStandardReportForTable.*')
+            body = request.response.body.decode('utf-8')
+            data = (json.loads(body))["data"]
+
+            for n in data:
+                if(n["StdReportGroup"] != search_group):
+                    testResult="failed"
+                    Result_msg+="#2 "
+
+            # Report ALL Search #3
+            driver.find_element(By.CSS_SELECTOR, "#stdreport-report-code").click()
+
+            report_list = []
+            for n in range(2,len(report_list_pk)+2):
+                temp_report= driver.find_element(By.CSS_SELECTOR, "#stdreport-report-code > option:nth-child("+str(n)+")").text
+                if temp_report not in report_list:
+                    report_list.append(temp_report)
+            
+            # 4 - 준비
+            select_report = report_list_pk[0]
+            # 3
+            report_list_pk.sort()
+            report_list.sort()
+
+            try:
+                assert (report_list_pk == report_list)
+            except:
+                testResult="failed"
+                Result_msg+="#3 "
+
+            # Report Search #4
+            # 캡처 초기화
+            del driver.requests
+
+            driver.find_element(By.CSS_SELECTOR, "#stdreport-report-code > option:nth-child(2)").click()
+            driver.find_element(By.CSS_SELECTOR, "#stdreport_search_btn > span").click()
+            time.sleep(0.3)
+
+            request = driver.wait_for_request('.*/GetStandardReportForTable.*')
+            body = request.response.body.decode('utf-8')
+            data = (json.loads(body))["data"]
+
+            try:
+                assert(data[0]["StdReportCode"]==select_report)
+            except:
+                testResult="failed"
+                Result_msg+="#4 "
+
+            # 캡처 초기화
+            del driver.requests
+
+            # Clear #7
+            driver.find_element(By.CSS_SELECTOR, "#stdreport_search_clear_btn > span").click()
+            try:
+                request = driver.wait_for_request('.*/GetStandardReportForTable.*')
+                body = request.response.body.decode('utf-8')
+                data = (json.loads(body))["data"]
+            except:
+                testResult="failed"
+                Result_msg+="#7 "
+
+
+        if testResult == '':
+            # ALL Hot Key #5
+            driver.find_element(By.CSS_SELECTOR, "#stdreport_search_hotkey").click()
+            origin_hot_key_list = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'A', 'B', 'C', 'E', 'F','G', 
+                                  'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'T', 'U', 'V', 'W','X', 
+                                  'Y', 'Z']
+
+            # 6 - 준비
+            hotkey_select = None
+            for n in data:
+                if n["HotKey"] != None:
+                    hotkey_select = n["HotKey"]
+                    break
+
+            #5+ 6 - 준비
+            hot_key_list = []
+            for n in range(2,36):
+                hotkey = driver.find_element(By.CSS_SELECTOR, "#stdreport_search_hotkey > option:nth-child("+str(n)+")").text
+                hot_key_list.append(hotkey)
+                if hotkey == hotkey_select:
+                    hotkey_number = n
+
+            try:
+                assert(origin_hot_key_list == hot_key_list)
+            except:
+                testResult="failed"
+                Result_msg+="#5 "
+
+            # Hot Key Search #6
+            if hotkey_select == None:
+                testResult="failed"
+                Result_msg+="#6-pre_condition "
+
+            # 캡처 초기화
+            del driver.requests
+            
+            driver.find_element(By.CSS_SELECTOR, "#stdreport_search_hotkey > option:nth-child("+str(hotkey_number)+")").click()
+            driver.find_element(By.CSS_SELECTOR, "#stdreport_search_btn > span").click()
+            time.sleep(0.3)
+
+            request = driver.wait_for_request('.*/GetStandardReportForTable.*')
+            body = request.response.body.decode('utf-8')
+            data = (json.loads(body))["data"]
+
+            for n in data:
+                if(n["HotKey"]!=hotkey_select):
+                    testResult="failed"
+                    Result_msg+="#6 "
+
+        ## Report_Search_Filter 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2407, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2407, testPlanID, buildName, 'p', "Report_Search_Filter Test Passed")
+
+    def Report_Add():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+
+        print(Result_msg)
+            
+            
+
+        
 
 
 
@@ -1101,4 +1402,9 @@ class TOPMENU:
     #    #driver.close()
 
 
-TOPMENU.View_More_Messages()
+TOPMENU.Report_Add()
+
+def test():
+    print("test")
+
+#test()
