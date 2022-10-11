@@ -15,7 +15,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 #import ITR_Admin_Common
 from selenium.webdriver.common.keys import Keys
-import json, math
+import json, math, time
 ## User: kyle
 #URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'
 #DevKey = 'adcb86843d0c77e6e0c9950f80a143c0'
@@ -890,7 +890,7 @@ class TOPMENU:
             assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button").get_property("id") == "direct_message_all_list_tab")
         except:
             testResult = 'failed'
-        print("4"+testResult)
+
         # 2 - read unread_count at icon
         unread_count = driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/sup/span").text
 
@@ -938,7 +938,7 @@ class TOPMENU:
             non_read_name = data["data"][first_non_read_loc]["WRITER_NAME"]
             non_read_dtm = (data["data"][first_non_read_loc]["WRITE_DTTM"]).replace('T', ' ')
             non_read_msg = data["data"][first_non_read_loc]["MESSAGE_TEXT_LOB"]
-        print("3"+testResult)
+            read_flag[non_read_index] = 'T'
 
         # waiting loading
         try:
@@ -958,10 +958,7 @@ class TOPMENU:
             element = driver.find_element(By.CSS_SELECTOR, "#message_list_group_next > a")
             driver.execute_script("arguments[0].click();", element)
             # waiting loading
-            try:
-                WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/div[3]")))
-            except:
-                pass
+            time.sleep(0.5)
 
             # 2 - Get First Non Read Msg Info at First(X) Page
             current_page += 1
@@ -977,13 +974,14 @@ class TOPMENU:
                 non_read_name = data["data"][first_non_read_loc]["WRITER_NAME"]
                 non_read_dtm = (data["data"][first_non_read_loc]["WRITE_DTTM"]).replace('T', ' ')
                 non_read_msg = data["data"][first_non_read_loc]["MESSAGE_TEXT_LOB"]
+                read_flag[non_read_index] = 'T'
 
             remain_list = remain_list - max_length
             if (remain_list - max_length) <= 0:
                 break
         for i in range(1,remain_list+1):
             icon.append(driver.find_element(By.CSS_SELECTOR, "#message_list_group > tbody > tr:nth-child("+str(i)+") > td:nth-child(1) > span > i").value_of_css_property("color"))
-        print("2"+testResult)
+
         # style="color:grey" - rgba(128, 128, 128, 1) / style="color:orange" - rgba(255, 165, 0, 1)
         # 1-아이콘 비교
         for i in range(0,list_len):
@@ -993,20 +991,8 @@ class TOPMENU:
             else:
                 if(icon[i] != "rgba(255, 165, 0, 1)"):
                     testResult = 'failed'
-        print("1"+testResult) ######################
+
         # 2 & 3 - 
-        if (int(driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/sup/span").get_property("textContent")) == (int(unread_count)-1)):
-            print("check1")
-        if (non_read_name == non_read_name_pack ):
-            print("check2")
-        if(non_read_dtm == non_read_dtm_pack):
-            print("check3")
-        if(non_read_msg == non_read_msg_pack):
-            print("check4")
-        if(int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button/span[2]").text) == (int(unread_count)-1)):
-            print("check5")
-        print(int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button/span[2]").text))
-        print((int(unread_count)-1))
         try:
             assert(int(driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/sup/span").get_property("textContent")) == (int(unread_count)-1) and
                    non_read_name == non_read_name_pack and 
@@ -1015,7 +1001,7 @@ class TOPMENU:
                    int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button/span[2]").text) == (int(unread_count)-1))
         except:
             testResult = 'failed'
-        
+
         # Direct Message 리스트에서 Next를 클릭 #3
         # View more messages 접속
         driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
@@ -1028,12 +1014,13 @@ class TOPMENU:
         driver.execute_script("arguments[0].click();", element)
         # waiting loading
         try:
-            WebDriverWait(driver, 0.2).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#message_list_group_next > a")))
+            element = driver.find_element(By.CSS_SELECTOR, "#message_list_group_next > a")
+            driver.execute_script("arguments[0].click();", element)
         except:
             testResult = 'failed'
         
 
-        print(testResult) ##########################
+        print(testResult)
 
 
 
