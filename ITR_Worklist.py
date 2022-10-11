@@ -1316,90 +1316,193 @@ class TOPMENU:
         except:
             pass
 
+        # Setting 접속
+        element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
+        driver.execute_script("arguments[0].click();", element)
+
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+        except:
+            testResult = 'failed'
+            Result_msg+="#0 "
+
+        # Add Click #1
+        driver.find_element(By.CSS_SELECTOR, "#stdreport_add_btn > span").click()
+        
+        # 탭 전환
+        time.sleep(3)
+        driver.switch_to.window(driver.window_handles[1])
+        try:
+            assert(driver.find_element(By.CSS_SELECTOR, "#add-stdreport-creator").get_property("value")==worklist_id)
+        except:
+            testResult = 'failed'
+            Result_msg+="#1 "
+
+        if testResult == '':
+            # new Group Code, Auto Expand, Report Code, Des, Hot Key, Report, Conclusion #2 & 3 & 5 & 6 & 7 & 9 & 10
+            # 2 - input (rnd_gr_code)
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-groupcode-input").send_keys("rnd_gr_code")
+            # 3 - input (CT)
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-auto-expand").send_keys("CT")
+            # 5 - input (rnd_rp_code)
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-report-code").send_keys("rnd_rp_code")
+            # 6 - input (rnd_desc)
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-desc").send_keys("rnd_desc")
+            # 7 - input (z)
+            driver.find_element(By.CSS_SELECTOR, "#add_stdreport_hotKey_chosen > a > span").click()
+            time.sleep(0.3)
+            driver.find_element(By.CSS_SELECTOR, "#add_stdreport_hotKey_chosen > div > div > input[type=text]").send_keys("Z")
+            driver.find_element(By.CSS_SELECTOR, "#add_stdreport_hotKey_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+            # 9  - input (a1!)
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-report-text").send_keys("a1!")
+            # 10 - input (a1!)
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-report-conclusion").send_keys("a1!")
+            #save click
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-save-btn").click()
+            #waiting loading
+            try:
+                WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"))
+            except:
+                pass
+            #text check
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text == 
+                       "Are you sure to save new standard report?")
+            except:
+                testResult = 'failed'
+                Result_msg+="#2 #3 #5 #6 #7 #9 #10 "
+            
+            #cancel click & check
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "#add-stdreport-creator").get_property("value")==worklist_id)
+            except:
+                testResult = 'failed'
+                Result_msg+="#2 #3 #5 #6 #7 #9 #10 "
+
+            #save click
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-save-btn").click()
+            try:
+                WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"))
+            except:
+                pass
+
+            #ok click
+            element = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")
+            driver.execute_script("arguments[0].click();", element)
+            time.sleep(0.3)
+
+            #탭 전환
+            driver.switch_to.window(driver.window_handles[0])
+
+        if testResult == '':
+            # 3 - 
+            driver.find_element(By.CSS_SELECTOR, "#right-sidebar-home").click()
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "#search-job-modality").send_keys("CT")
+            driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+            # 캡처 초기화
+            del driver.requests
+            time.sleep(0.25)
+
+            driver.find_element(By.CSS_SELECTOR, "#job-report").click()
+            
+            # 탭 전환
+            time.sleep(3)
+            driver.switch_to.window(driver.window_handles[1])
+            # AutoExpand check through packet
+            try:
+                driver.wait_for_request('.*/GetStdReportExFolderAutoExpand?modalitiesString=CT')
+            except: 
+                testResult = 'failed'
+                Result_msg+="#3 "
+
+            #탭 전환
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+            
+            # already, close  #4 & 8 & 11
+            # Setting 접속
+            element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
+            driver.execute_script("arguments[0].click();", element)
+            
+            # waiting loading
+            try:
+                WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+            except:
+                testResult = 'failed'
+                Result_msg+="#4&#8#11_pre-condition "
+
+            # Add Click 
+            driver.find_element(By.CSS_SELECTOR, "#stdreport_add_btn > span").click()
+        
+            # 탭 전환
+            time.sleep(3)
+            driver.switch_to.window(driver.window_handles[1])
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "#add-stdreport-creator").get_property("value")==worklist_id)
+            except:
+                testResult = 'failed'
+                Result_msg+="#4&#8#11_pre-condition "
+
+            # 4- input (rnd_rp_code)
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-report-code").send_keys("rnd_rp_code")
+
+            # 4 - save click
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-save-btn").click()
+            #waiting loading
+            try:
+                WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"))
+            except:
+                pass
+            # 4 - ok click
+            element = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")
+            driver.execute_script("arguments[0].click();", element)
+            time.sleep(0.1)
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "#toast-container > div > div.toast-message".text == "Report Code Already Exist"))
+            except:
+                testResult = 'failed'
+                Result_msg+="#4 "
+
+            # 8 - input (z)
+            driver.find_element(By.CSS_SELECTOR, "#add_stdreport_hotKey_chosen > a > span").click()
+            time.sleep(0.3)
+            driver.find_element(By.CSS_SELECTOR, "#add_stdreport_hotKey_chosen > div > div > input[type=text]").send_keys("Z")
+            driver.find_element(By.CSS_SELECTOR, "#add_stdreport_hotKey_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+            if driver.find_element(By.CSS_SELECTOR,"#add_stdreport_hotKey_chosen > a > span").text=='z':
+                testResult = 'failed'
+                Result_msg+="#8 "
+
+            # 11 - Close
+            # close and text check
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-close-btn").click()
+            time.sleep(0.1)
+            if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Are you sure to close?":
+                testResult = 'failed'
+                Result_msg+="#11 "
+            
+            # cancel
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "#add-stdreport-creator").get_property("value")==worklist_id)
+            except:
+                testResult = 'failed'
+                Result_msg+="#11 "
+            
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-close-btn").click()
+            time.sleep(0.1)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+            # 탭 전환 테스트 필요
 
         print(Result_msg)
             
             
 
-        
-
-
-
-        
-
-    ## 전체 긁는 방식
-    #def test():
-    #    # 새로운 탭 + 전환
-    #    driver.execute_script("window.open()")
-    #    driver.switch_to.window(driver.window_handles[1])
-    #    driver.get(AdminUrl);
-
-    #    # admin 사이트 로그인
-    #    driver.find_element(By.ID, 'user-id').clear()
-    #    driver.find_element(By.ID, 'user-id').send_keys(admin_id)
-    #    driver.find_element(By.ID, 'user-password').clear()
-    #    driver.find_element(By.ID, 'user-password').send_keys(admin_pw)
-    #    driver.find_element(By.CSS_SELECTOR, '.btn').click()
-    #    driver.implicitly_wait(5)
-
-    #    # Configuration
-    #    element = driver.find_element(By.XPATH, '/html/body/section/div/div/div/div[2]/div[1]/ul/li[5]/a')
-    #    driver.execute_script("arguments[0].click();", element)
-    #    driver.implicitly_wait(5)
-
-    #    # 캡처 초기화
-    #    del driver.requests
-
-    #    # 아이디 검색 및 패킷에서 center 정보 습득
-    #    driver.find_element(By.XPATH, '/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[1]/div[2]/div/div[3]/div/div/input').send_keys(worklist_id)
-    #    driver.find_element(By.XPATH, '/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[1]/div[2]/div/div[6]/div/button').click()
-    #    driver.implicitly_wait(5)
-    #    request = driver.wait_for_request('.*/GetUserList.*')
-    #    body = request.response.body.decode('utf-8')
-    #    data = (json.loads(body))['data']
-    #    center = ""
-    #    for n in data:
-    #        if n['UserID'] == worklist_id:
-    #            center = n['CenterCode']
-    #            break
-
-    #    # 캡처 초기화
-    #    del driver.requests
-
-    #    # Reporter 검색 및 패킷에서 Center가 같은 Reporter 정보 습득
-    #    driver.find_element(By.XPATH, '/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[1]/div[2]/div/div[3]/div/div/input').clear()
-
-    #    driver.find_element(By.XPATH, '/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[1]/div[2]/div/div[1]/div').click()
-    #    driver.find_element(By.XPATH, '/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[1]/div[2]/div/div[1]/div/div/ul/li[4]').click()
-    #    driver.find_element(By.XPATH, '/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[1]/div[2]/div/div[6]/div/button').click()
-    #    driver.implicitly_wait(5)
-        
-    #    request = driver.wait_for_request('.*/GetUserList.*')
-    #    body = request.response.body.decode('utf-8')
-    #    data = json.loads(body)
-
-    #    total = math.trunc(data['recordsTotal'] / data['Length'])
-    #    same_center = []
-
-    #    for repeat in range(0,total):
-    #        request = driver.wait_for_request('.*/GetUserList.*')
-    #        body = request.response.body.decode('utf-8')
-    #        data = (json.loads(body))['data']
-
-    #        for n in data:
-    #            if n['CenterCode'] == center:
-    #                same_center.append(n['UserName'])
-
-    #        # 캡처 초기화
-    #        del driver.requests
-
-    #        element = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/div[4]/ul/li[9]/a")
-    #        driver.execute_script("arguments[0].click();", element)
-
-    #    for n in same_center:
-    #        print(n)
-
-    #    #driver.close()
+       
 
 
 TOPMENU.Report_Add()
