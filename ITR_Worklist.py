@@ -1412,11 +1412,13 @@ class TOPMENU:
             time.sleep(2.5)
             driver.switch_to.window(driver.window_handles[1])
             # AutoExpand check through packet
-            try:
-                driver.wait_for_request('.*/GetStdReportExFolderAutoExpand.*'+'CT')
-            except: 
+            request = driver.wait_for_request('.*/GetStdReportExFolderAutoExpand.*'+'CT')
+            body = request.response.body.decode('utf-8')
+            data = (json.loads(body))
+            if 'rnd_gr_code' not in data:
                 testResult = 'failed'
                 Result_msg+="#3 "
+                
 
             #탭 전환
             driver.close()
@@ -2046,7 +2048,121 @@ class TOPMENU:
         #else:
         #    testlink.reportTCResult(2431, testPlanID, buildName, 'p', "Profile_Worklist Test Passed")
 
-    def Profile_Report():
+    def Profile_Standard_Report():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+
+        # standard report
+        driver.find_element(By.CSS_SELECTOR, "#standard_report_setting_tab_link > a").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#standard_report_profile_row > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")))
+
+        #value_of_css_property("background-color")
+        # off - rgba(129, 129, 129, 1) / on - rgba(255, 87, 34, 0.5)
+        # Auto Expand off #1
+        # if on > off
+        if driver.find_element(By.CSS_SELECTOR, "#standard_report_profile_row > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").value_of_css_property("background-color") == "rgba(255, 87, 34, 0.5)":
+            element = driver.find_element(By.CSS_SELECTOR, "#standard_report_profile_row > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")
+            driver.execute_script("arguments[0].click();", element)
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(0.5)
+        # Home
+        driver.find_element(By.CSS_SELECTOR, "#right-sidebar-home").click()
+        time.sleep(0.25)
+        # CT Search
+        driver.find_element(By.CSS_SELECTOR, "#search-job-modality").send_keys("CT")
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        # 캡처 초기화
+        del driver.requests
+        time.sleep(0.25)
+        # in report
+        driver.find_element(By.CSS_SELECTOR, "#job-report").click()  
+        # 탭 전환
+        time.sleep(2.5)
+        driver.switch_to.window(driver.window_handles[1])
+        # AutoExpand check through packet
+        request = driver.wait_for_request('.*/GetStdReportExFolderAutoExpand.*'+'CT')
+        body = request.response.body.decode('utf-8')
+        data = (json.loads(body))
+        if 'NOT_USE_AUTO_EXPAND' != data:
+            testResult = 'failed'
+            Result_msg+="#1 "
+        #탭 전환
+        driver.close()
+        driver.switch_to.window(driver.window_handles[0])
+
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+
+        # standard report
+        driver.find_element(By.CSS_SELECTOR, "#standard_report_setting_tab_link > a").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#standard_report_profile_row > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")))
+
+        #value_of_css_property("background-color")
+        # off - rgba(129, 129, 129, 1) / on - rgba(255, 87, 34, 0.5)
+        # Auto Expand off #1
+        # if off > on
+        if driver.find_element(By.CSS_SELECTOR, "#standard_report_profile_row > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").value_of_css_property("background-color") == "rgba(129, 129, 129, 1)":
+            element = driver.find_element(By.CSS_SELECTOR, "#standard_report_profile_row > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")
+            driver.execute_script("arguments[0].click();", element)
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(0.5)
+        # Home
+        driver.find_element(By.CSS_SELECTOR, "#right-sidebar-home").click()
+        time.sleep(0.25)
+        # CT Search
+        #driver.find_element(By.CSS_SELECTOR, "#search-job-modality").send_keys("CT")
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        # 캡처 초기화
+        del driver.requests
+        time.sleep(0.25)
+        # in report
+        driver.find_element(By.CSS_SELECTOR, "#job-report").click()  
+        try:
+            WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        except:
+            pass
+        # 탭 전환
+        time.sleep(2.5)
+        driver.switch_to.window(driver.window_handles[1])
+        # AutoExpand check through packet
+        request = driver.wait_for_request('.*/GetStdReportExFolderAutoExpand.*'+'CT')
+        body = request.response.body.decode('utf-8')
+        data = (json.loads(body))
+        if 'NOT_USE_AUTO_EXPAND' == data:
+            testResult = 'failed'
+            Result_msg+="#2 "
+        #탭 전환
+        driver.close()
+        driver.switch_to.window(driver.window_handles[0])
+
+        ## Profile_Standard_Report 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2444, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2444, testPlanID, buildName, 'p', "Profile_Standard_Report Test Passed")
+
+    def Profile_Viewer():
         testResult=""
         Result_msg = "failed at "
 
@@ -2068,7 +2184,7 @@ class TOPMENU:
        
 
 
-TOPMENU.Profile_Report()
+TOPMENU.Profile_Viewer()
 
 def test():
     print("test")
@@ -2081,18 +2197,26 @@ def test():
     except:
         pass
 
-    # Setting + User profile + waiting접속
-    TOPMENU.Profile_Worklist_inUserProfile()
+    driver.find_element(By.CSS_SELECTOR, "#search-job-modality").send_keys("CT")
+    driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+    # 캡처 초기화
+    del driver.requests
+    time.sleep(0.25)
 
-    print(driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").value_of_css_property("background-color"))
-    driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").click()
-    # save
-    driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
-    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
-    # ok
-    driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-    time.sleep(0.5)
-    print(driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").value_of_css_property("background-color"))
-    # off - rgba(129, 129, 129, 1)
-    # on - rgba(255, 87, 34, 0.5)
+    driver.find_element(By.CSS_SELECTOR, "#job-report").click()
+            
+    # 탭 전환
+    time.sleep(2.5)
+    driver.switch_to.window(driver.window_handles[1])
+    for n in driver.requests:
+        print(n.url)
+    # AutoExpand check through packet
+    request = driver.wait_for_request('.*/GetStdReportExFolderAutoExpand.*'+'CT')
+    body = request.response.body.decode('utf-8')
+    data = (json.loads(body))
+    if 'grc' not in data:
+        print("!!!!")
+    else:
+        print("@@@")
+
 #test()
