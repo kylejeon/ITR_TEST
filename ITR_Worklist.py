@@ -1764,6 +1764,19 @@ class TOPMENU:
         #    testlink.reportTCResult(2428, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2428, testPlanID, buildName, 'p', "Report_delete Test Passed")
+
+    def Profile_Worklist_inUserProfile():
+        # Setting 접속
+        element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
+        driver.execute_script("arguments[0].click();", element)
+
+        # waiting loading
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+
+        # User profile 접속
+        driver.find_element(By.CSS_SELECTOR, "#setting_user_profile").click()
+        # waiting loading
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_confirm_btn")))
             
     def Profile_Worklist():
         testResult=""
@@ -1778,21 +1791,308 @@ class TOPMENU:
         except:
             pass
 
-        # Setting 접속
-        element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
-        driver.execute_script("arguments[0].click();", element)
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
 
+        # Job Date #1
+        driver.find_element(By.CSS_SELECTOR, "#worklist_setting_sort_select").click()
+        driver.find_element(By.CSS_SELECTOR, "#worklist_setting_sort_select_option_job_dttm").click()
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.5)
+        # 캡처 초기화
+        del driver.requests
+        # refresh
+        driver.find_element(By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title")))
+        # get order info
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        url = (request.url).split('&')
+        order_col = url[2].split('=')[1]
+        #order_type = url[3].split('=')[1]
+        try:
+            assert(order_col=='JobDateDTTMString')
+        except:
+            testResult = 'failed'
+            Result_msg+="#1 "
+
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+
+        # Study Date #2
+        driver.find_element(By.CSS_SELECTOR, "#worklist_setting_sort_select").click()
+        driver.find_element(By.CSS_SELECTOR, "#worklist_setting_sort_select_option_study_dttm").click()
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.5)
+        # 캡처 초기화
+        del driver.requests
+        # refresh
+        driver.find_element(By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title")))
+        # get order info
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        url = (request.url).split('&')
+        order_col = url[2].split('=')[1]
+        #order_type = url[3].split('=')[1]
+        try:
+            assert(order_col=='StudyDateDTTMString')
+        except:
+            testResult = 'failed'
+            Result_msg+="#2 "
+
+         # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+
+        # Uploaded Date #3
+        driver.find_element(By.CSS_SELECTOR, "#worklist_setting_sort_select").click()
+        driver.find_element(By.CSS_SELECTOR, "#worklist_setting_sort_select_option_upload_dttm").click()
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.5)
+        # 캡처 초기화
+        del driver.requests
+        # refresh
+        driver.find_element(By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title")))
+        # get order info
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        url = (request.url).split('&')
+        order_col = url[2].split('=')[1]
+        #order_type = url[3].split('=')[1]
+        try:
+            assert(order_col=='UploadedDTTMString')
+        except:
+            testResult = 'failed'
+            Result_msg+="#3 "
+
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+
+        # ASC #4
+        driver.find_element(By.CSS_SELECTOR, "#worklist_setting_sort_select").click()
+        driver.find_element(By.CSS_SELECTOR, "#worklist_setting_sort_select_option_job_dttm").click()
+        driver.find_element(By.CSS_SELECTOR, "#worklist_profile_row > div > div > div > div > div:nth-child(3) > div > span > label:nth-child(2)").click()
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.5)
+        # 캡처 초기화
+        del driver.requests
+        # refresh
+        driver.find_element(By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title")))
+        # get order info
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        url = (request.url).split('&')
+        #order_col = url[2].split('=')[1]
+        order_type = url[3].split('=')[1]
+        try:
+            assert(order_type=='asc')
+        except:
+            testResult = 'failed'
+            Result_msg+="#4 "
+
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+
+        # DESC #5
+        driver.find_element(By.CSS_SELECTOR, "#worklist_setting_sort_select").click()
+        driver.find_element(By.CSS_SELECTOR, "#worklist_setting_sort_select_option_job_dttm").click()
+        driver.find_element(By.CSS_SELECTOR, "#worklist_profile_row > div > div > div > div > div:nth-child(3) > div > span > label:nth-child(4)").click()
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.5)
+        # 캡처 초기화
+        del driver.requests
+        # refresh
+        driver.find_element(By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title")))
+        # get order info
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        url = (request.url).split('&')
+        #order_col = url[2].split('=')[1]
+        order_type = url[3].split('=')[1]
+        try:
+            assert(order_type=='desc')
+        except:
+            testResult = 'failed'
+            Result_msg+="#5 "
+
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+
+        # AI off #6
+        #value_of_css_property("background-color")
+        # off - rgba(129, 129, 129, 1)
+        # on - rgba(255, 87, 34, 0.5)
+        # if on > change off
+        if driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").value_of_css_property("background-color") == "rgba(255, 87, 34, 0.5)":
+            element = driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")
+            driver.execute_script("arguments[0].click();", element)
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(0.5)
+        # 캡처 초기화
+        del driver.requests
+        # refresh
+        driver.find_element(By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title")))
+        time.sleep(3)##
+        # get AI on/off info
+        request = driver.wait_for_request('.*/GetAIInformationShowUserProfile')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        try:
+            assert(data=='F')
+        except:
+            testResult = 'failed'
+            Result_msg+="#6 "
+
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+
+        # AI on #7
+        # if off > change on
+        if driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").value_of_css_property("background-color") == "rgba(129, 129, 129, 1)":
+            element = driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")
+            driver.execute_script("arguments[0].click();", element)
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        # 캡처 초기화
+        del driver.requests
+        # refresh
+        driver.find_element(By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title")))
+        # get AI on/off info
+        request = driver.wait_for_request('.*/GetAIInformationShowUserProfile')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        try:
+            assert(data=='T')
+        except:
+            testResult = 'failed'
+            Result_msg+="#7 "
+
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+
+        # font #8
+        # intialize
+        driver.find_element(By.CSS_SELECTOR, "#worklist-font-type-select").click()
+        driver.find_element(By.CSS_SELECTOR, "#worklist-font-type-select > option:nth-child(1)").click()
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.5)
+
+        # 캡처 초기화
+        del driver.requests
+
+        # Comic Sans MS
+        driver.find_element(By.CSS_SELECTOR, "#worklist-font-type-select").click()
+        driver.find_element(By.CSS_SELECTOR, "#worklist-font-type-select > option:nth-child(8)").click()
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.5)
+
+        request = driver.wait_for_request('.*/GetWorklistFontType')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        try:
+            assert(data == " Comic Sans MS")
+        except:
+            testResult = 'failed'
+            Result_msg+="#8 "
+
+        # intialize
+        driver.find_element(By.CSS_SELECTOR, "#worklist-font-type-select").click()
+        driver.find_element(By.CSS_SELECTOR, "#worklist-font-type-select > option:nth-child(1)").click()
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.5)
+
+        ## Profile_Worklist 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2431, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2431, testPlanID, buildName, 'p', "Profile_Worklist Test Passed")
+
+    def Profile_Report():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
         # waiting loading
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+
 
 
         print(Result_msg)
        
 
 
-TOPMENU.Profile_Worklist()
+TOPMENU.Profile_Report()
 
 def test():
     print("test")
+    # 정상적인 계정으로 로그인
+    signInOut.normal_login()
+        
+    # waiting loading
+    try:
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+    except:
+        pass
 
+    # Setting + User profile + waiting접속
+    TOPMENU.Profile_Worklist_inUserProfile()
+
+    print(driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").value_of_css_property("background-color"))
+    driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").click()
+    # save
+    driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+    # ok
+    driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+    time.sleep(0.5)
+    print(driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").value_of_css_property("background-color"))
+    # off - rgba(129, 129, 129, 1)
+    # on - rgba(255, 87, 34, 0.5)
 #test()
