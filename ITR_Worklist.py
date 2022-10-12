@@ -1322,7 +1322,7 @@ class TOPMENU:
 
         # waiting loading
         try:
-            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
         except:
             testResult = 'failed'
             Result_msg+="#0 "
@@ -1409,11 +1409,11 @@ class TOPMENU:
             driver.find_element(By.CSS_SELECTOR, "#job-report").click()
             
             # 탭 전환
-            time.sleep(3)
+            time.sleep(2.5)
             driver.switch_to.window(driver.window_handles[1])
             # AutoExpand check through packet
             try:
-                driver.wait_for_request('.*/GetStdReportExFolderAutoExpand?modalitiesString=CT')
+                driver.wait_for_request('.*/GetStdReportExFolderAutoExpand.*'+'CT')
             except: 
                 testResult = 'failed'
                 Result_msg+="#3 "
@@ -1461,7 +1461,7 @@ class TOPMENU:
             driver.execute_script("arguments[0].click();", element)
             time.sleep(0.1)
             try:
-                assert(driver.find_element(By.CSS_SELECTOR, "#toast-container > div > div.toast-message".text == "Report Code Already Exist"))
+                assert(driver.find_element(By.CSS_SELECTOR, "#toast-container > div > div.toast-message").text == "Report Code Already Exist.")
             except:
                 testResult = 'failed'
                 Result_msg+="#4 "
@@ -1477,7 +1477,8 @@ class TOPMENU:
 
             # 11 - Close
             # close and text check
-            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-close-btn").click()
+            element = driver.find_element(By.CSS_SELECTOR, "#add-stdreport-close-btn")
+            driver.execute_script("arguments[0].click();", element)
             time.sleep(0.1)
             if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Are you sure to close?":
                 testResult = 'failed'
@@ -1492,11 +1493,45 @@ class TOPMENU:
                 Result_msg+="#11 "
             
             # ok
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#add-stdreport-close-btn")))
             driver.find_element(By.CSS_SELECTOR, "#add-stdreport-close-btn").click()
             time.sleep(0.1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
 
-            # 탭 전환 테스트 필요
+            # 탭 전환
+            driver.switch_to.window(driver.window_handles[0])
+
+        ## Report_Add 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2870, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2870, testPlanID, buildName, 'p', "Report_Add Test Passed")
+
+    def Report_Modify():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        # Setting 접속
+        element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
+        driver.execute_script("arguments[0].click();", element)
+
+        # waiting loading
+        try:
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+        except:
+            testResult = 'failed'
+            Result_msg+="#0 "
+
+        
 
         print(Result_msg)
             
@@ -1505,7 +1540,7 @@ class TOPMENU:
        
 
 
-TOPMENU.Report_Add()
+TOPMENU.Report_Modify()
 
 def test():
     print("test")
