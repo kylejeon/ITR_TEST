@@ -1531,16 +1531,266 @@ class TOPMENU:
             testResult = 'failed'
             Result_msg+="#0 "
 
+        # 캡처 초기화
+            del driver.requests
+
+        # Clear
+        driver.find_element(By.CSS_SELECTOR, "#stdreport_search_clear_btn > span").click()
+        # waiting loading
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+
+        # rnd_rp_code 순서 확인
+        request = driver.wait_for_request('.*/GetStandardReportForTable.*')
+        body = request.response.body.decode('utf-8')
+        data = (json.loads(body))["data"]
+        rnd_num = 0
+        for n in data:
+            rnd_num+=1
+            if(n['StdReportCode']=="rnd_rp_code"):
+                break
+
+        # 2 - 준비
+        if rnd_num == 1:
+            exist_report_code = driver.find_element(By.CSS_SELECTOR, "#stdreport-hotkey-list > tbody > tr:nth-child("+str(rnd_num+1)+") > td.align-center.modify-stdreport > a").text
+        else:
+            exist_report_code = driver.find_element(By.CSS_SELECTOR, "#stdreport-hotkey-list > tbody > tr:nth-child("+str(rnd_num-1)+") > td.align-center.modify-stdreport > a").text
+
+        # Report Code Click #1
+        driver.find_element(By.CSS_SELECTOR, "#stdreport-hotkey-list > tbody > tr:nth-child("+str(rnd_num)+") > td.align-center.modify-stdreport > a").click()
+        # waiting loading
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modify-stdreport-save-btn")))
+        try:
+            assert(driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-view-label").text == "Modify Standard Report")
+        except:
+            testResult = 'failed'
+            Result_msg+="#1 "
+
         
+        if testResult == '':
+            # already existed report code #4
+            # modify report code
+            driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-code").clear()
+            driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-code").send_keys(exist_report_code)
+            # Save Click
+            driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-save-btn").click()
+            # waiting loading
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
+            # message check
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text == "Are you sure to modify report?")
+            except:
+                testResult = 'failed'
+                Result_msg+="#4 "
+            # no
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-view-label").text == "Modify Standard Report")
+            except:
+                testResult = 'failed'
+                Result_msg+="#4 "
+            # Save Click
+            driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-save-btn").click()
+            # waiting loading
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
+            # Yes
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            # waiting loading
+            time.sleep(0.5)
+            # message check
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text == "This report code is already used.")
+            except:
+                testResult = 'failed'
+                Result_msg+="#4 "
+            # ok
+            element = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")
+            driver.execute_script("arguments[0].click();", element)
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modify-stdreport-save-btn")))
+
+            # Group code, Report Code, Description, Hot Key, Report, Conclusion  #2 & 5 & 6 & 7 & 8 & 9
+            # re-write
+            driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-group").send_keys("2")
+            element = driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-code")
+            element.clear()
+            element.send_keys("rnd_rp_code2")
+            driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-desc").send_keys("2")
+            element = driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-hotKey")
+            element.click()
+            element.send_keys(Keys.UP)
+            element.send_keys(Keys.ENTER)
+            element = driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-view-report-text")
+            element.clear()
+            element.send_keys("w2@")
+            element = driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-view-conclusion")
+            element.clear()
+            element.send_keys("w2@")
+            # Save Click
+            driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-save-btn").click()
+            # waiting loading
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
+            # Yes
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            # waiting loading
+            time.sleep(0.5)
+            # message check
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.visible.showSweetAlert > h2").text == "You have modified standard report.")
+            except:
+                testResult = 'failed'
+                Result_msg+="#2 #5 #6 #7 #8 #9 "
+            # Ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(0.5)
+
+            # close #10
+            driver.find_element(By.CSS_SELECTOR, "#stdreport-hotkey-list > tbody > tr:nth-child("+str(rnd_num)+") > td.align-center.modify-stdreport > a").click()
+            # waiting loading
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modify-stdreport-save-btn")))
+            # close
+            driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-close-btn").click()
+            # waiting loading
+            time.sleep(0.25)
+            # message check
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text == "Are you sure to close?")
+            except:
+                testResult = 'failed'
+                Result_msg+="#10 "
+            # no
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+            # waiting loading
+            time.sleep(0.25)
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-view-label").text == "Modify Standard Report")
+            except:
+                testResult = 'failed'
+                Result_msg+="#10 "
+            # close
+            driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-close-btn").click()
+            # waiting loading
+            time.sleep(0.25)
+            # yes
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(0.25)
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "#setting_stdreport_searching_card > div.header > h4").text == "Search Filter")
+            except:
+                testResult = 'failed'
+                Result_msg+="#10 "
+
+        ## Report_Modify 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2416, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2416, testPlanID, buildName, 'p', "Report_Modify Test Passed")
+
+    def Report_delete():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        # Setting 접속
+        element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
+        driver.execute_script("arguments[0].click();", element)
+
+        # waiting loading
+        try:
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+        except:
+            testResult = 'failed'
+            Result_msg+="#0 "
+
+        # 캡처 초기화
+            del driver.requests
+
+        # Clear
+        driver.find_element(By.CSS_SELECTOR, "#stdreport_search_clear_btn > span").click()
+        # waiting loading
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+
+        # rnd_rp_code 순서 확인
+        request = driver.wait_for_request('.*/GetStandardReportForTable.*')
+        body = request.response.body.decode('utf-8')
+        data = (json.loads(body))["data"]
+        rnd_num = 0
+        for n in data:
+            rnd_num+=1
+            if(n['StdReportCode']=="rnd_rp_code2"):
+                break
+
+        # Report Code select #1
+        # slot
+        driver.find_element(By.CSS_SELECTOR, "#stdreport-hotkey-list > tbody > tr:nth-child("+str(rnd_num)+") > td:nth-child(1) > label").click()
+        # delete
+        driver.find_element(By.CSS_SELECTOR, "#stdreport_delete_btn > span").click()
+        # waiting loading
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"))) 
+        # message check
+        try:
+            assert(driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text == "Are you sure to delete selected standard report?")
+        except:
+            testResult = 'failed'
+            Result_msg+="#1 "
+        # cancel
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+        time.sleep(0.25)
+        try:
+            assert(driver.find_element(By.CSS_SELECTOR, "#setting_stdreport_searching_card > div.header > h4").text == "Search Filter")
+        except:
+            testResult = 'failed'
+            Result_msg+="#1 "
+        # delete
+        driver.find_element(By.CSS_SELECTOR, "#stdreport_delete_btn > span").click()
+        # waiting loading
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"))) 
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.25)
+        # delete check
+        if driver.find_element(By.CSS_SELECTOR, "#stdreport-hotkey-list > tbody > tr:nth-child("+str(rnd_num)+") > td.align-center.modify-stdreport > a").text == "rnd_rp_code2":
+            testResult = 'failed'
+            Result_msg+="#1 "
+
+        ## Report_delete 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2428, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2428, testPlanID, buildName, 'p', "Report_delete Test Passed")
+            
+    def Profile_Worklist():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        # Setting 접속
+        element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
+        driver.execute_script("arguments[0].click();", element)
+
+        # waiting loading
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+
 
         print(Result_msg)
-            
-            
-
        
 
 
-TOPMENU.Report_Modify()
+TOPMENU.Profile_Worklist()
 
 def test():
     print("test")
