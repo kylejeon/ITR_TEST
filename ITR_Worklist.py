@@ -5,6 +5,7 @@ from ast import Try
 from doctest import TestResults
 from mailbox import Babyl
 from pickle import NONE
+from tkinter import FALSE
 from unittest import TestResult, TextTestResult
 from bs4 import BeautifulSoup
 from urllib.parse import quote_plus
@@ -556,7 +557,8 @@ class TOPMENU:
         data = (json.loads(body))['data']
         adm_insti = []
         for n in data:
-            adm_insti.append(n['InstitutionName'])
+            if worklist_id in n["UserName"]:
+                adm_insti.append(n['InstitutionName'])
 
         # Direct Message Setting, reporter 정보 획득
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[7]/a").click()
@@ -2162,7 +2164,27 @@ class TOPMENU:
         #else:
         #    testlink.reportTCResult(2444, testPlanID, buildName, 'p', "Profile_Standard_Report Test Passed")
 
-    def Profile_Viewer():
+    #def Statistics_Hospital_SearchFilter():
+    #    testResult=""
+    #    Result_msg = "failed at "
+
+    #    # 정상적인 계정으로 로그인
+    #    signInOut.normal_login()
+        
+    #    # waiting loading
+    #    try:
+    #        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+    #    except:
+    #        pass
+
+    #    # Statistics 접속
+    #    driver.find_element(By.CSS_SELECTOR, "#right-sidebar-statistics").click()
+    #    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#statistics-search > span")))
+
+    #    print(Result_msg)
+
+class WORKLIST:
+    def HospitalList():
         testResult=""
         Result_msg = "failed at "
 
@@ -2175,16 +2197,373 @@ class TOPMENU:
         except:
             pass
 
-        # Setting + User profile + waiting접속
-        TOPMENU.Profile_Worklist_inUserProfile()
+        # Dropbox & View All Hospital List #1 & 4
+        # Admin에서 정보 획득 시작
+        # 새로운 탭 + 전환
+        driver.execute_script("window.open()")
+        driver.switch_to.window(driver.window_handles[1])
+        driver.get(AdminUrl);
 
+        # admin 사이트 로그인
+        driver.find_element(By.ID, 'user-id').clear()
+        driver.find_element(By.ID, 'user-id').send_keys(admin_id)
+        driver.find_element(By.ID, 'user-password').clear()
+        driver.find_element(By.ID, 'user-password').send_keys(admin_pw)
+        driver.find_element(By.CSS_SELECTOR, '.btn').click()
+        driver.implicitly_wait(5)
 
+        # Configuration
+        element = driver.find_element(By.XPATH, '/html/body/section/div/div/div/div[2]/div[1]/ul/li[5]/a')
+        driver.execute_script("arguments[0].click();", element)
+        driver.implicitly_wait(5)
+
+        # Download Control
+        driver.find_element(By.CSS_SELECTOR, "#download-control-btn > span").click()
+        WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#tab-downloadControl-byUser-list > a")))
+        # 캡처 초기화
+        del driver.requests
+        # id search & get info
+        driver.find_element(By.CSS_SELECTOR, "#download-search-user-id").send_keys(worklist_id)
+        driver.find_element(By.CSS_SELECTOR, "#download-search").click()
+        request = driver.wait_for_request('.*/DownloadControl/GetDownloadControlByInstList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        adm_hospital_list = []
+        for n in data:
+            if worklist_id in n["UserName"]:
+                adm_hospital_list.append(n["InstitutionName"])
+
+        #탭 전환
+        driver.close()
+        driver.switch_to.window(driver.window_handles[0])
+        # admin 정보 획득 종료
+
+        # worklist 정보 획득
+        # View All Hospital List
+        element = driver.find_element(By.CSS_SELECTOR, "#all-institution-list")
+        if element.is_selected() == False:
+            driver.execute_script("arguments[0].click();", element)
+            del driver.requests
+        request = driver.wait_for_request('.*/GetHospitalList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)['HospitalList']
+        wk_hospital_list= []
+        for n in data:
+            wk_hospital_list.append(n["InstitutionName"])
+
+        adm_hospital_list.sort()
+        wk_hospital_list.sort()
+        try:
+            assert(adm_hospital_list == wk_hospital_list)
+        except:
+            testResult = 'failed'
+            Result_msg+="#1 #4 "
+
+        # Drppbox / list & 응급/Refer/Auto Refer #2 & 5 & 3
+        # View All hospital list off
+        if element.is_selected() == True:
+            del driver.requests
+            driver.execute_script("arguments[0].click();", element)
+            request = driver.wait_for_request('.*/GetHospitalList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)['HospitalList']
+
+        # 2 & 5 - click 할 hospital 결정
+        least_num = int(data[0]['AutoReferCount'])
+        for n in range(0, len(data)):
+            if least_num >= data[n]['AutoReferCount']:
+                least_num = data[n]['AutoReferCount']
+                click_hospital_num = n
+        click_hospital = data[click_hospital_num]['InstitutionName']
+
+        ## 3 - 응급/Refer/Auto Refer from pk
+        #pk_emergency = []
+        #pk_refer = []
+        #pk_auto_refer = []
+        #for n in data:
+        #    pk_emergency.append(n["PriorityCount"])
+        #    pk_refer.append(n["ReferCount"])
+        #    pk_auto_refer.append(n["AutoReferCount"])
+
+        # 3 - 응급/Refer/Auto Refer from page
+        emergency_lbadge = []
+        refer_lbadge = []
+        auto_refer_lbadge = []
+        for n in range(1,len(data)+1):
+            emergency_lbadge.append(int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[1]/div[1]/div[1]/div[3]/div[2]/button["+str(n)+"]/span[3]").text))
+            refer_lbadge.append(int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[1]/div[1]/div[1]/div[3]/div[2]/button["+str(n)+"]/span[2]").text))
+            auto_refer_lbadge.append(int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[1]/div[1]/div[1]/div[3]/div[2]/button["+str(n)+"]/span[1]").text))
+
+        emergency_wk = []
+        refer_wk = []
+        auto_refer_wk = []
+        for n in range(1,len(data)+1):
+            del driver.requests
+            driver.find_element(By.CSS_SELECTOR, "#hospital_list > button:nth-child("+str(n)+")").click()
+            request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            page_len = int(data['Length'])
+            # total page
+            total = math.ceil(int(data['recordsFiltered']) / page_len)
+            # remain
+            last_page_num = int(data['recordsFiltered']) % page_len
+            emergency = 0
+            refer = 0
+            auto_refer = 0
+            if last_page_num == 0:
+                for a in range(1, total+1):
+                    for b in range(1, page_len+1):
+                        ##
+                        if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-1").get_property("childElementCount") != 0:
+                            emergency += 1
+                        if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child(2) > td.refer-tooltip.current-job.align-center.current-list-tooltip.current-job-column-2 > span > label").text == 'R':
+                            refer = 1
+                        auto_refer+=1
+                    element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                    driver.execute_script("arguments[0].click();", element)
+                    time.sleep(0.3)
+            else:
+                for a in range(1, total+1):
+                    if a == total:
+                        for b in range(1, last_page_num+1):
+                            ##
+                            if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-1").get_property("childElementCount") != 0:
+                                emergency += 1
+                            if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child(2) > td.refer-tooltip.current-job.align-center.current-list-tooltip.current-job-column-2 > span > label").text == 'R':
+                                refer = 1
+                            auto_refer+=1
+                        break
+                    for b in range(1, page_len+1):
+                        ##
+                        if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-1").get_property("childElementCount") != 0:
+                            emergency += 1
+                        if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child(2) > td.refer-tooltip.current-job.align-center.current-list-tooltip.current-job-column-2 > span > label").text == 'R':
+                            refer = 1
+                        auto_refer+=1
+                    element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                    driver.execute_script("arguments[0].click();", element)
+                    time.sleep(0.3)
+            emergency_wk.append(emergency)
+            refer_wk.append(refer)
+            auto_refer_wk.append(auto_refer)
+        try:
+            assert(emergency_lbadge == emergency_wk and
+                   refer_lbadge == refer_wk and
+                   auto_refer_lbadge == auto_refer_wk)
+        except:
+            testResult = 'failed'
+            Result_msg+="#3 "
+            
+        ## 3 - 비교
+        #try:
+        #    assert(pk_emergency == emergency and
+        #           pk_refer == refer and
+        #           pk_auto_refer == auto_refer)
+        #except:
+        #    testResult = 'failed'
+        #    Result_msg+="#3 "
+        
+        # 2 & 5 - check hospital option
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting-columns-apply")))
+        if(driver.find_element(By.CSS_SELECTOR, "#chk-column-13").is_selected()==False):
+            element = driver.find_element(By.CSS_SELECTOR, "#chk-column-13")
+            driver.execute_script("arguments[0].click();", element)
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
+        time.sleep(0.3)
+
+        # 2 - page 넘기며 확인
+        del driver.requests
+        # least dropbox click
+        driver.find_element(By.CSS_SELECTOR, "#search_institution_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_institution_chosen > div > div > input[type=text]").send_keys(click_hospital)
+        driver.find_element(By.CSS_SELECTOR, "#search_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        time.sleep(0.3)
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        page_len = int(data['Length'])
+        # total page
+        total = math.ceil(int(data['recordsFiltered']) / page_len)
+        # remain
+        last_page_num = int(data['recordsFiltered']) % page_len
+        if last_page_num == 0:
+            for a in range(1, total+1):
+                for b in range(1, page_len+1):
+                    if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                        testResult = 'failed'
+                        Result_msg+="#2 "
+                        break
+                if(testResult != '' or a == total):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+        else:
+            for a in range(1, total+1):
+                if a == total:
+                    for b in range(1, last_page_num+1):
+                        if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                            testResult = 'failed'
+                            Result_msg+="#2 "
+                            break
+                if a == total:
+                    break
+                for b in range(1, page_len+1):
+                    if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                        testResult = 'failed'
+                        Result_msg+="#2 "
+                        break
+                if(testResult != ''):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+
+        # 5 - page 넘기며 확인
+        del driver.requests
+        # least list click
+        element = driver.find_element(By.CSS_SELECTOR, "#hospital_list > button:nth-child("+str(click_hospital_num+1)+")")
+        driver.execute_script("arguments[0].click();", element)
+        time.sleep(0.3)
+        total_list_index = int(((driver.find_element(By.CSS_SELECTOR, "#current-job-list_info").text).split(' '))[5])
+        total_list = 0
+        if last_page_num == 0:
+            for a in range(1, total+1):
+                for b in range(1, page_len+1):
+                    total_list+=1
+                    if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                        testResult = 'failed'
+                        Result_msg+="#5 "
+                        break
+                if(testResult != '' or a == total):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+        else:
+            for a in range(1, total+1):
+                if a == total:
+                    for b in range(1, last_page_num+1):
+                        total_list+=1
+                        if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                            testResult = 'failed'
+                            Result_msg+="#5 "
+                            break
+                if a == total:
+                    break
+                for b in range(1, page_len+1):
+                    total_list+=1
+                    if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                        testResult = 'failed'
+                        Result_msg+="#5 "
+                        break
+                if(testResult != ''):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+        try:
+            assert(total_list_index == total_list)
+        except:
+            testResult = 'failed'
+            Result_msg+="#5 "
+
+        # < / > #6 & 7
+        driver.find_element(By.CSS_SELECTOR, "#hospital_list_hide_btn > span").click()
+        # find >
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#hospital_list_show_btn > span")))
+            driver.find_element(By.CSS_SELECTOR, "#hospital_list_show_btn > span").click()
+            # find < 
+            try:
+                WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#hospital_list_hide_btn > span")))
+            except:
+                testResult = 'failed'
+                Result_msg+="#7 "
+        except:
+            testResult = 'failed'
+            Result_msg+="#6 "
+
+        ## HospitalList 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2506, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2506, testPlanID, buildName, 'p', "HospitalList Test Passed")
+
+        print(Result_msg)
+
+    def SearchFilter_Searchworklist():######################2
+        time.sleep(0.3)
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        page_len = int(data['Length'])
+        # total page
+        total = math.ceil(int(data['recordsFiltered']) / page_len)
+        # remain
+        last_page_num = int(data['recordsFiltered']) % page_len
+        if last_page_num == 0:
+            for a in range(1, total+1):
+                for b in range(1, page_len+1):
+                    if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                        testResult = 'failed'
+                        Result_msg+="#2 "
+                        break
+                if(testResult != '' or a == total):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+        else:
+            for a in range(1, total+1):
+                if a == total:
+                    for b in range(1, last_page_num+1):
+                        if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                            testResult = 'failed'
+                            Result_msg+="#2 "
+                            break
+                if a == total:
+                    break
+                for b in range(1, page_len+1):
+                    if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                        testResult = 'failed'
+                        Result_msg+="#2 "
+                        break
+                if(testResult != ''):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+
+    def SearchFilter_JobStatus():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        # 캡처 초기화
+        del driver.requests
+
+        # Requested #1
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > div > b").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li.active-result.result-selected.highlighted").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        WORKLIST.SearchFilter_Searchworklist()
 
         print(Result_msg)
        
 
 
-TOPMENU.Profile_Viewer()
+WORKLIST.SearchFilter_JobStatus()
 
 def test():
     print("test")
@@ -2197,26 +2576,9 @@ def test():
     except:
         pass
 
-    driver.find_element(By.CSS_SELECTOR, "#search-job-modality").send_keys("CT")
-    driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
-    # 캡처 초기화
-    del driver.requests
-    time.sleep(0.25)
+    
+    print(driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child(2) > td.refer-tooltip.current-job.align-center.current-list-tooltip.current-job-column-2 > span > label").text)
+    print(driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child(3) > td.refer-tooltip.current-job.align-center.current-list-tooltip.current-job-column-2 > span > label").text)
 
-    driver.find_element(By.CSS_SELECTOR, "#job-report").click()
-            
-    # 탭 전환
-    time.sleep(2.5)
-    driver.switch_to.window(driver.window_handles[1])
-    for n in driver.requests:
-        print(n.url)
-    # AutoExpand check through packet
-    request = driver.wait_for_request('.*/GetStdReportExFolderAutoExpand.*'+'CT')
-    body = request.response.body.decode('utf-8')
-    data = (json.loads(body))
-    if 'grc' not in data:
-        print("!!!!")
-    else:
-        print("@@@")
-
+        
 #test()
