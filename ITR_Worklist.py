@@ -2492,9 +2492,9 @@ class WORKLIST:
         #else:
         #    testlink.reportTCResult(2506, testPlanID, buildName, 'p', "HospitalList Test Passed")
 
-        print(Result_msg)
-
-    def SearchFilter_Searchworklist():######################2
+    def SearchFilter_JobStatus_Search(job_status_position, target, num):
+        testResult = ''
+        Result_msg = ''
         time.sleep(0.3)
         request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
         body = request.response.body.decode('utf-8')
@@ -2507,9 +2507,9 @@ class WORKLIST:
         if last_page_num == 0:
             for a in range(1, total+1):
                 for b in range(1, page_len+1):
-                    if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                    if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(job_status_position)+"]/span/label").text != target:
                         testResult = 'failed'
-                        Result_msg+="#2 "
+                        Result_msg+="#"+num+" "
                         break
                 if(testResult != '' or a == total):
                     break
@@ -2520,22 +2520,23 @@ class WORKLIST:
             for a in range(1, total+1):
                 if a == total:
                     for b in range(1, last_page_num+1):
-                        if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                        if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(job_status_position)+"]/span/label").text != target:
                             testResult = 'failed'
-                            Result_msg+="#2 "
+                            Result_msg+="#"+num+" "
                             break
                 if a == total:
                     break
                 for b in range(1, page_len+1):
-                    if driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(b)+") > td.current-job.align-center.current-job-column-13").text != click_hospital:
+                    if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(job_status_position)+"]/span/label").text != target:
                         testResult = 'failed'
-                        Result_msg+="#2 "
+                        Result_msg+="#"+num+" "
                         break
                 if(testResult != ''):
                     break
                 element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
                 driver.execute_script("arguments[0].click();", element)
                 time.sleep(0.3)
+        return Result_msg
 
     def SearchFilter_JobStatus():
         testResult=""
@@ -2550,16 +2551,179 @@ class WORKLIST:
         except:
             pass
 
+        # option job status
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+        # check job status
+        if driver.find_element(By.CSS_SELECTOR, "#chk-column-4").is_selected() == False:
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label").click()
+        # showing wk column num
+        show_list_num = 1
+        for n in range (1,33):
+            if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
+                show_list_num += 1
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
+        time.sleep(0.5)
+        # find job status position
+        for n in range (2,show_list_num+1):
+            if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th["+str(n)+"]").text == "Job Status":
+                job_status_position = n
+                break
+
+        
         # 캡처 초기화
         del driver.requests
 
-        # Requested #1
+        # Requested #2
         driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > div > b").click()
         driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li.active-result.result-selected.highlighted").click()
         driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
-        WORKLIST.SearchFilter_Searchworklist()
+        Result_msg+=WORKLIST.SearchFilter_JobStatus_Search(job_status_position,"Requested", "2")
 
+        # 캡처 초기화
+        del driver.requests
+
+        # Reported #3
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > div > b").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li:nth-child(2)").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        Result_msg+=WORKLIST.SearchFilter_JobStatus_Search(job_status_position,"Reported", "3")
+
+        # 캡처 초기화
+        del driver.requests
+
+        # Pending #4
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > div > b").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li:nth-child(3)").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        Result_msg+=WORKLIST.SearchFilter_JobStatus_Search(job_status_position,"Pending", "4")
+
+        # 캡처 초기화
+        del driver.requests
+
+        # Completed #5 
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > div > b").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li:nth-child(4)").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        Result_msg+=WORKLIST.SearchFilter_JobStatus_Search(job_status_position,"Completed", "5")
+
+        # 캡처 초기화
+        del driver.requests
+
+        # Recalled #6
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > div > b").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li:nth-child(5)").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        Result_msg+=WORKLIST.SearchFilter_JobStatus_Search(job_status_position,"Recalled", "6")
+
+        # 캡처 초기화
+        del driver.requests
+
+        # Canceled #7
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > div > b").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li:nth-child(6)").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        Result_msg+=WORKLIST.SearchFilter_JobStatus_Search(job_status_position,"Canceled", "7")
+
+        # 캡처 초기화
+        del driver.requests
+
+        # Canceled2 #8
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > div > b").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li:nth-child(7)").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        Result_msg+=WORKLIST.SearchFilter_JobStatus_Search(job_status_position,"Canceled2", "8")
+
+        # 캡처 초기화
+        del driver.requests
+
+        # AI Processing #9
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > div > b").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li:nth-child(8)").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        time.sleep(0.3)
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        page_len = int(data['Length'])
+        # total page
+        total = math.ceil(int(data['recordsFiltered']) / page_len)
+        # remain
+        last_page_num = int(data['recordsFiltered']) % page_len
+        if last_page_num == 0:
+            for a in range(1, total+1):
+                for b in range(1, page_len+1):
+                    if  "AI" not in driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(job_status_position)+"]/span/label").text:
+                        testResult = 'failed'
+                        Result_msg+="#9 "
+                        break
+                if(testResult != '' or a == total):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+        else:
+            for a in range(1, total+1):
+                if a == total:
+                    for b in range(1, last_page_num+1):
+                        if "AI" not in driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(job_status_position)+"]/span/label").text:
+                            testResult = 'failed'
+                            Result_msg+="#9 "
+                            break
+                if a == total:
+                    break
+                for b in range(1, page_len+1):
+                    if "AI" not in driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(job_status_position)+"]/span/label").text:
+                        testResult = 'failed'
+                        Result_msg+="#9 "
+                        break
+                if(testResult != ''):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+
+        # DiscardRequested #10
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > div > b").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li:nth-child(9").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        Result_msg+=WORKLIST.SearchFilter_JobStatus_Search(job_status_position,"DiscardRequested", "10")
+
+        # 캡처 초기화
+        del driver.requests
+
+        # DiscardCompleted #11
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > div > b").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li:nth-child(10)").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        Result_msg+=WORKLIST.SearchFilter_JobStatus_Search(job_status_position,"DiscardCompleted", "11")
+        
+        ## SearchFilter_JobStatus 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2582, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2582, testPlanID, buildName, 'p', "SearchFilter_JobStatus Test Passed")
+
+    def SearchFilter_JobDate():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        
         print(Result_msg)
+        ## SearchFilter_JobDate 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2595, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2595, testPlanID, buildName, 'p', "SearchFilter_JobDate Test Passed")
        
 
 
