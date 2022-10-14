@@ -2,6 +2,7 @@
 
 #from testlink import TestlinkAPIClient, TestLinkHelper
 from ast import Try
+from calendar import month
 from doctest import TestResults
 from mailbox import Babyl
 from pickle import NONE
@@ -18,6 +19,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 #import ITR_Admin_Common
 from selenium.webdriver.common.keys import Keys
 import json, math, time
+from datetime import datetime, timedelta
+#pip install python-dateutil
+from dateutil.relativedelta import relativedelta
 ## User: kyle
 #URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'
 #DevKey = 'adcb86843d0c77e6e0c9950f80a143c0'
@@ -2551,6 +2555,10 @@ class WORKLIST:
         except:
             pass
 
+        # filter hide check
+        if driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").value_of_css_property("transform") != "matrix(6.12323e-17, 1, -1, 6.12323e-17, 0, 0)":
+            driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").click()
+
         # option job status
         driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
         WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
@@ -2717,17 +2725,165 @@ class WORKLIST:
         except:
             pass
 
-        
-        print(Result_msg)
+        # filter hide check
+        if driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").value_of_css_property("transform") != "matrix(6.12323e-17, 1, -1, 6.12323e-17, 0, 0)":
+            driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").click()
+
+        today = (datetime.today()).strftime('%Y-%m-%d')
+
+        # Job Start/End Date Click #1
+        driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").click()
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > thead > tr:nth-child(2) > th.datepicker-switch")))
+        except:
+            testResult = "failed"
+            Reesult_msg += "#1 "
+
+        driver.find_element(By.CSS_SELECTOR, "#search-job-end-date").click()
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > thead > tr:nth-child(2) > th.datepicker-switch")))
+        except:
+            testResult = "failed"
+            Reesult_msg += "#1 "
+
+        today_position = []
+        if testResult == "":
+            # 임의의 날짜 선택(today) #2
+            # start
+            driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").click()
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > thead > tr:nth-child(2) > th.datepicker-switch")))
+            for a in range(1, 7):
+                for b in range(1, 8):
+                    element = driver.find_element(By.XPATH, "/html/body/div[11]/div[1]/table/tbody/tr["+str(a)+"]/td["+str(b)+"]")
+                    if("today" in (element.get_property("classList"))):
+                        today_position.append(a)
+                        today_position.append(b)
+                        element.click()
+                        break
+                if(a in today_position):
+                    break
+            time.sleep(0.25)
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").get_property('value') == str(today))
+            except:
+                testResult = 'failed'
+                Result_msg+="#2 "
+            # end
+            driver.find_element(By.CSS_SELECTOR, "#search-job-end-date").click()
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > thead > tr:nth-child(2) > th.datepicker-switch")))
+            driver.find_element(By.XPATH, "/html/body/div[11]/div[1]/table/tbody/tr["+str(today_position[0])+"]/td["+str(today_position[1])+"]").click()
+            time.sleep(0.25)
+            try:             
+                assert(driver.find_element(By.CSS_SELECTOR, "#search-job-end-date").get_property('value') == str(today))
+            except:
+                testResult = 'failed'
+                Result_msg+="#2 "
+
+            # clear #3
+            driver.find_element(By.CSS_SELECTOR, "#search-job-end-date").click()
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > thead > tr:nth-child(2) > th.datepicker-switch")))
+            driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(4) > th").click()
+            time.sleep(0.25)
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").get_property('value') == "" and
+                       driver.find_element(By.CSS_SELECTOR, "#search-job-end-date").get_property('value') == "")
+            except:
+                testResult = 'failed'
+                Result_msg+="#3 "
+
+            # Yesterday, Today, Week, Month #4
+            # Yesterday
+            yesterday = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+            driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").click()
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > thead > tr:nth-child(2) > th.datepicker-switch")))
+            driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(1) > th:nth-child(1)").click()
+            time.sleep(0.25)
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").get_property('value') == str(yesterday) and 
+                       driver.find_element(By.CSS_SELECTOR, "#search-job-end-date").get_property('value') == str(today))
+            except:
+                testResult = 'failed'
+                Result_msg+="#4_1 "
+            # Today
+            driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").click()
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > thead > tr:nth-child(2) > th.datepicker-switch")))
+            driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(1) > th:nth-child(2)").click()
+            time.sleep(0.25)
+            try:
+                assert(driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").get_property('value') == str(today) and 
+                       driver.find_element(By.CSS_SELECTOR, "#search-job-end-date").get_property('value') == str(today))
+            except:
+                testResult = 'failed'
+                Result_msg+="#4_2 "
+            # Week            
+            for n in range(2, 7):
+                driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").click()
+                WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > thead > tr:nth-child(2) > th.datepicker-switch")))
+                driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(2) > th:nth-child("+str(n)+")").click()
+                time.sleep(0.25)
+                try:
+                    assert(driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").get_property('value') == str((datetime.today() - timedelta(weeks=(n-1))).strftime('%Y-%m-%d')) and 
+                       driver.find_element(By.CSS_SELECTOR, "#search-job-end-date").get_property('value') == str(today))
+                except:
+                    testResult = 'failed'
+                    Result_msg+="#4_3 "
+                if testResult != '':
+                    break
+            # Month
+            for n in range(2, 7):
+                driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").click()
+                WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > thead > tr:nth-child(2) > th.datepicker-switch")))
+                driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(3) > th:nth-child("+str(n)+")").click()
+                time.sleep(0.25)
+                try:
+                    if(n==2):
+                        assert(driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").get_property('value') == str((datetime.today() - relativedelta(months=1)).strftime('%Y-%m-%d')) and 
+                        driver.find_element(By.CSS_SELECTOR, "#search-job-end-date").get_property('value') == str(today))
+                    else:
+                        assert(driver.find_element(By.CSS_SELECTOR, "#search-job-start-date").get_property('value') == str((datetime.today() - relativedelta(months=3*(n-2))).strftime('%Y-%m-%d')) and 
+                        driver.find_element(By.CSS_SELECTOR, "#search-job-end-date").get_property('value') == str(today))
+                except:
+                    testResult = 'failed'
+                    Result_msg+="#4_4 "
+                if testResult != '':
+                    break
+
         ## SearchFilter_JobDate 결과 전송
         #if testResult == 'failed':
         #    testlink.reportTCResult(2595, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2595, testPlanID, buildName, 'p', "SearchFilter_JobDate Test Passed")
+
+    def SearchFilter_Department():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        # filter hide check
+        if driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").value_of_css_property("transform") != "matrix(6.12323e-17, 1, -1, 6.12323e-17, 0, 0)":
+            driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").click()
+
+        #
+
+        print(Result_msg)
+        ## SearchFilter_Department 결과 전송
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2605, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2605, testPlanID, buildName, 'p', "SearchFilter_Department Test Passed")
+
        
 
 
-WORKLIST.SearchFilter_JobStatus()
+WORKLIST.SearchFilter_Department()
 
 def test():
     print("test")
@@ -2740,9 +2896,12 @@ def test():
     except:
         pass
 
+    yesterday = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+    weekday = (datetime.today() - timedelta(weeks=1)).strftime('%Y-%m-%d')
+    print(weekday)
+    print((datetime.today() - timedelta(weeks=2)).strftime('%Y-%m-%d'))
+    print((datetime.today() - timedelta(weeks=3)).strftime('%Y-%m-%d'))
     
-    print(driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child(2) > td.refer-tooltip.current-job.align-center.current-list-tooltip.current-job-column-2 > span > label").text)
-    print(driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child(3) > td.refer-tooltip.current-job.align-center.current-list-tooltip.current-job-column-2 > span > label").text)
 
         
 #test()
