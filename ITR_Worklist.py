@@ -2853,11 +2853,160 @@ class WORKLIST:
         #    testlink.reportTCResult(2595, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2595, testPlanID, buildName, 'p', "SearchFilter_JobDate Test Passed")
+    
+    # get target position in worklist and option check
+    def SearchFilter_Etc_setting(target_num, target):
+        # option
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+        # check target
+        if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+target_num).is_selected() == False:
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label").click()
+        # showing wk column num
+        show_list_num = 1
+        for n in range (1,33):
+            if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
+                show_list_num += 1
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
+        time.sleep(0.5)
+        # find job status position
+        for n in range (2,show_list_num+1):
+            if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th["+str(n)+"]").text == target:
+                target_position = n
+                break
 
-    def SearchFilter_Department():
+        return target_position
+
+    def SearchFilter_Etc_Search(target_position, target, particular):
         testResult=""
-        Result_msg = "failed at "
 
+        del driver.requests
+
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
+        time.sleep(0.3)
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        page_len = int(data['Length'])
+        # total page
+        total = math.ceil(int(data['recordsFiltered']) / page_len)
+        # remain
+        last_page_num = int(data['recordsFiltered']) % page_len
+
+        # if gender
+        if particular == "Gender":
+            if last_page_num == 0:
+                for a in range(1, total+1):
+                    for b in range(1, page_len+1):
+                        if target not in driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(target_position)+"]").text:
+                            testResult = 'failed'
+                            break
+                    if(testResult != '' or a == total):
+                        break
+                    element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                    driver.execute_script("arguments[0].click();", element)
+                    time.sleep(0.3)
+            else:
+                for a in range(1, total+1):
+                    if a == total:
+                        for b in range(1, last_page_num+1):
+                            if target not in driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(target_position)+"]").text:
+                                testResult = 'failed'
+                                break
+                    if a == total:
+                        break
+                    for b in range(1, page_len+1):
+                        if target not in driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(target_position)+"]").text:
+                            testResult = 'failed'
+                            break
+                    if(testResult != ''):
+                        break
+                    element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                    driver.execute_script("arguments[0].click();", element)
+                    time.sleep(0.3)
+            # Clear
+            driver.find_element(By.CSS_SELECTOR, "#clear_searchfilter > span").click()
+            return testResult
+
+        # if PatientName
+        if "PatientName" in particular:
+            # 비식별화 Name 획득
+            temp = particular.split("&")[1:]
+            mask = ""
+            for n in temp:
+                mask += n
+
+            if last_page_num == 0:
+                for a in range(1, total+1):
+                    for b in range(1, page_len+1):
+                        if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(target_position)+"]").text != mask:
+                            testResult = 'failed'
+                            break
+                    if(testResult != '' or a == total):
+                        break
+                    element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                    driver.execute_script("arguments[0].click();", element)
+                    time.sleep(0.3)
+            else:
+                for a in range(1, total+1):
+                    if a == total:
+                        for b in range(1, last_page_num+1):
+                            if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(target_position)+"]").text != mask:
+                                testResult = 'failed'
+                                break
+                    if a == total:
+                        break
+                    for b in range(1, page_len+1):
+                        if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(target_position)+"]").text != mask:
+                            testResult = 'failed'
+                            break
+                    if(testResult != ''):
+                        break
+                    element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                    driver.execute_script("arguments[0].click();", element)
+                    time.sleep(0.3)
+            # Clear
+            driver.find_element(By.CSS_SELECTOR, "#clear_searchfilter > span").click()
+            return testResult
+
+        # not particular
+        if last_page_num == 0:
+            for a in range(1, total+1):
+                for b in range(1, page_len+1):
+                    if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(target_position)+"]").text != target:
+                        testResult = 'failed'
+                        break
+                if(testResult != '' or a == total):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+        else:
+            for a in range(1, total+1):
+                if a == total:
+                    for b in range(1, last_page_num+1):
+                        if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(target_position)+"]").text != target:
+                            testResult = 'failed'
+                            break
+                if a == total:
+                    break
+                for b in range(1, page_len+1):
+                    if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(target_position)+"]").text != target:
+                        testResult = 'failed'
+                        break
+                if(testResult != ''):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+        
+        # Clear
+        driver.find_element(By.CSS_SELECTOR, "#clear_searchfilter > span").click()
+        return testResult
+
+
+    # Department ~ Split Bar simple filter
+    def SearchFilter_Etc():
         # 정상적인 계정으로 로그인
         signInOut.normal_login()
         
@@ -2871,19 +3020,261 @@ class WORKLIST:
         if driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").value_of_css_property("transform") != "matrix(6.12323e-17, 1, -1, 6.12323e-17, 0, 0)":
             driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").click()
 
-        #
+        # data setting
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)['data']
+
+        ## Department
+        #testResult=""
+        #Result_msg = "failed at "
+        #particular = ""
+        #wk_index_num = WORKLIST.SearchFilter_Etc_setting("19","Department")
+        #choice = ""
+        #for n in data:
+        #    if n["Department"] != None:
+        #        choice = n["Department"]
+        #        break
+        #driver.find_element(By.CSS_SELECTOR, "#search-job-dept").send_keys(choice)
+        #if WORKLIST.SearchFilter_Etc_Search(wk_index_num, choice, particular) == 'failed':
+        #    testResult="failed"
+        #    Result_msg += "#1 "
+        ### SearchFilter_Department 결과 전송
+        ##if testResult == 'failed':
+        ##    testlink.reportTCResult(2605, testPlanID, buildName, 'f', Result_msg)            
+        ##else:
+        ##    testlink.reportTCResult(2605, testPlanID, buildName, 'p', "SearchFilter_Department Test Passed")
+
+        ## Modality ##
+        #testResult=""
+        #Result_msg = "failed at "
+        #particular = ""
+        #wk_index_num = WORKLIST.SearchFilter_Etc_setting("9","Mod") ##
+        #choice = ""
+        #for n in data:
+        #    if n["Modality"] != None: ##
+        #        choice = n["Modality"] ##
+        #        break
+        #driver.find_element(By.CSS_SELECTOR, "#search-job-modality").send_keys(choice)
+        #if WORKLIST.SearchFilter_Etc_Search(wk_index_num, choice, particular) == 'failed':
+        #    testResult="failed"
+        #    Result_msg += "#1 "
+        ### SearchFilter_Modality 결과 전송 ##
+        ##if testResult == 'failed':
+        ##    testlink.reportTCResult(2608, testPlanID, buildName, 'f', Result_msg)            
+        ##else:
+        ##    testlink.reportTCResult(2608, testPlanID, buildName, 'p', "SearchFilter_Modality Test Passed")
+
+        ## Bodypart ##
+        #testResult=""
+        #Result_msg = "failed at "
+        #particular = ""
+        #wk_index_num = WORKLIST.SearchFilter_Etc_setting("16","Bodypart") ##
+        #choice = ""
+        #for n in data:
+        #    if n["Bodypart"] != None: ##
+        #        choice = n["Bodypart"] ##
+        #        break
+        #driver.find_element(By.CSS_SELECTOR, "#search-job-bodypart").send_keys(choice) ##
+        #if WORKLIST.SearchFilter_Etc_Search(wk_index_num, choice, particular) == 'failed':
+        #    testResult="failed"
+        #    Result_msg += "#1 "
+        ### SearchFilter_Bodypart 결과 전송 ##
+        ##if testResult == 'failed':
+        ##    testlink.reportTCResult(2611, testPlanID, buildName, 'f', Result_msg)            
+        ##else:
+        ##    testlink.reportTCResult(2611, testPlanID, buildName, 'p', "SearchFilter_Bodypart Test Passed")
+
+        ## Gender ##
+        #testResult=""
+        #Result_msg = "failed at "
+        #particular = "Gender"
+        #wk_index_num = WORKLIST.SearchFilter_Etc_setting("17","Gender/Age") ##
+        #choice = "F"
+        #driver.find_element(By.CSS_SELECTOR, "#search_job_pat_gender_chosen > a > span").click()
+        #driver.find_element(By.CSS_SELECTOR, "#search_job_pat_gender_chosen > div > ul > li:nth-child(2)").click()
+        #if WORKLIST.SearchFilter_Etc_Search(wk_index_num, choice, particular) == 'failed':
+        #    testResult="failed"
+        #    Result_msg += "#1 "
+        ### SearchFilter_Gender 결과 전송 ##
+        ##if testResult == 'failed':
+        ##    testlink.reportTCResult(2614, testPlanID, buildName, 'f', Result_msg)            
+        ##else:
+        ##    testlink.reportTCResult(2614, testPlanID, buildName, 'p', "SearchFilter_Gender Test Passed")
+
+        ## PatientID ##
+        #testResult=""
+        #Result_msg = "failed at "
+        #particular = ""
+        #wk_index_num = WORKLIST.SearchFilter_Etc_setting("8","P.ID") ##
+        #choice = ""
+        #for n in data:
+        #    if n["PatientID"] != None: ##
+        #        choice = n["PatientID"] ##
+        #        break
+        #driver.find_element(By.CSS_SELECTOR, "#search-job-pat-id").send_keys(choice) ##
+        #if WORKLIST.SearchFilter_Etc_Search(wk_index_num, choice, particular) == 'failed':
+        #    testResult="failed"
+        #    Result_msg += "#1 "
+        ### SearchFilter_PatientID 결과 전송 ##
+        ##if testResult == 'failed':
+        ##    testlink.reportTCResult(2624, testPlanID, buildName, 'f', Result_msg)            
+        ##else:
+        ##    testlink.reportTCResult(2624, testPlanID, buildName, 'p', "SearchFilter_PatientID Test Passed")
+
+        ## PatientName ##
+        #testResult=""
+        #Result_msg = "failed at "
+        #particular = "PatientName&"
+        #wk_index_num = WORKLIST.SearchFilter_Etc_setting("7","P.Name") ##
+        #choice = ""
+        #for n in data:
+        #    if n["PatientName"] != None: ##
+        #        choice = n["PatientName"] ##
+        #        particular += n["PatientNameMask"]
+        #        break
+        #driver.find_element(By.CSS_SELECTOR, "#search-job-pat-name").send_keys(choice) ##
+        #if WORKLIST.SearchFilter_Etc_Search(wk_index_num, choice, particular) == 'failed':
+        #    testResult="failed"
+        #    Result_msg += "#1 "
+        ### SearchFilter_PatientName 결과 전송 ##
+        ##if testResult == 'failed':
+        ##    testlink.reportTCResult(2627, testPlanID, buildName, 'f', Result_msg)            
+        ##else:
+        ##    testlink.reportTCResult(2627, testPlanID, buildName, 'p', "SearchFilter_PatientName Test Passed")
+
+        ## PatientAge ##
+        #testResult=""
+        #Result_msg = "failed at "
+        #particular = ""
+        #wk_index_num = WORKLIST.SearchFilter_Etc_setting("17","Gender/Age") ##
+        #choice = ""
+        #for n in data:
+        #    if n["PatientSexAndAge"] != None: ##
+        #        temp =  (n["PatientSexAndAge"]).split("/")[1]
+        #        if temp != "":
+        #            choice = n["PatientSexAndAge"]
+        #            break
+        #driver.find_element(By.CSS_SELECTOR, "#search-job-pat-age").send_keys(choice.split("/")[1]) ##
+        #if WORKLIST.SearchFilter_Etc_Search(wk_index_num, choice, particular) == 'failed':
+        #    testResult="failed"
+        #    Result_msg += "#1 "
+        ### SearchFilter_PatientAge 결과 전송 ##
+        ##if testResult == 'failed':
+        ##    testlink.reportTCResult(2630, testPlanID, buildName, 'f', Result_msg)            
+        ##else:
+        ##    testlink.reportTCResult(2630, testPlanID, buildName, 'p', "SearchFilter_PatientAge Test Passed")
+
+        ## ImageCount ##
+        #testResult=""
+        #Result_msg = "failed at "
+        #particular = ""
+        #wk_index_num = WORKLIST.SearchFilter_Etc_setting("12","I.CNT") ##
+        #choice = ""
+        #for n in data:
+        #    if n["ImageCount"] != None: ##
+        #        choice = str(n["ImageCount"]) ##
+        #        break
+        #driver.find_element(By.CSS_SELECTOR, "#search-job-image-cnt").send_keys(choice) ##
+        #if WORKLIST.SearchFilter_Etc_Search(wk_index_num, choice, particular) == 'failed':
+        #    testResult="failed"
+        #    Result_msg += "#1 "
+        ### SearchFilter_ImageCount 결과 전송 ##
+        ##if testResult == 'failed':
+        ##    testlink.reportTCResult(2633, testPlanID, buildName, 'f', Result_msg)            
+        ##else:
+        ##    testlink.reportTCResult(2633, testPlanID, buildName, 'p', "SearchFilter_ImageCount Test Passed")
+
+        ## StudyDesc ##
+        #testResult=""
+        #Result_msg = "failed at "
+        #particular = ""
+        #wk_index_num = WORKLIST.SearchFilter_Etc_setting("20","Study Desc") ##
+        #choice = ""
+        #for n in data:
+        #    if n["StudyDesc"] != None: ##
+        #        choice = n["StudyDesc"] ##
+        #        break
+        #driver.find_element(By.CSS_SELECTOR, "#search-job-study-desc").send_keys(choice) ##
+        #if WORKLIST.SearchFilter_Etc_Search(wk_index_num, choice, particular) == 'failed':
+        #    testResult="failed"
+        #    Result_msg += "#1 "
+        ### SearchFilter_StudyDesc 결과 전송 ##
+        ##if testResult == 'failed':
+        ##    testlink.reportTCResult(2624, testPlanID, buildName, 'f', Result_msg)            
+        ##else:
+        ##    testlink.reportTCResult(2624, testPlanID, buildName, 'p', "SearchFilter_StudyDesc Test Passed")
+
+        # NotRefered R인 경우 확인 필요##
+        testResult=""
+        Result_msg = "failed at "
+        wk_index_num = WORKLIST.SearchFilter_Etc_setting("2","R") ##
+        element = driver.find_element(By.CSS_SELECTOR, "#hospital_list > button:nth-child(1)")
+        driver.execute_script("arguments[0].click();", element)
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr[1]/td[4]/span/label")))
+
+        del driver.requests
+        # not refer click
+        driver.find_element(By.CSS_SELECTOR, "#search_box_body > div:nth-child(1) > div.col-lg-1.col-md-1.col-sm-12.m-t-10.refer-search-condition.woklist-searchfilter > label").click()
+        time.sleep(3)
+
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        page_len = int(data['Length'])
+        # total page
+        total = math.ceil(int(data['recordsFiltered']) / page_len)
+        # remain
+        last_page_num = int(data['recordsFiltered']) % page_len
+        if last_page_num == 0:
+            for a in range(1, total+1):
+                for b in range(1, page_len+1):
+                    if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(wk_index_num)+"]/span/label").text != "":
+                        testResult = 'failed'
+                        break
+                if(testResult != '' or a == total):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+        else:
+            for a in range(1, total+1):
+                if a == total:
+                    for b in range(1, last_page_num+1):
+                        if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(wk_index_num)+"]/span/label").text != "":
+                            testResult = 'failed'
+                            break
+                if a == total:
+                    break
+                for b in range(1, page_len+1):
+                    if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b)+"]/td["+str(wk_index_num)+"]/span/label").text != "":
+                        testResult = 'failed'
+                        break
+                if(testResult != ''):
+                    break
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+        
+        # Clear
+        driver.find_element(By.CSS_SELECTOR, "#clear_searchfilter > span").click()
+        # refresh
+        driver.find_element(By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title").click()
+
+        ## SearchFilter_NotRefered 결과 전송 ##
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2639, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2639, testPlanID, buildName, 'p', "SearchFilter_NotRefered Test Passed")
+        
+
 
         print(Result_msg)
-        ## SearchFilter_Department 결과 전송
-        #if testResult == 'failed':
-        #    testlink.reportTCResult(2605, testPlanID, buildName, 'f', Result_msg)            
-        #else:
-        #    testlink.reportTCResult(2605, testPlanID, buildName, 'p', "SearchFilter_Department Test Passed")
 
        
 
 
-WORKLIST.SearchFilter_Department()
+WORKLIST.SearchFilter_Etc()
 
 def test():
     print("test")
@@ -2896,11 +3287,10 @@ def test():
     except:
         pass
 
-    yesterday = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
-    weekday = (datetime.today() - timedelta(weeks=1)).strftime('%Y-%m-%d')
-    print(weekday)
-    print((datetime.today() - timedelta(weeks=2)).strftime('%Y-%m-%d'))
-    print((datetime.today() - timedelta(weeks=3)).strftime('%Y-%m-%d'))
+    tr = "O/"
+    temp = tr.split("/")[1]
+    print(type(temp))
+    print(temp)
     
 
         
