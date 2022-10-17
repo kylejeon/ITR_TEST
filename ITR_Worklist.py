@@ -3628,22 +3628,66 @@ class WORKLIST:
                 testResult="failed"
                 Result_msg += "#13 "
 
-            # - #11
+            # - #11 
+            repeat = 4
+            while(1):
+                request = driver.wait_for_request('.*/GetSearchWizard')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)
+
+                for n in range(2, (len(data)+2)):
+                    target = driver.find_element(By.CSS_SELECTOR, "#settings > div > div:nth-child(1) > ul > li:nth-child("+str(n)+") > div > span").text
+                    if  target == "asdfxcdf1_add" or target == "asdfxcdf1_edit" or target ==  "asdfxcdf2":
+                        del driver.requests
+                        repeat -= 1
+                        driver.find_element(By.CSS_SELECTOR, "#settings > div > div:nth-child(1) > ul > li:nth-child("+str(n)+") > span > button > i").click()
+                        time.sleep(0.1)
+                        break
+
+                if repeat == 0:
+                    break
+
+            request = driver.wait_for_request('.*/GetSearchWizard')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            for n in range(2, len(data)+2):
+                    if driver.find_element(By.CSS_SELECTOR, "#settings > div > div:nth-child(1) > ul > li:nth-child("+str(n)+") > div > span").text == ("asdfxcdf1_add" or "asdfxcdf1_edit" or "asdfxcdf2"):
+                        testResult="failed"
+                        Result_msg += "#14 "
+                        break
+
+        ## SearchFilter_Shortcut결과 전송 ##
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2642, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2642, testPlanID, buildName, 'p', SearchFilter_Shortcut Test Passed")
+
+    def Columns():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
 
         print(Result_msg)
-
-        ## SearchFilter_ScheduleDate결과 전송 ##
+        ## Columns결과 전송 ##
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2649, testPlanID, buildName, 'f', Result_msg)            
+        #    testlink.reportTCResult(2642, testPlanID, buildName, 'f', Result_msg)            
         #else:
-        #    testlink.reportTCResult(2649, testPlanID, buildName, 'p', SearchFilter_ScheduleDate Test Passed")
+        #    testlink.reportTCResult(2642, testPlanID, buildName, 'p', Columns Test Passed")
 
 
 
        
 
 
-WORKLIST.SearchFilter_Shortcut()
+WORKLIST.Columns()
 
 def test():
     print("test")
