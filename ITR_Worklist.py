@@ -2872,7 +2872,7 @@ class WORKLIST:
         WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
         # check target
         if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+target_num).is_selected() == False:
-            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label").click()
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child("+target_num+") > label").click()
         # showing wk column num
         show_list_num = 1
         for n in range (1,33):
@@ -3675,14 +3675,134 @@ class WORKLIST:
         except:
             pass
 
-        print(Result_msg)
+        # option #1 
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+        try:
+            assert(driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-header.modal-col-green > h4").text == "Column Show/Hide")
+        except:
+            testResult="failed"
+            Result_msg += "#1 "
+
+        # check/uncheck apply, cancel #2 & 3
+        # 2 - on 
+        orgin = False
+        found = False
+        if driver.find_element(By.CSS_SELECTOR, "#chk-column-32").is_selected() == False:
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
+        else:
+            orgin = True
+        # showing wk column num
+        show_list_num = 1
+        for n in range (1,33):
+            if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
+                show_list_num += 1
+        # apply
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
+        time.sleep(0.5)
+        # find
+        for n in range (2,show_list_num+1):
+            if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th["+str(n)+"]").text == "Emer Modifier":
+                found = True
+                break
+        if found == False:
+            testResult="failed"
+            Result_msg += "#2 "
+        # 3 - off cancel
+        found = False
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
+        # cancel
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-close").click()
+        time.sleep(0.5)
+        # find
+        for n in range (2,show_list_num+1):
+            if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th["+str(n)+"]").text == "Emer Modifier":
+                found = True
+                break
+        if found == False:
+            testResult="failed"
+            Result_msg += "#3 "
+        # 2 - off
+        found = False
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
+        # showing wk column num
+        show_list_num = 1
+        for n in range (1,33):
+            if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
+                show_list_num += 1
+        # apply
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
+        time.sleep(0.5)
+        # find
+        for n in range (2,show_list_num+1):
+            if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th["+str(n)+"]").text == "Emer Modifier":
+                found = True
+                break
+        if found == True:
+            testResult="failed"
+            Result_msg += "#2 "
+
+        if orgin == True:
+            driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
+            driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
+
+        # Reset #4
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-reset").click()
+        time.sleep(0.1)
+        #E, R, Job Report, Job Status, Patient Name, Upload Date, Modality, Patient ID, Patient Loc
+        origin = ["E", "R", "Job Report", "Job Status", "Patient Name", "Upload Date", "Modality", "Patient ID", "Patient Loc"]
+        confirm_origin = []
+        for n in range (1,33):
+            if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
+                # n = 3 > check box ?
+                if(n!=3):
+                    confirm_origin.append(driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child("+str(n)+") > label").get_property("textContent"))
+        origin.sort()
+        confirm_origin.sort()
+
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-close").click()
+        try:
+            assert(origin == confirm_origin)
+        except:
+            testResult="failed"
+            Result_msg += "#4 "
+
+        # AI information #5 & 6 > Setting - User Profile에서 수행, 중복
+
         ## Columns결과 전송 ##
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2642, testPlanID, buildName, 'f', Result_msg)            
+        #    testlink.reportTCResult(2528, testPlanID, buildName, 'f', Result_msg)            
         #else:
-        #    testlink.reportTCResult(2642, testPlanID, buildName, 'p', Columns Test Passed")
+        #    testlink.reportTCResult(2528, testPlanID, buildName, 'p', Columns Test Passed")
 
+    def Sortby():
+        testResult=""
+        Result_msg = "failed at "
 
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        print(Result_msg)
+
+        ## Sortby결과 전송 ##
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2542, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2542, testPlanID, buildName, 'p', Sortby Test Passed")
 
        
 
