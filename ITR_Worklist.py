@@ -3775,7 +3775,79 @@ class WORKLIST:
             testResult="failed"
             Result_msg += "#4 "
 
-        # AI information #5 & 6 > Setting - User Profile에서 수행, 중복
+        # AI information on, off #5 & 6
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+        #value_of_css_property("background-color")
+        # off - rgba(129, 129, 129, 1)
+        # on - rgba(255, 87, 34, 0.5)
+        # 5 - on
+        ai_origin = True
+        # if off > on
+        if driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").value_of_css_property("background-color") == "rgba(129, 129, 129, 1)":
+            ai_origin = False
+            element = driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")
+            driver.execute_script("arguments[0].click();", element)
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(0.1)
+        # home
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[1]/a").click()
+        driver.implicitly_wait(5)
+        # option
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+        try:
+            assert(driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div:nth-child(1)").text == "AI Information")
+        except:
+            testResult="failed"
+            Result_msg += "#5 "
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-close").click()
+        time.sleep(0.1)
+
+        # 6 - off
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+        # off 
+        element = driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")
+        driver.execute_script("arguments[0].click();", element)
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.1)
+        # home
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[1]/a").click()
+        driver.implicitly_wait(5)
+        # option
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+        try:
+            assert(driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div:nth-child(1)").text == "")
+        except:
+            testResult="failed"
+            Result_msg += "#6 "
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-close").click()
+        time.sleep(0.1)
+
+        if ai_origin == True:
+            # Setting + User profile + waiting접속
+            TOPMENU.Profile_Worklist_inUserProfile()
+            element = driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")
+            driver.execute_script("arguments[0].click();", element)
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(0.1)
+            # home
+            driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[1]/a").click()
+            driver.implicitly_wait(5)
 
         ## Columns결과 전송 ##
         #if testResult == 'failed':
@@ -3796,7 +3868,141 @@ class WORKLIST:
         except:
             pass
 
-        print(Result_msg)
+        # Setting + User profile + waiting접속
+        TOPMENU.Profile_Worklist_inUserProfile()
+
+        # off - rgba(129, 129, 129, 1)
+        # on - rgba(255, 87, 34, 0.5)
+        ai_origin = True
+        # if off > on
+        if driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span").value_of_css_property("background-color") == "rgba(129, 129, 129, 1)":
+            ai_origin = False
+            element = driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")
+            driver.execute_script("arguments[0].click();", element)
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(0.5)
+        # home
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[1]/a").click()
+        driver.implicitly_wait(5)
+        # option
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+        # origin filter check and set off
+        origin_filter = []
+        for n in range (1,26):
+            if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
+                if n!=3:
+                    origin_filter.append(n)
+                    driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child("+str(n)+") > label").click()
+        for n in range (26,32):
+            if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
+                origin_filter.append(n)
+                driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child("+str(n-25)+") > label").click()
+        if driver.find_element(By.CSS_SELECTOR, "#chk-column-32").is_selected() == True:
+            origin_filter.append(32)
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
+        
+        # set filter
+        # E(Job Priority) 1
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(1) > label").click()
+        # Upload Date 6
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(6) > label").click()
+        # Patient Name 7 
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(7) > label").click()
+        # Patient ID 8
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(8) > label").click()
+        # Modality 9
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(9) > label").click()
+        # Study Date 14
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(14) > label").click()
+        # Job Date 15
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(15) > label").click()
+        # Bodypart 16
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(16) > label").click()
+        # Department 19
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(19) > label").click()
+        # Study Desc 20
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(20) > label").click()
+        # Schedule Date 21
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(21) > label").click()
+        # AI Vendor 1 
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child(1) > label").click()
+        # AI Complex Score 2
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child(2) > label").click()
+        # AI Disease Name 3
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child(3) > label").click()
+        # AI Finding Cnt 4
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child(4) > label").click()
+        # AI Probability 5
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child(5) > label").click()
+        # AI Service 6
+        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child(6) > label").click()
+        # apply
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply#setting-columns-apply").click()
+        time.sleep(0.5)
+
+        for n in range (2, 19):
+            element = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th["+str(n)+"]")
+            driver.execute_script("arguments[0].click();", element)
+            time.sleep(0.75)
+            try:
+                assert(element.get_property("ariaSort")!=None)
+            except:
+                testResult = "failed"
+                Result_msg += "#1 "
+                break
+
+        if driver.execute_script("return window.getComputedStyle(document.querySelector('.table.dataTable thead .sorting_asc'),':after').getPropertyValue('color')") != "rgb(173, 255, 47)":
+            testResult = "failed"
+            Result_msg += "#1 "
+
+        if ai_origin == False:
+            # Setting + User profile + waiting접속
+            TOPMENU.Profile_Worklist_inUserProfile()
+            element = driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")
+            driver.execute_script("arguments[0].click();", element)
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(0.5)
+
+        # home
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[1]/a").click()
+        driver.implicitly_wait(5)
+        # option
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+        for n in range (1,26):
+            if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
+                if n!=3:
+                    driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child("+str(n)+") > label").click()
+        if ai_origin==True:
+            for n in range (26,32):
+                if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
+                    driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child("+str(n-25)+") > label").click()
+        if driver.find_element(By.CSS_SELECTOR, "#chk-column-32").is_selected() == True:
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
+        
+        for n in range(1, 26):
+            if n == origin_filter[0]:
+                origin_filter.pop(0)
+                driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child("+str(n)+") > label").click()
+        if ai_origin==True:
+            for n in range (26,32):
+                if n == origin_filter[0]:
+                    origin_filter.pop(0)
+                    driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child("+str(n-25)+") > label").click()
+        if origin_filter[0] == 32:
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
+        # apply
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply#setting-columns-apply").click()
+        time.sleep(0.5)
 
         ## Sortby결과 전송 ##
         #if testResult == 'failed':
@@ -3804,10 +4010,29 @@ class WORKLIST:
         #else:
         #    testlink.reportTCResult(2542, testPlanID, buildName, 'p', Sortby Test Passed")
 
-       
+    def Work_list():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        print(Result_msg)
+
+        ## Work_list결과 전송 ##
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2528, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2528, testPlanID, buildName, 'p', Work_list Test Passed")
 
 
-WORKLIST.Columns()
+WORKLIST.Work_list()
 
 def test():
     print("test")
@@ -3820,11 +4045,17 @@ def test():
     except:
         pass
 
-    tr = "O/"
-    temp = tr.split("/")[1]
-    print(type(temp))
-    print(temp)
-    
-
-        
+    print(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[2]").value_of_css_property("ariaSort"))
+    element = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[3]")
+    driver.execute_script("arguments[0].click();", element)
+    time.sleep(3)
+    print(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[2]").value_of_css_property("ariaSort"))
+    element = driver.find_element(By.XPATH,"/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[2]")
+    driver.execute_script("arguments[0].click();", element)
+    time.sleep(1)
+    print(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[2]").value_of_css_property("ariaSort"))
+    print(driver.execute_script("return window.getComputedStyle(document.querySelector('.table.dataTable thead .sorting_asc'),':after').getPropertyValue('color')"))
+    #.table.dataTable thead .sorting_asc:after
+    #.table.dataTable thead .sorting_asc:after
+    #rgb(173, 255, 47)
 #test()
