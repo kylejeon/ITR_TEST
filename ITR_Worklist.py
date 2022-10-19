@@ -2880,7 +2880,7 @@ class WORKLIST:
                 show_list_num += 1
         driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
         time.sleep(0.5)
-        # find job status position
+        # find position
         for n in range (2,show_list_num+1):
             if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th["+str(n)+"]").text == target:
                 target_position = n
@@ -3854,20 +3854,7 @@ class WORKLIST:
         #    testlink.reportTCResult(2528, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2528, testPlanID, buildName, 'p', Columns Test Passed")
-
-    def Sortby():
-        testResult=""
-        Result_msg = "failed at "
-
-        # 정상적인 계정으로 로그인
-        signInOut.normal_login()
-        
-        # waiting loading
-        try:
-            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
-        except:
-            pass
-
+    def option_alloff_before():
         # Setting + User profile + waiting접속
         TOPMENU.Profile_Worklist_inUserProfile()
 
@@ -3891,6 +3878,7 @@ class WORKLIST:
         # option
         driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
         WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+
         # origin filter check and set off
         origin_filter = []
         for n in range (1,26):
@@ -3905,6 +3893,79 @@ class WORKLIST:
         if driver.find_element(By.CSS_SELECTOR, "#chk-column-32").is_selected() == True:
             origin_filter.append(32)
             driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
+
+        context = [ai_origin, origin_filter]
+        return context
+
+    def option_alloff_after(ai_origin, origin_filter):
+        if ai_origin == False:
+            # Setting + User profile + waiting접속
+            TOPMENU.Profile_Worklist_inUserProfile()
+            element = driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")
+            driver.execute_script("arguments[0].click();", element)
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(0.5)
+
+        # home
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[1]/a").click()
+        driver.implicitly_wait(5)
+        # option
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
+        for n in range (1,26):
+            if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
+                if n!=3:
+                    element = driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child("+str(n)+") > label")
+                    driver.execute_script("arguments[0].click();", element)
+        if ai_origin==True:
+            for n in range (26,32):
+                if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
+                    driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child("+str(n-25)+") > label").click()
+        if driver.find_element(By.CSS_SELECTOR, "#chk-column-32").is_selected() == True:
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
+        
+        for n in range(1, 26):
+            if origin_filter:
+                if n == origin_filter[0]:
+                    origin_filter.pop(0)
+                    driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child("+str(n)+") > label").click()
+            else:
+                break
+        if ai_origin==True:
+            for n in range (26,32):
+                if origin_filter:
+                    if n == origin_filter[0]:
+                        origin_filter.pop(0)
+                        driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child("+str(n-25)+") > label").click()
+                else:
+                    break
+        if origin_filter:
+            if origin_filter[0] == 32:
+                driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
+        # apply
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply#setting-columns-apply").click()
+        time.sleep(0.5)
+
+    def Sortby():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        context = WORKLIST.option_alloff_before()
+        ai_origin = context[0]
+        origin_filter = context[1]
         
         # set filter
         # E(Job Priority) 1
@@ -3960,55 +4021,19 @@ class WORKLIST:
             testResult = "failed"
             Result_msg += "#1 "
 
-        if ai_origin == False:
-            # Setting + User profile + waiting접속
-            TOPMENU.Profile_Worklist_inUserProfile()
-            element = driver.find_element(By.CSS_SELECTOR, "#ai_setting_section > div > div > div > div > div.col-lg-7.col-md-7.col-sm-7 > div > div > label > span")
-            driver.execute_script("arguments[0].click();", element)
-            # save
-            driver.find_element(By.CSS_SELECTOR, "#setting_confirm_btn").click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
-            # ok
-            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-            time.sleep(0.5)
-
-        # home
-        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[1]/a").click()
-        driver.implicitly_wait(5)
-        # option
-        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
-        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(4) > label")))
-        for n in range (1,26):
-            if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
-                if n!=3:
-                    driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child("+str(n)+") > label").click()
-        if ai_origin==True:
-            for n in range (26,32):
-                if driver.find_element(By.CSS_SELECTOR, "#chk-column-"+str(n)).is_selected() == True:
-                    driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child("+str(n-25)+") > label").click()
-        if driver.find_element(By.CSS_SELECTOR, "#chk-column-32").is_selected() == True:
-            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
-        
-        for n in range(1, 26):
-            if n == origin_filter[0]:
-                origin_filter.pop(0)
-                driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child("+str(n)+") > label").click()
-        if ai_origin==True:
-            for n in range (26,32):
-                if n == origin_filter[0]:
-                    origin_filter.pop(0)
-                    driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child("+str(n-25)+") > label").click()
-        if origin_filter[0] == 32:
-            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
-        # apply
-        driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply#setting-columns-apply").click()
-        time.sleep(0.5)
+        WORKLIST.option_alloff_after(ai_origin, origin_filter)
 
         ## Sortby결과 전송 ##
         #if testResult == 'failed':
         #    testlink.reportTCResult(2542, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2542, testPlanID, buildName, 'p', Sortby Test Passed")
+
+    def option_findposition(target):
+        for n in range (2,33):
+            if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th["+str(n)+"]").text == target:
+                return n
+        return 0
 
     def Work_list():
         testResult=""
@@ -4023,16 +4048,282 @@ class WORKLIST:
         except:
             pass
 
-        print(Result_msg)
+        # column drop #1
+        source = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[3]")
+        source_context = source.get_property("textContent")
+        target = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[1]")
+        webdriver.ActionChains(driver).drag_and_drop(source ,target).perform()
+        time.sleep(3)
+        after_context = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[2]").get_property("textContent")
+        try:
+            assert(source_context == after_context)
+        except:
+            testResult="failed"
+            Result_msg += "#1 "
+
+        ## right click #2 보류
+        #source = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[2]")
+        #move_p = (float(source.value_of_css_property("width").split("px")[0])/2)
+        #webdriver.ActionChains(driver).move_to_element(source).perform()
+        #webdriver.ActionChains(driver).move_by_offset(move_p, 0).perform()
+        #webdriver.ActionChains(driver).context_click(None).perform()
+        #time.sleep(3)
+        #after = source.value_of_css_property("width")
+
+        # check #3 ~ 끝까지
+        context = WORKLIST.option_alloff_before()
+        ai_origin=context[0]
+        origin_filter=context[1]
+
+        del driver.requests
+
+        # all on
+        for n in range (1,26):
+            if n!=3 and n!=5:
+                element = driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child("+str(n)+") > label")
+                driver.execute_script("arguments[0].click();", element)
+        for n in range (26,32):
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div.row.aiainfo_field_box > div.setting-column > ul > li:nth-child("+str(n-25)+") > label").click()
+        #driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(26) > label").click()
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
+        time.sleep(0.75)
+
+        # find position
+        position = []
+        position.append(WORKLIST.option_findposition("E"))
+        position.append(WORKLIST.option_findposition("R"))
+        position.append(WORKLIST.option_findposition("Job Status"))
+        position.append(WORKLIST.option_findposition("P.Name"))
+        position.append(WORKLIST.option_findposition("P.ID"))
+        position.append(WORKLIST.option_findposition("Mod"))
+        position.append(WORKLIST.option_findposition("Upload Date"))
+        position.append(WORKLIST.option_findposition("Loc"))
+        position.append(WORKLIST.option_findposition("Reference Files"))
+        position.append(WORKLIST.option_findposition("Gender/Age"))
+        position.append(WORKLIST.option_findposition("Department"))
+        position.append(WORKLIST.option_findposition("Schedule"))
+        position.append(WORKLIST.option_findposition("OCS"))
+        position.append(WORKLIST.option_findposition("Request Name"))
+        position.append(WORKLIST.option_findposition("I.CNT"))
+        position.append(WORKLIST.option_findposition("Hospital"))
+        position.append(WORKLIST.option_findposition("Study Date"))
+        position.append(WORKLIST.option_findposition("D-Time"))
+        position.append(WORKLIST.option_findposition("Bodypart"))
+        position.append(WORKLIST.option_findposition("Job Date"))
+        position.append(WORKLIST.option_findposition("Request Code"))
+        position.append(WORKLIST.option_findposition("Study Desc"))
+        position.append(WORKLIST.option_findposition("AI Vendor"))
+        position.append(WORKLIST.option_findposition("AI Complex Score"))
+        position.append(WORKLIST.option_findposition("AI DiseaseNM"))
+        position.append(WORKLIST.option_findposition("AI FindingCnt"))
+        position.append(WORKLIST.option_findposition("AI Probability"))
+        position.append(WORKLIST.option_findposition("AI Service"))
+
+        # ReferenceFileCount / OCSReport OCSReportFilePath
+        wk_list = ["EmergencyDateString", "ReferDisplay", "JobStatus", "PatientNameMask", "PatientID", "Modality", "UploadedDTTMString", "PatientLocation", 
+                   "ReferenceFileCount", "PatientSexAndAge", "Department", "ScheduledDate", "OCSReport", "RequestName", "ImageCount", "Hospital", 
+                   "StudyDateDTTMString", "DTime", "Bodypart", "JobDateDTTMString", "RequestCode", "StudyDesc", "AIInfoVendor", 
+                   "AIInfoComplexScore", "AIInfoDiseaseNm", "AIInfoFindingCnt", "AIInfoProbability", "AIInfoService"]
+
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        #page_len = int(json.loads(body)['Length'])
+        # total page
+        #total = math.ceil(int(json.loads(body)['recordsFiltered']) / page_len)
+        
+        #for a in range(0, total):
+        for b in range(0, len(data)):
+                for c in range(0, 28):
+                    #0, 1, 2, 11
+                    # Emergencey      JobPriority > E or N  / EmergencyDateString Data or ""  
+                    if c == 0:
+                        if data[b]["JobPriority"] == "E":
+                            try:
+                                assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]/i").text == "priority_high")
+                            except:
+                                testResult="failed"
+                                Result_msg += "#3 "
+                        if data[b][wk_list[c]] != "":
+                            try:
+                                assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]/div").text == data[b][wk_list[c]])
+                            except:
+                                testResult="failed"
+                                Result_msg += "#3 "
+                    # Refer     ReferDisplay
+                    elif c == 1:
+                        try:
+                            assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]/span/label").text == data[b][wk_list[c]])
+                        except:
+                            testResult = "failed"
+                            Result_msg += "#4 #5 "
+                    # JobStatus     JobStatus
+                    elif c == 2:
+                        try:
+                            assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]/span/label").text == data[b][wk_list[c]])
+                        except:
+                            testResult = "failed"
+                            Result_msg += "#6 "
+                    # ReferenceFile     ReferenceFileCount
+                    elif c == 8:
+                        pass
+                    #elif c == 8:
+                    #    if data[b][wk_list[c]] != 0:
+                    #        try:
+                    #            assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]/span").text == "description")
+                    #        except:
+                    #            testResult = "failed"
+                    #            Result_msg += "#12 "
+                    # Schedule      ScheduledDate
+                    elif c == 11:
+                        try:
+                            assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]/span").text == data[b][wk_list[c]])
+                        except:
+                            testResult = "failed"
+                            Result_msg += "#15 "
+                    # OCS       OCSReport
+                    elif c == 12:
+                        if data[b][wk_list[c]] == "T":
+                            try:
+                                driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]/div/i").click()
+                                time.sleep(1)
+                                driver.switch_to.window(driver.window_handles[1])
+                                if (driver.find_element(By.CSS_SELECTOR, "#ocs-report-view-institution-name").text != data[b]["Hospital"] and
+                                    data[b]["PatientName"] not in driver.find_element(By.CSS_SELECTOR, "#ocs-report-view-patient-name-gender-age").text and 
+                                    data[b]["PatientSexAndAge"] not in driver.find_element(By.CSS_SELECTOR, "#ocs-report-view-patient-name-gender-age").text):
+                                    testResult = "failed"
+                                    Result_msg += "#16 "
+                                driver.close()
+                                driver.switch_to.window(driver.window_handles[0])
+                                assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]/div/i").text == "receipt")
+                            except:
+                                testResult = "failed"
+                                Result_msg += "#16 "
+                    # AIInfoProbability
+                    elif c == 26:
+                        try:
+                            assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]").text == str(data[b][wk_list[c]])+"%" or
+                                   (driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]").text == "" and data[b][wk_list[c]] == 0.0))
+                        except:
+                            testResult = "failed"
+                            Result_msg += "#30 "
+                    else:
+                        if c==6:
+                            try:
+                                assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]").text == str((data[b][wk_list[c]])[:-1]) or
+                                    (driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]").text == "" and data[b][wk_list[c]] == None) or
+                                    (driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]").text == "" and data[b][wk_list[c]] == 0))
+                            except:
+                                testResult = "failed"
+                                Result_msg += ("#"+str(c+4)+" ")
+                        else:
+                            try:
+                                assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]").text == str(data[b][wk_list[c]]) or
+                                    (driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]").text == "" and data[b][wk_list[c]] == None) or
+                                    (driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[c])+"]").text == "" and data[b][wk_list[c]] == 0))
+                            except:
+                                testResult = "failed"
+                                Result_msg += ("#"+str(c+4)+" ")
+            ##next page
+            #if a+1 != total:
+            #    del driver.requests
+
+            #    element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+            #    driver.execute_script("arguments[0].click();", element)
+            #    time.sleep(0.3)
+
+            #    request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+            #    body = request.response.body.decode('utf-8')
+            #    data = json.loads(body)["data"]
+
+        # Reference Files #12 c=8
+        del driver.requests
+        driver.find_element(By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title").click()
+        driver.implicitly_wait(5)
+        request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        page_len = int(json.loads(body)['Length'])
+        # total page
+        total = math.ceil(int(json.loads(body)['recordsFiltered']) / page_len)
+        ref_max = 0
+        for a in range(0, total):
+            for b in range(0, len(data)):
+                if data[b][wk_list[8]] != 0:
+                    ref_max += 1
+                    del driver.requests
+                    driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position[8])+"]/span").click()
+
+                    if data[b][wk_list[8]] == 1:
+                        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#reference-files-close")))
+                        request = driver.wait_for_request('.*/GetReferenceFileList.*')
+                        body = request.response.body.decode('utf-8')
+                        data = json.loads(body)["data"]
+                        try:
+                            assert(driver.find_element(By.CSS_SELECTOR, "#reference-file-path-list > tbody > tr > td.reference-files-iframe.reference-file.align-center").text == data[0]["ReferenceFileName"])
+                        except:
+                            testResult = "failed"
+                            Result_msg += "#12 "
+                    else:
+                        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#reference-file-View-close")))
+                        driver.find_element(By.CSS_SELECTOR, "#reference-file-View-close").click()
+                        WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#reference-files-close")))
+                        request = driver.wait_for_request('.*/GetReferenceFileList.*')
+                        body = request.response.body.decode('utf-8')
+                        data = json.loads(body)["data"]
+                        try:
+                            count = 0
+                            for n in data:
+                                count += 1
+                                assert(driver.find_element(By.CSS_SELECTOR, "#reference-file-path-list > tbody > tr:nth-child("+str(count)+") > td.reference-files-iframe.reference-file.align-center").text == n["ReferenceFileName"])
+                        except:
+                            testResult = "failed"
+                            Result_msg += "#12 "
+            #next page
+            if ref_max == 2:
+                break
+            if a+1 != total:
+                del driver.requests
+
+                element= driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+                driver.execute_script("arguments[0].click();", element)
+                time.sleep(0.3)
+
+                request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+        WORKLIST.option_alloff_after(ai_origin, origin_filter)
 
         ## Work_list결과 전송 ##
         #if testResult == 'failed':
-        #    testlink.reportTCResult(2528, testPlanID, buildName, 'f', Result_msg)            
+        #    testlink.reportTCResult(2545, testPlanID, buildName, 'f', Result_msg)            
         #else:
-        #    testlink.reportTCResult(2528, testPlanID, buildName, 'p', Work_list Test Passed")
+        #    testlink.reportTCResult(2545, testPlanID, buildName, 'p', Work_list Test Passed")
+
+    def JobReport():
+        testResult=""
+        Result_msg = "failed at "
+
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        
+        print(Result_msg)
+        ## JobReport결과 전송 ##
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2665, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2665, testPlanID, buildName, 'p', JobReport Test Passed")
 
 
-WORKLIST.Work_list()
+WORKLIST.JobReport()
 
 def test():
     print("test")
@@ -4045,17 +4336,13 @@ def test():
     except:
         pass
 
-    print(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[2]").value_of_css_property("ariaSort"))
-    element = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[3]")
-    driver.execute_script("arguments[0].click();", element)
-    time.sleep(3)
-    print(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[2]").value_of_css_property("ariaSort"))
-    element = driver.find_element(By.XPATH,"/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[2]")
-    driver.execute_script("arguments[0].click();", element)
-    time.sleep(1)
-    print(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[1]/div/table/thead/tr/th[2]").value_of_css_property("ariaSort"))
-    print(driver.execute_script("return window.getComputedStyle(document.querySelector('.table.dataTable thead .sorting_asc'),':after').getPropertyValue('color')"))
-    #.table.dataTable thead .sorting_asc:after
-    #.table.dataTable thead .sorting_asc:after
-    #rgb(173, 255, 47)
+    request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+    body = request.response.body.decode('utf-8')
+    data = json.loads(body)["data"]
+
+    for n in data:
+        print(n["JobPriority"])
+        print(n["EmergencyDateString"])
+    print(type(data[3]["EmergencyDateString"]))
+
 #test()
