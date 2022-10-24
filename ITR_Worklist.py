@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 
 #from testlink import TestlinkAPIClient, TestLinkHelper
-from ast import Try
-from calendar import month
-from doctest import TestResults
-from mailbox import Babyl
-from pickle import NONE
-from tkinter import FALSE
-from unittest import TestResult, TextTestResult
 from bs4 import BeautifulSoup
 from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
@@ -16,11 +9,10 @@ from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-#import ITR_Admin_Common
 from selenium.webdriver.common.keys import Keys
 import json, math, time
+
 from datetime import datetime, timedelta
-#pip install python-dateutil
 from dateutil.relativedelta import relativedelta
 ## User: kyle
 #URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'
@@ -67,7 +59,12 @@ html = driver.page_source
 # TestPlanID = AutoTest 버전 테스트
 testPlanID = 2996
 buildName = 1
- 
+
+#Report 용 / Test Hospital 변경 시, 코드 변경 필요 
+testHospital = "INFINITT"
+specific_id = "PI20200205002" #2개
+#specific_id = "1618527" #1개
+
 class signInOut:
     def admin_sign_in(id, password):
         driver.find_element(By.ID, 'user-id').clear()
@@ -94,7 +91,7 @@ class windowSize:
     driver.set_window_size(1920, 1080)
 
 class Login:
-    def sign_InOut():
+    def Log_InOut():
         testResult=""
         Result_msg = "failed at "
 
@@ -4415,7 +4412,7 @@ class WORKLIST:
         position = WORKLIST.SearchFilter_Etc_setting("5", "Job Report")
 
         # paste #1
-        specific_id = "PI20200205002" #2개
+        #specific_id = "PI20200205002" #2개
         #specific_id = "1618527" #1개
         driver.find_element(By.CSS_SELECTOR, "#search-job-pat-id").send_keys(specific_id)
         driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
@@ -4523,8 +4520,6 @@ class WORKLIST:
                 driver.execute_script("arguments[0].click();", element)
 
         # Send #3 - Test Hospital 변경 시, 코드 변경 필요
-        testHospital = "INFINITT"
-        
         del driver.requests
         # refresh
         driver.find_element(By.CSS_SELECTOR, "#navbar_title > a.m-l-10.navbar-brand.m-l-10.itr-worklist-title").click()
@@ -4545,13 +4540,11 @@ class WORKLIST:
         time.sleep(1)
 
         # Report Send
-        fir = False
         request = driver.wait_for_request(".*/GetCurrentJobWorklist.*")
         body = request.response.body.decode('utf-8')
         data = json.loads(body)["data"][0]
         del driver.requests
         if specific_id == data["PatientID"]:
-            fir = True
             driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr[2]/td["+str(position)+"]/span/label").click()
         else:
             driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr[1]/td["+str(position)+"]/span/label").click()
@@ -4561,22 +4554,17 @@ class WORKLIST:
             pass
         driver.switch_to.window(driver.window_handles[1])
         time.sleep(0.25)
+        # report option off
+        driver.find_element(By.CSS_SELECTOR, "#report_setting_btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal_report_settings_save")))
+        if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div/div/div[2]/div[5]/div[2]/div/div[2]/div/label/input").is_selected() == True:
+            driver.find_element(By.CSS_SELECTOR, "#modal_report_settings > div > div > div.modal-body > div:nth-child(5) > div.body > div > div.switch.panel-switch-btn > div > label > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#modal_report_settings_save").click()
+        time.sleep(0.1)
+
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[3]/div/div[2]/div[4]/div[2]/div/div/textarea").send_keys("rnd_Report")
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[3]/div/div[2]/div[4]/div[5]/div/div/textarea").send_keys("rnd_Conclusion")
         driver.find_element(By.CSS_SELECTOR, "#job-report-view-send-btn").click()
-        time.sleep(0.25)
-        driver.close()
-        driver.switch_to.window(driver.window_handles[0])
-
-        if fir == True:
-            driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr[2]/td["+str(position)+"]/span/label").click()
-        else:
-            driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr[1]/td["+str(position)+"]/span/label").click()
-        try:
-            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-        except:
-            pass
-        driver.switch_to.window(driver.window_handles[1])
         time.sleep(0.25)
         try:
             assert(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[2]/div/div[2]/div/div/div[2]/span[1]").text == "rnd_Report" and 
@@ -4593,13 +4581,86 @@ class WORKLIST:
             driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(5) > label").click()
             driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
 
-
-
         ## JobReport_ReadingHistory결과 전송 ##
         #if testResult == 'failed':
         #    testlink.reportTCResult(2670, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2670, testPlanID, buildName, 'p', JobReport_ReadingHistory Test Passed")
+
+    #ND = 1 (Normal), 2 (Delay) / SC = 3 (Send), 4 (Send&Close)
+    def JobReport_ReportSettings_Send(position, ND, SC):
+        Result_msg = ""
+        # open report for 3, 4
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li:nth-child(1)").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job").click()
+        time.sleep(1)
+        request = driver.wait_for_request(".*/GetCurrentJobWorklist.*")
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        page_len = int(json.loads(body)['Length'])
+        # total page
+        total = math.ceil(int(json.loads(body)['recordsFiltered']) / page_len)
+        check = False
+        for a in range(1, total+1):
+            for b in range(0, len(data)):
+                if (data[b]["PatientID"] != specific_id and 
+                    driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position)+"]/span/label").get_property("textContent") == "Unreported"):
+                    driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position)+"]/span/label").click()
+                    time.sleep(0.5)
+                    driver.switch_to.window(driver.window_handles[1])
+                    try:
+                        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[3]/div/div[2]/div[4]/div[2]/div/div/textarea").clear()
+                        check = True
+                        break
+                    except:
+                        driver.close()
+                        driver.switch_to.window(driver.window_handles[0])
+            if check == True:
+                break
+            element = driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
+            driver.execute_script("arguments[0].click();", element)
+
+        # Shortcut
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[3]/div/div[2]/div[4]/div[2]/div/div/textarea").clear()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[3]/div/div[2]/div[4]/div[5]/div/div/textarea").clear()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[3]/div/div[2]/div[4]/div[2]/div/div/textarea").send_keys("Shorcut_Test")
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[3]/div/div[2]/div[4]/div[5]/div/div/textarea").send_keys("Shorcut_Test")
+        driver.find_element(By.CSS_SELECTOR, "#report_setting_btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal_report_settings_save")))
+        # ND
+        driver.find_element(By.CSS_SELECTOR, "#report-send-type-select").click()
+        driver.find_element(By.CSS_SELECTOR, "#report-send-type-select > option:nth-child("+str(ND)+")").click()
+        # send
+        driver.find_element(By.CSS_SELECTOR, "#modal_report_settings > div > div > div.modal-body > div:nth-child(2) > div.body > div > div:nth-child("+str(SC)+") > label").click()
+        driver.find_element(By.CSS_SELECTOR, "#modal_report_settings_save").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[3]/div/div[2]/div[4]/div[2]/div/div/textarea").send_keys(Keys.CONTROL + "S")
+        time.sleep(2)
+        if SC == 3:
+            print("Send")
+            print(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[2]/div/div[2]/div/div/div[2]/span[1]").get_property("textContent"))
+            print(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[2]/div/div[2]/div/div/div[2]/span[2]").get_property("textContent"))
+            try:
+                assert(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[2]/div/div[2]/div/div/div[2]/span[1]").get_property("textContent") == "Shorcut_Test" and
+                       driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[2]/div/div[2]/div/div/div[2]/span[2]").get_property("textContent") == "Shorcut_Test")            
+            except:
+                Result_msg += "#"+str(ND+2)+" "
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+        elif SC == 4:
+            try:
+                assert(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[2]/div/div[2]/div/div/div[2]/span[1]").get_property("textContent") == "Shorcut_Test" and
+                       driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[2]/div/div[2]/div/div/div[2]/span[2]").get_property("textContent") == "Shorcut_Test")            
+                Result_msg += "#"+str(ND+2)+" "
+            except:
+                print("pass")
+                pass         
+            driver.switch_to.window(driver.window_handles[0])
+
+        return Result_msg
+
 
     def JobReport_ReportSettings():
         testResult=""
@@ -4614,6 +4675,145 @@ class WORKLIST:
         except:
             pass
 
+        # set option (column)
+        driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting-columns-apply")))
+        jr_origin = True
+        if driver.find_element(By.CSS_SELECTOR, "#chk-column-5").is_selected() == False:
+            jr_origin = False
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(5) > label").click()
+        driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
+        time.sleep(0.5)
+        position = WORKLIST.SearchFilter_Etc_setting("5", "Job Report")
+
+        # find testHosptial click (INFINITT)
+        for n in driver.requests:
+            if "GetHospitalList?useAllInstitutionList" in n.url:
+                request = n
+                break
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["HospitalList"]
+        driver.find_element(By.CSS_SELECTOR, "#search_institution_chosen > a > span").click()
+        del driver.requests
+        for n in range(2, 2+len(data)):
+            element = driver.find_element(By.CSS_SELECTOR, "#search_institution_chosen > div > ul > li:nth-child("+str(n)+")")
+            if element.text == testHospital:
+                element.click()
+                break
+        time.sleep(1)
+
+        # open report (exclude 3, 4, 7, 8)
+        driver.find_element(By.CSS_SELECTOR, "#search_box_body > div:nth-child(1) > div:nth-child(1)").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_job_status_chosen > div > ul > li:nth-child(2)").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr[2]/td["+str(position)+"]/span/label").click()
+        driver.switch_to.window(driver.window_handles[1])
+        time.sleep(0.25)
+
+        # report option #1
+        driver.find_element(By.CSS_SELECTOR, "#report_setting_btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal_report_settings_save")))
+        try:
+            assert(driver.find_element(By.CSS_SELECTOR, "#modal_report_settings > div > div > div.modal-header.modal-col-blue-grey > h4").text == "Report Settings")
+        except:
+            testResult = "failed"
+            Result_msg += "#1 "
+
+        # font size #2
+        driver.find_element(By.CSS_SELECTOR, "#report-font-size-select-box").click()
+        driver.find_element(By.CSS_SELECTOR, "#report-font-size-select-box > option:nth-child(8)").click()
+        driver.find_element(By.CSS_SELECTOR, "#modal_report_settings_save").click()
+        time.sleep(0.1)
+        big = driver.find_element(By.CSS_SELECTOR, "#job-report-view-refer-comments").value_of_css_property("font-size")
+        driver.find_element(By.CSS_SELECTOR, "#report_setting_btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal_report_settings_save")))
+        driver.find_element(By.CSS_SELECTOR, "#report-font-size-select-box").click()
+        driver.find_element(By.CSS_SELECTOR, "#report-font-size-select-box > option:nth-child(1)").click()
+        driver.find_element(By.CSS_SELECTOR, "#modal_report_settings_save").click()
+        time.sleep(0.1)
+        small = driver.find_element(By.CSS_SELECTOR, "#job-report-view-refer-comments").value_of_css_property("font-size")
+        try:
+            assert(big == "16.5px" and small == "13px")
+        except:
+            testResult = "failed"
+            Result_msg += "#2 #11 "
+
+        # +info (modality, study desc, bodypart, report id)#5
+        driver.find_element(By.CSS_SELECTOR, "#report_setting_btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal_report_settings_save")))
+        if driver.find_element(By.CSS_SELECTOR, "#reading-history-modality").is_selected() == False:
+            driver.find_element(By.CSS_SELECTOR, "#modal_report_settings > div > div > div.modal-body > div:nth-child(3) > div.body > div > div:nth-child(1) > label").click()
+        if driver.find_element(By.CSS_SELECTOR, "#reading-history-study-desc").is_selected() == False:
+            driver.find_element(By.CSS_SELECTOR, "#modal_report_settings > div > div > div.modal-body > div:nth-child(3) > div.body > div > div:nth-child(2) > label").click()
+        if driver.find_element(By.CSS_SELECTOR, "#reading-history-body-part").is_selected() == False:
+            driver.find_element(By.CSS_SELECTOR, "#modal_report_settings > div > div > div.modal-body > div:nth-child(3) > div.body > div > div:nth-child(3) > label").click()
+        if driver.find_element(By.CSS_SELECTOR, "#reading-history-reporter").is_selected() == False:
+            driver.find_element(By.CSS_SELECTOR, "#modal_report_settings > div > div > div.modal-body > div:nth-child(3) > div.body > div > div:nth-child(4) > label").click()
+        driver.find_element(By.CSS_SELECTOR, "#modal_report_settings_save").click()
+        time.sleep(0.1)        
+        try:            
+            assert("Modality" in driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[2]/div/div[2]/div/div/div[1]/div[2]").get_property("textContent") and
+                   "Study Desc" in driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[2]/div/div[2]/div/div/div[1]/div[3]").get_property("textContent") and
+                   "Bodypart" in driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[2]/div/div[2]/div/div/div[1]/div[4]").get_property("textContent") and
+                   "Reporter" in driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[2]/div/div[2]/div/div/div[1]/div[5]").get_property("textContent") )
+        except:
+            testResult = "failed"
+            Result_msg += "#5 "
+
+        # Button Position Top & Bottom #7
+        driver.find_element(By.CSS_SELECTOR, "#report_setting_btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal_report_settings_save")))
+        driver.find_element(By.CSS_SELECTOR ,"#normal-send-btn-position-select-box").click()
+        driver.find_element(By.CSS_SELECTOR, "#normal-send-btn-position-select-box > option:nth-child(2)").click()
+        driver.find_element(By.CSS_SELECTOR, "#modal_report_settings_save").click()
+        time.sleep(0.1)
+        try:
+            assert(driver.find_element(By.CSS_SELECTOR, "#job-report-view-send-btn-alt-top").text == "Send")
+        except:
+            testResult = "failed"
+            Result_msg += "#7 "
+
+        # Button Position Bottom, Cancel #6, 10
+        driver.find_element(By.CSS_SELECTOR, "#report_setting_btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal_report_settings_save")))
+        driver.find_element(By.CSS_SELECTOR ,"#normal-send-btn-position-select-box").click()
+        driver.find_element(By.CSS_SELECTOR, "#normal-send-btn-position-select-box > option:nth-child(1)").click()
+        driver.find_element(By.CSS_SELECTOR, "#modal_report_settings_close").click()
+        try:
+            assert(driver.find_element(By.CSS_SELECTOR, "#job-report-view-send-btn-alt-top").text == "Send")
+        except:
+            testResult = "failed"
+            Result_msg += "#11 "
+        
+        driver.find_element(By.CSS_SELECTOR, "#report_setting_btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal_report_settings_save")))
+        driver.find_element(By.CSS_SELECTOR ,"#normal-send-btn-position-select-box").click()
+        driver.find_element(By.CSS_SELECTOR, "#normal-send-btn-position-select-box > option:nth-child(1)").click()
+        driver.find_element(By.CSS_SELECTOR, "#modal_report_settings_save").click()
+        time.sleep(0.1)
+        try:
+            assert(driver.find_element(By.CSS_SELECTOR, "#job-report-view-send-btn-alt-top").text == "Send")
+            testResult = "failed"
+            Result_msg += "#6 "
+        except:
+            pass
+        driver.close()
+        driver.switch_to.window(driver.window_handles[0])
+
+        # Shortcut_Normal&Delay_Send&Close #3 4
+        Result_msg += WORKLIST.JobReport_ReportSettings_Send(position,1,3)
+        Result_msg += WORKLIST.JobReport_ReportSettings_Send(position,1,4)
+        Result_msg += WORKLIST.JobReport_ReportSettings_Send(position,2,3)
+        Result_msg += WORKLIST.JobReport_ReportSettings_Send(position,2,4)
+        if Result_msg != "failed at ":
+            testResult == "failed"
+
+        if jr_origin == False:
+            driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting-columns-apply")))
+            driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(5) > label").click()
+            driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
 
         print(Result_msg)
 
@@ -4623,8 +4823,60 @@ class WORKLIST:
         #else:
         #    testlink.reportTCResult(2675, testPlanID, buildName, 'p', JobReport_ReportSettings Test Passed")
 
+    def Related_Exam():
+        testResult=""
+        Result_msg = "failed at "
 
-WORKLIST.JobReport_ReportSettings()
+        # 정상적인 계정으로 로그인
+        signInOut.normal_login()
+        
+        # waiting loading
+        try:
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
+        except:
+            pass
+
+        # clear
+        del driver.requests
+        driver.find_element(By.CSS_SELECTOR, "#clear_searchfilter").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_current_job").click()
+        time.sleep(0.5)
+
+        # Related_Exam Render check #1
+        request = driver.wait_for_request('./GetCurrentJobWorklist.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        exam_column = ["Reporter", "JobStatus", "StudyDate", "Modality", "Bodypart", "ReportText", "Conclusion"]
+
+        for n in range(1, len(data)+1):
+            del driver.requests
+            driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child("+str(n)+") > td.th-check.align-center > label").click()
+            time.sleep(0.15)
+            if driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[3]/div[1]/div[3]/div[2]/table/tbody/tr[1]/td[1]").get_property("textContent") == "No matching records found":
+                pass
+            else:
+                 request = driver.wait_for_request('./GetRelatedJobWorklist.*')
+                 body = request.response.body.decode('utf-8')
+                 data = json.loads(body)["data"]
+                 for a in range (1, len(data)):
+                     try:
+                         for b in  range (2, 9):
+                             assert ( str(data[a-1][exam_column[b-2]]) == driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[3]/div[1]/div[3]/div[2]/table/tbody/tr["+str(a)+"]/td["+str(b)+"]").text or 
+                                     (data[a-1][exam_column[b-2]] == None and driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[3]/div[1]/div[3]/div[2]/table/tbody/tr["+str(a)+"]/td["+str(b)+"]").text == ""))
+                     except:
+                         testResult = "failed"
+                         Result_msg += "#1 " 
+
+        ## Related_Exam결과 전송 ##
+        #if testResult == 'failed':
+        #    testlink.reportTCResult(2578, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2578, testPlanID, buildName, 'p', "Related_Exam Test Passed")
+
+def All_Scenario():
+    Login.Log_InOut()
+
+WORKLIST.Related_Exam()
 
 def test():
     print("test")
@@ -4637,10 +4889,10 @@ def test():
     except:
         pass
 
-    a = (datetime.today())
-    yesterday = (datetime.today() - timedelta(weeks=82))
-    #strftime('%Y-%m-%d')
-    print(a - yesterday)
-    print(yesterday-a)
+    driver.find_element(By.CSS_SELECTOR, "#current-job-list > tbody > tr:nth-child(20) > td.th-check.align-center > label").click()
+    time.sleep(0.3)
+
+    print(driver.find_element(By.CSS_SELECTOR, "#related-job-list > tbody > tr:nth-child(1) > td.align-center.related-job-column-1").text)
+    #print(driver.find_element(By.CSS_SELECTOR, "#related-job-list > tbody > tr:nth-child(2) > td.align-center.related-job-column-1").text)
 
 #test()
