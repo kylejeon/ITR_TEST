@@ -258,14 +258,8 @@ class Refer:
                 request = driver.wait_for_request('.*/GetNotAssignedList.*')
                 body = request.response.body.decode('utf-8')
                 notAssigned_data = json.loads(body)["data"]
-                autorefer_text_list = []
 
                 for i in notAssigned_data:
-                    # autorefer_text = i["REFERRED_USER_KEYS"]
-                    # temp_autorefer_text_list = autorefer_text.split(',')
-                    # for j in temp_autorefer_text_list:
-                    #     if j not in autorefer_text_list:
-                    #         autorefer_text_list.append(j)
                     if i["JobPriority"] == 'E':
                         refer_priority_cnt = refer_priority_cnt + 1
                 print(len(notAssigned_data))
@@ -276,7 +270,7 @@ class Refer:
                 assert (int(priority_cnt), int(job_cnt)) == (int(refer_priority_cnt), int(refer_text_list_cnt) + int(autorefer_text_list_cnt))
             except:
                     testResult = 'failed'
-                    reason.append("Hospital_List step 1 isn't valid")
+                    reason.append("Step 1 - Emergency & Auto Refer count isn't valid")
 
 
 
