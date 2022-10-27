@@ -1,9 +1,4 @@
-from asyncio.windows_events import NULL
-from operator import rshift
-import re
 from types import NoneType
-from weakref import ref
-from h11 import Data
 from testlink import TestlinkAPIClient, TestLinkHelper
 from bs4 import BeautifulSoup
 from urllib.parse import quote_plus
@@ -25,9 +20,9 @@ URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'
 DevKey = 'adcb86843d0c77e6e0c9950f80a143c0'
 # testlink 초기화
 tl_helper = TestLinkHelper()
-testlink = tl_helper.connect(TestlinkAPIClient) 
-testlink.__init__(URL, DevKey)
-testlink.checkDevKey()
+# testlink = tl_helper.connect(TestlinkAPIClient) 
+# testlink.__init__(URL, DevKey)
+# testlink.checkDevKey()
 
 # 브라우저 설정
 # baseUrl = 'http://stagingadmin.onpacs.com'
@@ -54,6 +49,12 @@ result_list = []
 testPlanID = 2996
 buildName = 1
 
+# 테스트 계정
+adminID = 'testAdmin'
+adminPW = 'Server123!@#'
+subadmin = 'testSubadmin'
+subadminPW = 'Server123!@#'
+
 class signInOut:
     def admin_sign_in():
         driver.find_element(By.ID, 'user-id').clear()
@@ -62,6 +63,14 @@ class signInOut:
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)
     def admin_sign_out():
+        driver.find_element(By.CSS_SELECTOR, '.pull-right > span').click()
+    def subadmin_sign_in():
+        driver.find_element(By.ID, 'user-id').clear()
+        driver.find_element(By.ID, 'user-id').send_keys('testSubadmin')
+        driver.find_element(By.ID, 'user-password').send_keys('Server123!@#')
+        driver.find_element(By.CSS_SELECTOR, '.btn').click()
+        driver.implicitly_wait(5)
+    def subadmin_sign_out():
         driver.find_element(By.CSS_SELECTOR, '.pull-right > span').click()
 
 class windowSize:
@@ -327,7 +336,7 @@ class Refer:
         #             assert (int(priority_cnt), int(job_cnt)) == (int(emer_reporter_list_cnt), int(assigned_list_result) + int(not_refer_text_list))
         #         except:
         #                 testResult = 'failed'
-        #                 reason.append("Step 1 - Emergency & Auto Refer count isn't valid")
+        #                 reason.append("1 steps failed")
 
         #         # All Assigned List 탭 클릭
         #         driver.find_element(By.XPATH,"/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]/a").click()
@@ -403,130 +412,370 @@ class Refer:
         #             assert result == "true"
         #         except:
         #             testResult = 'failed'
-        #             reason.append("Step 2 - Reporter list isn't valid")
+        #             reason.append("2 steps failed")
                 
         #         # Refer 탭 클릭
         #         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
         #         n = n + 1
         
+        # # Hospital list 저장
+        # hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        # request = driver.wait_for_request('.*/GetReferCountsByInstitution.*')
+        # body = request.response.body.decode('utf-8')
+        # data = json.loads(body)
+        # hospital_cnt = len(data)
+
+        # if hospital_cnt > 0:
+        #     n = 0
+
+        #     while n < hospital_cnt:
+        #         # Hospital list 저장 및 병원 순서대로 클릭
+        #         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        #         hospital_list[n].click()
+
+        #         # 선택한 병원의 Reporter list 저장 및 인원 수 확인
+        #         temp = driver.find_elements(By.CLASS_NAME, "list-report-id")            
+        #         temp_cnt = len(temp)
+        #         m = 0
+                
+        #         # 병원 탭에 표시되는 Reporter의 modality list와 클릭시 표시되는 job list의 modality list 비교
+        #         while m < temp_cnt:
+        #             sub_modal_list = []
+                    
+        #             # 병원 탭 > 선택한 Reporter key 저장
+        #             time.sleep(2)
+        #             temp_reporter_key = driver.find_elements(By.CLASS_NAME, "list-group-item.list-sub-item")
+        #             reporter_key = (temp_reporter_key[m].get_property("dataset"))["reporterKey"]
+                    
+        #             # 병원 탭 > Reporter 클릭
+        #             temp = driver.find_elements(By.CLASS_NAME, "list-report-id")
+        #             driver.execute_script("arguments[0].click()",temp[m])
+                    
+        #             # 병원 탭 > 선택한 Reporter의 modality 저장
+        #             modality_list = driver.find_elements(By.CLASS_NAME, "list-modality-info")
+        #             for i in modality_list:
+        #                 sub_modal_list.append(i.get_property("outerText").split('\n')[0])
+                    
+        #             # 병원 탭 > 선택한 Reporter의 Job list 저장
+        #             request = driver.wait_for_request('.*/GetReferedListByReporter.*')
+        #             body = request.response.body.decode('utf-8')
+        #             data = json.loads(body)["data"]
+        #             temp_job_modality_list = []
+        #             job_modality_list = []
+
+        #             for i in data:
+        #                 job_modality_list.append(i["Modality"])
+
+        #             # 판독의 탭 클릭
+        #             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[1]/ul/li[2]/a").click()
+
+        #             # 판독의 탭 > 선택한 Reporter 클릭
+        #             time.sleep(1)
+        #             del driver.requests
+        #             driver.find_element(By.CSS_SELECTOR, "#list-reporter-row-"+reporter_key).click()
+
+        #             # 판독의 탭 > 선택한 Reporter의 Job list에서 modality 저장                
+        #             request = driver.wait_for_request('.*/GetAllReferedListByReporter.*')
+        #             body = request.response.body.decode('utf-8')
+        #             data = json.loads(body)["data"]
+                    
+        #             for i in data:
+        #                 temp_job_modality_list.append(i["Modality"])
+
+        #             # 판독의 탭 > Modality list에서 중복 제거                    
+        #             for i in temp_job_modality_list:
+        #                 if i not in job_modality_list:
+        #                     job_modality_list.append(i)
+
+        #             # 병원 탭 > Reporter의 Modality와 판독의 탭 > Reporter Job list의 Modality 비교
+        #             try:
+        #                 assert sub_modal_list.sort() == job_modality_list.sort()
+        #             except:
+        #                 testResult = 'failed'
+        #                 reason.append("3 steps failed")
+
+        #             # 병원탭 클릭
+        #             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[1]/ul/li[1]/a").click()
+        #             m = m + 1
+                  
+        #         n = n + 1
+                
+        #         # Refer 탭 클릭
+        #         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+                
+        # # Subadmin 계정으로 로그인
+        # signInOut.admin_sign_out()
+        # signInOut.subadmin_sign_in()
+        
+        # # View All Instituion List 체크
+        # time.sleep(1)
+        # del driver.requests
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[2]/label/span").click()
+
+        # # All Hospital list 저장
+        # time.sleep(1)
+        # request = driver.wait_for_request('.*/GetReferCountsByInstitution.*')
+        # body = request.response.body.decode('utf-8')
+        # data = json.loads(body)
+        # All_institution_list = []
+
+        # for i in data:
+        #     All_institution_list.append(i["InstitutionCode"])
+
+        # # Configuration 탭 클릭
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[5]").click()
+
+        # # Institutions 탭 클릭
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/button[4]").click()
+
+        # # Institution list 저장
+        # request = driver.wait_for_request('.*/GetInstitutionsList.*')
+        # body = request.response.body.decode('utf-8')
+        # data = json.loads(body)["data"]
+        # institutions_list = []
+        
+        # for i in data:
+        #     institutions_list.append(i["InstitutionCode"])
+
+        # # Hospital list와 Institution list 비교
+        # try:
+        #     assert All_institution_list.sort() == institutions_list.sort()
+        # except:
+        #     testResult = 'failed'
+        #     reason.append("4 steps failed")
+        
+        # # Refer 탭 클릭
+        # time.sleep(1)
+        # del driver.requests
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        
+        # # # View All Instituion List 체크
+        # # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[2]/label/span").click()
+
+        # # View All Institution list에서 Job이 있는 Institution list만 저장
+        # request = driver.wait_for_request('.*/GetReferCountsByInstitution.*')
+        # body = request.response.body.decode('utf-8')
+        # data = json.loads(body)
+        # all_institution_list = []
+
+        # for i in data:
+        #     if i["JobCount"] > 0 or i["PriorityCount"] > 0 or i["ReferCount"] > 0:
+        #         all_institution_list.append(i["InstitutionCode"])
+
+        # # View All Instituion List 언체크
+        # del driver.requests        
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[2]/label/span").click()
+        
+        # # View All Institution list 언체크 시의 Hospital list 저장
+        # request = driver.wait_for_request('.*/GetReferCountsByInstitution.*')
+        # body = request.response.body.decode('utf-8')
+        # data = json.loads(body)
+        # Job_institution_list = []
+
+        # for i in data:
+        #     Job_institution_list.append(i["InstitutionCode"])
+
+        # # Job이 있는 hospital 만 list에 표시되는지 확인
+        # try:
+        #     assert all_institution_list == Job_institution_list
+        # except:
+        #     testResult = 'failed'
+        #     reason.append("5 steps failed")
+
+        # # Hospital list 저장
+        # click_hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        # request = driver.wait_for_request('.*/GetReferCountsByInstitution.*')
+        # body = request.response.body.decode('utf-8')
+        # data = json.loads(body)
+        # hospital_cnt = len(data)
+        # hospital_list = []
+
+        # for i in data:
+        #     if i["InstitutionName"] not in hospital_list:
+        #         hospital_list.append(i["InstitutionName"])
+        
+        # if hospital_cnt > 0:
+        #     n = 0
+            
+        #     while n < hospital_cnt:
+        #         # 순서대로 병원 클릭
+        #         time.sleep(1)
+        #         del driver.requests
+        #         click_hospital_list[n].click()
+
+        #         # All Assigned List 탭 > 선택한 병원의 job list 저장
+        #         request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        #         body = request.response.body.decode('utf-8')
+        #         data = json.loads(body)["data"]
+        #         job_list = []
+
+        #         for i in data:
+        #             if i["InstitutionName"] not in job_list:
+        #                 job_list.append(i["InstitutionName"])
+
+        #         # Not Assigned List 탭 클릭
+        #         time.sleep(1)
+        #         del driver.requests
+        #         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+                
+        #         # Not Assigned List 탭 > 선택한 병원의 job list 저장
+        #         time.sleep(1)
+        #         request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        #         body = request.response.body.decode('utf-8')
+        #         data = json.loads(body)["data"]
+
+        #         for i in data:
+        #             if i["InstitutionName"] not in job_list:
+        #                 job_list.append(i["InstitutionName"])
+
+        #         # job list에 선택한 병원의 job만 표시되는지 확인
+        #         try:
+        #             check_job_list = ' '.join(s for s in job_list)
+        #             assert hospital_list[n] == check_job_list                    
+        #         except:
+        #             testResult = 'failed'
+        #             reason.append("6 steps failed")
+        #         n = n + 1
+            
+        #         # All Assigned List 탭 클릭
+        #         driver.find_element(By.XPATH,"/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]/a").click()
+
+        # # Admin 계정으로 로그인
+        # signInOut.subadmin_sign_out()
+        # signInOut.admin_sign_in()        
+
         # Hospital list 저장
-        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        click_hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
         request = driver.wait_for_request('.*/GetReferCountsByInstitution.*')
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
         hospital_cnt = len(data)
-
+        hospital_list = []
+        
         if hospital_cnt > 0:
             n = 0
-
-            hospital_list[n].click()
-            # reporter_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-sub-item")
-            # reporter_list_cnt = len(reporter_list)
-            # while reporter_list_cnt > 0:
-                # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[2]/div[1]/div/div[1]").click()
-            temp = driver.find_elements(By.CLASS_NAME, "list-report-id")            
-            temp_cnt = len(temp)
-            m = 0
-            while m < temp_cnt:
-                sub_modal_list = []
-                temp = driver.find_elements(By.CLASS_NAME, "list-report-id")
-                # temp_reporter = temp[m].get_property("textContent").split('/')[0]
-                
-                # 병원 탭 > 선택한 Reporter key 저장
-                time.sleep(2)
-                temp_reporter_key = driver.find_elements(By.CLASS_NAME, "list-group-item.list-sub-item")
-                reporter_key = (temp_reporter_key[m].get_property("dataset"))["reporterKey"]
-                
-                # 병원 탭 > Reporter 클릭
-                time.sleep(2)
-                temp[m].click()
-                
-                # 병원 탭 > 선택한 Reporter의 modality 저장
-                modality_list = driver.find_elements(By.CLASS_NAME, "list-modality-info")
-                for i in modality_list:
-                    sub_modal_list.append(i.get_property("outerText").split('\n')[0])
-                
-                # # 병원 탭 > Modality list 중복 제거
-                # for i in temp_sub_modal_list:
-                #     if i not in sub_modal_list:
-                #         sub_modal_list.append(i)
-                
-                # 병원 탭 > 선택한 Reporter의 Job list 저장
-                request = driver.wait_for_request('.*/GetReferedListByReporter.*')
-                body = request.response.body.decode('utf-8')
-                data = json.loads(body)["data"]
-                temp_job_modality_list = []
-                job_modality_list = []
-
-                for i in data:
-                    job_modality_list.append(i["Modality"])
-
-                # 판독의 탭 클릭
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[1]/ul/li[2]/a").click()
-
-                # 판독의 탭 > 선택한 Reporter 클릭
+            reporter_list = []
+            
+            while n < hospital_cnt:
+                # 순서대로 병원 클릭
                 time.sleep(1)
                 del driver.requests
-                driver.find_element(By.CSS_SELECTOR, "#list-reporter-row-"+reporter_key).click()
+                click_hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+                click_hospital_list[n].click()
+                m = 0
 
-                # 판독의 탭 > 선택한 Reporter의 Job list에서 modality 저장                
-                request = driver.wait_for_request('.*/GetAllReferedListByReporter.*')
+                # # 병원 탭 > 선택한 Reporter key 저장
+                # time.sleep(2)
+                # temp_reporter_key = driver.find_elements(By.CLASS_NAME, "list-group-item.list-sub-item")
+                # reporter_key = (temp_reporter_key[m].get_property("dataset"))["reporterKey"]
+
+                # 선택한 병원의 Reporter list 저장
+                time.sleep(2)
+                reporter_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-sub-item")
+                reporter_list_cnt = len(reporter_list)
+                # selected_reporter = reporter_list[n]
+                
+                # Reporter의 badge count 저장
+                request = driver.wait_for_request('.*/GetReporterListByInstitution.*')
                 body = request.response.body.decode('utf-8')
-                data = json.loads(body)["data"]
+                data = json.loads(body)
+                badge_cnt_list = []
+                job_cnt = []
 
                 for i in data:
-                    temp_job_modality_list.append(i["Modality"])
+                    badge_counts = []
+                    badge_counts.append(i["PriorityCount"])
+                    badge_counts.append(i["ReferCount"])
+                    badge_counts.append(i["OtherInstitutionReferCount"])
+                    # badge_counts.append(i["ReportedCount"])
+                    badge_counts.append(i["ScheduleCount"])
+                    badge_cnt_list.append(badge_counts)
 
-                # 판독의 탭 > Modality list에서 중복 제거                    
-                for i in temp_job_modality_list:
-                    if i not in job_modality_list:
-                        job_modality_list.append(i)
+                print(badge_cnt_list)    
 
-                # 병원 탭 > Reporter의 Modality와 판독의 탭 > Reporter Job list의 Modality 비교
+                # 순서대로 Reporter 클릭 후, job list에서 emergency, refer, scheduled count 저장
+                while m < reporter_list_cnt:
+                    reporter_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-sub-item")
+                    reporter_key = (reporter_list[m].get_property("dataset"))["reporterKey"]
+                    reporter_list[m].click()
+
+                    # All Assigned 탭 > job list에서 선택한 Reporter의 emergency, refer, scheduled count 저장
+                    request = driver.wait_for_request('.*/GetReferedListByReporter.*')
+                    body = request.response.body.decode('utf-8')
+                    data = json.loads(body)["data"]
+                    emergency_cnt = 0
+                    refer_cnt = 0
+                    scheduled_cnt = 0
+                    other_refer_cnt = 0
+                    # reported_cnt = 0
+
+                    for i in data:
+                        job_sub_cnt = []                        
+                        # Emergency count 계산
+                        if i["JobPriority"] == "E":
+                            emergency_cnt = emergency_cnt + 1
+                        refer_cnt = refer_cnt + 1
+                        if type(i["ScheduleDate"]) != NoneType:
+                            scheduled_cnt = scheduled_cnt + 1
+                        
+                        # 판독의 탭 클릭
+                        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[1]/ul/li[2]").click()
+
+                        # 판독의 탭 > 선택한 Reporter 클릭
+                        time.sleep(1)
+                        del driver.requests
+                        driver.find_element(By.CSS_SELECTOR, "#list-reporter-row-"+reporter_key).click()
+
+                        # Other refer count 계산
+                        request = driver.wait_for_request('.*/GetInstitutionListByReporter.*')
+                        body = request.response.body.decode('utf-8')
+                        data = json.loads(body)
+
+                        for i in data:
+                            if i["InstitutionName"] != click_hospital_list[n].get_property("dataset")["institutionName"]:
+                                other_refer_cnt = other_refer_cnt + int(i["ReferCount"])
+                        
+                        job_sub_cnt.append(emergency_cnt)
+                        job_sub_cnt.append(refer_cnt)
+                        job_sub_cnt.append(other_refer_cnt)
+                        job_sub_cnt.append(scheduled_cnt)
+                        job_cnt.append(job_sub_cnt)
+                    print(job_cnt)
+                    m = m + 1
+
+                    # Refer 탭 클릭
+                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+                    # 병원 선택
+                    time.sleep(2)
+                    click_hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+                    click_hospital_list[n].click()
+
+                # Reporter badge count와 job list count 확인
                 try:
-                    assert sub_modal_list.sort() == job_modality_list.sort()
+                    assert badge_cnt_list == job_cnt                    
                 except:
                     testResult = 'failed'
-                    reason.append("Step 3 - Modality list isn't valid")
+                    reason.append("7 steps failed")
+
+                n = n + 1
+
+                # Refer 탭 클릭
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+                    
 
 
 
+                        
 
-                # 판독의 리스트 저장
-                # request = driver.wait_for_request('.*/GetReferCountsByReporter.*')
-                # body = request.response.body.decode('utf-8')
-                # data = json.loads(body)
-                # # temp_reporter_key_list = []
 
-                # for i in data:
-                #     temp_reporter_key_list.append(i["ReporterKey"])
+                # 선택한 병원에서 순서대로 Reporter를 클릭
+                # reporter_list[n].click()
+
+                # while m < reporter_list_cnt:
+    
+
                 
-
-                # reporter_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[2]/div/div")
-                # for i in reporter_list:
-                #     if i.get_property("textContent").split('/')[0] == temp_reporter:
-                #         print(i.get_property("textContext").split('/')[0])
-                #         i.click()
-
-
-
-
-                # 병원탭 클릭
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[1]/ul/li[1]/a").click()
-                m = m + 1
-                # hospital_list[n].click()
-                  
-            n = n + 1
-            # reporter_list_cnt = reporter_list_cnt - 1
-                
-
-
-
-
-
-       
-
-
 
 
 
