@@ -16,13 +16,13 @@ import json
 # import ITR_Admin_Common
 
 # User: kyle
-URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'
-DevKey = 'adcb86843d0c77e6e0c9950f80a143c0'
-# testlink 초기화
-tl_helper = TestLinkHelper()
-testlink = tl_helper.connect(TestlinkAPIClient) 
-testlink.__init__(URL, DevKey)
-testlink.checkDevKey()
+#URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'
+#DevKey = 'adcb86843d0c77e6e0c9950f80a143c0'
+## testlink 초기화
+#tl_helper = TestLinkHelper()
+#testlink = tl_helper.connect(TestlinkAPIClient) 
+#testlink.__init__(URL, DevKey)
+#testlink.checkDevKey()
 
 # 브라우저 설정
 # baseUrl = 'http://stagingadmin.onpacs.com'
@@ -30,6 +30,7 @@ baseUrl = 'http://vm-onpacs:8082'
 # html = requests.get(baseUrl)
 # soup = BeautifulSoup(html.text, 'html.parser')
 # url = baseUrl + quote_plus(plusUrl)
+
 driver = webdriver.Chrome()
 driver.get(baseUrl)
 # ITR_Admin_Common.close_popup()
@@ -501,15 +502,28 @@ class Refer:
 ###########################################################
 # save as witt signature UTF-8
 from datetime import datetime
-import math
+import math, random
+admin_id = "testAdmin"
+admin_pw = "Server123!@#"
 subadmin_id = "testSubadmin"
 subadmin_pw = "Server123!@#"
-search_id = "testInfReporter" #DirectMessageBox_Search_#2
-search_username = "TestINFReporter" #DirectMessageBox_Search_#3
-search_text = "test" #DirectMessageBox_Search_#4
-search_institution = "INFINITT" #NewDirectMessage_#1
-search_center = "인피니트"
-search_reporter = "TestINFReporter"
+search_id = "testInfReporter" #DirectMessageBox_Search / DirectMessageSetting_Search
+search_username = "TestINFReporter" #DirectMessageBox_Search / DirectMessageSetting_Search
+search_text = "test" #DirectMessageBox_Search
+search_institution = "INFINITT" #NewDirectMessage_Institution
+search_center = "인피니트" #NewDirectMessage_Center_Search
+search_reporter = "TestINFReporter" #NewDirectMessage_Center_Reporter
+unauth_search_id = "TEST_MAP" #DirectMessageSetting_Search
+unauth_search_username = "김태호" #DirectMessageSetting_Search
+add_test_id = "TestA" #+난수 # DirectMessageSetting_Authorize
+add_test_pw = "1234qwer!" #DirectMessageSetting_Authorize
+
+def admin_login():
+    driver.find_element(By.ID, 'user-id').clear()
+    driver.find_element(By.ID, 'user-id').send_keys(admin_id)
+    driver.find_element(By.ID, 'user-password').send_keys(admin_pw)
+    driver.find_element(By.CSS_SELECTOR, '.btn').click()
+    driver.implicitly_wait(5)
 
 def subadmin_login():
     driver.find_element(By.ID, 'user-id').clear()
@@ -1243,35 +1257,342 @@ class DirectMessage:
         else:
             testlink.reportTCResult(2281, testPlanID, buildName, 'p', "NewDirectMessage_Reporter_Message Test Passed")
 
+    def DirectMessageSetting_Search_fun(auth, search_target):
+        Result_msg = ""
+
+        if auth == "unAuth":
+            list_position = 2
+        elif auth == "auth":
+            list_position = 4
+
+        # ID & Name
+        for a in range (1, 3):
+            del driver.requests
+
+            driver.find_element(By.CSS_SELECTOR, "#"+auth+"_reporter_search_type").click()
+            driver.find_element(By.CSS_SELECTOR, "#"+auth+"_reporter_search_type > option:nth-child("+str(a)+")").click()
+            driver.find_element(By.CSS_SELECTOR, "#"+auth+"_reporter_search_value").send_keys(search_target)
+            driver.find_element(By.CSS_SELECTOR, "#search_"+auth+"_reporter").click()
+            driver.find_element(By.CSS_SELECTOR, "#"+auth+"_reporter_search_value").clear()
+
+            request = driver.wait_for_request('.*/GetDirectMessage.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for b in range(1, len(data)+1):
+                if search_target not in driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div["+str(list_position)+"]/div[3]/div/div/table/tbody/tr["+str(b)+"]/td["+str(a+1)+"]").text:
+                    if auth == "unAuth":
+                        Result_msg += "#"+str(a)+" "
+                    else:
+                        Result_msg += "#"+str(a+2)+" "
+                    break
+        
+        return Result_msg
+
+    def DirectMessageSetting_Search():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # DirectMessage
+        driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
+        driver.implicitly_wait(5)
+
+        # Direct Message Setting
+        driver.find_element(By.CSS_SELECTOR, "#direct-message-setting-btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#search_unAuth_reporter > i")))
+
+        # unAuth / auth Search #1 2 3 4
+        temp = DirectMessage.DirectMessageSetting_Search_fun("unAuth", unauth_search_id)
+        temp += DirectMessage.DirectMessageSetting_Search_fun("unAuth", unauth_search_username)
+        temp += DirectMessage.DirectMessageSetting_Search_fun("auth", search_id)
+        temp += DirectMessage.DirectMessageSetting_Search_fun("auth", search_username)
+
+        if temp != "":
+            testResult = False
+            Result_msg += temp
+
+        print("DirectMessageSetting_Search")
+        print(testResult)
+        print(Result_msg)
+
+        ## DirectMessageSetting_Search결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2287, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2287, testPlanID, buildName, 'p', "DirectMessageSetting_Search Test Passed")
+
+    def DirectMessageSetting_Authorize():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # DirectMessage
+        driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
+        driver.implicitly_wait(5)
+
+        # Direct Message Setting
+        driver.find_element(By.CSS_SELECTOR, "#direct-message-setting-btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#search_unAuth_reporter > i")))
+
+        # Auth Search
+        del driver.requests
+        driver.find_element(By.CSS_SELECTOR, "#auth_reporter_search_value").send_keys(search_id)
+        driver.find_element(By.CSS_SELECTOR, "#search_auth_reporter").click()
+        driver.wait_for_request('.*/GetDirectMessage.*')
+
+        # Select #2
+        driver.find_element(By.CSS_SELECTOR, "#center_authorized_reporter_list > tbody > tr.odd > td.th-check.align-center.dm-th-check > label").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#selected_reporter_box > button")))
+        #rgb(242, 222, 222)
+        color = driver.find_element(By.CSS_SELECTOR, "#selected_reporter_box > button").value_of_css_property("background-color")
+        driver.find_element(By.CSS_SELECTOR, "#remove_direct_message_authentication_btn > i").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        if color != "rgba(242, 222, 222, 1)" or driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Direct Messsage 권한을 삭제하였습니다":
+            testResult = False
+            Result_msg += "#2 "
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.25)
+
+        # UnAuth Search
+        del driver.requests
+        driver.find_element(By.CSS_SELECTOR, "#unAuth_reporter_search_value").send_keys(search_id)
+        driver.find_element(By.CSS_SELECTOR, "#search_unAuth_reporter").click()
+        driver.wait_for_request('.*/GetDirectMessage.*')
+
+        # Select #1
+        driver.find_element(By.CSS_SELECTOR, "#center_unauthorized_reporter_list > thead > tr > th.align-center.th-check.dm-th-check.sorting_disabled > label").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#selected_reporter_box > button")))
+        #rgb(255, 152, 0)
+        color = driver.find_element(By.CSS_SELECTOR, "#selected_reporter_box > button").value_of_css_property("background-color")
+        driver.find_element(By.CSS_SELECTOR, "#grant_direct_message_authentication_btn > i").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        if color != "rgba(255, 152, 0, 1)" or driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Direct Messsage 권한을 추가하였습니다":
+            testResult = False
+            Result_msg += "#1 "
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.25)
+
+        # Non Select Arrow #3
+        if (driver.find_element(By.CSS_SELECTOR, "#remove_direct_message_authentication_btn").value_of_css_property("cursor") != "not-allowed" and
+            driver.find_element(By.CSS_SELECTOR, "#grant_direct_message_authentication_btn").value_of_css_property("cursor") != "not-allowed"):
+            testResult = False
+            Result_msg += "#3 "
+
+        # New User #4
+        # User Management Add
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
+        driver.find_element(By.CSS_SELECTOR, "#user-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        # Input
+        while(1):
+            test_id = add_test_id+str(random.randrange(0,100000))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys(test_id)
+            driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn > span").click()
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            check = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            if check != "User ID is Exist!":
+                break
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").send_keys(add_test_pw)
+        driver.find_element(By.CSS_SELECTOR, "#user-add-name").send_keys(test_id)
+
+        # Reporter Click
+        driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a").click()
+        child_num = driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div").get_property("childElementCount")
+        for n in range (1, child_num+1):
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul > li:nth-child("+str(n)+")").text == "Reporter":
+                driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul > li:nth-child("+str(n)+")").click()
+
+        # Center Click
+        driver.find_element(By.CSS_SELECTOR, "#user_add_center_chosen").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user_add_center_chosen > div > div > input[type=text]")))
+        driver.find_element(By.CSS_SELECTOR, "#user_add_center_chosen > div > div > input[type=text]").send_keys("인피니트")
+        driver.find_element(By.CSS_SELECTOR, "#user_add_center_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        
+        # Save
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        # DirectMessage
+        del driver.requests
+        driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
+        driver.wait_for_request(".*/GetUnread.*")
+
+        # Direct Message Setting
+        driver.find_element(By.CSS_SELECTOR, "#direct-message-setting-btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#search_unAuth_reporter > i")))
+
+        # Search
+        del driver.requests
+        driver.find_element(By.CSS_SELECTOR, "#unAuth_reporter_search_value").send_keys(test_id)
+        driver.find_element(By.CSS_SELECTOR, "#search_unAuth_reporter").click()
+        driver.wait_for_request('.*/GetDirectMessage.*')
+
+        # Check
+        if driver.find_element(By.CSS_SELECTOR, "#center_unauthorized_reporter_list > tbody > tr:nth-child(1) > td:nth-child(2)").text != test_id:
+            testResult = False
+            Result_msg += "#4 "
+
+        print("DirectMessageSetting_Authorize")
+        print(testResult)
+        print(Result_msg)
+
+        ## DirectMessageSetting_Authorize결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "DirectMessageSetting_Authorize Test Passed")
+
+    def DirectMessageSetting_Selection():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # DirectMessage
+        driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
+        driver.implicitly_wait(5)
+
+        # Direct Message Setting
+        driver.find_element(By.CSS_SELECTOR, "#direct-message-setting-btn").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#search_unAuth_reporter > i")))
+
+        # Click > Click & Arrow #1, 2, 3, 4
+        driver.find_element(By.CSS_SELECTOR, "#center_unauthorized_reporter_list > tbody > tr:nth-child(1) > td.th-check.align-center.dm-th-check > label").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#selected_reporter_box > button")))
+        driver.find_element(By.CSS_SELECTOR, "#center_authorized_reporter_list > tbody > tr.odd > td.th-check.align-center.dm-th-check > label").click()
+        time.sleep(0.25)
+        if (driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[2]/div[3]/div/div/table/tbody/tr[1]/td[1]/input").is_selected() == True or
+            driver.find_element(By.CSS_SELECTOR, "#selected_reporter_box > button").value_of_css_property("background-color") == "rgba(255, 152, 0, 1)"):
+            testResult = False
+            Result_msg += "#1 "
+
+        if driver.find_element(By.CSS_SELECTOR, "#grant_direct_message_authentication_btn").value_of_css_property("cursor") != "not-allowed":
+            tesTresult = False
+            Result_msg += "#4 "
+
+        driver.find_element(By.CSS_SELECTOR, "#center_unauthorized_reporter_list > tbody > tr:nth-child(1) > td.th-check.align-center.dm-th-check > label").click()
+        time.sleep(0.25)
+        if (driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div[3]/div/div/table/tbody/tr[1]/td[1]/input").is_selected() == True or
+            driver.find_element(By.CSS_SELECTOR, "#selected_reporter_box > button").value_of_css_property("background-color") == "rgba(242, 222, 222, 1)"):
+            testResult = False
+            Result_msg += "#2 "
+
+        if driver.find_element(By.CSS_SELECTOR, "#remove_direct_message_authentication_btn").value_of_css_property("cursor") != "not-allowed":
+            tesTresult = False
+            Result_msg += "#3 "
+
+        print("DirectMessageSetting_Selection")
+        print(testResult)
+        print(Result_msg)
+
+        ## DirectMessageSetting_Selection결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "DirectMessageSetting_Selection Test Passed")
+
+class Notice:
+    def NoticeList_NoticeEditBoard():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Notice
+        driver.find_element(By.CSS_SELECTOR, "#tab-notice > a").click()
+        driver.implicitly_wait(5)
+
+        # Notice Title #1
+        driver.find_element(By.CSS_SELECTOR, "#register_itr_notice_title").send_keys("rnd_title3#")
+        if driver.find_element(By.CSS_SELECTOR, "#register_itr_notice_title").get_property("value") != "rnd_title3#":
+            testResult = False
+            Rersult_msg += "#1 "
+
+        # Notice Board #2
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys("rnd_board3#")
+        if driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable > p").get_property("textContent") != "rnd_board3#":
+            testResult = False
+            Rersult_msg += "#2 "
+
+        # Board Bold #3 4
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys(Keys.CONTROL + "a")
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-bold > i").click()
+        time.sleep(0.25)
+        try:
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/b")
+        except:
+            testResult = False
+            Result_msg += "#3 "
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-bold > i").click()
+        time.sleep(0.25)
+        try:
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/b")
+            testResult = False
+            Result_msg += "#4 "
+        except:
+            pass
+        #timeout 고려
+
+        #try:
+        #    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/text()")
+        #except:
+        #    testResult = False
+        #    Result_msg += "#4 "
+
+        ## Board Italic #5 6
+        #driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-italic").click()
+        #time.sleep(0.25)
+        #try:
+        #    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/i")
+        #except:
+        #    testResult = False
+        #    Result_msg += "#5 "
+        #driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-italic").click()
+        #time.sleep(0.25)
+        #try:
+        #    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/text()")
+        #except:
+        #    testResult = False
+        #    Result_msg += "#6 "
 
 
-    #def NewDirectMessage_Institution_Search():
+
+        print("NoticeList_NoticeEditBoard")
+        print(testResult)
+        print(Result_msg)
+
+        ## NoticeList_NoticeEditBoard결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "NoticeList_NoticeEditBoard Test Passed")
+
+    #def NoticeList_NoticeEditBoard():
     #    testResult = True
     #    Result_msg = "failed at "
         
     #    ReFresh()
 
-    #    # DirectMessageBox
-    #    driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
-    #    driver.implicitly_wait(5)
-
-    #    # NewDirectMessage
-    #    driver.find_element(By.CSS_SELECTOR, "#direct-message-add-btn").click()
-    #    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#add_direct_message")))
-
-    #    print("NewDirectMessage_Institution_Search")
+    #    print("NoticeList_NoticeEditBoard")
     #    print(testResult)
     #    print(Result_msg)
 
-    #    ## NewDirectMessage_Institution_Search결과 전송 ##
+    #    ## NoticeList_NoticeEditBoard결과 전송 ##
     #    #if testResult == False:
     #    #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
     #    #else:
-    #    #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "NewDirectMessage_Institution_Search Test Passed")
+    #    #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "NoticeList_NoticeEditBoard Test Passed")
 
-subadmin_login()
-DirectMessage.NewDirectMessage_Reporter_Search()
-#DirectMessage.NewDirectMessage_Reporter_Message()
+#subadmin_login()
+admin_login()
+Notice.NoticeList_NoticeEditBoard()
 
 def test():
     print("test")
