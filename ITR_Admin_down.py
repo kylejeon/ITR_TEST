@@ -1934,7 +1934,7 @@ class Notice:
             driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div:nth-child(1) > div:nth-child(2) > label").click()
 
             driver.find_element(By.CSS_SELECTOR, "#register_itr_notice_confirm").click()
-            WebDriverWait(driver, 0.3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
             msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
             driver.find_element(By.CSS_SELECTOR , "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
             time.sleep(0.25)
@@ -1950,7 +1950,7 @@ class Notice:
             # 2-1 off > on
             element = driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr:nth-child(2) > td:nth-child(2) > div > label > span")
             driver.execute_script("arguments[0].click()",element)
-            WebDriverWait(driver, 0.3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
             msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
             if (msg != "Notice 정보를 수정하였습니다." or 
@@ -1960,7 +1960,7 @@ class Notice:
             # 2-2 off > on
             element = driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr:nth-child(2) > td:nth-child(3) > div > label > span")
             driver.execute_script("arguments[0].click()",element)
-            WebDriverWait(driver, 0.3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
             msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
             if (msg != "Notice 정보를 수정하였습니다." or 
@@ -1977,25 +1977,32 @@ class Notice:
             # 1-1 on > off
             element = driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr:nth-child(1) > td:nth-child(2) > div > label > span")
             driver.execute_script("arguments[0].click()",element)
-            WebDriverWait(driver, 0.3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
             time.sleep(0.15)
             # 2-1 on > off
             element = driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr:nth-child(2) > td:nth-child(2) > div > label > span")
             driver.execute_script("arguments[0].click()",element)
-            WebDriverWait(driver, 0.3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
             time.sleep(0.15)
             # 2-2 off > on
             element = driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr:nth-child(2) > td:nth-child(2) > div > label > span")
             driver.execute_script("arguments[0].click()",element)
-            WebDriverWait(driver, 0.3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
             time.sleep(0.15)
             if (driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr:nth-child(2) > td:nth-child(5)").text != "rnd_title_edit_update" or 
                 driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr:nth-child(2) > td:nth-child(3) > div > label > input").get_property("checked") != False):
                 testResult = False
                 Result_msg += "#7 "
+
+            for n in range (0, 2):
+                element = driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr:nth-child(1) > td:nth-child(7) > button")
+                driver.execute_script("arguments[0].click()",element)
+                WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+                driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                time.sleep(0.25)
 
         print("NoticeList_Edit")
         print(testResult)
@@ -2017,6 +2024,30 @@ class Notice:
         driver.find_element(By.CSS_SELECTOR, "#tab-notice > a").click()
         driver.implicitly_wait(5)
 
+        # Add
+        driver.find_element(By.CSS_SELECTOR, "#register_itr_notice_title").send_keys("rnd_title_delete")
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys("rnd_board_edit")
+        driver.find_element(By.CSS_SELECTOR, "#register_itr_notice_confirm").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.3)
+
+        # Delete #1
+        element = driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr:nth-child(1) > td:nth-child(7) > button")
+        driver.execute_script("arguments[0].click()",element)
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.25)
+
+        try:
+            if (msg != "Notice가 삭제되었습니다." or 
+                driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr.odd > td:nth-child(5)").text == "rnd_title_delete"):
+                testResult = False
+                Result_msg += "#1 "
+        except:
+            pass
+
         print("NoticeList_Delete")
         print(testResult)
         print(Result_msg)
@@ -2027,29 +2058,639 @@ class Notice:
         #else:
         #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "NoticeList_Delete Test Passed")
 
-    #def NoticeList_NoticeEditBoard():
+    def NoticeList_NoticeDisplay():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Notice
+        driver.find_element(By.CSS_SELECTOR, "#tab-notice > a").click()
+        driver.implicitly_wait(5)
+
+        # Add
+        driver.find_element(By.CSS_SELECTOR, "#register_itr_notice_title").send_keys("rnd_title_display")
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys("rnd_board_display")
+        driver.find_element(By.CSS_SELECTOR, "#register_itr_notice_confirm").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.3)
+
+        # Display #1
+        element = driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr.odd > td:nth-child(8) > button")
+        driver.execute_script("arguments[0].click()",element)
+        driver.switch_to.window(driver.window_handles[1])
+        driver.implicitly_wait(5)
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#notice_modal_cancel")))
+        if (driver.find_element(By.CSS_SELECTOR, "#notice_body_title").text !=  "rnd_title_display" or
+            driver.find_element(By.CSS_SELECTOR, "#notice_modal_body_right_side > div").text != "rnd_board_display"):
+            testResult = False
+            Result_msg += "#1 "
+        driver.find_element(By.CSS_SELECTOR, "#notice_modal_cancel").click()
+        driver.switch_to.window(driver.window_handles[0])
+        driver.implicitly_wait(5)
+
+        # Delete
+        element = driver.find_element(By.CSS_SELECTOR, "#curernt_display_list > tbody > tr:nth-child(1) > td:nth-child(7) > button")
+        driver.execute_script("arguments[0].click()",element)
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.25)
+
+
+        print("NoticeList_NoticeDisplay")
+        print(testResult)
+        print(Result_msg)
+
+        ## NoticeList_NoticeDisplay결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "NoticeList_NoticeDisplay Test Passed")
+
+class Auditlog:
+    def Auditlog_Search():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Get Job Key & Insti Name
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#refer-assigned-list > tbody > tr.odd > td:nth-child(2)")))
+        job_key = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list > tbody > tr.odd > td:nth-child(2)").get_property("textContent")
+        insti_name = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").get_attribute("data-institution-name")
+
+        # Auditlog
+        driver.find_element(By.CSS_SELECTOR, "#tab-auditlog > a").click()
+        driver.implicitly_wait(5)
+
+        # Search #1
+        del driver.requests
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search_job_key_field").send_keys(job_key)
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search").click()
+        request = driver.wait_for_request('.*/SearchAuditLog.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        board_date = datetime.strptime(driver.find_element(By.CSS_SELECTOR, "#auditlog_search_table > tbody > tr:nth-child(1) > td.align-center\,.auditlog-table-data.sorting_1").text, '%Y-%m-%d %H:%M:%S')
+        for n in range(1, len(data)+1):
+            date_temp = datetime.strptime(driver.find_element(By.CSS_SELECTOR, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td.align-center\,.auditlog-table-data.sorting_1").text, '%Y-%m-%d %H:%M:%S')
+            sub = str(board_date - date_temp)
+            board_date = date_temp
+            if (driver.find_element(By.CSS_SELECTOR, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(2)").text != insti_name or 
+                '-' in sub):
+                testResult = False
+                Result_msg += "#1 "
+                break
+
+        print("Auditlog_Search")
+        print(testResult)
+        print(Result_msg)
+
+        ## Auditlog_Search결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "Auditlog_Search Test Passed")
+
+    def Auditlog_Export():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Get Job Key & Insti Name
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#refer-assigned-list > tbody > tr.odd > td:nth-child(2)")))
+        job_key = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list > tbody > tr.odd > td:nth-child(2)").get_property("textContent")
+
+        # Auditlog
+        driver.find_element(By.CSS_SELECTOR, "#tab-auditlog > a").click()
+        driver.implicitly_wait(5)
+
+        # Search
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search_job_key_field").send_keys(job_key)
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#auditlog_export")))
+
+        # Export #1
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_export").click()
+        try:
+            driver.wait_for_request(".*/GetExportData")
+        except:
+            testResult = False
+            Result_msg += "#1 "
+
+        print("Auditlog_Export")
+        print(testResult)
+        print(Result_msg)
+
+        ## Auditlog_Export결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "Auditlog_Export Test Passed")
+
+    def Auditlog_Showentries_fun(entries, num):
+        Result_msg = ""
+
+        del driver.requests
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search_table_length > label > select").click()
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search_table_length > label > select > option:nth-child("+str(num)+")").click()
+        request = driver.wait_for_request('.*/SearchAuditLog.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        if data["Length"] != entries:
+            Result_msg += "#"+str(num)+" "
+        if data["recordsFiltered"] > entries:
+            try:
+                WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#auditlog_search_table_next > a")))
+            except:
+                Result_msg += "#"+str(num)+" "
+
+        return Result_msg
+
+    def Auditlog_Showentries():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Get Job Key & Insti Name
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#refer-assigned-list > tbody > tr.odd > td:nth-child(2)")))
+        job_key = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list > tbody > tr.odd > td:nth-child(2)").get_property("textContent")
+
+        # Auditlog
+        driver.find_element(By.CSS_SELECTOR, "#tab-auditlog > a").click()
+        driver.implicitly_wait(5)
+
+         # Search
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search_job_key_field").send_keys(job_key)
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#auditlog_export")))
+
+
+
+        Result_msg += Auditlog.Auditlog_Showentries_fun(20, 1)
+        Result_msg += Auditlog.Auditlog_Showentries_fun(50, 2)
+        Result_msg += Auditlog.Auditlog_Showentries_fun(100, 3)
+
+        print("Auditlog_Showentries")
+        print(testResult)
+        print(Result_msg)
+
+        ## Auditlog_Showentries결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "Auditlog_Showentries Test Passed")
+
+    def Auditlog_Sorting():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Get Job Key
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#refer-assigned-list > tbody > tr.odd > td:nth-child(2)")))
+        job_key = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list > tbody > tr.odd > td:nth-child(2)").get_property("textContent")
+
+        # Auditlog
+        driver.find_element(By.CSS_SELECTOR, "#tab-auditlog > a").click()
+        driver.implicitly_wait(5)
+
+        # Search & Date #1
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search_job_key_field").send_keys(job_key)
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search").click()
+
+        del driver.requests
+        time.sleep(0.25)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/div/div/div[3]/div/div[4]/div[1]/div/table/thead/tr/th[11]").click()
+        time.sleep(0.25)
+        request = driver.wait_for_request('.*/SearchAuditLog.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        board_date = datetime.strptime(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/div/div/div[3]/div/div[4]/div[2]/table/tbody/tr[1]/td[11]").text, '%Y-%m-%d %H:%M:%S')
+        for n in range(1, len(data)+1):
+            date_temp = datetime.strptime(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/div/div/div[3]/div/div[4]/div[2]/table/tbody/tr["+str(n)+"]/td[11]").text, '%Y-%m-%d %H:%M:%S')
+            sub = str(board_date - date_temp)
+            board_date = date_temp
+            if '-' not in sub:
+               if sub != "0:00:00":
+                    testResult = False
+                    Result_msg += "#1 "
+                    break
+
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/div/div/div[3]/div/div[4]/div[1]/div/table/thead/tr/th[11]").click()
+        time.sleep(0.25)
+        board_date = datetime.strptime(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/div/div/div[3]/div/div[4]/div[2]/table/tbody/tr[1]/td[11]").text, '%Y-%m-%d %H:%M:%S')
+        for n in range(1, len(data)+1):
+            date_temp = datetime.strptime(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/div/div/div[3]/div/div[4]/div[2]/table/tbody/tr["+str(n)+"]/td[11]").text, '%Y-%m-%d %H:%M:%S')
+            sub = str(board_date - date_temp)
+            board_date = date_temp
+            if '-' in sub:
+                testResult = False
+                Result_msg += "#1 "
+                break
+
+        print("Auditlog_Sorting")
+        print(testResult)
+        print(Result_msg)
+
+        ## Auditlog_Sorting결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "Auditlog_Sorting Test Passed")
+
+    def Auditlog_Data():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Auditlog
+        driver.find_element(By.CSS_SELECTOR, "#tab-auditlog > a").click()
+        driver.implicitly_wait(5)
+
+        # Search
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search_job_key_field").send_keys("74832064")
+        driver.find_element(By.CSS_SELECTOR, "#auditlog_search").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#auditlog_export")))
+
+        del driver.requests
+        time.sleep(0.25)
+        request = driver.wait_for_request('.*/SearchAuditLog.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        for n in range(1, len(data)+1):
+            # app
+            if ("PANDORA" in driver.find_element(By.CSS_SELECTOR, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(5)").text or 
+                "PANGEA" in driver.find_element(By.CSS_SELECTOR, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(5)").text or 
+                "ITRWeb" in driver.find_element(By.CSS_SELECTOR, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(5)").text or 
+                "ITRWorklist" in driver.find_element(By.CSS_SELECTOR, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(5)").text):
+                testResult = False
+                Result_msg += "#1 "
+                break
+            # id
+            if ("PANDORA" in driver.find_elemnet(By.CSS_SELECTOR, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(7)").text or 
+                "PANGEA" in driver.find_elemnet(By.CSS_SELECTOR, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(7)").text or 
+                "ITRWeb" in driver.find_elemnet(By.CSS_SELECTOR, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(7)").text or 
+                "ITRWorklist" in driver.find_elemnet(By.CSS_SELECTOR, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(7)").text):
+                testResult = False
+                Result_msg += "#1 "
+                break
+            # name
+            if ("PANDORA" in driver.find_element(By.CSS_SELECTORq, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(8)").text or 
+                "PANGEA" in driver.find_element(By.CSS_SELECTORq, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(8)").text or 
+                "ITRWeb" in driver.find_element(By.CSS_SELECTORq, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(8)").text or 
+                "ITRWorklist" in driver.find_element(By.CSS_SELECTORq, "#auditlog_search_table > tbody > tr:nth-child("+str(n)+") > td:nth-child(8)").text):
+                testResult = False
+                Result_msg += "#1 "
+                break
+
+        print("Auditlog_Data")
+        print(testResult)
+        print(Result_msg)
+
+        ## Auditlog_Data결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "Auditlog_Data Test Passed")
+
+class MultiReadingCenterRule:
+    def SearchFilter():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+
+        # Institution
+        driver.find_element(By.CSS_SELECTOR, "#institutions-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[2]/a")))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[2]/a").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-modify-close-btn")))
+        insti_name = driver.find_element(By.CSS_SELECTOR, "#institutions-modify-institution-name").get_property("value")
+        center_name = []
+        num = 0
+        while(1):
+            try:
+                num += 1
+                center_name.append(driver.find_element(By.CSS_SELECTOR, "#institutions_modify_center_code_list_chosen > ul > li:nth-child("+str(num)+") > span").text)
+            except:
+                if num == 1:
+                    center_name.append("")
+                break
+        element = driver.find_element(By.CSS_SELECTOR, "#institutions-modify-close-btn")
+        driver.execute_script("arguments[0].click()",element)
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        
+        # MultiReadingCenterRule
+        driver.find_element(By.CSS_SELECTOR, "#multiReadingCenterRule-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > a > span")))
+
+        # Institution > Center #1
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[1]/div[2]/div/div[1]/div/a/span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_institutioncode_chosen > div > div > input[type=text]").send_keys(insti_name)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_institutioncode_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        time.sleep(0.25)
+        try:
+            center_name.index(driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_centercode_chosen > a > span").get_property("textContent"))
+        except:
+            testResult = False
+            Result_msg += "#1 "
+        
+        # Institution & Center Search #2
+        del driver.requests
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-search").click()
+        request = driver.wait_for_request('.*/GetMultiReadingCenterRuleList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        for n in range (1, len(data)+1):
+            if (driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr["+str(n)+"]/td[2]/a").text != insti_name or
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr["+str(n)+"]/td[3]").text not in center_name):
+                testResult = False
+                Result_msg += "#2 "
+
+        # Request Code #4
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_requestcode_chosen > ul > li > input[type=text]").click()
+        try:
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_requestcode_chosen > div > ul > li:nth-child(1)")))
+        except:
+            testResult = False
+            Result_msg += "#4 "
+
+        # Request Code Delete #5
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_requestcode_chosen > div > ul > li:nth-child(1)").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_requestcode_chosen > ul > li.search-choice > a")))
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_requestcode_chosen > ul > li.search-choice > a").click()
+        try:
+            driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_requestcode_chosen > ul > li.search-choice > span")
+            testResult = False
+            Result_msg += "#5 "
+        except:
+            pass
+
+        # MultiReadingCenterRule
+        driver.find_element(By.CSS_SELECTOR, "#multiReadingCenterRule-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > a > span")))
+
+        # Modality Search #3
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > a > span").click()
+        modal = driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > div > ul > li:nth-child(3)").text.split(' ')[0]
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > div > ul > li:nth-child(3)").click()
+        del driver.requests
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-search").click()
+        request = driver.wait_for_request('.*/GetMultiReadingCenterRuleList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        for n in range (1, len(data)+1):
+            if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr["+str(n)+"]/td[4]").text != modal:
+                testResult = False
+                Result_msg += "#3 "
+
+        print("MultiReadingCenterRule_SearchFilter")
+        print(testResult)
+        print(Result_msg)
+
+        ## MultiReadingCenterRule_SearchFilter결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "MultiReadingCenterRule_SearchFilter Test Passed")
+
+    def Add():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+
+         # Institution
+        driver.find_element(By.CSS_SELECTOR, "#institutions-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[2]/a")))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[2]/a").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-modify-close-btn")))
+        insti_name = driver.find_element(By.CSS_SELECTOR, "#institutions-modify-institution-name").get_property("value")
+        center_name = []
+        num = 0
+        while(1):
+            try:
+                num += 1
+                center_name.append(driver.find_element(By.CSS_SELECTOR, "#institutions_modify_center_code_list_chosen > ul > li:nth-child("+str(num)+") > span").text)
+            except:
+                if num == 1:
+                    center_name.append("")
+                break
+        element = driver.find_element(By.CSS_SELECTOR, "#institutions-modify-close-btn")
+        driver.execute_script("arguments[0].click()",element)
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        
+        # MultiReadingCenterRule
+        driver.find_element(By.CSS_SELECTOR, "#multiReadingCenterRule-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > a > span")))
+
+        # Institution Select #1
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-add-close-btn")))
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > div > div > input[type=text]").send_keys(insti_name)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        time.sleep(0.25)
+        if (driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > a > span").text not in center_name or 
+            driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-add-save-btn").value_of_css_property("cursor") != "not-allowed"):
+            testResult = False
+            Result_msg += "#1 "
+
+        # Center Right #2
+        select_center = driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > a > span").text
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-center-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-center-remove-btn")))
+        if (driver.find_element(By.CSS_SELECTOR, "#selected_multi_center_rule_add_center_chosen > a > span").text != select_center or 
+            driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-add-save-btn").value_of_css_property("cursor") != "not-allowed"):
+            testResult = False
+            Result_msg += "#2 "
+
+        # Center Left #3
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-center-remove-btn").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys(select_center)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        if driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > a > span").text != select_center:
+            testResult = False
+            Result_msg += "#3 "
+
+        # Center Right
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-center-remove-btn").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys(select_center)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-center-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-center-remove-btn")))
+
+        # Modality Right #4
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > ul > li:nth-child(2)").click()
+        select_modal = driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > a > span").text
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modality-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modality-remove-btn")))
+        if (driver.find_element(By.CSS_SELECTOR, "#selected_multi_center_rule_add_modality_chosen > a > span").text != select_modal or
+            driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-add-save-btn").value_of_css_property("cursor") == "not-allowed"):
+            testResult = False
+            Result_msg += "#4 "
+
+        # Modality Left #5
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modality-remove-btn").click()
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys(select_modal.split(' - ')[0])
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        if (driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > a > span").text != select_modal or
+            driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-add-save-btn").value_of_css_property("cursor") != "not-allowed"):
+            testResult = False
+            Result_msg += "#5 "
+
+        # Modality Right
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modality-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modality-remove-btn")))
+
+        # Request Code #6
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_request_code_chosen > ul > li > input").click()
+        request_name = driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_request_code_chosen > div > ul > li:nth-child(1)").text
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_request_code_chosen > div > ul > li:nth-child(1)").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_add_request_code_chosen > ul > li.search-choice > a")))
+        if driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_request_code_chosen > ul > li.search-choice > span").text != request_name:
+            testResult = False
+            Result_msg += "#6 "
+
+        # Request Code Delete #7
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_request_code_chosen > ul > li.search-choice > a").click()
+        try:
+            driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_request_code_chosen > ul > li.search-choice > span")
+            testResult = False
+            Result_msg += "#7 "
+        except:
+            pass
+
+        # Institution Change #8
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > a > span").click()
+        num = 0
+        while(1):
+            num+=1
+            if driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > div > ul > li:nth-child("+str(num)+")").text != insti_name:
+                driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > div > ul > li:nth-child("+str(num)+")").click()
+                break
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-center-add-btn")))
+        if (driver.find_element(By.CSS_SELECTOR, "#selected_multi_center_rule_add_center_chosen > a > span").text == select_center or 
+            driver.find_element(By.CSS_SELECTOR, "#selected_multi_center_rule_add_modality_chosen > a > span").text == select_modal):
+            testResult = False
+            Result_msg += "#8 "
+
+        # Center Delete #9
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-center-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-center-remove-btn")))
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys(select_modal.split(' - ')[0])
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modality-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modality-remove-btn")))
+        # center left
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-center-remove-btn").click()
+        time.sleep(0.25)
+        if (driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-add-save-btn").value_of_css_property("cursor") != "not-allowed" or 
+            driver.find_element(By.CSS_SELECTOR, "#selected_multi_center_rule_add_modality_chosen > a > span").text == select_modal):
+            testResult = False
+            Result_msg += "#9 "
+
+        # Modality Delete #10
+        # Set
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > div > div > input[type=text]").send_keys(insti_name)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys(select_center)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-center-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-center-remove-btn")))
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys(select_modal.split(' - ')[0])
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modality-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modality-remove-btn")))
+        # modality left
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modality-remove-btn").click()
+        time.sleep(0.25)
+        if driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-add-save-btn").value_of_css_property("cursor") != "not-allowed":
+            testResult = False
+            Result_msg += "#10 "
+            
+
+
+
+
+        
+ 
+        print("MultiReadingCenterRule_Add")
+        print(testResult)
+        print(Result_msg)
+
+        ## MultiReadingCenterRule_Add결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "MultiReadingCenterRule_Add Test Passed")
+
+    #def SearchFilter():
     #    testResult = True
     #    Result_msg = "failed at "
         
     #    ReFresh()
 
-    #    print("NoticeList_NoticeEditBoard")
+        ## Configuration
+        #driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        #driver.implicitly_wait(5)
+
+        ## MultiReadingCenterRule
+        #driver.find_element(By.CSS_SELECTOR, "#multiReadingCenterRule-btn").click()
+        #WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > a > span")))
+
+    #    print("MultiReadingCenterRule_SearchFilter")
     #    print(testResult)
     #    print(Result_msg)
 
-    #    ## NoticeList_NoticeEditBoard결과 전송 ##
+    #    ## MultiReadingCenterRule_SearchFilter결과 전송 ##
     #    #if testResult == False:
     #    #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
     #    #else:
-    #    #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "NoticeList_NoticeEditBoard Test Passed")
+    #    #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "MultiReadingCenterRule_SearchFilter Test Passed")
 
 #subadmin_login()
 admin_login()
-Notice.NoticeList_Delete()
+MultiReadingCenterRule.Add()
 
 def test():
     print("test")
-    x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
-    print(x)
+    i = "2022-10-11"
+    if datetime.strptime(i, '%Y-%m-%d') < datetime.today:
+        print("!11")
 
 #test()
