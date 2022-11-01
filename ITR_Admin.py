@@ -1,4 +1,3 @@
-from importlib.metadata import distribution
 from types import NoneType
 from testlink import TestlinkAPIClient, TestLinkHelper
 from bs4 import BeautifulSoup
@@ -14,6 +13,9 @@ import time
 import json
 from selenium.webdriver.support.ui import Select
 import math
+from datetime import datetime, timedelta, timezone
+from dateutil.relativedelta import relativedelta
+import random
 # import ITR_Admin_Common
 
 # User: kyle
@@ -55,6 +57,14 @@ adminID = 'testAdmin'
 adminPW = 'Server123!@#'
 subadmin = 'testSubadmin'
 subadminPW = 'Server123!@#'
+
+# 공통 변수
+test_hospital = "Cloud Team"
+today = datetime.now()
+test_patient_id = "PI20200205003"
+test_patient_name = "PN20200205003"
+test_study_description = 'CHEST AP'
+test_modality = 'CR'
 
 class signInOut:
     def admin_sign_in():
@@ -132,7 +142,7 @@ class Sign:
             testResult = 'failed'
             reason.append("Sign_InOut step 5 isn't valid")
         
-        print("ITR-1: Sign In/Out")
+        print("ITR-1: Sign > Sign In/Out")
         print("Test Result: Pass" if testResult != "failed" else testResult)
 
         # sign_InOut 결과 전송
@@ -163,7 +173,7 @@ class Sign:
         except:
             testResult = 'failed' 
         
-        print("ITR-2: Remember Me")
+        print("ITR-2: Sign > Remember Me")
         print("Test Result: Pass" if testResult != "failed" else testResult)
 
         # Remember_Me 결과 전송       
@@ -204,7 +214,7 @@ class Topbar:
             testResult = 'failed'
             reason.append("Sign_InOut step 2 isn't valid")
 
-        print("ITR-3: Search Schedule List")
+        print("ITR-3: Topbar > Search Schedule List")
         print("Test Result: Pass" if testResult != "failed" else testResult)
 
         # Searh_Schedule_List 결과 전송
@@ -812,7 +822,7 @@ class Refer:
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
                 n = n + 1
 
-        print("ITR-7: Hospital List")
+        print("ITR-7: Refer > Hospital List")
         print("Test Result: Pass" if testResult != "failed" else testResult)
 
         # Hospital_List 결과 전송
@@ -956,7 +966,7 @@ class Refer:
             # 판독의 탭 클릭
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[1]/ul/li[2]/a").click()
                 
-        print("ITR-8: Reporter List")
+        print("ITR-8: Refer > Reporter List")
         print("Test Result: Pass" if testResult != "failed" else testResult)
 
         # Reporter_List 결과 전송
@@ -971,17 +981,12 @@ class Search_filter:
         testResult = ''
         reason = list()
 
-        signInOut.admin_sign_in()
-
         # 1 steps start! : Priority 조건을 응급으로 선택한 후, Search 버튼 클릭
         # Refer 탭 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # Hospital list 저장
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
-        # request = driver.wait_for_request('.*/GetReferCountsByInstitution.*')
-        # body = request.response.body.decode('utf-8')
-        # data = json.loads(body)
         hospital_cnt = len(hospital_list)
 
         # 순서대로 Hospital 선택
@@ -1036,11 +1041,1214 @@ class Search_filter:
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
 
         # 2 steps start! : Priority 조건을 일반으로 선택한 후, Search 버튼 클릭
+        # Refer 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
+        # Hospital list 저장
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        hospital_cnt = len(hospital_list)
 
+        # 순서대로 Hospital 선택
+        if hospital_cnt > 0:
+            n = 0
 
+            while n < hospital_cnt:
+                # Hospital list 저장 및 병원 순서대로 클릭
+                click = hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+                # hospital_list[n].click()
+                driver.execute_script("arguments[0].click()",click[n])
 
+                # 병원 선택 > All Assigned List > Priority 드랍박스에서 일반 선택 후, Search 버튼 클릭
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[1]/div").click()                
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[1]/div/div/ul/li[3]").click()
+                del driver.requests
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
 
+                # 병원 선택 > All Assigned List > Job list 저장
+                request = driver.wait_for_request('.*/GetAllAssignedList.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+                job_priority = []
+
+                for i in data:
+                    if i["JobPriority"] not in job_priority:
+                        job_priority.append(i["JobPriority"])
+                
+                # Not Assigned List 탭 클릭
+                time.sleep(1)
+                del driver.requests
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+
+                # 병원 선택 > Not Assigned List > Job list 저장
+                request = driver.wait_for_request('.*/GetNotAssignedList.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+                for i in data:
+                    if i["JobPriority"] not in job_priority:
+                        job_priority.append(i["JobPriority"])
+                
+                # 병원 선택 > Job list에서 응급만 표시되는지 확인
+                try:
+                    job_priority = ' '.join(s for s in job_priority)
+                    assert job_priority == "N"
+                except:
+                    testResult = "failed"
+                    reason.append("2 steps failed")
+                n = n + 1
+                # All Assigned List 탭 클릭
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        print("ITR-9: Search Filter > Priority")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Priority 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1583, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1583, testPlanID, buildName, 'p', "Priority Passed")
+
+    def Job_Status():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Job Status를 Requested로 선택한 후, Search All버튼을 클릭한다.
+        # All List 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+
+        # All List > Job Status를 Requested로 변경하고, Search All 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[2]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 Requested 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "Requested" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # 2 steps start! : Job Status를 Reported로 선택한 후, Search All버튼을 클릭한다.
+        # All List > Job Status를 Reported로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[3]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 Reported 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "Reported" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # 3 steps start! : Job Status를 Pending으로 선택한 후, Search All버튼을 클릭한다.
+        # All List > Job Status를 Pending로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[4]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 Pending 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "Pending" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")
+
+        # 4 steps start! : Job Status를 Completed로 선택한 후, Search All버튼을 클릭한다.
+        # All List > Job Status를 Completed로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[5]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 Completed 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "Completed" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n")
+
+        # 5 steps start! : Job Status를 Recalled로 선택한 후, Search All버튼을 클릭한다.
+        # All List > Job Status를 Recalled로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[6]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 Recalled 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "Recalled" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("5 steps failed\n")
+
+        # 6 steps start! : Job Status를 Canceled로 선택한 후, Search All버튼을 클릭한다.
+        # All List > Job Status를 Canceled로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[7]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 Canceled 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "Canceled" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("6 steps failed\n")
+
+        # 7 steps start! : Job Status를 Canceled2로 선택한 후, Search All버튼을 클릭한다.
+        # All List > Job Status를  Canceled2로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[8]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 Canceled2 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "Canceled2" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("7 steps failed\n")
+
+        # 8 steps start! : Job Status를 Returned로 선택한 후, Search All버튼을 클릭한다.
+        # All List > Job Status를 Returned로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[9]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 Returned 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "Returned" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("8 steps failed\n")
+
+        # 9 steps start! : Job Status를 Failed Download Report로 선택한 후, Search All버튼을 클릭한다.
+        # All List > Job Status를 Failed Download Report로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[10]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 Failed Download Report 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "Failed Download Report" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("9 steps failed\n")
+
+        # 10 steps start! : Job Status를 AI Processing으로 선택한 후, Search All버튼을 클릭한다.
+        # All List > Job Status를 AI Processing로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[11]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 AI Processing 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "AI Processing" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("10 steps failed\n")
+
+        # 11 steps start! : Job Status를 DiscardRequest로 선택한 후, Search All버튼을 클릭한다.
+        # All List > Job Status를 DiscardRequest로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[12]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 DiscardRequest 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "DiscardRequest" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("11 steps failed\n")
+
+        # 12 steps start! : Job Status를 DiscardCompleted로 선택한 후, Search All버튼을 클릭한다.
+        # All List > Job Status를 DiscardCompleted로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[13]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # All List > Job list의 Job Status 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
+
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+
+        # Job Status가 DiscardCompleted 만 조회되었는지 확인
+        try:
+            job_status = ' '.join(s for s in job_status)
+            assert job_status == "DiscardCompleted" or job_status == ''
+        except:
+            testResult = "failed"
+            reason.append("12 steps failed\n")
+
+        print("ITR-10: Search Filter > Job Status")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Priority 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1588, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1588, testPlanID, buildName, 'p', "Job Status Passed")
+    
+    def Date():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Date를 Job Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 2 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 3 steps start! : Date를 Schedule Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # Test 병원을 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # date_type에 job date, study date, schedule date 주소를 리스트로 선언
+        date_type = [['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[3]/div/div/ul/li[1]','JobDTTMString'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[3]/div/div/ul/li[2]','StudyDTTMString'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[3]/div/div/ul/li[3]','ScheduleDateDTTMString']]
+
+        # Date를 Job Date, Study Date, Schedule Date 순서대로 조회 시, All/Not Assigned List 탭의 데이터가 올바르게 조회되는지 확인
+        for j in range(0,3):
+            # All Assigned List 탭 클릭
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+            # Date를 Job Date로 선택
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[3]/div").click()
+            driver.find_element(By.XPATH, date_type[j][0]).click()
+
+            # Start Date를 Yesterday로 선택
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").click()
+            driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(1) > th:nth-child(1)").click()
+
+            # Search 버튼 클릭
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+            # All Assigned List > Job list의 결과 저장
+            time.sleep(1)
+            request = driver.wait_for_request('.*/GetAllAssignedList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+            job_date = []
+
+            if data != '':
+                for i in data:
+                    temp_job_date = i[date_type[j][1]]
+                    if temp_job_date.split()[0] not in job_date:
+                        job_date.append(temp_job_date.split()[0])
+            
+            # All Assigned List > Job list의 결과가 Yesterday 인지 확인
+            try:
+                for i in job_date:
+                    assert int((today - datetime.strptime(i, '%Y-%m-%d')).days) >= 0 or job_date == ''
+            except:
+                testResult = "failed"
+                reason.append(j +" steps failed\n")
+
+            # All Assigned List > Job Date를 Today로 선택
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").click()
+            driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(1) > th:nth-child(2)").click()
+
+            # Search 버튼 클릭
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+            # All Assigned List > Job list의 결과 저장
+            time.sleep(1)
+            request = driver.wait_for_request('.*/GetAllAssignedList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+            job_date = []
+
+            if data != '':
+                for i in data:
+                    temp_job_date = i[date_type[j][1]]
+                    if temp_job_date.split()[0] not in job_date:
+                        job_date.append(temp_job_date.split()[0])
+
+            # All Assigned List > Job list의 결과가 Today 인지 확인
+            try:
+                job_date = ' '.join(s for s in job_date)
+                assert job_date == str(today.strftime('%Y-%m-%d')) or job_date == ''
+            except:
+                testResult = "failed"
+                reason.append(j +" steps failed\n")
+
+            # All Assigned List > Job Date를 last 1~4 week으로 선택
+            for n in range(2,7):
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").click()
+                driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(2) > th:nth-child("+str(n)+")").click()
+
+                # Search 버튼 클릭
+                time.sleep(1)
+                del driver.requests
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+                
+                # All Assigned List > Job list의 결과 저장
+                time.sleep(1)
+                request = driver.wait_for_request('.*/GetAllAssignedList.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+                job_date = []
+
+                if data != '':
+                    for i in data:
+                        temp_job_date = i[date_type[j][1]]
+                        if temp_job_date.split()[0] not in job_date:
+                            job_date.append(temp_job_date.split()[0])
+
+                # All Assigned List > Job list의 결과가 last 1~5week 인지 확인
+                try:
+                    for i in job_date:
+                        assert int((today - datetime.strptime(i, '%Y-%m-%d')).days) >= 0 or int(str(((today - timedelta(weeks=(n-1))) - datetime.strptime(i, '%Y-%m-%d'))).split()[0]) <= 0
+                except:
+                    testResult = "failed"
+                    reason.append(j +" steps failed\n")
+
+            # All Assigned List > Job Date를 last 1~12 month으로 선택
+            m = 0
+            for n in range(2,7):
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").click()
+                driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(3) > th:nth-child("+str(n)+")").click()
+
+                # Search 버튼 클릭
+                time.sleep(1)
+                del driver.requests
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+            
+                # All Assigned List > Job list의 결과 저장
+                request = driver.wait_for_request('.*/GetAllAssignedList.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+                job_date = []
+
+                if data != '':
+                    for i in data:
+                        temp_job_date = i[date_type[j][1]]
+                        if temp_job_date.split()[0] not in job_date:
+                            job_date.append(temp_job_date.split()[0])
+
+                # All Assigned List > Job list의 결과가 last 1~12 month 인지 확인
+                try:
+                    for i in job_date:
+                        if n == 2:
+                            assert int((today - datetime.strptime(i, '%Y-%m-%d')).days) >= 0 or int(str((today - relativedelta(months=1)) - datetime.strptime(i, '%Y-%m-%d')).split()[0]) <= 0
+                        else:
+                            assert int((today - datetime.strptime(i, '%Y-%m-%d')).days) >= 0 or int(str(((today - relativedelta(months=(3*m))) - datetime.strptime(i, '%Y-%m-%d'))).split()[0]) <= 0
+                            
+                except:
+                    testResult = "failed"
+                    reason.append(j +" steps failed\n")
+                m = m + 1
+
+            # Not Assigned List 탭 클릭
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+
+            # Date를 Job Date로 선택
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[3]/div").click()
+            driver.find_element(By.XPATH, date_type[j][0]).click()
+
+            # Start Date를 Yesterday로 선택
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").click()
+            driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(1) > th:nth-child(1)").click()
+
+            # Search 버튼 클릭
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+            # Not Assigned List > Job list의 결과 저장
+            time.sleep(1)
+            request = driver.wait_for_request('.*/GetNotAssignedList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+            job_date = []
+
+            if data != '':
+                for i in data:
+                    temp_job_date = i[date_type[j][1]]
+                    if temp_job_date.split()[0] not in job_date:
+                        job_date.append(temp_job_date.split()[0])
+            
+            # Not Assigned List > Job list의 결과가 Yesterday 인지 확인
+            try:
+                for i in job_date:
+                    assert int((today - datetime.strptime(i, '%Y-%m-%d')).days) >= 0 or job_date == ''
+            except:
+                testResult = "failed"
+                reason.append(j +" steps failed\n")
+
+            # Not Assigned List > Job Date를 Today로 선택
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").click()
+            driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(1) > th:nth-child(2)").click()
+
+            # Search 버튼 클릭
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+            # Not Assigned List > Job list의 결과 저장
+            time.sleep(1)
+            request = driver.wait_for_request('.*/GetNotAssignedList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+            job_date = []
+
+            if data != '':
+                for i in data:
+                    temp_job_date = i[date_type[j][1]]
+                    if temp_job_date.split()[0] not in job_date:
+                        job_date.append(temp_job_date.split()[0])
+
+            # Not Assigned List > Job list의 결과가 Today 인지 확인
+            try:
+                job_date = ' '.join(s for s in job_date)
+                assert job_date == str(today.strftime('%Y-%m-%d')) or job_date == ''
+            except:
+                testResult = "failed"
+                reason.append(j +" steps failed\n")
+
+            # Not Assigned List > Job Date를 last 1~4 week으로 선택
+            for n in range(2,7):
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").click()
+                driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(2) > th:nth-child("+str(n)+")").click()
+
+                # Search 버튼 클릭
+                time.sleep(1)
+                del driver.requests
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+                
+                # Not Assigned List > Job list의 결과 저장
+                time.sleep(1)
+                request = driver.wait_for_request('.*/GetNotAssignedList.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+                job_date = []
+
+                if data != '':
+                    for i in data:
+                        temp_job_date = i[date_type[j][1]]
+                        if temp_job_date.split()[0] not in job_date:
+                            job_date.append(temp_job_date.split()[0])
+
+                # All Assigned List > Job list의 결과가 last 1~5week 인지 확인
+                try:
+                    for i in job_date:
+                        assert int((today - datetime.strptime(i, '%Y-%m-%d')).days) >= 0 or int(str(((today - timedelta(weeks=(n-1))) - datetime.strptime(i, '%Y-%m-%d'))).split()[0]) <= 0
+                except:
+                    testResult = "failed"
+                    reason.append(j +" steps failed\n")
+
+            # Not Assigned List > Job Date를 last 1~12 month으로 선택
+            m = 0
+            for n in range(2,7):
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").click()
+                driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(3) > th:nth-child("+str(n)+")").click()
+
+                # Search 버튼 클릭
+                time.sleep(1)
+                del driver.requests
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+            
+                # Not Assigned List > Job list의 결과 저장
+                request = driver.wait_for_request('.*/GetNotAssignedList.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+                job_date = []
+
+                if data != '':
+                    for i in data:
+                        temp_job_date = i[date_type[j][1]]
+                        if temp_job_date.split()[0] not in job_date:
+                            job_date.append(temp_job_date.split()[0])
+
+                # Not Assigned List > Job list의 결과가 last 1~12 month 인지 확인
+                try:
+                    for i in job_date:
+                        if n == 2:
+                            assert int((today - datetime.strptime(i, '%Y-%m-%d')).days) >= 0 or int(str((today - relativedelta(months=1)) - datetime.strptime(i, '%Y-%m-%d')).split()[0]) <= 0
+                        else:
+                            assert int((today - datetime.strptime(i, '%Y-%m-%d')).days) >= 0 or int(str(((today - relativedelta(months=(3*m))) - datetime.strptime(i, '%Y-%m-%d'))).split()[0]) <= 0
+                            
+                except:
+                    testResult = "failed"
+                    reason.append(j +" steps failed\n")
+                m = m + 1
+
+        # 4 steps start! : All List 탭을 클릭한 후, Job list의 job date가 최근 1년의 데이터인지 확인한다.
+        # All List 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+
+        # All List > Date Type의 Job Date 인지 확인
+        if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[3]/div/a").get_property("textContent") != "Job Date":
+            testResult = "4 steps failed\n"
+
+        # All List > Date 기간이 오늘날짜부터 과거 1년으로 설정되어 있는지 확인
+        start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").get_property("value")
+        end_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[2]/input").get_property("value")
+        if (datetime.strptime(start_date, '%Y-%m-%d') - datetime.strptime(end_date, '%Y-%m-%d')).days <= 365:
+            testResult = '4 steps failed'
+        
+        # All List > Job list의 job date를 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_date = []
+
+        if data != '':
+            for i in data:
+                temp_job_date = i['JobDTTMString']
+                if temp_job_date.split()[0] not in job_date:
+                    job_date.append(temp_job_date.split()[0])
+            
+        # All List > Job list의 Job date가 최근 1년 이내의 job 인지 확인
+        try:
+            for i in job_date:
+                assert int((today - datetime.strptime(i, '%Y-%m-%d')).days) >= 0 or int(str((today - relativedelta(years=1)) - datetime.strptime(i, '%Y-%m-%d')).split()[0]) <= 0
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n")
+
+        print("ITR-11: Search Filter > Job Date")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Job Date 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1603, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1603, testPlanID, buildName, 'p', "Job Date Passed")
+
+    def Patient_Location():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Patient Location 조건을 InPatient로 선택한 후, Search 버튼을 클릭한다.
+        # 2 steps start! : Patient Location 조건을 OutPatient로 선택한 후, Search 버튼을 클릭한다.
+        # 3 steps start! : Patient Location 조건을 Emergency로 선택한 후, Search 버튼을 클릭한다.
+        location_type = [['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[5]/div/div/ul/li[2]','I'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[5]/div/div/ul/li[3]','O'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[5]/div/div/ul/li[4]','E']]
+
+        # All List 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+
+        for j in range(0,3):
+            # Patient Location 버튼 클릭
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[5]/div/a").click()
+            
+            # Patient Location을 InPatient, OutPatient, Emergency 순서대로 선택
+            driver.find_element(By.XPATH,location_type[j][0]).click()
+            
+            # Showing entries 100으로 변경
+            select = Select(driver.find_element(By.CSS_SELECTOR,"#refer-assigned-list_length > label > select"))                
+            select.select_by_value("100")
+
+            # Search All 버튼 클릭
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+            # Showing entries 결과 저장 후, page 계산
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = temp_cnt[5]
+            pages = math.ceil(int(list_cnt) / 100)
+
+            while pages > 0:
+                # All list > Job list에서 Patient Location 저장
+                time.sleep(1)
+                request = driver.wait_for_request('.*/GetAllList.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+                pat_location = []
+            
+                for i in data:
+                    if i["PatientLocation"] not in pat_location:
+                        pat_location.append(i["PatientLocation"])
+                pages = pages - 1
+            
+            # 선택한 Patient Location과 Job list의 Patient Location이 일치하는지 확인
+            try:
+                for i in pat_location:
+                    assert i == location_type[j][1]
+            except:
+                testResult = "failed"
+                reason.append(j+ " steps failed\n")
+
+        print("ITR-12: Search Filter > Patient Location")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Patient Location 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1608, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1608, testPlanID, buildName, 'p', "Patient Location Passed")
+
+    def Patient_ID():
+        testResult = ''
+        reason = list()
+
+        # Refer 탭 클릭(화면 초기화)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        
+        # 1 steps start! : 임의의 Patient ID를 입력하고 Search 버튼을 클릭한다.
+        # Test 병원을 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Patient ID를 입력한 후, Search 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[1]/div/div/input").send_keys(test_patient_id)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+        # All Assigned/Not Assigned/All List 탭을 순서대로 클릭하면서 Job list의 해당 Patient ID를 가진 job이 있으면 저장
+        tab_list = [['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]','GetAllAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]','GetNotAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]','GetAllList']]
+
+        pat_id = []
+        for i in range(0,3):
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, tab_list[i][0]).click()
+
+            request = driver.wait_for_request('.*/'+tab_list[i][1]+'.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for j in data:
+                if j["PatientID"] not in pat_id:
+                    pat_id.append(j["PatientID"])
+
+        # 검색한 Patient ID와 Job list의 결과와 비교
+        try:
+            for i in pat_id:
+                assert i == test_patient_id
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # 2 steps start! : 임의의 Patient ID를 입력하고 Search All 버튼을 클릭한다.
+        # Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # Job list의 Patient ID 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        pat_id = []
+
+        for j in data:
+            if j["PatientID"] not in pat_id:
+                pat_id.append(j["PatientID"])
+
+        # 검색한 Patient ID와 Job list의 결과와 비교
+        try:
+            for i in pat_id:
+                assert i == test_patient_id
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        print("ITR-13: Search Filter > Patient ID")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Patient ID 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1615, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1615, testPlanID, buildName, 'p', "Patient ID Passed")
+
+    def Patient_Name():
+        testResult = ''
+        reason = list()
+
+        # Refer 탭 클릭(화면 초기화)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        
+        # 1 steps start! : 임의의 Patient Name을 입력하고 Search 버튼을 클릭한다.
+        # Test 병원을 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Patient Name을 입력한 후, Search 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[2]/div/div/input").send_keys(test_patient_name)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+        # All Assigned/Not Assigned/All List 탭을 순서대로 클릭하면서 Job list의 해당 Patient Name을 가진 job이 있으면 저장
+        tab_list = [['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]','GetAllAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]','GetNotAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]','GetAllList']]
+
+        pat_name = []
+        for i in range(0,3):
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, tab_list[i][0]).click()
+
+            request = driver.wait_for_request('.*/'+tab_list[i][1]+'.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for j in data:
+                if j["PatientName"] not in pat_name:
+                    pat_name.append(j["PatientName"])
+
+        # 검색한 Patient Name과 Job list의 결과와 비교
+        try:
+            for i in pat_name:
+                assert i == test_patient_name
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # 2 steps start! : 임의의 Patient Name을 입력하고 Search All 버튼을 클릭한다.
+        # Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # Job list의 Patient ID 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        pat_name = []
+
+        for j in data:
+            if j["PatientName"] not in pat_name:
+                pat_name.append(j["PatientName"])
+
+        # 검색한 Patient ID와 Job list의 결과와 비교
+        try:
+            for i in pat_name:
+                assert i == test_patient_name
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        print("ITR-14: Search Filter > Patient Name")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Patient Name 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1615, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1615, testPlanID, buildName, 'p', "Patient Name Passed")
+
+    def Age():
+        testResult = ''
+        reason = list()
+
+        # Refer 탭 클릭(화면 초기화)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # 1 steps start! : Age 조건을 Year로 선택하고, 임의의 나이를 입력한 후, Search 버튼을 클릭한다.
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+        
+        # Search Filter > All Age를 Year로 변경
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[3]/div/a").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[3]/div/div/ul/li[2]").click()
+        
+        # Search Filter > end, start age를 랜덤으로 입력 후, Search 버튼 클릭
+        start_age = random.randrange(0, 90)
+        end_age = random.randrange(start_age, 96)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[4]/input").clear()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[4]/input").send_keys(start_age)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[5]/input").clear()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[5]/input").send_keys(end_age)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+        # All Assigned/Not Assigned/All List 탭을 순서대로 클릭하면서 Job list의 해당 age를 가진 job이 있으면 저장
+        tab_list = [['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]','GetAllAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]','GetNotAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]','GetAllList']]
+
+        age = []
+        for i in range(0,3):
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, tab_list[i][0]).click()
+            request = driver.wait_for_request('.*/'+tab_list[i][1]+'.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]            
+
+            for j in data:
+                if j["PatientAge"] not in age:
+                    age.append(j["PatientAge"])
+        
+        # 검색 조건과 Job list 결과가 일치하는지 확인
+        try:
+            for i in age:
+                assert int(i) >= start_age or int(i) <= end_age
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # 2 steps start! : Age 조건을 Month로 선택하고, 임의의 나이를 입력한 후, Search 버튼을 클릭한다.
+        # Search Filter > All Age를 Month로 변경
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[3]/div/a").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[3]/div/div/ul/li[3]").click()
+
+        # Search Filter > end, start age를 랜덤으로 입력 후, Search 버튼 클릭
+        start_age = random.randrange(0, 90)
+        end_age = random.randrange(start_age, 96)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[4]/input").clear()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[4]/input").send_keys(start_age*12)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[5]/input").clear()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[5]/input").send_keys(end_age*12)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+        # All Assigned/Not Assigned/All List 탭을 순서대로 클릭하면서 Job list의 해당 age를 가진 job이 있으면 저장
+        tab_list = [['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]','GetAllAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]','GetNotAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]','GetAllList']]
+        
+        age = []
+        for i in range(0,3):
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, tab_list[i][0]).click()
+            request = driver.wait_for_request('.*/'+tab_list[i][1]+'.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for j in data:
+                if j["PatientAge"] not in age:
+                    age.append(j["PatientAge"])
+        
+        # 검색 조건과 Job list 결과가 일치하는지 확인
+        try:
+            for i in age:
+                assert int(i) >= start_age or int(i) <= end_age
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # 3 steps start! : Age 조건을 Day로 선택하고, 임의의 나이를 입력한 후, Search 버튼을 클릭한다.
+        # Search Filter > All Age를 Day로 변경
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[3]/div/a").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[3]/div/div/ul/li[4]").click()
+
+        # end, start age를 랜덤으로 입력 후, Search 버튼 클릭
+        start_age = random.randrange(0, 90)
+        end_age = random.randrange(start_age, 96)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[4]/input").clear()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[4]/input").send_keys(start_age*365)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[5]/input").clear()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[5]/input").send_keys(end_age*365)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+        # All Assigned/Not Assigned/All List 탭을 순서대로 클릭하면서 Job list의 해당 age를 가진 job이 있으면 저장
+        tab_list = [['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]','GetAllAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]','GetNotAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]','GetAllList']]
+        
+        age = []
+        for i in range(0,3):
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, tab_list[i][0]).click()
+            request = driver.wait_for_request('.*/'+tab_list[i][1]+'.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for j in data:
+                if j["PatientAge"] not in age:
+                    age.append(j["PatientAge"])
+        
+        # 검색 조건과 Job list 결과가 일치하는지 확인
+        try:
+            for i in age:
+                assert int(i) >= start_age or int(i) <= end_age
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")
+
+        print("ITR-15: Search Filter > Age")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Age 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1615, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1615, testPlanID, buildName, 'p', "Age Passed")
+
+    def Study_Description():
+        testResult = ''
+        reason = list()
+
+        # Refer 탭 클릭(화면 초기화)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # 1 steps start! : 임의의 Study Description을 입력한 후, Search 버튼을 클릭한다.
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Search Filter > Study Description 입력 후, Search 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[1]/div/div/input").send_keys(test_study_description)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+        # All Assigned/Not Assigned/All List 탭을 순서대로 클릭하면서 Job list의 해당 StudyDescription을 가진 job이 있으면 저장
+        tab_list = [['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]','GetAllAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]','GetNotAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]','GetAllList']]
+        
+        study_desc = []
+        for i in range(0,3):
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, tab_list[i][0]).click()
+            request = driver.wait_for_request('.*/'+tab_list[i][1]+'.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for j in data:
+                if j["StudyDesc"] not in study_desc:
+                    study_desc.append(j["StudyDesc"])
+
+        # 검색 조건과 Job list 결과가 일치하는지 확인
+        try:
+            for i in study_desc:
+                assert test_study_description in i.upper()
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        print("ITR-16: Search Filter > Study Description")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Study Description 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1629, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1629, testPlanID, buildName, 'p', "Study Description Passed")
+
+    def Modality():
+        testResult = ''
+        reason = list()
+
+        signInOut.admin_sign_in()
+
+        # Refer 탭 클릭(화면 초기화)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # 1 steps start! : 임의의 Modality를 입력한 후, Search 버튼을 클릭한다.
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Search filter > Modality를 입력한 후, Search 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[2]/div/div/input").send_keys(test_modality)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+        # All Assigned/Not Assigned/All List 탭을 순서대로 클릭하면서 Job list의 해당 StudyDescription을 가진 job이 있으면 저장
+        tab_list = [['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]','GetAllAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]','GetNotAssignedList'],
+        ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]','GetAllList']]
+        
+        modality = []
+        for i in range(0,3):
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, tab_list[i][0]).click()
+            request = driver.wait_for_request('.*/'+tab_list[i][1]+'.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for j in data:
+                if j["Modality"] not in modality:
+                    modality.append(j["Modality"])
+
+        # 검색 조건과 Job list 결과가 일치하는지 확인
+        try:
+            for i in modality:
+                assert i == test_modality
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        print("ITR-17: Search Filter > Modality")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Modality 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1629, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1629, testPlanID, buildName, 'p', "Modality Passed")
+
+    def Bodypart():
+        
 
 
 
@@ -1053,4 +2261,13 @@ class Search_filter:
 # Topbar.Search_Schedule_List()
 # Refer.Hospital_List()
 # Refer.Reporter_List()
-Search_filter.Priority()
+# Search_filter.Priority()
+# Search_filter.Job_Status()
+# Search_filter.Date()
+# Search_filter.Patient_Location()
+# Search_filter.Patient_ID()
+# Search_filter.Patient_Name()
+# Search_filter.Age()
+# Search_filter.Study_Description()
+# Search_filter.Modality()
+Search_filter.Bodypart()
