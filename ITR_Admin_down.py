@@ -515,14 +515,16 @@ search_id = "testInfReporter" #DirectMessageBox_Search / DirectMessageSetting_Se
 search_username = "TestINFReporter" #DirectMessageBox_Search / DirectMessageSetting_Search
 search_text = "test" #DirectMessageBox_Search
 search_institution = "INFINITT" #NewDirectMessage_Institution
-search_center = "인피니트" #NewDirectMessage_Center_Search
+search_institution_2 = "Cloud" #MultiReadingCenterRule
+search_center = "인피니트" #NewDirectMessage_Center_Search / MultiReadingCenterRule
+search_center_2 = "인피니트테스트" #MultiReadingCenterRule
 search_reporter = "TestINFReporter" #NewDirectMessage_Center_Reporter
 unauth_search_id = "TEST_MAP" #DirectMessageSetting_Search
 unauth_search_username = "김태호" #DirectMessageSetting_Search
 add_test_id = "TestA" #+난수 # DirectMessageSetting_Authorize
 add_test_pw = "1234qwer!" #DirectMessageSetting_Authorize
 upload_pic = "C:\\Users\\INFINITT\\Desktop\\uploadtest.png" # NoticeList_NoticeEditBoard
-upload_pic_url = "https://i.ytimg.com/vi/gREpAVOERis/maxresdefault.jpg"
+upload_pic_url = "https://i.ytimg.com/vi/gREpAVOERis/maxresdefault.jpg" # NoticeList_NoticeEditBoards
 
 def admin_login():
     driver.find_element(By.ID, 'user-id').clear()
@@ -2643,11 +2645,122 @@ class MultiReadingCenterRule:
             testResult = False
             Result_msg += "#10 "
             
+        # Close #12
+        # close
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-add-close-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
+        # no
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+        try:
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-add-close-btn")))
+        except:
+            testResult = False
+            Result_msg += "#12 "
+        # close
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-add-close-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
+        # yes
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        try:
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
+        except:
+            testResult = False
+            Result_msg += "#12 "
 
+        # Save #11
+        # Add
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > a > span")))
+        # institution
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > div > div > input[type=text]").send_keys("INFINITT_TEST")
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        # Center
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys("TEST_CENTER")
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        # Center right
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-center-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
+        # Modality
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys("AU")
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        # Modality right
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modality-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modality-remove-btn")))
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-add-save-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
+        # no
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+        try:
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
+        except:
+            testResult = False
+            Result_msg += "#11 "
 
-
-
-        
+        # Add
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > a > span")))
+        # institution
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > div > div > input[type=text]").send_keys(search_institution_2)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        # Center
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys(search_center)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        # Center right
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-center-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
+        # Modality
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys("AS")
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        # Modality right
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modality-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modality-remove-btn")))
+        # Modality
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys("AU")
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        # Modality right
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modality-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modality-remove-btn")))
+        # Center
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys(search_center_2)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_center_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        # Center right
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-center-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
+        # Modality
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys("AS")
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        # Modality right
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modality-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modality-remove-btn")))
+        # Modality
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys("AU")
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_modality_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        # Modality right
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modality-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modality-remove-btn")))
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-add-save-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
+        # yes
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        try:
+            time.sleep(0.25)
+            driver.find_element(By.XPATH, "/html/body/div[14]/div[7]/div/button").click()
+        except:
+            testResult = False
+            Result_msg += "#11 "
+        time.sleep(0.25)
  
         print("MultiReadingCenterRule_Add")
         print(testResult)
@@ -2659,33 +2772,348 @@ class MultiReadingCenterRule:
         #else:
         #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "MultiReadingCenterRule_Add Test Passed")
 
-    #def SearchFilter():
-    #    testResult = True
-    #    Result_msg = "failed at "
+    def Delete():
+        testResult = True
+        Result_msg = "failed at "
         
-    #    ReFresh()
+        ReFresh()
 
-        ## Configuration
-        #driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
-        #driver.implicitly_wait(5)
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+        time.sleep(0.15)
 
-        ## MultiReadingCenterRule
-        #driver.find_element(By.CSS_SELECTOR, "#multiReadingCenterRule-btn").click()
-        #WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > a > span")))
+        # MultiReadingCenterRule
+        driver.find_element(By.CSS_SELECTOR, "#multiReadingCenterRule-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > a > span")))
 
-    #    print("MultiReadingCenterRule_SearchFilter")
-    #    print(testResult)
-    #    print(Result_msg)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_institutioncode_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_institutioncode_chosen > div > div > input[type=text]").send_keys(search_institution_2)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_institutioncode_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_centercode_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_centercode_chosen > div > div > input[type=text]").send_keys("인피니트테스트")
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_centercode_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
 
-    #    ## MultiReadingCenterRule_SearchFilter결과 전송 ##
-    #    #if testResult == False:
-    #    #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
-    #    #else:
-    #    #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "MultiReadingCenterRule_SearchFilter Test Passed")
+        time.sleep(0.1)
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-search").click()
+        time.sleep(0.1)
+
+        # No
+        try:
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr/td[1]/label").click()
+            driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn").click()
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+        except:
+            testResult = False
+            Result_msg += "#1 "
+        # yes
+        try:
+            driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn").click()
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(0.1)
+            assert(driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text == "삭제하였습니다.")
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        except:
+            testResul = False
+            Result_msg += "#1 "
+
+
+        print("MultiReadingCenterRule_Delete")
+        print(testResult)
+        print(Result_msg)
+
+        ## MultiReadingCenterRule_Delete결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "MultiReadingCenterRule_Delete Test Passed")
+
+    def Modify():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+        time.sleep(0.15)
+
+        # MultiReadingCenterRule
+        driver.find_element(By.CSS_SELECTOR, "#multiReadingCenterRule-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > a > span")))
+
+        del driver.requests
+        time.sleep(0.1)
+
+        # Search
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_institutioncode_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_institutioncode_chosen > div > div > input[type=text]").send_keys(search_institution_2)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_institutioncode_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        time.sleep(0.1)
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-search").click()
+        time.sleep(0.1)
+
+        request = driver.wait_for_request('.*/GetMultiReadingCenterRuleList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        selected_center = []
+        for n in data:
+            if n["CenterName"] not in selected_center:
+                selected_center.append(n["CenterName"])
+        selected_modal = []
+        temp = []
+        num = 0
+        for n in range (0, len(data)):
+            if data[n]["CenterName"] != selected_center[num]:
+                selected_modal.append(temp)
+                num += 1
+                temp = []
+            if data[n]["Modality"] not in temp:
+                temp.append(data[n]["Modality"])
+            if n+1 == len(data):
+                selected_modal.append(temp)
+
+
+        # instituion name click #1
+        insti_name = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr[1]/td[2]/a").text
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr[1]/td[2]/a").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modify-close-btn")))
+        if (driver.find_element(By.CSS_SELECTOR, "#modifyCenterRuleLabel").text != "Multi Reading Center Rule Modify" or 
+            driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_modify_institution_chosen > a > span").text != insti_name):
+            testResult = False
+            Result_msg += "#1 "
+
+        # Selected Center, Selected Center Change(Modality) #2 3
+        a_num = 0
+        while(1):
+            a_num += 1
+            driver.find_element(By.CSS_SELECTOR, "#selected_multi_center_rule_modify_center_chosen > a").click()
+            try:
+                element = driver.find_element(By.CSS_SELECTOR, "#selected_multi_center_rule_modify_center_chosen > div > ul > li:nth-child("+str(a_num)+")")
+                cur_center = element.text
+            except:
+                if len(selected_center) != 0:
+                    testResult = False
+                    Result_msg += "#2 "
+                break
+
+            if cur_center in selected_center:
+                target = selected_center.index(cur_center)
+                element.click()
+                
+                b_num = 0
+                temp = []
+                driver.find_element(By.CSS_SELECTOR, "#selected_multi_center_rule_modify_modality_chosen > a > span").click()
+                while(1):
+                    try:
+                        b_num += 1
+                        temp.append(driver.find_element(By.CSS_SELECTOR, "#selected_multi_center_rule_modify_modality_chosen > div > ul > li:nth-child("+str(b_num)+")").text.split('-')[0])
+                    except:
+                        break
+                if temp != selected_modal[target]:
+                    testResult = False
+                    Result_msg += "#3 "
+
+                selected_center.remove(cur_center)
+                del selected_modal[target]
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modify-close-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.25)
+
+        # Institution name click
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr[1]/td[2]/a").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modify-close-btn")))
+
+        # Modality Left Save #6 7
+        # left
+        driver.find_element(By.CSS_SELECTOR, "#modify-multi-center-rule-modality-remove-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modify-save-btn")))
+        # != not-allowed
+        one_remain = driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modify-save-btn").value_of_css_property("cursor")
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modify-save-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+        # no
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#modifyCenterRuleLabel")))
+        no_msg = driver.find_element(By.CSS_SELECTOR, "#modifyCenterRuleLabel").get_property("textContent")
+        # left
+        driver.find_element(By.CSS_SELECTOR, "#modify-multi-center-rule-modality-remove-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modify-save-btn")))
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modify-save-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # yes
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.15)
+        yes_msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        # institution name click
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr[1]/td[2]/a")))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr[1]/td[2]/a").click()
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#modifyCenterRuleLabel")))
+        # modality check
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_modify_modality_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_modify_modality_chosen > div > div > input[type=text]").send_keys("AS")
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_modify_modality_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+
+        if (msg != "수정하시겠습니까?" or
+            no_msg != "Multi Reading Center Rule Modify" or
+            yes_msg != "수정하였습니다." or 
+            driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_modify_modality_chosen > a > span").text != "AS - Angioscopy"):
+            testResult = False
+            Result_msg += "#6"
+
+        # left
+        driver.find_element(By.CSS_SELECTOR, "#modify-multi-center-rule-modality-remove-btn").click()
+        if (one_remain == "not-allowed" or
+            driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modify-save-btn").value_of_css_property("cursor") != "not-allowed"):
+            testResult = False
+            REesult_msg += "#7 "
+
+        # Center Left Save #4 5
+        # left
+        driver.find_element(By.CSS_SELECTOR, "#modify-multi-center-rule-center-remove-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modify-save-btn")))
+        # != not-allowed
+        one_remain = driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modify-save-btn").value_of_css_property("cursor")
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modify-save-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+        # yes
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(0.15)
+        yes_msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        # search
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_centercode_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_centercode_chosen > div > div > input[type=text]").send_keys("인피니트테스트")
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_centercode_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-search").click()
+        # institution name click
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr[1]/td[2]/a")))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr[1]/td[2]/a").click()
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#modifyCenterRuleLabel")))
+        # left
+        driver.find_element(By.CSS_SELECTOR, "#modify-multi-center-rule-center-remove-btn").click()
+        if (one_remain == "not-allowed" or
+            driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modify-save-btn").value_of_css_property("cursor") != "not-allowed"):
+            testResult = False
+            Result_msg += "#5 "
+
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_modify_center_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_modify_center_chosen > div > div > input[type=text]").send_keys("인피니트")
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_modify_center_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        center_msg = driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_modify_center_chosen > a > span").text
+        driver.find_element(By.CSS_SELECTOR, "#modify-multi-center-rule-center-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modify-multi-center-rule-center-remove-btn")))
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_modify_modality_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_modify_modality_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        driver.find_element(By.CSS_SELECTOR, "#modify-multi-center-rule-modality-add-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modify-multi-center-rule-modality-remove-btn")))
+
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modify-save-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # no
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#multi-reading-center-rule-tab-name")))
+
+        if (driver.find_element(By.CSS_SELECTOR, "#multi-reading-center-rule-tab-name").text != "Multi Reading Center Rule" or
+            msg != "수정하시겠습니까?" or
+            yes_msg != "수정하였습니다." or 
+            center_msg != "인피니트"):
+            testResult = False
+            Result_msg += "#4 "
+
+        # institution name click
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-search").click()
+        time.sleep(0.15)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr[1]/td[2]/a").click()
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#modifyCenterRuleLabel")))
+
+        # Change Save #8 #보류
+
+        # Close #9
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modify-close-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+        #WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modify-close-btn")))
+        #msg = driver.find_element(By.CSS_SELECTOR, "#modifyCenterRuleLabel").text
+        try:
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-search")))
+        except:
+            testResult = False
+            Result_msg += "#9 "
+        # instituion name click
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-search").click()
+        time.sleep(1.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[2]/div/table/tbody/tr[1]/td[2]/a").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-modify-close-btn")))
+
+        driver.find_element(By.CSS_SELECTOR, "#multi-center-rule-modify-close-btn").click()
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        try:
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi-center-rule-search")))
+            #assert(msg == "Multi Reading Center Rule Modify")
+        except:
+            testResult = False
+            Result_msg += "#9 "
+
+        print("MultiReadingCenterRule_Modify")
+        print(testResult)
+        print(Result_msg)
+
+        ## MultiReadingCenterRule_Modify결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "MultiReadingCenterRule_Modify Test Passed")
+
+    def All():
+        MultiReadingCenterRule.Add()
+        MultiReadingCenterRule.Modify()
+        MultiReadingCenterRule.Delete()
+
+class StandardReport:
+    def GroupAdd():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+
+        # StandardReport
+        driver.find_element(By.CSS_SELECTOR, "#standard-report-btn").click()
+        driver.wait_for_request('.*/StandardReport.*')
+        
+            
+
+        print("StandardReport_GroupAdd")
+        print(testResult)
+        print(Result_msg)
+
+        ## StandardReport_GroupAdd결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "StandardReport_GroupAdd Test Passed")
 
 #subadmin_login()
 admin_login()
-MultiReadingCenterRule.Add()
+StandardReport.GroupAdd()
+
 
 def test():
     print("test")
