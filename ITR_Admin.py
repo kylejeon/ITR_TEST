@@ -3023,7 +3023,7 @@ class Search_filter:
             testResult = "failed"
             reason.append("2 steps failed\n")
         except:
-            testResult = ''
+            time.sleep(0.5)
 
         print("ITR-22: Search Filter > Real Time")
         print("Test Result: Pass" if testResult != "failed" else testResult)
@@ -3039,14 +3039,13 @@ class Search_filter:
         testResult = ''
         reason = list()
 
-        signInOut.admin_sign_in()
-
         # Refer 탭 클릭(화면 초기화)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # 1 steps start! : 임의의 검색조건을 입력한 후, Short cut 버튼을 클릭한다.
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        time.sleep(1)
         for i in hospital_list:
             if (i.get_property("dataset"))["institutionName"] == test_hospital:
                 i.click()
@@ -3059,6 +3058,7 @@ class Search_filter:
         search_item = random.choice(search_list)
         
         # All List 탭 클릭
+        time.sleep(0.5)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
 
         # Job list에서 임의의 검색할 항목을 저장
@@ -3098,7 +3098,7 @@ class Search_filter:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
 
         # Title 작성 후, Save 버튼 클릭
-        test_shortcut_title = 'TEST' + str(random.randrange(0,100))
+        test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(str(test_shortcut_title))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
@@ -3146,7 +3146,7 @@ class Search_filter:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
 
         # 임의의 Title을 입력
-        test_shortcut_title = 'TEST' + str(random.randrange(0,100))
+        test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(str(test_shortcut_title))
 
         # Save Insititution 체크 후, Save 버튼 클릭
@@ -3178,7 +3178,8 @@ class Search_filter:
         # Short cut list를 저장하기 위해 Short cut 생성
         time.sleep(1)
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys('TEST000')
+        test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut list 저장
@@ -3219,12 +3220,17 @@ class Search_filter:
         except:
             testResult = "failed"
             reason.append("5 steps failed\n")
+
+        # 동일한 short cut 삭제 (다음 테스트를 위해)
+        index = new_shortcut_title.index(random_shortcut_title)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]/span/button").click()
         
         # 6 steps start! : 이미 등록된 short cut을 클릭한 후, 다시 short cut 버튼을 클릭해서 Save 버튼을 클릭한다.
         # Short cut list를 저장하기 위해 Short cut 생성
         time.sleep(1)
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys('TEST000')
+        test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut list 저장
@@ -3242,10 +3248,12 @@ class Search_filter:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]").click()
 
         # Short cut 버튼 클릭
+        time.sleep(0.5)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
         
         # Title에 이전에 선택했던 Short cut title이 있는지 확인 후, Save 버튼 클릭
         title = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").get_property("value")
+        time.sleep(0.5)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
         
         # Search Condition 팝업창이 나타나는지 확인
@@ -3272,7 +3280,7 @@ class Search_filter:
 
         # Short cut 버튼 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
-
+        
         # 동일한 Short cut title이 추가되었는지 확인인
         try:
             cnt = 0
@@ -3284,43 +3292,61 @@ class Search_filter:
             testResult = "failed"
             reason.append("7 steps failed\n")
         
+        # 동일한 short cut 삭제 (다음 테스트를 위해)
+        index = shortcut_title.index(random_shortcut_title)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]/span/button").click()
+        
         # 8 steps start! : Search Condition 팝업창에서 Edit를 클릭한다.
+        # Short cut > Clear 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li[1]").click()
+
         # Short cut 버튼 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
 
-        # 이미 존재하는 Short cut 추가 생성
         # Short cut list를 저장하기 위해 Short cut 생성
         time.sleep(1)
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys('TEST000')
+        test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut list 저장
         request = driver.wait_for_request('.*/GetReferSearchCondition.*')
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
-        shortcut = []
+        before_shortcut = []
+        shortcut_title = []
 
         for i in data:
             temp = []
+            temp_title = []
+            temp_title.append(i["Title"])
             temp.append(i["Title"])
             temp.append(i["StudyDesc"])
             temp.append(i["Modality"])
             temp.append(i["Bodypart"])
             temp.append(i["Department"])
-            shortcut.append(temp)
+            shortcut_title.append(temp_title)
+            before_shortcut.append(temp)
 
         # 임의의 Short cut 클릭
-        random_shortcut_title[0] = random.choice(shortcut_title)
+        random_shortcut_title = random.choice(shortcut_title)
         index = shortcut_title.index(random_shortcut_title)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]").click()
         
         # 검색할 항목을 리스트로 생성
-        search_list = [['StudyDesc','/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[1]/div/div/input'],
-        ['Modality','/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[2]/div/div/input'],
-        ['Bodypart','/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[3]/div/div/input'],
-        ['Department','/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[4]/div/div/input']]
-        search_item = random.choice(search_list)
+        search_list = [['StudyDesc','/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[1]/div/div/input','1'],
+        ['Modality','/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[2]/div/div/input','2'],
+        ['Bodypart','/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[3]/div/div/input','3'],
+        ['Department','/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[4]/div/div/input','4']]
+        choice_search_item = random.choice(search_list)
+        index_search_item = search_list.index(choice_search_item) + 1
+
+        # Short cut 창 닫기
+        driver.find_element(By.XPATH, "/html/body/nav/div").click()
+
+        # All List 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
 
         # Job list 저장
         request = driver.wait_for_request('.*/GetAllList.*')
@@ -3329,29 +3355,943 @@ class Search_filter:
         job_list = []
 
         for i in data:
-            if i[search_item[0]] not in job_list:
-                job_list.append(i[search_item[0]])
+            if i[choice_search_item[0]] != None:
+                if i[choice_search_item[0]] not in job_list:
+                    job_list.append(i[choice_search_item[0]])
         search_item = random.choice(job_list)
 
         # 검색 조건에 입력 후, Search 버튼 클릭
-        driver.find_element(By.XPATH, search_item[1]).send_keys(search_item)
+        driver.find_element(By.XPATH, choice_search_item[1]).send_keys(search_item)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
 
         # Short cut 버튼 클릭 후, Save 버튼 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
+        time.sleep(0.5)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Search Condition > Edit 버튼 클릭
+        time.sleep(1)
+        del driver.requests
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[13]/div/div/div[3]/button[2]").click()
 
-        # Short cut list에서 edit 한 short cut이 새롭게 추가되지 않았는지 확인!!
+        # Short cut list 저장
+        request = driver.wait_for_request('.*/GetReferSearchCondition.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        after_shortcut = []
+        random_shortcut_title = ' '.join(s for s in random_shortcut_title)
+        choice_search_item = str(choice_search_item[0])
+
+        for i in data:
+            if i["Title"] == random_shortcut_title:
+                temp = []
+                temp.append(i["Title"])
+                temp.append(i["StudyDesc"])
+                temp.append(i["Modality"])
+                temp.append(i["Bodypart"])
+                temp.append(i["Department"])
+                after_shortcut.append(temp)
+        
+        # Edit 시, 동일한 Short cut title에 저장되는지 확인
+        try:
+            for i in before_shortcut:
+                if i[0] == random_shortcut_title:
+                    assert i[index_search_item] != search_item
+        except:
+            testResult = "failed"
+            reason.append("8 steps failed\n")
 
         # 9 steps start! : Search Condition 팝업창에서 Close를 클릭한다.
+        # Short cut 버튼 클릭 후, Clear 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li[1]").click()
+
+        # Short cut 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
+
+        # Short cut list를 저장하기 위해 Short cut 생성
+        time.sleep(1)
+        del driver.requests
+        test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
+
+        # Short cut list 저장
+        request = driver.wait_for_request('.*/GetReferSearchCondition.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        shortcut_title = []
+
+        for i in data:
+            temp_title = []
+            temp_title.append(i["Title"])
+            shortcut_title.append(temp_title)
+
+        # Short cut > 임의의 Short cut 클릭
+        random_shortcut_title = random.choice(shortcut_title)
+        index = shortcut_title.index(random_shortcut_title)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]").click()
+
+        # Short cut 버튼 클릭 후, Save 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
+        
+        # Search Condition > Close 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[13]/div/div/div[3]/button[3]").click()
+
+        # Short cut 생성 취소 확인
+        try:
+            request = driver.wait_for_request('.*/GetReferSearchCondition.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            testResult = "failed"
+            reason.append("9 steps failed\n")
+        except:
+            time.sleep(0.5)
+
         # 10 steps start! : Short cut 리스트에서 "Clear"를 클릭한다.
+        # Short cut 버튼 클릭 후, Clear 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li[1]").click()
+
+        # 검색 조건 상태 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        search_filter = []
+        search_filter.append(data["StudyDesc"])
+        search_filter.append(data["Modality"])
+        search_filter.append(data["Bodypart"])
+        search_filter.append(data["Department"])
+
+        # Short cut 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
+        
+        # Title 입력값이 초기화 되었는지 확인
+        try:
+            if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").get_property("value") == '':
+                for i in search_filter:
+                    assert i == None
+        except:
+            testResult = "failed"
+            reason.append("10 steps failed\n")
+
         # 11 steps start! : Short cut 리스트에서 임의의 short cut을 클릭한다.
+        # Short cut list를 저장하기 위해 Short cut 생성
+        time.sleep(1)
+        del driver.requests
+        test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
+
+        # Short cut list 저장
+        request = driver.wait_for_request('.*/GetReferSearchCondition.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        shortcut_title = []
+
+        for i in data:
+            temp = []
+            temp.append(i["Title"])
+            temp.append(i["StudyDesc"])
+            temp.append(i["Modality"])
+            temp.append(i["Bodypart"])
+            temp.append(i["Department"])
+            shortcut_title.append(temp)
+
+        # Short cut > 임의의 Short cut 클릭
+        random_shortcut_title = random.choice(shortcut_title)
+        index = shortcut_title.index(random_shortcut_title)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]").click()
+
+        # 검색 조건 상태 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        search_filter = []
+        search_filter.append(data["StudyDesc"])
+        search_filter.append(data["Modality"])
+        search_filter.append(data["Bodypart"])
+        search_filter.append(data["Department"])
+
+        # Short cut의 검색 조건과 검색 결과의 검색 조건이 동일한지 확인
+        try:
+            for i in shortcut_title:
+                if i[0] == random_shortcut_title:
+                    for n in range(1,4):
+                        assert i[n] == search_filter[n-1]
+        except:
+            testResult = "failed"
+            reason.append("11 steps failed\n")
+
         # 12 steps start! : Short cut 리스트에서 "-" 버튼을 클릭한다.
+        # Short cut 버튼 클릭 후, Clear 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li[1]").click()
+
+        # Short cut 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
+
+         # Short cut list를 저장하기 위해 Short cut 생성
+        time.sleep(1)
+        del driver.requests
+        test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
+
+        # Short cut list 저장
+        request = driver.wait_for_request('.*/GetReferSearchCondition.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        before_shortcut_list = []
+
+        for i in data:
+            before_shortcut_list.append(i["Title"])
+        
+        # 추가한 short cut 삭제
+        time.sleep(1)
+        del driver.requests
+        index = before_shortcut_list.index(test_shortcut_title)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]/span/button").click()
+
+        # 삭제 후, Short cut list 저장
+        request = driver.wait_for_request('.*/GetReferSearchCondition.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        after_shortcut_list = []
+
+        for i in data:
+            after_shortcut_list.append(i["Title"])
+
+        # 정상적으로 Short cut이 삭제되었는지 확인
+        try:
+            assert test_shortcut_title not in after_shortcut_list
+        except:
+            testResult = "failed"
+            reason.append("12 steps failed\n")
+
         # 13 steps start! : Short cut 리스트에서 Short cut에 마우스 오버한다.
+        # 임의의 Short cut에 마우스 오버
+        random_shortcut_title = random.choice(after_shortcut_list)
+        index = after_shortcut_list.index(random_shortcut_title)
+        webdriver.ActionChains(driver).move_to_element(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]")).perform()
+
+        # 마우스 오버 시, 툴팁 정보 저장
+        tooltip = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]").get_property("outerHTML")
+
+        # 툴팁이 표시되는지 확인
+        try:
+            assert "aria-describedby" in tooltip
+        except:
+            testResult = "failed"
+            reason.append("13 steps failed\n")
+
         # 14 steps start! : Short cut 리스트에서 Short cut에 마우스 오버한 후, "-" 버튼을 클릭한다.
+        # 현재 리스트 개수 확인
+        shortcut_list_cnt = len(after_shortcut_list) + 2
+
+        # 현재 Short cut list의 툴팁에 있는 key 값 저장
+        before_shortcut_key_list = []
+        for n in range(2, shortcut_list_cnt):
+            shortcut_key = (driver.find_element(By.CSS_SELECTOR, "#settings > div > div:nth-child(1) > ul > li:nth-child("+str(n)+")").get_property("dataset"))["key"]
+            if shortcut_key not in before_shortcut_key_list:
+                before_shortcut_key_list.append(shortcut_key)
+
+        # 임의의 Short cut에 마우스 오버
+        random_shortcut_title = random.choice(after_shortcut_list)
+        index = after_shortcut_list.index(random_shortcut_title)
+        webdriver.ActionChains(driver).move_to_element(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]")).perform()
+
+        # 마우스 오버 시, 툴팁 정보 저장
+        tooltip = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]").get_property("outerHTML")
+        tooltip_key = (driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]").get_property("dataset"))["key"]
+
+        # 임의의 Short cut 삭제
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]/span/button").click()
+        
+        # Short cut 삭제 후, Short cut list의 툴팁에 있는 key 값 저장
+        after_shortcut_key_list = []
+        for n in range(2, shortcut_list_cnt-1):
+            shortcut_key = (driver.find_element(By.CSS_SELECTOR, "#settings > div > div:nth-child(1) > ul > li:nth-child("+str(n)+")").get_property("dataset"))["key"]
+            if shortcut_key not in after_shortcut_key_list:
+                after_shortcut_key_list.append(shortcut_key)
+
+        # 삭제한 Short cut의 툴팁이 삭제되었는지 확인
+        try:
+            assert tooltip_key not in after_shortcut_key_list
+        except:
+            testResult = "failed"
+            reason.append("14 steps failed\n")
+
+        # Short cut 창 닫기
+        driver.find_element(By.XPATH, "/html/body/nav/div").click()
+
+        print("ITR-23: Search Filter > Short cut")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Short cut 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1651, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1651, testPlanID, buildName, 'p', "Short cut Passed")
+
+class Worklist:
+    def All_Assigned_List():
+        testResult = ''
+        reason = list()
+
+        # Refer 탭 클릭(화면 초기화)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # 1 steps start! : All Assigned List 탭을 클릭한다.
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        time.sleep(1)
+        del driver.requests
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # All Assigned List 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        # Job list 저장
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        # All Assigned List의 Job list를 가져오는지 확인
+        try:
+            assert data is not None
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        print("ITR-24: Worklist > All Assigned List")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # All Assigned List 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1668, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1668, testPlanID, buildName, 'p', "All Assigned List Passed")
+
+    def Not_Assigned_List():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Not Assigned List 탭을 클릭한다.
+        # All Assigned List 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+
+        # Job list 저장
+        time.sleep(1)
+        request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        # All Assigned List의 Job list를 가져오는지 확인
+        try:
+            assert data is not None
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        print("ITR-25: Worklist > Not Assigned List")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Not Assigned List 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1671, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1671, testPlanID, buildName, 'p', "Not Assigned List Passed")
+
+    def All_List():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : All List 탭을 클릭한다.
+        # All List 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+
+        # Job list 저장
+        time.sleep(1)
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        # All Assigned List의 Job list를 가져오는지 확인
+        try:
+            assert data is not None
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        print("ITR-26: Worklist > All List")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # All List 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1674, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1674, testPlanID, buildName, 'p', "All List Passed")
+
+    def Schedule():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Schedule 체크박스를 체크한다.
+        # Refer 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # 병원 리스트와 Schedule count 저장
+        time.sleep(1)
+        request = driver.wait_for_request('.*/GetReferCountsByInstitution.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        schedule_list = []
+
+        for i in data:
+            if i["ScheduleTotalCount"] != 0:
+                temp = []
+                temp.append(i["InstitutionCode"])
+                temp.append(i["ScheduleTotalCount"])
+                schedule_list.append(temp)
+
+        # Schedule이 있는 병원을 순서대로 클릭
+        for i in schedule_list:
+            driver.find_element(By.CSS_SELECTOR, "#list-institution-row-"+str(i[0])).click()
+
+            # Schedule 체크
+            status = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[4]/a/input").get_property("checked")
+            if status != True:
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[4]/a/label").click()
+
+            # All Assigned List 클릭
+            time.sleep(0.5)
+            del driver.requests
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+            
+            # All Assigned List의 scheduled job list 저장
+            request = driver.wait_for_request('.*/GetAllAssignedList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+            schedule_job_list = []
+
+            for j in data:
+                schedule_job_list.append(j)
+
+            # Not Assigned List의 scheduled job list 저장
+            time.sleep(0.5)
+            del driver.requests
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+            request = driver.wait_for_request('.*/GetNotAssignedList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for j in data:
+                schedule_job_list.append(j)
+
+            # Schedule Job list 개수 저장
+            schedule_job_cnt = len(schedule_job_list)
+            
+            # 병원 리스트에 표시된 Schedule count와 scheduled list의 count가 일치하는지 확인
+            try:
+                assert i[1] == schedule_job_cnt
+            except:
+                testResult = "failed"
+                reason.append("1 steps failed\n")
+
+        # 2 steps start! : Schedule 체크박스를 체크 해제한다.
+        # 병원 탭 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[1]/ul/li[1]").click()
+
+        # Schedule이 있는 병원의 Job count 저장
+        request = driver.wait_for_request('.*/GetReferCountsByInstitution.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        schedule_list = []
+
+        for i in data:
+            if i["ScheduleTotalCount"] != 0:
+                temp = []
+                temp.append(i["InstitutionCode"])
+                temp.append(i["JobCount"])
+                schedule_list.append(temp)
+
+        # Schedule이 있는 병원을 순서대로 클릭
+        for i in schedule_list:
+            driver.find_element(By.CSS_SELECTOR, "#list-institution-row-"+str(i[0])).click()
+
+            # Schedule 체크 해제
+            status = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[4]/a/input").get_property("checked")
+            if status != False:
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[4]/a/label").click()
+
+            # All Assigned List 탭 클릭
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+            # All Assigned List의 Job count 저장
+            time.sleep(0.5)
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = 0
+            list_cnt = int(temp_cnt[5])
+
+            # Not Assigned List 탭 클릭
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+            
+            # Not Assigned List의 Job count 저장
+            time.sleep(0.5)
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = int(list_cnt) + int(temp_cnt[5])
+
+            # 병원 리스트의 Job count와 Job list의 job count가 일치하는지 확인
+            try:
+                assert int(i[1]) == int(list_cnt)
+            except:
+                testResult = "failed"
+                reason.append("2 steps failed\n")
+
+        print("ITR-27: Worklist > Schedule")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Schedule 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1677, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1677, testPlanID, buildName, 'p', "Schedule Passed")
+        
+    def Priority():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Worklist에서 Priority가 일반인 의뢰 검사를 선택한 후, Priority 버튼을 클릭한다.
+        # Refer 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+        
+        # Show entries를 100개로 변경
+        Common.refer_show_entries(100)
+        
+        # Not Assigned List 탭 클릭
+        time.sleep(0.5)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+
+        # Not Assigned List > Job priority가 일반인 Job list 저장
+        request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            if i["JobPriority"] == 'N':
+                job_list.append(i["JobKey"])
+
+        # Not Assigned List > Priority가 일반인 임의의 job 체크
+        job_key = random.choice(job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()="+str(job_key)+"]").click()
+
+        # Not Assigned List > Priority 버튼 클릭
+        priority_btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[1]/button[1]")
+        if priority_btn.get_property("disabled") != True:
+            driver.execute_script("arguments[0].click()",priority_btn)
+
+        # Not Assigned List 탭 클릭 후, Not Assigned List > Job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+        
+        request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            if i["JobPriority"] == 'N':
+                job_list.append(i["JobKey"])
+
+        # 선택한 job의 priority가 응급으로 변경되었는지 확인
+        try:
+            assert job_key not in job_list
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+        
+        # 2 steps start! : Worklist에서 Priority가 응급인 의뢰 검사를 선택한 후, Priority 버튼을 클릭한다.
+        # Not Assigned List 탭 클릭 후, Priority가 응급인 job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+
+        request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            if i["JobPriority"] == 'E':
+                job_list.append(i["JobKey"])
+
+        # Not Assigned List > Priority가 응급인 job 체크
+        job_key = random.choice(job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # Not Assigned List > Priority 버튼 클릭
+        priority_btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[1]/button[1]")
+        if priority_btn.get_property("disabled") != True:
+            driver.execute_script("arguments[0].click()",priority_btn)
+
+        # Not Assigned List 탭 클릭 후, Priority가 응급인 Job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+
+        request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            if i["JobPriority"] == 'E':
+                job_list.append(i["JobKey"])
+
+        # 선택한 job의 priority가 일반으로 변경되었는지 확인
+        try:
+            assert job_key not in job_list
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        print("ITR-28: Worklist > Priority")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Priority 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1681, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1681, testPlanID, buildName, 'p', "Priority Passed")
+
+    def Canceled():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Worklist에서 Job Status가 Canceled 이외의 의뢰 검사를 선택한 후, Cancel 버튼을 클릭한다.
+        # Refer 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Not Assgined List 탭 클릭 후, Job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+        
+        request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        before_job_list = []
+
+        for i in data:
+            before_job_list.append(i["JobKey"])
+
+        # Not Assgined List > 임의의 Job 선택
+        job_key = random.choice(before_job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # Cancel 버튼 클릭
+        cancel_btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[1]/button[2]")
+        if cancel_btn.get_property("disabled") != True:
+            driver.execute_script("arguments[0].click()",cancel_btn)
+        
+        # Request Cancel 팝업창이 나타나는지 확인
+        try:
+            assert driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[9]/div/div/div[1]/h4").get_property("textContent") == "Request Cancel"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+        
+        # 2 steps start! : Request Cancel 팝업창에서 "OK"를 클릭한다.
+        # Request Cancel > OK 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[9]/div/div/div[3]/button[1]").click()
+
+        # Not Assgined List > Job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+        
+        request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        after_job_list = []
+
+        for i in data:
+            after_job_list.append(i["JobKey"])
+
+        # Not Assgined List > Job list에서 Cancel 한 job이 없는지 확인
+        try:
+            assert job_key not in after_job_list
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # 3 steps start! : Request Cancel 팝업창에서 "Close"를 클릭한다.
+        # Not Assgined List > 임의의 Job 선택
+        job_key = random.choice(before_job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # Cancel 버튼 클릭
+        cancel_btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[1]/button[2]")
+        if cancel_btn.get_property("disabled") != True:
+            driver.execute_script("arguments[0].click()",cancel_btn)
+
+        # Request Cancel > Close 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[9]/div/div/div[3]/button[2]").click()
+
+        # Net Assigned List 탭 클릭(job list 획득하기 위함)
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+
+        request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        close_job_list = []
+
+        for i in data:
+            close_job_list.append(i["JobKey"])
+
+        # Not Assgined List > Job list에서 Cancel 한 job이 있는지 확인
+        try:
+            assert job_key in close_job_list
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")    
+
+        print("ITR-28: Worklist > Canceled")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Canceled 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1685, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1685, testPlanID, buildName, 'p', "Canceled Passed")
+
+    def Refer():
+        testResult = ''
+        reason = list()
+
+        signInOut.admin_sign_in()
+
+        # 1 steps start! : Worklist에서 임의의 의뢰 검사를 선택한 후, Refer 버튼을 클릭한다.
+        # Refer 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Not Assigned List 탭 클릭 후, job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+
+        request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            job_list.append(i["JobKey"])
+
+        # Not Assigned List > 임의의 job 선택
+        job_key = random.choice(job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # Refer 버튼 클릭
+        refer_btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[1]")
+        if refer_btn.get_property("disabled") != True:
+            driver.execute_script("arguments[0].click()",refer_btn)
+
+        # Refer 창이 팝업됐는지 확인
+        try:
+            assert driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[1]/h4").get_property("textContent") == "Refer"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # 2 steps start! : Search 입력란에 ID 또는 이름을 입력한다.
+        # Refer 팝업창의 Reporter list 저장
+        temp_list = ''
+        time.sleep(1)
+        temp_list = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[2]/div[1]/ul").get_property("outerText")
+        reporter_list = temp_list.split('\n')
+        reporter_id_list = []
+        reporter_name_list = []
+
+        for i in reporter_list:
+            reporter_id_list.append(i.split()[0])
+            reporter_name_list.append(i.split()[2])
+
+        # Refer 팝업창 > Search 필드에 임의의 Reporter ID를 입력
+        random_reporter_id = random.choice(reporter_id_list)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/input").clear()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/input").send_keys(random_reporter_id)
+
+        # Refer 팝업창 > 검색 결과 저장
+        temp_list = ''
+        temp_list = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[2]/div[1]/ul").get_property("outerText")
+        reporter_list = temp_list.split('\n')
+        check_reporter_id_list = []
+
+        for i in reporter_list:
+            check_reporter_id_list.append(i.split()[0])
+
+        # Refer 팝업창 > Reporter list에 검색한 Reporter가 표시되는지 확인
+        try:
+            assert random_reporter_id in check_reporter_id_list
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # Refer 팝업창 > Search 필드에 임의의 Reporter Name을 입력
+        random_reporter_name = random.choice(reporter_name_list)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/input").clear()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/input").send_keys(random_reporter_name)
+
+        # Refer 팝업창 > 검색 결과 저장
+        temp_list = ''
+        temp_list = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[2]/div[1]/ul").get_property("outerText")
+        reporter_list = temp_list.split('\n')
+        check_reporter_name_list = []
+
+        for i in reporter_list:
+            check_reporter_name_list.append(i.split()[2])
+        
+        # Refer 팝업창 > Reporter list에 검색한 Reporter가 표시되는지 확인
+        try:
+            assert random_reporter_name in check_reporter_name_list
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+        
+        # 3 steps start! : Sort By Name에 체크한다.
+        # Refer 팝업창 > Search 필드 초기화
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/input").clear()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/input").send_keys(" ")
+
+        # Refer 팝업창 > Reporter list 저장 및 오름차순 정렬
+        temp_list = ''
+        temp_list = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[2]/div[1]/ul").get_property("outerText")
+        reporter_list = temp_list.split('\n')
+        before_reporter_name_list = []
+
+        for i in reporter_list:
+            before_reporter_name_list.append(i.split()[2])
+        before_reporter_name_list.sort()
+
+        # Refer 팝업창 > Sort By Name 체크
+        check = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[1]/input")
+        if refer_btn.get_property("checked") != True:
+            driver.execute_script("arguments[0].click()",check)
+
+        # Refer 팝업창 > Reporter list 저장
+        time.sleep(1)
+        temp_list = ''
+        temp_list = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[2]/div[1]/ul").get_property("outerText")
+        reporter_list = temp_list.split('\n')
+        after_reporter_name_list = []
+
+        for i in reporter_list:
+            after_reporter_name_list.append(i.split()[2])
+
+        # Reporter list가 Name으로 정렬되었는지 확인
+        try:
+            assert before_reporter_name_list == after_reporter_name_list
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")
+
+        # 4 steps start! : 리스트에서 임의의 판독의를 클릭한다.
+        # Refer 팝업창 > Reporter list에서 repoter의 수를 확인
+        reporter_cnt = len(after_reporter_name_list)
+        count_list = []
+        if reporter_cnt > 1:
+            for i in range(2, reporter_cnt):
+                count_list.append(i)
+        else:
+            reporter_cnt = 1
+
+        # Refer 팝업창 > 임의의 Reporter를 임의의 숫자만큼 선택 후, reporter list 저장
+        select_reporter_list = []
+        selected_reporter_list = []
+        if int(reporter_cnt) > 1:
+            i = 0
+            cnt = random.randrange(reporter_cnt)
+            while i < cnt:
+            # for i in range(1, random.randrange(reporter_cnt)):
+                n = random.sample(count_list, 1)
+                select_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li["+str(n)+"]").get_property("textContent"))
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li["+str(n)+"]").click()
+                selected_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[2]/div[2]/ul/li["+str(n)+"]").get_property("textContent"))
+                print(select_reporter_list)
+                print(selected_reporter_list)
+                i = i + 1
+        else:
+            select_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").get_property("textContent"))
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").click()
+            selected_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").get_property("textContent"))
+
+        # Refer 팝업창 > 선택한 Reporter가 정상적으로 선택됐는지 확인
+        try:
+            assert select_reporter_list == selected_reporter_list
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n")
+
+
+
+
+        # 5 steps start! : Comment를 입력한다.
+        # 6 steps start! : Comment를 선택하고, 추가 Comment가 있다면 입력한다.
+        # 7 steps start! : With Releated Job에 체크한 후, Save 버튼을 클릭한다.
+        # 8 steps start! : With Releated Job에 체크 해제한 후, Save 버튼을 클릭한다.
+        # 9 steps start! : Close 버튼을 클릭한다.
 
 
 
@@ -3361,4 +4301,9 @@ class Search_filter:
 
 
 
-Search_filter.ShortCut()
+
+
+# Worklist.Schedule()
+# Worklist.Priority()
+# Worklist.Canceled()
+Worklist.Refer()

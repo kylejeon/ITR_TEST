@@ -19,6 +19,12 @@ ITR_Admin.Search_filter.Department() # ITR-19
 ITR_Admin.Search_filter.Request_Name() # ITR-20
 ITR_Admin.Search_filter.Search_All() # ITR-21
 ITR_Admin.Search_filter.RealTime() # ITR-22
+ITR_Admin.Search_filter.ShortCut() # ITR-23
+ITR_Admin.Worklist.All_Assigned_List() # ITR-24
+ITR_Admin.Worklist.Not_Assigned_List() # ITR-25
+ITR_Admin.Worklist.All_List() # ITR-26
+
+
 
 
 #driver.quit()
