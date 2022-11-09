@@ -6108,11 +6108,136 @@ class DownloadControl:
             testResult = False
             Result_msg += "#1 "
 
+        if "#1" not in Result_msg:
+            # Institution right #2
+            left_insti_count = driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-all-institution").get_property("childElementCount")
+            for n in range (1, left_insti_count+1):
+                if driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-all-institution > option:nth-child("+str(n)+")").text == search_institution_3:
+                    insti_position = n
+                    driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-all-institution > option:nth-child("+str(insti_position)+")").click()
+                    break
+
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-modify-institution-add-btn")))
+            driver.find_element(By.CSS_SELECTOR, "#download-config-modify-institution-add-btn").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-modify-institution-remove-btn")))
+            right_insti_count = driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-institution").get_property("childElementCount")
+            if driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-institution > option:nth-child("+str(right_insti_count)+")").text != search_institution_3:
+                testResult = False
+                Result_msg += "#2 "
+
+            # Institution left #3
+            driver.find_element(By.CSS_SELECTOR, "#download-config-modify-institution-remove-btn").click()
+            try:
+                WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#sel-available-download-control-modify-all-institution > option:nth-child("+str(insti_position)+")"), search_institution_3))
+            except:
+                testResult = False
+                Result_msg += "#3 "
+
+            # Institution right 
+            driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-all-institution > option:nth-child("+str(insti_position)+")").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-modify-institution-add-btn")))
+            driver.find_element(By.CSS_SELECTOR, "#download-config-modify-institution-add-btn").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-modify-institution-remove-btn")))
+
+            # Selected Institution Click #4
+            if (driver.find_element(By.CSS_SELECTOR, "#download-control-modify-check-emergency-only").get_property("disabled") == True or 
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-check-not-emergency-only").get_property("disabled") == True or 
+            driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-modality").get_property("disabled") == True or 
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-starting-date").get_property("disabled") == True or 
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-ending-date").get_property("disabled") == True or 
+            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_modify_specialty_chosen > ul > li > input").get_property("disabled") == True ):
+                testResult = False
+                Result_msg += "#4 "
+
+            # Emergency only, Save #5 #13
+            # not emergency only off
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-popup-modal > div > div > div.modal-body > div:nth-child(3) > div:nth-child(2) > div > div:nth-child(2) > label").click()
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#download-contol-modify-save-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+            # no
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[6]/div/div/div[1]/h3")))
+            no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[6]/div/div/div[1]/h3").text
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#download-contol-modify-save-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+
+            del driver.requests
+            time.sleep(0.25)
+
+            # yes
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+            driver.wait_for_request('.*/GetDownloadControlList.*')
+
+            del driver.requests
+            time.sleep(0.25)
+
+            # user select
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/table/tbody/tr[1]/td[2]/a").click()
+            driver.wait_for_request('.*/GetModifyInstitutionList.*')
+            # institution click
+            driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-institution > option:nth-child("+str(right_insti_count)+")").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-modify-institution-remove-btn")))
+            
+            if (msg != "수정하시겠습니까?" or 
+                no_msg != "Download Control Modify" or
+                driver.find_element(By.CSS_SELECTOR, "#download-control-modify-check-not-emergency-only").get_property("checked") != False ):
+                testResult = False
+                Result_msg += "#13 "
+
+            # 새로운 탭 + 전환
+            driver.execute_script("window.open()")
+            driver.switch_to.window(driver.window_handles[1])
+            driver.get(WorklistUrl);
+            wk_login(wk_id_2, wk_pw_2)
+
+            request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            total = math.ceil(data["recordsFiltered"]/data["Length"])
+
+            for a in range (0, total+1):
+                request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+                for n in data:
+                    if n["JobPriority"] != "E" and wk_id_2 not in n["Refer"]:
+                        testResult = False
+                        Result_msg += "#5 "
+                        break
+
+                if ("#5" in Result_msg or 
+                    a+1 == total):
+                    break
+
+                del driver.requests
+                time.sleep(0.25)
+
+                driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a").click()
+
+            # logout 및 전환
+            driver.find_element(By.CSS_SELECTOR, "#right-sidebar-logout > span").click()
+            driver.implicitly_wait(5)
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+
+
+            
+
 
 
 
         
-        ## Click Delete #2
+        ## Click Delete
         #driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/table/tbody/tr/td[1]/label").click()
         ## delete
         #driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]").click()
