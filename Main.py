@@ -23,7 +23,9 @@ ITR_Admin.Search_filter.ShortCut() # ITR-23
 ITR_Admin.Worklist.All_Assigned_List() # ITR-24
 ITR_Admin.Worklist.Not_Assigned_List() # ITR-25
 ITR_Admin.Worklist.All_List() # ITR-26
-
+ITR_Admin.Worklist.Schedule() # ITR-27
+ITR_Admin.Worklist.Priority() # ITR-28
+ITR_Admin.Worklist.Canceled() # ITR-29
 
 
 
