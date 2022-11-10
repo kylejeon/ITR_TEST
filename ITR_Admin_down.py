@@ -511,7 +511,7 @@ subadmin_id = "testSubadmin"
 subadmin_pw = "Server123!@#"
 wk_id = "testInfReporter"
 wk_pw = "Server123!@#"
-wk_id_2 = "ITRTestUser" #DownloadControl_User_Add
+wk_id_2 = "ITRTestUser" #DownloadControl_User_Add / DownloadControl_User_Modify
 wk_pw_2 = "1234qwer!@"#DownloadControl_User_Add
 search_id = "testInfReporter" #DirectMessageBox_Search / DirectMessageSetting_Search
 search_username = "TestINFReporter" #DirectMessageBox_Search / DirectMessageSetting_Search
@@ -529,6 +529,7 @@ add_test_id = "TestA" #+난수 # DirectMessageSetting_Authorize
 add_test_pw = "1234qwer!" #DirectMessageSetting_Authorize
 upload_pic = "C:\\Users\\INFINITT\\Desktop\\uploadtest.png" # NoticeList_NoticeEditBoard
 upload_pic_url = "https://i.ytimg.com/vi/gREpAVOERis/maxresdefault.jpg" # NoticeList_NoticeEditBoards
+specialty = "ITRTest" #DownloadControl_Add
 
 def admin_login():
     driver.find_element(By.ID, 'user-id').clear()
@@ -5255,11 +5256,87 @@ class DownloadControl:
         #else:
         #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "User_SearchFilter_UserName Test Passed")
 
+    def User_Add_DeletionSetup(insti_position):
+            # Deletion
+            driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr > td:nth-child(1) > label").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn")))
+            # delete
+            driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            # yes
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+            # Add
+            driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#download-contol-add-save-btn"), "Save"))
+
+            # User right
+            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_user_chosen > a > span").click()
+            driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(wk_id_2)
+            driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(Keys.ENTER)
+            driver.find_element(By.CSS_SELECTOR, "#download-config-add-user-add-btn").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-user-remove-btn")))
+
+            # Institution right 
+            driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-add-institution > option:nth-child("+str(insti_position)+")").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-add-btn")))
+            driver.find_element(By.CSS_SELECTOR, "#download-config-add-institution-add-btn").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-remove-btn")))
+
     def User_Add():
         testResult = True
         Result_msg = "failed at "
+        #####request code, request name
+        request_name = "Chest PA"
+        #####
         
         ReFresh()
+
+        del driver.requests
+        time.sleep(0.5)
+
+        # Get info from list
+        driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(search_institution_2)
+        driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        driver.wait_for_request(".*/GetAllAssignedList.*")
+
+        del driver.requests
+        time.sleep(0.5)
+
+        driver.find_element(By.CSS_SELECTOR, "#tab_all_list > a").click()
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        total = math.ceil(data["recordsFiltered"] / data["Length"])
+
+        target_modal = ""
+        target_date = ""
+        for a in range(0, total):
+            request = driver.wait_for_request('.*/GetAllList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for n in data:
+                if n["Modality"] != None:
+                    target_modal = n["Modality"]
+                if n["JobDTTMString"] != "":
+                    target_date = n["JobDTTMString"]
+                if target_modal != "" and target_date != "":
+                    break
+
+            del driver.requests
+            time.sleep(0.25)
+
+            if (a+1 == total or
+                (target_modal != "" and target_date != "")):
+                break
+
+            driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -5374,13 +5451,13 @@ class DownloadControl:
             data = json.loads(body)
             total = math.ceil(data["recordsFiltered"]/data["Length"])
 
-            for a in range (1, total+1):
+            for a in range (0, total+1):
                 request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
 
                 for n in data:
-                    if n["JobPriority"] != "E":
+                    if n["JobPriority"] != "E" and wk_id_2 not in n["Refer"]:
                         testResult = False
                         Result_msg += "#5 "
                         break
@@ -5400,35 +5477,7 @@ class DownloadControl:
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
 
-            # Deletion
-            driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr > td:nth-child(1) > label").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn")))
-            # delete
-            driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn").click()
-            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
-            # yes
-            time.sleep(0.25)
-            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
-            # ok
-            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-
-            # Add
-            driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
-            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#download-contol-add-save-btn"), "Save"))
-
-            # User right
-            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_user_chosen > a > span").click()
-            driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(wk_id_2)
-            driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(Keys.ENTER)
-            driver.find_element(By.CSS_SELECTOR, "#download-config-add-user-add-btn").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-user-remove-btn")))
-
-            # Institution right 
-            driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-add-institution > option:nth-child("+str(insti_position)+")").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-add-btn")))
-            driver.find_element(By.CSS_SELECTOR, "#download-config-add-institution-add-btn").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-remove-btn")))
+            DownloadControl.User_Add_DeletionSetup(insti_position)
 
             # Not Emergency Only #6
             # emergency only off
@@ -5458,13 +5507,13 @@ class DownloadControl:
             data = json.loads(body)
             total = math.ceil(data["recordsFiltered"]/data["Length"])
 
-            for a in range (1, total+1):
+            for a in range (0, total+1):
                 request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
 
                 for n in data:
-                    if n["JobPriority"] == "E":
+                    if n["JobPriority"] == "E" and wk_id_2 not in n["Refer"]:
                         testResult = False
                         Result_msg += "#6 "
                         break
@@ -5484,11 +5533,11 @@ class DownloadControl:
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
 
-            # Deletion
-            driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr > td:nth-child(1) > label").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn")))
-            # delete
-            driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn").click()
+            DownloadControl.User_Add_DeletionSetup(insti_position)
+
+            # Both on #7
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#download-contol-add-save-btn").click()
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
             # yes
             time.sleep(0.25)
@@ -5497,23 +5546,356 @@ class DownloadControl:
             # ok
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
 
-            # Add
-            driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
-            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#download-contol-add-save-btn"), "Save"))
+            # 새로운 탭 + 전환
+            driver.execute_script("window.open()")
+            driver.switch_to.window(driver.window_handles[1])
 
-            # User right
-            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_user_chosen > a > span").click()
-            driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(wk_id_2)
-            driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(Keys.ENTER)
-            driver.find_element(By.CSS_SELECTOR, "#download-config-add-user-add-btn").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-user-remove-btn")))
+            del driver.requests
+            time.sleep(0.25)
 
-            # Institution right 
-            driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-add-institution > option:nth-child("+str(insti_position)+")").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-add-btn")))
-            driver.find_element(By.CSS_SELECTOR, "#download-config-add-institution-add-btn").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-remove-btn")))
+            driver.get(WorklistUrl);
+            wk_login(wk_id_2, wk_pw_2)
 
+            request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            total = math.ceil(data["recordsFiltered"]/data["Length"])
+            
+            emergency_check = False
+            normal_check = False
+            for a in range (0, total+1):
+                request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+                for n in data:
+                    if n["JobPriority"] == "E" and emergency_check == False:
+                        emergency_check = True
+                    if n["JobPriority"] != "E" and normal_check == False:
+                        normal_check = True
+
+                if ((emergency_check == True and normal_check == True) or 
+                    a+1 == total):
+                    break
+
+                del driver.requests
+                time.sleep(0.25)
+
+                driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a").click()
+            if emergency_check == False or normal_check == False:
+                testResult = False
+                Result_msg += "#7 "
+
+            # logout 및 전환
+            driver.find_element(By.CSS_SELECTOR, "#right-sidebar-logout > span").click()
+            driver.implicitly_wait(5)
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+
+            DownloadControl.User_Add_DeletionSetup(insti_position)
+
+            # Both off #8
+            driver.find_element(By.CSS_SELECTOR, "#download-control-add-popup-modal > div > div > div.modal-body > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > div:nth-child(2) > label").click()
+            driver.find_element(By.CSS_SELECTOR, "#download-control-add-popup-modal > div > div > div.modal-body > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > div:nth-child(1) > label").click()
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#download-contol-add-save-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            # yes
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+            # 새로운 탭 + 전환
+            driver.execute_script("window.open()")
+            driver.switch_to.window(driver.window_handles[1])
+
+            del driver.requests
+            time.sleep(0.25)
+
+            driver.get(WorklistUrl);
+            wk_login(wk_id_2, wk_pw_2)
+
+            request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            total = math.ceil(data["recordsFiltered"]/data["Length"])
+
+            for a in range (0, total+1):
+                request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+                for n in data:
+                    if wk_id_2 not in n["Refer"]:
+                        testResult = False
+                        Result_msg += "#8 "
+                        break
+
+                if ("#8" in Result_msg or 
+                    a+1 == total):
+                    break
+
+                del driver.requests
+                time.sleep(0.25)
+
+                driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a").click()
+
+            # logout 및 전환
+            driver.find_element(By.CSS_SELECTOR, "#right-sidebar-logout > span").click()
+            driver.implicitly_wait(5)
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+
+            DownloadControl.User_Add_DeletionSetup(insti_position)
+
+            # Modality #9
+            request = driver.wait_for_request('.*/GetModalityList')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            for n in data:
+                if n["ModalityCode"] == target_modal:
+                    temp_modal = n["ModalityDesc"]
+                    break
+            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_modality_chosen > ul > li > input").send_keys(temp_modal)
+            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_modality_chosen > ul > li > input").send_keys(Keys.ENTER)
+
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#download-contol-add-save-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            # yes
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+            # 새로운 탭 + 전환
+            driver.execute_script("window.open()")
+            driver.switch_to.window(driver.window_handles[1])
+
+            del driver.requests
+            time.sleep(0.25)
+
+            driver.get(WorklistUrl);
+            wk_login(wk_id_2, wk_pw_2)
+
+            request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            total = math.ceil(data["recordsFiltered"]/data["Length"])
+
+            for a in range (0, total+1):
+                request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+                for n in data:
+                    if target_modal != n["Modality"] and wk_id_2 not in n["Refer"]:
+                        testResult = False
+                        Result_msg += "#9 "
+                        break
+
+                if ("#9" in Result_msg or 
+                    a+1 == total):
+                    break
+
+                del driver.requests
+                time.sleep(0.25)
+
+                driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a").click()
+
+            # logout 및 전환
+            driver.find_element(By.CSS_SELECTOR, "#right-sidebar-logout > span").click()
+            driver.implicitly_wait(5)
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+
+            DownloadControl.User_Add_DeletionSetup(insti_position)
+
+            # Date(Job date) #10
+            driver.find_element(By.CSS_SELECTOR, "#download-control-add-starting-date").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[4]/div/div[2]/button[4]")))
+            target_date = target_date.split(' ')[0]
+            year = target_date.split('-')[0]
+            month_list = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+            month = target_date.split('-')[1]
+            for n in range (1, 13):
+                if int(month) == n:
+                    month = month_list[n-1]
+                    break
+            day = target_date.split('-')[2]
+            while(1):
+                if (driver.find_element(By.XPATH, "/html/body/div[4]/div/div[1]/div[1]/div[3]/div[2]").text == year and 
+                    driver.find_element(By.XPATH, "/html/body/div[4]/div/div[1]/div[1]/div[1]/div[2]").text == month):
+                    break
+                driver.find_element(By.XPATH, "/html/body/div[4]/div/div[1]/div[1]/div[1]/div[1]/a/i").click()
+                time.sleep(0.3)
+            time.sleep(1)
+            check = False
+            for a in range(2, 7):
+                for b in range(1, 8):
+                    if driver.find_element(By.XPATH, "/html/body/div[4]/div/div[1]/div[3]/div[1]/table/tbody/tr["+str(a)+"]/td["+str(b)+"]").get_property("textContent") == day:
+                        driver.find_element(By.XPATH, "/html/body/div[4]/div/div[1]/div[3]/div[1]/table/tbody/tr["+str(a)+"]/td["+str(b)+"]").click()
+                        check = True
+                        break
+                if check == True:
+                    break
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#download-control-add-starting-date"), target_date))
+
+            driver.find_element(By.CSS_SELECTOR, "#download-control-add-ending-date").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[5]/div/div[2]/button[4]")))
+            while(1):
+                if (driver.find_element(By.XPATH, "/html/body/div[5]/div/div[1]/div[1]/div[3]/div[2]").text == year and 
+                    driver.find_element(By.XPATH, "/html/body/div[5]/div/div[1]/div[1]/div[1]/div[2]").text == month):
+                    break
+                driver.find_element(By.XPATH, "/html/body/div[5]/div/div[1]/div[1]/div[1]/div[1]/a/i").click()
+                time.sleep(0.3)
+            time.sleep(1)
+            check = False
+            for a in range(2, 7):
+                for b in range(1, 8):
+                    if driver.find_element(By.XPATH, "/html/body/div[5]/div/div[1]/div[3]/div[1]/table/tbody/tr["+str(a)+"]/td["+str(b)+"]").get_property("textContent") == day:
+                        driver.find_element(By.XPATH, "/html/body/div[5]/div/div[1]/div[3]/div[1]/table/tbody/tr["+str(a)+"]/td["+str(b)+"]").click()
+                        check = True
+                        break
+                if check == True:
+                    break
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#download-control-add-ending-date"), target_date))
+
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#download-contol-add-save-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            # yes
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+            # 새로운 탭 + 전환
+            driver.execute_script("window.open()")
+            driver.switch_to.window(driver.window_handles[1])
+
+            del driver.requests
+            time.sleep(0.25)
+
+            driver.get(WorklistUrl);
+            wk_login(wk_id_2, wk_pw_2)
+
+            request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            total = math.ceil(data["recordsFiltered"]/data["Length"])
+
+            for a in range (0, total+1):
+                request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+                for n in data:
+                    if target_date != (n["JobDateDTTMString"].split(' '))[0] and wk_id_2 not in n["Refer"]:
+                        testResult = False
+                        Result_msg += "#10 "
+                        break
+
+                if ("#10" in Result_msg or 
+                    a+1 == total):
+                    break
+
+                del driver.requests
+                time.sleep(0.25)
+
+                driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a").click()
+
+            # logout 및 전환
+            driver.find_element(By.CSS_SELECTOR, "#right-sidebar-logout > span").click()
+            driver.implicitly_wait(5)
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+
+            DownloadControl.User_Add_DeletionSetup(insti_position)
+
+            # Specialty #11
+            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_specialty_chosen > ul > li > input").send_keys(specialty)
+            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_specialty_chosen > ul > li > input").send_keys(Keys.ENTER)
+
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#download-contol-add-save-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            # yes
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+            # 새로운 탭 + 전환
+            driver.execute_script("window.open()")
+            driver.switch_to.window(driver.window_handles[1])
+
+            del driver.requests
+            time.sleep(0.25)
+
+            driver.get(WorklistUrl);
+            wk_login(wk_id_2, wk_pw_2)
+
+            request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            total = math.ceil(data["recordsFiltered"]/data["Length"])
+
+            for a in range (0, total+1):
+                request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+                for n in data:
+                    if request_name != n["RequestName"] and wk_id_2 not in n["Refer"]:
+                        print(request_name)
+                        print(n["RequestName"])
+                        testResult = False
+                        Result_msg += "#11 "
+                        break
+
+                if ("#11" in Result_msg or 
+                    a+1 == total):
+                    break
+
+                del driver.requests
+                time.sleep(0.25)
+
+                driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a").click()
+
+            # logout 및 전환
+            driver.find_element(By.CSS_SELECTOR, "#right-sidebar-logout > span").click()
+            driver.implicitly_wait(5)
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+
+            DownloadControl.User_Add_DeletionSetup(insti_position)
+
+            # Close #13
+            # close
+            driver.find_element(By.CSS_SELECTOR, "#download-contol-add-close-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+            # no
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[5]/div/div/div[1]/h3")))
+            no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[5]/div/div/div[1]/h3").text
+            # close
+            driver.find_element(By.CSS_SELECTOR, "#download-contol-add-close-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            # yes
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            if (msg != "등록을 취소하시겠습니까?" or 
+                no_msg != "Download Control Registration" or 
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[1]/div[1]/h4").text != "Download Control List"):
+                testResult = False
+                Result_msg += "#13 "
 
         print("User_Add")
         print(testResult)
@@ -5524,6 +5906,362 @@ class DownloadControl:
         #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
         #else:
         #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "User_Add Test Passed")
+
+    def User_Delete():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+
+        # DownloadControl
+        driver.find_element(By.CSS_SELECTOR, "#download-control-btn").click()
+        driver.wait_for_request('.*/GetDownloadControlList.*')
+        
+        # Add
+        driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#download-contol-add-save-btn"), "Save"))
+
+        # User right #1
+        driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_user_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(wk_id_2)
+        driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(Keys.ENTER)
+        driver.find_element(By.CSS_SELECTOR, "#download-config-add-user-add-btn").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-user-remove-btn")))
+        
+        # Institution right
+        left_insti_count = driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-add-institution").get_property("childElementCount")
+        for n in range (1, left_insti_count+1):
+            if driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-add-institution > option:nth-child("+str(n)+")").text == search_institution_3:
+                insti_position = n
+                driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-add-institution > option:nth-child("+str(insti_position)+")").click()
+                break
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-add-btn")))
+        driver.find_element(By.CSS_SELECTOR, "#download-config-add-institution-add-btn").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-remove-btn")))
+
+        # Save
+        driver.find_element(By.CSS_SELECTOR, "#download-contol-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # Yes
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        # Ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        # Nonclick Delete #1
+        if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
+            testResult = False
+            Result_msg += "#1 "
+
+        # Search
+        driver.find_element(By.CSS_SELECTOR, "#download-search-user-id").send_keys(wk_id_2)
+        driver.find_element(By.CSS_SELECTOR, "#download-search").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#download-list > tbody > tr > td:nth-child(2)"), wk_id_2))
+        
+        # Click Delete #2
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/table/tbody/tr/td[1]/label").click()
+        # delete
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+        # no
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+        no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[1]/div[1]/h4").text
+        # delete
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # yes
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        yes_msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        
+        if (msg != "삭제하시겠습니까?" or
+            no_msg != "Download Control List" or 
+            yes_msg != "삭제하였습니다."):
+            testResult = False
+            Result_msg += "#2 "
+
+        del driver.requests
+        time.sleep(1)
+
+        # DownloadControl
+        driver.find_element(By.CSS_SELECTOR, "#download-control-btn").click()
+        driver.wait_for_request('.*/GetDownloadControlList.*')
+        for n in driver.requests:
+            if "GetDownloadControlList?UserID=&UserName" in n.url:
+                request = n
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        total = math.ceil(data["recordsFiltered"] / data["Length"])
+        if total > 1:
+            del driver.requests
+            time.sleep(1)
+
+            # Select Other Tab #3
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/table/tbody/tr[1]/td[1]/label").click()
+            driver.find_element(By.CSS_SELECTOR, "#download-list_next > a").click()
+
+            driver.wait_for_request('.*/GetDownloadControlList.*')
+            if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
+                testResult = False
+                Result_msg += "#3 "
+
+            del driver.requests
+            time.sleep(1)
+
+            # Select Other Tab > 2 #4
+            element = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/table/tbody/tr[1]/td[1]/label")
+            driver.execute_script("arguments[0].click()",element)
+            driver.find_element(By.CSS_SELECTOR, "#download-list_previous > a").click()
+
+            driver.wait_for_request('.*/GetDownloadControlList.*')
+            if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
+                testResult = False
+                Result_msg += "#4 "
+        else:
+            testResult = False
+            Result_msg += "#3 #4 "
+
+        print("User_Delete")
+        print(testResult)
+        print(Result_msg)
+
+        ## User_Delete결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "User_Delete Test Passed")
+
+    def User_Modify():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+
+        # DownloadControl
+        driver.find_element(By.CSS_SELECTOR, "#download-control-btn").click()
+        driver.wait_for_request('.*/GetDownloadControlList.*')
+        
+        ## Add
+        #driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        #WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#download-contol-add-save-btn"), "Save"))
+
+        ## User right #1
+        #driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_user_chosen > a > span").click()
+        #driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(wk_id_2)
+        #driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(Keys.ENTER)
+        #driver.find_element(By.CSS_SELECTOR, "#download-config-add-user-add-btn").click()
+        #WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-user-remove-btn")))
+        
+        ## Institution right
+        #left_insti_count = driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-add-institution").get_property("childElementCount")
+        #for n in range (1, left_insti_count+1):
+        #    if driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-add-institution > option:nth-child("+str(n)+")").text == search_institution_3:
+        #        insti_position = n
+        #        driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-add-institution > option:nth-child("+str(insti_position)+")").click()
+        #        break
+        #WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-add-btn")))
+        #driver.find_element(By.CSS_SELECTOR, "#download-config-add-institution-add-btn").click()
+        #WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-remove-btn")))
+
+        ## Save
+        #driver.find_element(By.CSS_SELECTOR, "#download-contol-add-save-btn").click()
+        #WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        ## Yes
+        #time.sleep(0.25)
+        #driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        #WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        ## Ok
+        #driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        # Search
+        driver.find_element(By.CSS_SELECTOR, "#download-search-user-id").send_keys(wk_id_2)
+        driver.find_element(By.CSS_SELECTOR, "#download-search").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#download-list > tbody > tr > td:nth-child(2)"), wk_id_2))
+
+        # User ID Click #1
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/table/tbody/tr[1]/td[2]/a").click()
+        request = driver.wait_for_request('.*/GetModifyInstitutionList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+
+        if (wk_id_2 not in driver.find_element(By.CSS_SELECTOR, "#download-control-modify-user-name").get_property("textContent") or
+            data[0]["InstitutionName"] != search_institution_3 or
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[6]/div/div/div[2]/div[2]/div/div/div[3]/select/option[1]").get_property("text") != search_institution_3 or 
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-check-emergency-only").get_property("disabled") != True or 
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-check-not-emergency-only").get_property("disabled") != True or 
+            driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-modality").get_property("disabled") != True or 
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-starting-date").get_property("disabled") != True or 
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-ending-date").get_property("disabled") != True or 
+            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_modify_specialty_chosen > ul > li > input").get_property("disabled") != True ):
+            testResult = False
+            Result_msg += "#1 "
+
+        if "#1" not in Result_msg:
+            # Institution right #2
+            left_insti_count = driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-all-institution").get_property("childElementCount")
+            for n in range (1, left_insti_count+1):
+                if driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-all-institution > option:nth-child("+str(n)+")").text == search_institution_3:
+                    insti_position = n
+                    driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-all-institution > option:nth-child("+str(insti_position)+")").click()
+                    break
+
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-modify-institution-add-btn")))
+            driver.find_element(By.CSS_SELECTOR, "#download-config-modify-institution-add-btn").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-modify-institution-remove-btn")))
+            right_insti_count = driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-institution").get_property("childElementCount")
+            if driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-institution > option:nth-child("+str(right_insti_count)+")").text != search_institution_3:
+                testResult = False
+                Result_msg += "#2 "
+
+            # Institution left #3
+            driver.find_element(By.CSS_SELECTOR, "#download-config-modify-institution-remove-btn").click()
+            try:
+                WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#sel-available-download-control-modify-all-institution > option:nth-child("+str(insti_position)+")"), search_institution_3))
+            except:
+                testResult = False
+                Result_msg += "#3 "
+
+            # Institution right 
+            driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-all-institution > option:nth-child("+str(insti_position)+")").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-modify-institution-add-btn")))
+            driver.find_element(By.CSS_SELECTOR, "#download-config-modify-institution-add-btn").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-modify-institution-remove-btn")))
+
+            # Selected Institution Click #4
+            if (driver.find_element(By.CSS_SELECTOR, "#download-control-modify-check-emergency-only").get_property("disabled") == True or 
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-check-not-emergency-only").get_property("disabled") == True or 
+            driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-modality").get_property("disabled") == True or 
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-starting-date").get_property("disabled") == True or 
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-ending-date").get_property("disabled") == True or 
+            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_modify_specialty_chosen > ul > li > input").get_property("disabled") == True ):
+                testResult = False
+                Result_msg += "#4 "
+
+            # Emergency only, Save #5 #13
+            # not emergency only off
+            driver.find_element(By.CSS_SELECTOR, "#download-control-modify-popup-modal > div > div > div.modal-body > div:nth-child(3) > div:nth-child(2) > div > div:nth-child(2) > label").click()
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#download-contol-modify-save-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+            # no
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[6]/div/div/div[1]/h3")))
+            no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[6]/div/div/div[1]/h3").text
+            # save
+            driver.find_element(By.CSS_SELECTOR, "#download-contol-modify-save-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+
+            del driver.requests
+            time.sleep(0.25)
+
+            # yes
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+            # ok
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+            driver.wait_for_request('.*/GetDownloadControlList.*')
+
+            del driver.requests
+            time.sleep(0.25)
+
+            # user select
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/table/tbody/tr[1]/td[2]/a").click()
+            driver.wait_for_request('.*/GetModifyInstitutionList.*')
+            # institution click
+            driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-modify-institution > option:nth-child("+str(right_insti_count)+")").click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-modify-institution-remove-btn")))
+            
+            if (msg != "수정하시겠습니까?" or 
+                no_msg != "Download Control Modify" or
+                driver.find_element(By.CSS_SELECTOR, "#download-control-modify-check-not-emergency-only").get_property("checked") != False ):
+                testResult = False
+                Result_msg += "#13 "
+
+            # 새로운 탭 + 전환
+            driver.execute_script("window.open()")
+            driver.switch_to.window(driver.window_handles[1])
+            driver.get(WorklistUrl);
+            wk_login(wk_id_2, wk_pw_2)
+
+            request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            total = math.ceil(data["recordsFiltered"]/data["Length"])
+
+            for a in range (0, total+1):
+                request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+                for n in data:
+                    if n["JobPriority"] != "E" and wk_id_2 not in n["Refer"]:
+                        testResult = False
+                        Result_msg += "#5 "
+                        break
+
+                if ("#5" in Result_msg or 
+                    a+1 == total):
+                    break
+
+                del driver.requests
+                time.sleep(0.25)
+
+                driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a").click()
+
+            # logout 및 전환
+            driver.find_element(By.CSS_SELECTOR, "#right-sidebar-logout > span").click()
+            driver.implicitly_wait(5)
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+
+
+            
+
+
+
+
+        
+        ## Click Delete
+        #driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/table/tbody/tr/td[1]/label").click()
+        ## delete
+        #driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]").click()
+        #WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        ## delete
+        #driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]").click()
+        #WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        ## yes
+        #driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        #WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        ## ok
+        #driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+
+
+        print("User_Modify")
+        print(testResult)
+        print(Result_msg)
+
+        ## User_Modify결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "User_Modify Test Passed")
 
     #def User_SearchFilter_Class():
     #    testResult = True
@@ -5554,7 +6292,7 @@ class DownloadControl:
 
 #subadmin_login()
 admin_login()
-DownloadControl.User_Add()
+DownloadControl.User_Modify()
 
 
 
@@ -5570,7 +6308,7 @@ def test():
     WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > a > span")))
 
     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[1]/div[2]/div/div[1]/div/a/span").click()
-    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[1]/div[2]/div/div[1]/div/div/div/input").send_keys("Cloud")
+    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[1]/div[2]/div/div[1]/div/div/div/input").send_keys(search_institution_2)
     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[1]/div[2]/div/div[1]/div/div/div/input").send_keys(Keys.ENTER)
     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[1]/div[2]/div/div[5]/div/button").click()
     time.sleep(0.35)
