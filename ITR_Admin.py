@@ -4009,7 +4009,7 @@ class Worklist:
             if (i.get_property("dataset"))["institutionName"] == test_hospital:
                 i.click()
 
-        # Not Assgined List 탭 클릭 후, Job list 저장
+        # Not Assigned List 탭 클릭 후, Job list 저장
         time.sleep(1)
         del driver.requests
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
@@ -4022,7 +4022,7 @@ class Worklist:
         for i in data:
             before_job_list.append(i["JobKey"])
 
-        # Not Assgined List > 임의의 Job 선택
+        # Not Assigned List > 임의의 Job 선택
         job_key = random.choice(before_job_list)
         time.sleep(1)
         driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
@@ -4043,7 +4043,7 @@ class Worklist:
         # Request Cancel > OK 버튼 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[9]/div/div/div[3]/button[1]").click()
 
-        # Not Assgined List > Job list 저장
+        # Not Assigned List > Job list 저장
         time.sleep(1)
         del driver.requests
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
@@ -4056,7 +4056,7 @@ class Worklist:
         for i in data:
             after_job_list.append(i["JobKey"])
 
-        # Not Assgined List > Job list에서 Cancel 한 job이 없는지 확인
+        # Not Assigned List > Job list에서 Cancel 한 job이 없는지 확인
         try:
             assert job_key not in after_job_list
         except:
@@ -4064,7 +4064,7 @@ class Worklist:
             reason.append("2 steps failed\n")
 
         # 3 steps start! : Request Cancel 팝업창에서 "Close"를 클릭한다.
-        # Not Assgined List > 임의의 Job 선택
+        # Not Assigned List > 임의의 Job 선택
         job_key = random.choice(before_job_list)
         time.sleep(1)
         driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
@@ -4097,7 +4097,7 @@ class Worklist:
             testResult = "failed"
             reason.append("3 steps failed\n")    
 
-        print("ITR-28: Worklist > Canceled")
+        print("ITR-29: Worklist > Canceled")
         print("Test Result: Pass" if testResult != "failed" else testResult)
 
         # Canceled 결과 전송
@@ -4110,8 +4110,6 @@ class Worklist:
     def Refer():
         testResult = ''
         reason = list()
-
-        signInOut.admin_sign_in()
 
         # 1 steps start! : Worklist에서 임의의 의뢰 검사를 선택한 후, Refer 버튼을 클릭한다.
         # Configuration > Institutions로 이동 후, 테스트 병원 검색
@@ -4321,10 +4319,6 @@ class Worklist:
         # Comment를 입력하고 Save 버튼 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[2]/div[3]/textarea").send_keys("Refer Comment Test")
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[3]/button[1]").click()
-
-        # # All Assigned List 탭 클릭
-        # time.sleep(2)
-        # driver.find_element(By.CSS_SELECTOR, "#tab_all_assigned_list").click()
 
         # Refer 탭 클릭
         time.sleep(1)
@@ -4574,7 +4568,7 @@ class Worklist:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[3]/div/div/div[3]/button[1]").click()
 
         # All Assigned List 탭 클릭 및 job list 저장
-        time.sleep(1)
+        time.sleep(2)
         del driver.requests
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
 
@@ -4833,12 +4827,6 @@ class Worklist:
         del driver.requests
         click = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]/a")
         driver.execute_script("arguments[0].click()",click)
-        # try:
-        #     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
-        # except:
-        #     time.sleep(1)
-        #     all_assigned_btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]")
-        #     driver.execute_script("arguments[0].click()",all_assigned_btn)
 
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
         body = request.response.body.decode('utf-8')
@@ -4851,20 +4839,1347 @@ class Worklist:
         # 선택한 job이 Refer 되지 않았는지 확인
         try:
             for i in job_list:
-                assert i == job_key
+                assert i != job_key
         except:
             testResult = "failed"
             reason.append("9 steps failed\n")
 
+        print("ITR-30: Worklist > Refer")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Refer 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1690, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1690, testPlanID, buildName, 'p', "Refer Passed")
+
+    def Refer_Cancel():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : 판독의가 할당된 의뢰 검사를 선택한 후, Refer Cancel 버튼을 클릭한다.
+        # Refer 탭 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Show entries를 100개로 변경
+        Common.refer_show_entries(100)
+
+        # All Assigned List 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        before_job_list = []
+
+        for i in data:
+            before_job_list.append(i["JobKey"])
         
+        # All Assigned List > 임의의 job 선택
+        job_key = random.choice(before_job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # All Assigned List > Refer Cancel 버튼 클릭
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[2]")
+        if btn.get_property("disabled") == False:
+            btn.click()
+
+        # All Assigned List > Refer Cancel 팝업창 확인
+        popup_title = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[10]/div/div/div[1]/h4")
+        try:
+            assert popup_title.get_property("textContent") == "Refer Cancel"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # 2 steps start! : Refer Cancel 팝업창에서 "Close"를 클릭한다.
+        # Refer Cancel 팝업창 > Close 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[10]/div/div/div[3]/button[2]").click()
+
+        # All Assigned List 탭 클릭 후, job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        after_job_list = []
+
+        for i in data:
+            after_job_list.append(i["JobKey"])
+
+        # All Assigned List > Refer Cancel 한 job이 남아있는지 확인
+        try:
+            assert job_key in after_job_list
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # 3 steps start! : Refer Cancel 팝업창에서 "OK"를 클릭한다.
+        # All Assigned List > 임의의 job 선택
+        job_key = random.choice(after_job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # All Assigned List > Refer Cancel 버튼 클릭
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[2]")
+        if btn.get_property("disabled") == False:
+            btn.click()
+
+        # Refer Cancel 팝업창 > OK 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[10]/div/div/div[3]/button[1]").click()
+
+        # All Assigned List 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            job_list.append(i["JobKey"])
+
+        # All Assigned List > 선택한 job이 사라졌는지 확인
+        try:
+            assert job_key not in job_list
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")
+
+        # 4 steps start! : 판독의가 할당되지 않은 의뢰 검사를 선택한 후, Refer Cancel 버튼을 클릭한다.
+        # Not Assigned List 탭 클릭 후, job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+
+        request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        not_assigned_job_list = []
+
+        for i in data:
+            not_assigned_job_list.append(i["JobKey"])
+
+        # Not Assigned List > 임의의 job 선택
+        job_key = random.choice(not_assigned_job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # Not Assigned List > Refer Cancel 버튼 상태 확인
+        refer_cancel_btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[2]")
+        try:
+            assert refer_cancel_btn.get_property("disabled") == True
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n")
+
+        # 5 steps start! : 병원 리스트에서 임의의 판독의를 클릭한다.        
+        # 선택한 병원의 Reporter list 저장
+        time.sleep(1)
+        reporter_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-sub-item")
+        reporter_cnt = len(reporter_list)
+        select_reporter_list = []
+
+        for i in reporter_list:
+            select_reporter_list.append((i.get_property("dataset"))["reporterKey"])
+
+        # 선택한 병원에서 임의의 Reporter 클릭
+        time.sleep(1)
+        reporter_key = (reporter_list[random.randrange(0,reporter_cnt+1)].get_property("dataset"))["reporterKey"]
+        btn = driver.find_element(By.CSS_SELECTOR, "#institution_reporter_list_row_"+str(reporter_key))
+        driver.execute_script("arguments[0].click()",btn)
+
+        # Refer Cancel(All) 버튼이 표시되는지 확인
+        try:
+            btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[3]")
+            assert btn.get_property("disabled") == False
+        except:
+            testResult = "failed"
+            reason.append("5 steps failed\n")
+
+        # 6 steps start! : 임의의 판독의를 클릭하고 Refer Cancel(All) 버튼을 클릭한다. 
+        # Job list 저장
+        request = driver.wait_for_request('.*/GetReferedListByReporter.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        before_job_list = []
+
+        for i in data:
+            before_job_list.append(i["JobKey"])
+
+        # Refer Cancel(All) 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[3]").click()
+
+        # Refer Cancel(All) 팝업창 > Close 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[11]/div/div/div[3]/button[2]").click()
+        
+        # 선택했던 Reporter 다시 클릭해서 job list 저장
+        btn = driver.find_element(By.CSS_SELECTOR, "#institution_reporter_list_row_"+str(reporter_key))
+        driver.execute_script("arguments[0].click()",btn)
+        time.sleep(1)
+
+        request = driver.wait_for_request('.*/GetReferedListByReporter.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        after_job_list = []
+
+        for i in data:
+            after_job_list.append(i["JobKey"])
+
+        # Job list에 refer 된 job이 그대로 유지되는지 확인
+        try:
+            assert before_job_list == after_job_list
+        except:
+            testResult = "failed"
+            reason.append("6 steps failed\n")
+
+        # Refer Cancel(All) 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[3]").click()
+
+        # Refer Cancel(All) 팝업창 > OK 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[11]/div/div/div[3]/button[1]").click()
+
+        # 테스트 병원의 Report list 저장
+        time.sleep(1)
+        reporter_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-sub-item")
+        reporter_cnt = len(reporter_list)
+        changes_reporter_list = []        
+        
+        for i in reporter_list:
+            changes_reporter_list.append((i.get_property("dataset"))["reporterKey"])
+
+        # 테스트 병원에서 선택했던 Reporter가 사라졌는지 확인
+        try:
+            assert reporter_key not in changes_reporter_list
+        except:
+            testResult = "failed"
+            reason.append("6 steps failed\n")
+
+        print("ITR-31: Worklist > Refer Cancel")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Refer Cancel 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1701, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1701, testPlanID, buildName, 'p', "Refer Cancel Passed")
+
+    def Refer_Cancel_And_Refer():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : 판독의에게 할당된 임의의 의뢰 검사를 선택하고, Refer Cancel and Refer 버튼을 클릭한다.
+        # Refer 탭 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Show entries를 100개로 변경
+        Common.refer_show_entries(100)
+
+        # 선택한 병원의 Reporter list 저장
+        time.sleep(1)
+        reporter_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-sub-item")
+        reporter_id_key_list = []
+
+        for i in reporter_list:
+            temp = []
+            temp.append((i.get_property("dataset"))["reporterId"])
+            temp.append((i.get_property("dataset"))["reporterKey"])
+            reporter_id_key_list.append(temp)
+
+        # All Assigned List 탭 클릭 후, job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            job_list.append(i["JobKey"])
+
+        # All Assigned List > 임의의 job 선택
+        job_key = random.choice(job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # All Assigned List > R.Cancel & Refer 클릭
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[4]")
+        if btn.get_property("disabled") == False:
+            btn.click()
+
+        # R.Cancel & Refer 팝업창 확인
+        try:
+            popup_title = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[1]/h4")
+            assert popup_title.get_property("textContent") == "Refer Cancel & Refer"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # R.Cancel & Refer 팝업창 > Reporter list 저장
+        time.sleep(1)
+        temp_list = ''
+        temp_list = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul").get_property("outerText")
+        
+        reporter_list = temp_list.split('\n')
+        reporter_id_list = []
+
+        for i in reporter_list:
+            reporter_id_list.append(i.split()[0])
+
+        # R.Cancel & Refer 팝업창 > Reporter list에서 repoter의 수를 확인
+        reporter_cnt = len(reporter_list)
+        count_list = []
+        if reporter_cnt > 1:
+            for i in range(1, reporter_cnt+1):
+                count_list.append(i)
+        else:
+            reporter_cnt = 1
+
+        # R.Cancel & Refer 팝업창 > 임의의 Reporter를 임의의 숫자만큼 선택 후, reporter list 저장
+        select_reporter_list = []
+        selected_reporter_list = []
+        if int(reporter_cnt) > 1:
+            i = 0
+            cnt = random.randrange(1, reporter_cnt+1)
+            while i < int(cnt):
+                n = count_list.pop(count_list.index(random.choice(count_list)))
+                select_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li["+str(n)+"]").get_property("textContent"))
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li["+str(n)+"]").click()
+                selected_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[2]/ul/li["+str(n)+"]").get_property("textContent"))
+                i = i + 1
+        else:
+            select_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").get_property("textContent"))
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").click()
+            selected_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").get_property("textContent"))
+
+        # 선택한 Reporter ID 저장
+        selected_reporter_id_list = []
+        for i in selected_reporter_list:
+            selected_reporter_id_list.append(i.split()[0])
+
+        # R.Cancel & Refer 팝업창 > Save 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[3]/button[1]").click()
+
+        # 테스트 병원에서 선택한 Reporter를 순서대로 클릭하면서 refer 됐는지 확인
+        for i in selected_reporter_id_list:
+            for j in reporter_id_key_list:
+                if j[0] == i:
+                    del driver.requests
+                    time.sleep(1)
+                    btn = driver.find_element(By.CSS_SELECTOR, "#institution_reporter_list_row_"+str(j[1]))
+                    driver.execute_script("arguments[0].click()",btn)
+                    time.sleep(1)
+
+                    request = driver.wait_for_request('.*/GetReferedListByReporter.*')
+                    body = request.response.body.decode('utf-8')
+                    data = json.loads(body)["data"]
+                    after_job_list = []
+
+                    for i in data:
+                        after_job_list.append(i["JobKey"])
+                    
+                    try:
+                        assert job_key in after_job_list
+                    except:
+                        testResult = "failed"
+                        reason.append("1 steps failed\n")
+
+        # 2 steps start! : Refer 된 Job와 Refer 되지 않은 Job을 함께 선택한다.
+        # 테스트 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # All List 탭 클릭 후, job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        refer_job_list = []
+        job_list = []
+
+        for i in data:
+            if i["ReferDate"] == None:
+                job_list.append(i["JobKey"])
+            else:
+                refer_job_list.append(i["JobKey"])
+
+        # Refer 된 job과 Refer 되지 않는 job을 함께 선택
+        refer_job = random.choice(refer_job_list)
+        not_refer_job = random.choice(job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(refer_job)+"']").click()
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(not_refer_job)+"']").click()
+
+        # R.Cancel & Refer 버튼이 비활성화 상태인지 확인
+        try:
+            btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[4]")
+            assert btn.get_property("disabled") == True
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+        
+        # 다음 테스트를 위해 선택 해제(새로고침)
+        time.sleep(1)
+        driver.refresh()
+
+        # Test 병원 선택
+        time.sleep(1)
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+        
+        # All List 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+
+        # 3 steps start! : All Assigned/All List에서 Refer 된 Job을 선택한다.
+        # All List > Refer 된 job 만 선택
+        time.sleep(1)
+        for i in range(0,3):
+            refer_job_key = refer_job_list.pop(refer_job_list.index(random.choice(refer_job_list)))
+            driver.find_element(By.XPATH, "//td[normalize-space()='"+str(refer_job_key)+"']").click()
+
+        # R.Cancel & Refer 버튼이 활성화 상태인지 확인
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[4]")
+        try:
+            assert btn.get_property("disabled") == False
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")
+
+        # All Assigned List 탭 클릭 후, job list 저장
+        time.sleep(1)
+        del driver.requests
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            job_list.append(i["JobKey"])
+
+        # 임의의 job 선택 후, R.Cancel & Refer 버튼이 활성화 상태인지 확인
+        job_key = random.choice(job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        try:
+            assert btn.get_property("disabled") == False
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")
+
+        # 4 steps start! : 임의의 의뢰 검사를 선택한 후, Refer Cancel & Refer 버튼을 클릭한다.
+        # R.Cancel & Refer 버튼 클릭
+        btn.click()
+
+        # R.Cancel & Refer 팝업창이 팝업되는지 확인
+        try:
+            popup_title = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[1]/h4")
+            assert popup_title.get_property("textContent") == "Refer Cancel & Refer"
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n")
+
+        # 5 steps start! : 판독의를 선택한 후, Save 버튼을 클릭한다.
+        # R.Cancel & Refer 팝업창 > Reporter list 저장
+        time.sleep(1)
+        temp_list = ''
+        temp_list = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul").get_property("outerText")
+        
+        reporter_list = temp_list.split('\n')
+        reporter_id_list = []
+
+        for i in reporter_list:
+            reporter_id_list.append(i.split()[0])
+
+        # R.Cancel & Refer 팝업창 > Reporter list에서 repoter의 수를 확인
+        reporter_cnt = len(reporter_list)
+        count_list = []
+        if reporter_cnt > 1:
+            for i in range(1, reporter_cnt+1):
+                count_list.append(i)
+        else:
+            reporter_cnt = 1
+
+        # R.Cancel & Refer 팝업창 > 임의의 Reporter를 임의의 숫자만큼 선택 후, reporter list 저장
+        select_reporter_list = []
+        selected_reporter_list = []
+        if int(reporter_cnt) > 1:
+            i = 0
+            cnt = random.randrange(1, reporter_cnt+1)
+            while i < int(cnt):
+                n = count_list.pop(count_list.index(random.choice(count_list)))
+                select_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li["+str(n)+"]").get_property("textContent"))
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li["+str(n)+"]").click()
+                selected_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[2]/ul/li["+str(n)+"]").get_property("textContent"))
+                i = i + 1
+        else:
+            select_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").get_property("textContent"))
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").click()
+            selected_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").get_property("textContent"))
+
+        # 선택한 Reporter ID 저장
+        selected_reporter_id_list = []
+        for i in selected_reporter_list:
+            selected_reporter_id_list.append(i.split()[0])
+
+        # R.Cancel & Refer 팝업창 > Save 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[3]/button[1]").click()
+
+        # 테스트 병원에서 Refer 한 Reporter를 선택하고 refer 한 job이 job list에 있는지 확인
+        for i in selected_reporter_id_list:
+            for j in reporter_id_key_list:
+                if j[0] == i:
+                    del driver.requests
+                    btn = driver.find_element(By.CSS_SELECTOR, "#institution_reporter_list_row_"+str(j[1]))
+                    driver.execute_script("arguments[0].click()",btn)
+                    time.sleep(1)
+
+                    request = driver.wait_for_request('.*/GetReferedListByReporter.*')
+                    body = request.response.body.decode('utf-8')
+                    data = json.loads(body)["data"]
+                    after_job_list = []
+
+                    for i in data:
+                        after_job_list.append(i["JobKey"])
+                    
+                    try:
+                        assert job_key in after_job_list
+                    except:
+                        testResult = "failed"
+                        reason.append("5 steps failed\n")
+
+        # 6 steps start! : 판독의에게 할당된 임의의 의뢰 검사를 선택하고, Refer Cancel & Refer 버튼을 클릭한다.
+        # 선택한 병원의 Reporter list 저장
+        time.sleep(1)
+        reporter_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-sub-item")
+        reporter_cnt = len(reporter_list)
+        select_reporter_list = []
+
+        for i in reporter_list:
+            select_reporter_list.append((i.get_property("dataset"))["reporterKey"])
+
+        # 선택한 병원에서 임의의 Reporter 클릭
+        time.sleep(1)
+        del driver.requests
+        reporter_key = (reporter_list[random.randrange(0,reporter_cnt)].get_property("dataset"))["reporterKey"]
+        btn = driver.find_element(By.CSS_SELECTOR, "#institution_reporter_list_row_"+str(reporter_key))
+        driver.execute_script("arguments[0].click()",btn)
+
+        # Reporter의 refer 받은 job list 저장
+        request = driver.wait_for_request('.*/GetReferedListByReporter.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        refer_job_list = []
+
+        for i in data:
+            refer_job_list.append(i["JobKey"])
+
+        # 임의의 job 선택 후, R.Cancel & Refer 버튼 클릭
+        job_key_list = []
+        for i in range(0,3):
+            # job_key = random.choice(refer_job_list)
+            job_key = refer_job_list.pop(refer_job_list.index(random.choice(refer_job_list)))
+            time.sleep(1)
+            driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+            job_key_list.append(job_key)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[4]").click()
+
+        # R.Cancel & Refer 팝업창 > Reporter list 저장
+        time.sleep(1)
+        temp_list = ''
+        temp_list = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul").get_property("outerText")
+        
+        reporter_list = temp_list.split('\n')
+        reporter_id_list = []
+
+        for i in reporter_list:
+            reporter_id_list.append(i.split()[0])
+
+        # R.Cancel & Refer 팝업창 > Reporter list에서 repoter의 수를 확인
+        reporter_cnt = len(reporter_list)
+        count_list = []
+        if reporter_cnt > 1:
+            for i in range(1, reporter_cnt+1):
+                count_list.append(i)
+        else:
+            reporter_cnt = 1
+
+        # R.Cancel & Refer 팝업창 > 임의의 Reporter를 임의의 숫자만큼 선택 후, reporter list 저장
+        select_reporter_list = []
+        selected_reporter_list = []
+        if int(reporter_cnt) > 1:
+            i = 0
+            cnt = random.randrange(1, reporter_cnt+1)
+            while i < int(cnt):
+                n = count_list.pop(count_list.index(random.choice(count_list)))
+                select_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li["+str(n)+"]").get_property("textContent"))
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li["+str(n)+"]").click()
+                selected_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[2]/ul/li["+str(n)+"]").get_property("textContent"))
+                i = i + 1
+        else:
+            select_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").get_property("textContent"))
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").click()
+            selected_reporter_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div[2]/div[2]/div[1]/ul/li[1]").get_property("textContent"))
+
+        # 선택한 Reporter ID 저장
+        selected_reporter_id_list = []
+        for i in selected_reporter_list:
+            selected_reporter_id_list.append(i.split()[0])
+
+        # R.Cancel & Refer 팝업창 > Save 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[3]/button[1]").click()
+
+        # 테스트 병원에서 Refer 한 Reporter를 선택하고 refer 한 job이 job list에 있는지 확인
+        for i in selected_reporter_id_list:
+            for j in reporter_id_key_list:
+                if j[0] == i:
+                    del driver.requests
+                    btn = driver.find_element(By.CSS_SELECTOR, "#institution_reporter_list_row_"+str(j[1]))
+                    driver.execute_script("arguments[0].click()",btn)
+                    time.sleep(1)
+
+                    request = driver.wait_for_request('.*/GetReferedListByReporter.*')
+                    body = request.response.body.decode('utf-8')
+                    data = json.loads(body)["data"]
+                    after_job_list = []
+
+                    for i in data:
+                        after_job_list.append(i["JobKey"])
+                    
+                    try:
+                        for i in job_key_list:
+                            assert i in after_job_list
+                    except:
+                        testResult = "failed"
+                        reason.append("6 steps failed\n")
+
+        # 7 steps start! : Not Assigned List로 이동한 후, 임의의 Job을 선택한다.
+        # 다음 테스트를 위해 선택 해제(새로고침)
+        time.sleep(1)
+        driver.refresh()
+
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Not Assigned List 탭 클릭 후, job list 저장
+        time.sleep(1.5)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+
+        request = driver.wait_for_request('.*/GetNotAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        not_assigned_job_list = []
+
+        for i in data:
+            not_assigned_job_list.append(i["JobKey"])
+
+        # Not Assigned List > 임의의 job 선택
+        job_key = random.choice(not_assigned_job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+        
+        # Not Assigned List > R.Cancel & Refer 버튼이 표시되지 않는지 확인
+        try:
+            btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[4]")
+            assert btn.get_property("disabled") == True
+        except:
+            testResult = "failed"
+            reason.append("7 steps failed\n")
+
+        print("ITR-32: Worklist > Refer Cancel and Refer")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Refer Cancel and Refer 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1711, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1711, testPlanID, buildName, 'p', "Refer Cancel and Refer Passed")
+
+    def Set_Schedule():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Job stat이 Requested 인 임의의 의뢰 검사를 선택한 후, Schedule 버튼을 클릭한다.
+        # Refer 탭 클릭
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # Test 병원 선택
+        time.sleep(1)
+        del driver.requests
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Show entries를 100개로 변경
+        Common.refer_show_entries(100)
+
+        # All Assigned List에서 schedule이 없는 job list 저장
+        time.sleep(1)
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        before_assigned_job_list = []
+
+        for i in data:
+            if i["ScheduleDateDTTMString"] == "":
+                before_assigned_job_list.append(i["JobKey"])
+
+        # All Assigned List > 임의의 job 선택
+        job_key = random.choice(before_assigned_job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # All Assigned List > Schedule 버튼 클릭
+        schedule_btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/button[1]")
+        if schedule_btn.get_property("disabled") == False:
+            for i in range(0,3):
+                time.sleep(0.5)
+                schedule_btn.click()
+
+        # All Assigned List > Schedule 버튼 옆에 날짜와 시간 선택 기능이 표시되는지 확인
+        input_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/div")
+        try:
+            time.sleep(1)
+            assert "display: inline-block" in input_date.get_attribute("style")
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # 2 steps start! : 임의의 날짜와 시간을 입력한 후, 확인 버튼을 클릭한다.
+        # All Assigned List > Schedule 날짜는 기본값, 시간은 1030으로 입력 후, 체크 클릭
+        input_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/div/div/div[2]/div/div[1]/input").get_property("value")
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/div/div/div[2]/div/div[2]/input").send_keys("1030")
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/div/div/button").click()
+
+        # Schedule 등록 완료 팝업창이 팝업되는지 확인
+        try:
+            popup_msg = driver.find_element(By.XPATH ,"/html/body/div[6]/h2")
+            assert popup_msg.get_property("textContent") == "예약 환자가 등록되었습니다"
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # Schedule 팝업창 > 확인 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[6]/div[7]/div/button").click()
+
+        # All Assigned List에서 schedule이 있는 job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        after_assigned_job_list = []
+
+        for i in data:
+            if i["ScheduleDateDTTMString"] != "":
+                after_assigned_job_list.append(i)
+
+        # 선택한 job의 Schedule 컬럼에 입력한 날짜와 시간이 표시되는지 확인
+        try:
+            for i in after_assigned_job_list:
+                if i["JobKey"] == job_key:
+                    check_date = i["ScheduleDateDTTMString"].split()[0]
+                    check_time = i["ScheduleDateDTTMString"].split()[1]
+
+            assert (check_date, check_time.replace(":", "")) == (input_date, "103000")
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # 3 steps start! : Job stat이 Requested 인 임의의 의뢰 검사를 선택한 후, Schedule 버튼을 클릭한다.
+        # All Assigned List > Schdule이 있는 임의의 job을 선택한 후, Schedule 버튼 클릭
+        sample_job = random.choice(after_assigned_job_list)
+        job_key = sample_job["JobKey"]
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+        
+        schedule_btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/button[1]")
+        if schedule_btn.get_property("disabled") == False:
+            schedule_btn.click()
+
+        # All Assigned List > Schedule 버튼 옆에 날짜와 시간 선택 기능이 표시되는지 확인
+        input_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/div")
+        try:
+            time.sleep(1)
+            assert "display: inline-block" in input_date.get_attribute("style")
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")
+
+        # 4 steps start! : 임의의 날짜와 시간을 입력한 후, 확인 버튼을 클릭한다.
+        # All Assigned List > Schedule 날짜와 시간 입력 후, 체크 클릭
+        check_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/div/div/div[2]/div/div[1]/input")
+        check_time = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/div/div/div[2]/div/div[2]/input")
+        input_date = (today + relativedelta(months=1)).strftime('%Y-%m-%d') 
+        check_date.clear()
+        check_date.send_keys(input_date)
+        check_time.send_keys("1100")
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/div/div/button").click()
+
+        # Schedule 팝업창이 팝업되는지 확인
+        try:
+            time.sleep(1)
+            popup_msg = driver.find_element(By.XPATH ,"/html/body/div[6]/h2")
+            assert popup_msg.get_property("textContent") == "예약 정보가 변경되었습니다"
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n")
+
+        # Schedule 팝업창 > 확인 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[6]/div[7]/div/button").click()
+
+        # All Assigned List의 job list 저장
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        change_assigned_job_list = []
+
+        for i in data:
+            change_assigned_job_list.append(i)
+
+        # 선택한 job의 Schedule 컬럼에 입력한 날짜와 시간이 표시되는지 확인
+        try:
+            for i in change_assigned_job_list:
+                if i["JobKey"] == job_key:
+                    check_date = i["ScheduleDateDTTMString"].split()[0]
+                    check_time = i["ScheduleDateDTTMString"].split()[1]
+            assert (check_date, check_time.replace(":", "")) == ((today + relativedelta(months=1)).strftime('%Y-%m-%d'), "110000")
+        except:
+            testResult = "failed"
+            reason.append("5 steps failed\n")
+
+        print("ITR-34: Worklist > Set Schedule")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Set Schedule 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1718, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1718, testPlanID, buildName, 'p', "Set Schedule Passed")        
+
+    def Schedule_Cancel():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Schedule이 없는 임의의 의뢰 job을 선택한 후, Schedule Cancel 버튼을 클릭한다.
+        # Refer 탭 클릭
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # Test 병원 선택
+        time.sleep(1)
+        del driver.requests
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Show entries를 100개로 변경
+        Common.refer_show_entries(100)
+
+        # All Assigned List에서 schedule이 없는 job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        not_schedule_job_list = []
+
+        for i in data:
+            if i["ScheduleDate"] == None:
+                not_schedule_job_list.append(i)
+
+        # All Assigned List > Schedule이 없는 임의의 job 선택
+        sample_job = random.choice(not_schedule_job_list)
+        job_key = sample_job["JobKey"]
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # All Assigned List > S.Cancel 클릭
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/button[2]")
+        if btn.get_property("disabled") == False:
+            btn.click()
+
+        # S.Cancel 팝업창 확인
+        time.sleep(1)
+        popup = driver.find_element(By.XPATH, "/html/body/div[6]/h2")
+        try:
+            assert popup.get_property("textContent") == "예약건만 취소 가능합니다"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # OK 버튼 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[6]/div[7]/div/button").click()
+
+        # 2 steps start! : Schedule이 있는 임의의 의뢰 job을 선택한 후, Schedule Cancel 버튼을 클릭한다.
+        # All Assigned List에서 schedule이 있는 job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        schedule_job_list = []
+
+        for i in data:
+            if i["ScheduleDate"] != None:
+                schedule_job_list.append(i)
+
+        # All Assigned List > Schedule이 있는 임의의 job 선택
+        sample_job = random.choice(schedule_job_list)
+        job_key = sample_job["JobKey"]
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # All Assigned List > S.Cancel 클릭
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/button[2]")
+        if btn.get_property("disabled") == False:
+            btn.click()
+
+        # S.Cancel 팝업창 확인
+        time.sleep(1)
+        popup = driver.find_element(By.XPATH, "/html/body/div[6]/h2")
+        try:
+            assert popup.get_property("textContent") == "예약이 취소되었습니다"
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # OK 버튼 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[6]/div[7]/div/button").click()
+
+        # All Assigned List > Schedule이 없는 job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        not_schedule_job_list = []
+
+        for i in data:
+            if i["ScheduleDate"] != None:
+                not_schedule_job_list.append(i)
+
+        # schedule 컬럼에서 S.Cancel 했던 job의 정보가 표시되지 않는지 확인
+        try:
+            for i in not_schedule_job_list:
+                if i["JobKey"] == job_key:
+                    assert i["ScheduleDateDTTMString"] == ""
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # 3 steps start! : 임의의 의뢰 검사를 선택한 후, Schedule 버튼을 클릭한다.
+        # All Assigned List > job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        schedule_job_list = []
+        non_schedule_job_list = []
+
+        for i in data:
+            if i["ScheduleDate"] != None:
+                schedule_job_list.append(i)
+            else:
+                non_schedule_job_list.append(i)
+
+        # All Assigned List > Schedule 있는 job과 Schedule이 없는 job을 함께 선택
+        schedule_job = (random.choice(schedule_job_list))["JobKey"]
+        non_schedule_job = (random.choice(non_schedule_job_list))["JobKey"]
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(schedule_job)+"']").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(non_schedule_job)+"']").click()
+
+        # All Assigned List > Schedule 버튼 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/button[1]").click()
+        
+        # Schedule 팝업창 확인
+        popup = driver.find_element(By.XPATH, "/html/body/div[6]/h2")
+        try:
+            assert popup.get_property("textContent") == "동일한 예약상태가 아닌 경우 수정이 불가합니다"
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")
+
+        # OK 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/div[6]/div[7]/div/button").click()
+
+        # 4 steps start! : 임의의 의뢰 검사를 선택한 후, Schedule Cancel 버튼을 클릭한다.
+        # All Assigned List > S.Cancel 클릭
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[4]/button[2]")
+        if btn.get_property("disabled") == False:
+            btn.click()
+
+        # S.Cancel 팝업창 확인
+        time.sleep(1)
+        popup = driver.find_element(By.XPATH, "/html/body/div[6]/h2")
+        try:
+            assert popup.get_property("textContent") == "동일한 예약상태가 아닌 경우 취소가 불가합니다"
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n")
+
+        print("ITR-35: Worklist > Cancel Schedule")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Schedule 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1724, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1724, testPlanID, buildName, 'p', "Schedule Passed")    
+
+    def Revised():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Job Status가 Completed 상태인 의뢰 검사를 선택한 후, Revised 버튼을 클릭한다.
+        # Configuration > Institutions > 테스트 병원 선택
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[5]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/button[4]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[1]/div[2]/div/div[1]/div/div/input").send_keys("997")
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[1]/div[2]/div/div[1]/div/div/input").send_keys(Keys.RETURN)
+        time.sleep(1)
+        driver.find_element(By.CSS_SELECTOR, "#i_l_997").click()
+        
+        # Configuration > Institutions > Institution Modify > Enable Revised 체크
+        popup = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[1]/h3")
+        revised = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[1]/div[7]/div/div/input")
+        time.sleep(1)
+        try:
+            if popup.get_property("textContent") == "Institutions Modify":
+                if revised.get_property("checked") == False:
+                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[1]/div[7]/div/div/label").click()
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[3]/div/button[2]").click()
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/div[14]/div[7]/div/button").click()
+            time.sleep(1.5)
+            driver.find_element(By.XPATH, "/html/body/div[14]/div[7]/div/button").click()
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # Refer 탭 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # Test 병원 선택
+        time.sleep(1)
+        del driver.requests
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Show entries를 100개로 변경
+        Common.refer_show_entries(100)
+
+        # All List 탭 클릭 후, job list 저장
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            job_list.append(i)
+
+        # Search Condition > Job status를 Completed로 선택 후, Search 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(0.25)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[5]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+
+        # All List > Job list 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        search_job_list = []
+
+        for i in data:
+            search_job_list.append(i)
+
+        # All List > 검색 결과 중 임의의 job 선택
+        try:
+            sample_job = random.choice(search_job_list)
+            job_key = sample_job["JobKey"]
+            time.sleep(1)
+            driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+        except IndexError:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # Revised 클릭
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[3]/button[1]")
+        if btn.get_property("disabled") == False:
+            btn.click()
+        
+        # Update Request Status 팝업창 확인
+        time.sleep(0.5)
+        popup = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[1]/h4")
+        try:
+            assert popup.get_property("textContent") == "Update Request Status"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # Update Request Status 팝업창 > Close 클릭
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[3]/button[2]").click()
+
+        # 다시 Revised 클릭
+        if btn.get_property("disabled") == False:
+            btn.click()
+
+        # Update Request Status 팝업창 > OK 클릭
+        time.sleep(0.5)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[3]/button[1]").click()
+
+        # All List > job list 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        change_job_list = []
+
+        for i in data:
+            change_job_list.append(i)
+
+        # Completed job list에서 Revised 한 job이 사라졌는지 확인
+        try:
+            for i in change_job_list:
+                assert i["JobKey"] != job_key
+        except IndexError:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        print("ITR-36: Worklist > Revised")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Revised 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1730, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1730, testPlanID, buildName, 'p', "Revised Passed")    
+
+    def DisCard():
+        testResult = ''
+        reason = list()
+
+        signInOut.admin_sign_in()
+
+        # 1 steps start! : 임의의 의뢰 검사를 선택한 후, Discard 버튼을 클릭한다.
+        # Configuration > Institutions > 테스트 병원 선택
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[5]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/button[4]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[1]/div[2]/div/div[1]/div/div/input").send_keys("997")
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[1]/div[2]/div/div[1]/div/div/input").send_keys(Keys.RETURN)
+        time.sleep(1)
+        driver.find_element(By.CSS_SELECTOR, "#i_l_997").click()
+        
+        # Configuration > Institutions > Institution Modify > Enable Discard 체크
+        popup = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[1]/h3")
+        discard = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[1]/div[8]/div/div/input")
+        time.sleep(1)
+        try:
+            if popup.get_property("textContent") == "Institutions Modify":
+                if discard.get_property("checked") == False:
+                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[1]/div[8]/div/div/label").click()
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[3]/div/button[2]").click()
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/div[14]/div[7]/div/button").click()
+            time.sleep(1.5)
+            driver.find_element(By.XPATH, "/html/body/div[14]/div[7]/div/button").click()
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # Refer 탭 클릭
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # Test 병원 선택
+        time.sleep(1)
+        del driver.requests
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Show entries를 100개로 변경
+        Common.refer_show_entries(100)
+
+        # All Assigend List > job list 저장
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            job_list.append(i)
+
+        # All Assigend List > 임의의 job 선택
+        sample_job = random.choice(job_list)
+        job_key = sample_job["JobKey"]
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+
+        # All Assigend List > Discard 클릭
+        time.sleep(1)
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[3]/button[2]")
+        if btn.get_property("disabled") == False:
+            btn.click()
+
+        # Discard 팝업창 확인
+        popup = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[1]/h4")
+        try:
+            assert popup.get_property("textContent") == "Update Request Status"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+        
+        # Discard 팝업창 > Close 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[3]/button[2]").click()
+
+        # All Assigend List > job list 저장
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+        time.sleep(1)
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        close_job_list = []
+
+        for i in data:
+            close_job_list.append(i)
+
+        # Discard 이전의 job list와 비교
+        try:
+            assert len(job_list) == len(close_job_list)
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # All Assigend List > 임의의 job 선택
+        sample_job = random.choice(job_list)
+        job_key = sample_job["JobKey"]
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+        
+        # All Assigend List > Discard 클릭
+        time.sleep(1)
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[3]/button[2]")
+        if btn.get_property("disabled") == False:
+            btn.click()
+
+        # Discard 팝업창 > OK 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[3]/button[1]").click()
+
+        # All Assigend List > job list 저장
+        request = driver.wait_for_request('.*/GetAllAssignedList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        discard_job_list = []
+
+        for i in data:
+            discard_job_list.append(i)
+
+        # Discard 후, 이전의 job list에서 해당 job이 사라졌는지 확인
+        try:
+            for i in discard_job_list:
+                assert i["Jobkey"] == job_key
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # 2 steps start! :Job Stauts가 DiscardRequest 인 의뢰 검사를 선택한 후, Discard 버튼을 클릭한다.
 
 
 
 
-
-
-
-
-
-
-Worklist.Refer()
+# Worklist.Set_Schedule()
+# Worklist.Schedule_Cancel()
+# Worklist.Revised()
+Worklist.DisCard()
