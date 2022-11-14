@@ -28,8 +28,8 @@ tl_helper = TestLinkHelper()
 # testlink.checkDevKey()
 
 # 브라우저 설정
-baseUrl = 'http://stagingadmin.onpacs.com'
-# baseUrl = 'http://vm-onpacs:8082'
+# baseUrl = 'http://stagingadmin.onpacs.com'
+baseUrl = 'http://vm-onpacs:8082'
 # html = requests.get(baseUrl)
 # soup = BeautifulSoup(html.text, 'html.parser')
 # url = baseUrl + quote_plus(plusUrl)
@@ -53,9 +53,9 @@ testPlanID = 2996
 buildName = 1
 
 # 테스트 계정
-adminID = 'INF_JH'
+adminID = 'testAdmin'
 adminPW = 'Server123!@#'
-subadmin = 'testSubadmin'
+subadminID = 'testSubadmin'
 subadminPW = 'Server123!@#'
 
 # 공통 변수
@@ -81,16 +81,16 @@ class Common:
 class signInOut:
     def admin_sign_in():
         driver.find_element(By.ID, 'user-id').clear()
-        driver.find_element(By.ID, 'user-id').send_keys('INF_JH')
-        driver.find_element(By.ID, 'user-password').send_keys('Server123!@#')
+        driver.find_element(By.ID, 'user-id').send_keys(adminID)
+        driver.find_element(By.ID, 'user-password').send_keys(adminPW)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)
     def admin_sign_out():
         driver.find_element(By.CSS_SELECTOR, '.pull-right > span').click()
     def subadmin_sign_in():
         driver.find_element(By.ID, 'user-id').clear()
-        driver.find_element(By.ID, 'user-id').send_keys('testSubadmin')
-        driver.find_element(By.ID, 'user-password').send_keys('Server123!@#')
+        driver.find_element(By.ID, 'user-id').send_keys(subadminID)
+        driver.find_element(By.ID, 'user-password').send_keys(subadminPW)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)
     def subadmin_sign_out():
@@ -105,8 +105,7 @@ class Sign:
         reason = list()       
         
         # user ID와 password를 입력하지 않고 sign in을 클릭한다
-        # signInOut.admin_sign_in('','')
-        signInOut.admin_sign_in()
+        signInOut.admin_sign_in('','')
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         # This field is required.
         try:
@@ -6043,8 +6042,6 @@ class Worklist:
         testResult = ''
         reason = list()
 
-        signInOut.admin_sign_in()
-
         # 1 steps start! : 임의의 의뢰 검사를 선택한 후, Discard 버튼을 클릭한다.
         # Configuration > Institutions > 테스트 병원 선택
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[5]").click()
@@ -6065,6 +6062,7 @@ class Worklist:
             if popup.get_property("textContent") == "Institutions Modify":
                 if discard.get_property("checked") == False:
                     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[1]/div[8]/div/div/label").click()
+            time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[3]/div/button[2]").click()
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/div[14]/div[7]/div/button").click()
@@ -6169,28 +6167,666 @@ class Worklist:
 
         # Discard 후, 이전의 job list에서 해당 job이 사라졌는지 확인
         try:
-            for i in discard_job_list:
-                assert i["Jobkey"] == job_key
+            assert job_key not in discard_job_list
         except:
             testResult = "failed"
             reason.append("1 steps failed\n")
 
         # 2 steps start! :Job Stauts가 DiscardRequest 인 의뢰 검사를 선택한 후, Discard 버튼을 클릭한다.
         # All List 탭 클릭
+        time.sleep(2)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
 
-        # Search filter > Job status를 DiscardCompleted로 선택
+        # Search filter > Job status를 DiscardRequest로 선택 후, Search 클릭
         time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[13]").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[12]").click()
+        time.sleep(0.5)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+        time.sleep(1)
 
-        # Search filter > Job status를 DiscardCompleted로 선택
+        # 조회 결과의 job list 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        discard_job_list = []
 
+        for i in data:
+            discard_job_list.append(i)
 
-        # 조회 결과 job list 저장
-        # 조회 결과의 job list 중 임의의 job 선택
-        # Discard 버튼이 비활성화 되어 있는지 확인
+        # All List > 임의의 job 선택
+        sample_job = random.choice(discard_job_list)
+        job_key = sample_job["JobKey"]
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
 
+        # Discard 버튼이 비활성화 상태인지 확인
+        try:
+            btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[3]/button[2]")
+            assert btn.get_property("disabled") == True
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+        
+        print("ITR-37: Worklist > Discard")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Discard 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1733, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1733, testPlanID, buildName, 'p', "Discard Passed")    
+
+    def Retry_Request():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Job Status가 Reported, Completed, Recalled 이외의 상태인 의뢰 검사를 선택한 후, Retry Request 버튼을 클릭한다.
+        # Configuration > Institutions > 테스트 병원 선택
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[5]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/button[4]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[1]/div[2]/div/div[1]/div/div/input").send_keys("997")
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[1]/div[2]/div/div[1]/div/div/input").send_keys(Keys.RETURN)
+        time.sleep(1)
+        driver.find_element(By.CSS_SELECTOR, "#i_l_997").click()
+        
+        # Configuration > Institutions > Institution Modify > Enable Request 체크
+        popup = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[1]/h3")
+        discard = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[1]/div[9]/div/div/input")
+        time.sleep(1)
+        try:
+            if popup.get_property("textContent") == "Institutions Modify":
+                if discard.get_property("checked") == False:
+                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[1]/div[9]/div/div/label").click()
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[3]/div/button[2]").click()
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/div[14]/div[7]/div/button").click()
+            time.sleep(1.5)
+            driver.find_element(By.XPATH, "/html/body/div[14]/div[7]/div/button").click()
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # Refer 탭 클릭
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # Test 병원 선택
+        time.sleep(1)
+        del driver.requests
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Show entries를 100개로 변경
+        Common.refer_show_entries(100)
+
+        # All List 탭 클릭
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+
+        # Search condition > Job Status를 All로 선택하고, Search 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[1]").click()
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+        time.sleep(1)
+
+        # All List > Job list 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            if i["StatDescription"] in ("Requested","Canceled2","DiscardCompleted"):
+                job_list.append(i)
+
+        # Job status가 Reported, Completed, Recalled 외의 임의의 job을 선택
+        try:
+            sample_job = random.choice(job_list)
+            job_key = sample_job["JobKey"]
+            time.sleep(1)
+            driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+        
+        # Retry Request 클릭
+        time.sleep(2)
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[3]/button[3]")
+        driver.execute_script("arguments[0].click()",btn)
+
+        # Retry Request 팝업창 확인
+        popup = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[1]/h4")
+        try:
+            popup.get_property("textContent") == "Update Request Status"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # Retry Request 팝업창 > Close 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[3]/button[2]").click()
+
+        # All List > Retry Request 클릭
+        time.sleep(1.5)
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[3]/button[3]")
+        driver.execute_script("arguments[0].click()",btn)
+
+        # Retry Request 팝업창 > OK 클릭
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[3]/button[1]").click()
+
+        # All List > Job list 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            job_list.append(i)
+    
+        # All List > Job list에서 선택했던 job의 job status가 RetryRequest로 변경되었는지 확인
+        try:
+            for i in job_list:
+                if i["JobKey"] == job_key:
+                    assert i["StatDescription"] == "RetryRequest"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # 2 steps start! : Job status가 DiscardCompleted 인 임의의 job을 선택한 후, Retry Request 버튼을 클릭한다.
+        # Job status가 DiscardCompleted 인 임의의 job을 선택 후, Retry Request 클릭
+        job_list = []
+        for i in data:
+            if i["StatDescription"] =="DiscardCompleted":
+                job_list.append(i)
+
+        # Job status가 DiscardCompleted 인 임의의 job을 선택
+        try:
+            sample_job = random.choice(job_list)
+            job_key = sample_job["JobKey"]
+            time.sleep(3)
+            driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # Retry Request 클릭
+        time.sleep(1)
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[3]/button[3]")
+        driver.execute_script("arguments[0].click()",btn)
+
+        # Retry Request 팝업창 확인
+        popup = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[1]/h4")
+        try:
+            popup.get_property("textContent") == "Update Request Status"
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # Retry Request 팝업창 > Close 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[3]/button[2]").click()
+
+        # All List > Retry Request 클릭
+        time.sleep(1)
+        btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[3]/button[3]")
+        driver.execute_script("arguments[0].click()",btn)
+
+        # Retry Request 팝업창 > OK 클릭
+        time.sleep(0.5)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[3]/button[1]").click()
+
+        # All List > Job list 저장
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            job_list.append(i)
+    
+        # All List > Job list에서 선택했던 job의 job status가 RetryRequest로 변경되었는지 확인
+        try:
+            for i in job_list:
+                if i["JobKey"] == job_key:
+                    assert i["StatDescription"] == "RetryRequest"
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n") 
+
+        print("ITR-38: Worklist > Retry Request")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Retry Request 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1737, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1737, testPlanID, buildName, 'p', "Retry Request Passed")    
+
+    def Columns():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Columns 버튼을 클릭한다.
+        # Refer 탭 클릭
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # Test 병원 선택
+        time.sleep(1)
+        del driver.requests
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # All Assigned List > Column list 저장
+        column_list = []
+        columns = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr").get_property("outerText")
+        column_list = columns.split('\t')
+        del column_list[0]
+
+        # Columns 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[5]/div[1]/button").click()
+
+        # Columns 팝업창 확인
+        popup = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[1]/h4")
+        try:
+            popup.get_property("textContent") == "Display Column Setting"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n") 
+
+        # 2 steps start! : Not Display Column과 Display Column에 컬럼들을 위치시키고 Save 버튼을 클릭한다.
+        # Columns 팝업창 > Display Column의 column list 저장
+        time.sleep(1)
+        diplay_column_list = []
+        display_column_index_list = []
+        display_column = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[3]/select/option")
+        for i in display_column:
+            temp = []
+            temp.append(i.text)
+            temp.append(i.get_attribute("value"))
+            display_column_index_list.append(i.text)
+            diplay_column_list.append(temp)
+
+        # Columns 팝업창 > Display Column에서 임의의 Column을 선택해서 Not Display Column으로 변경
+        select_column = random.choice(display_column_index_list)
+        for i in diplay_column_list:
+            if i[0] == select_column:
+                driver.find_element(By.CSS_SELECTOR, "#job-column-setting-selected-"+str(i[1])).click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[2]/button[2]").click()
+
+        # Columns 팝업창 > Display Column의 column list 저장
+        time.sleep(1)
+        diplay_column_list = []
+        display_column_index_list = []
+        display_column = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[3]/select/option")
+        for i in display_column:
+            temp = []
+            temp.append(i.text)
+            temp.append(i.get_attribute("value"))
+            display_column_index_list.append(i.text)
+            diplay_column_list.append(temp)
+
+        # Save 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[3]/button[1]").click()
+
+        # All Assigned List > Column list 저장
+        time.sleep(4)
+        column_list = []
+        columns = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr").get_property("outerText")
+        column_list = columns.split('\t')
+        del column_list[0]
+
+        # Display Column의 column list와 All Assigned List의 Column list 비교
+        try: 
+            assert column_list == display_column_index_list
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n") 
+
+        # 3 steps start! : Display Column에서 임의의 column을 선택하고, Up 버튼을 클릭한 후, Save 버튼을 클릭한다.
+        # Columns 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[5]/div[1]/button").click()
+
+        # Display Column에서 임의의 column을 선택하고, Up 버튼 클릭
+        time.sleep(1)
+        select_column = random.choice(display_column_index_list)
+        for i in diplay_column_list:
+            if i[0] == select_column:
+                driver.find_element(By.CSS_SELECTOR, "#job-column-setting-selected-"+str(i[1])).click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[3]/div/button[1]").click()
+
+        # Columns 팝업창 > Display Column의 column list 저장
+        time.sleep(1)
+        diplay_column_list = []
+        display_column_index_list = []
+        display_column = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[3]/select/option")
+        for i in display_column:
+            temp = []
+            temp.append(i.text)
+            temp.append(i.get_attribute("value"))
+            display_column_index_list.append(i.text)
+            diplay_column_list.append(temp)
+
+        # Save 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[3]/button[1]").click()
+
+        # All Assigned List > Column list 저장
+        time.sleep(4)
+        column_list = []
+        columns = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr").get_property("outerText")
+        column_list = columns.split('\t')
+        del column_list[0] 
+
+        # Display Column의 column list와 All Assigned List의 Column list 비교
+        try:
+            assert column_list == display_column_index_list
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n") 
+
+        # 4 steps start! : Display Column에서 임의의 column을 선택하고, Down 버튼을 클릭한 후, Save 버튼을 클릭한다.
+        # Columns 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[5]/div[1]/button").click()
+
+        # Display Column에서 임의의 column을 선택하고, Down 버튼 클릭
+        time.sleep(1)
+        select_column = random.choice(display_column_index_list)
+        for i in diplay_column_list:
+            if i[0] == select_column:
+                driver.find_element(By.CSS_SELECTOR, "#job-column-setting-selected-"+str(i[1])).click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[3]/div/button[2]").click()
+
+        # Columns 팝업창 > Display Column의 column list 저장
+        time.sleep(1)
+        display_column_index_list = []
+        display_column = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[3]/select/option")
+        for i in display_column:
+            temp = []
+            temp.append(i.text)
+            temp.append(i.get_attribute("value"))
+            display_column_index_list.append(i.text)
+
+        # Save 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[3]/button[1]").click()
+
+        # All Assigned List > Column list 저장
+        time.sleep(3)
+        column_list = []
+        columns = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr").get_property("outerText")
+        column_list = columns.split('\t')
+        del column_list[0] 
+
+        # Display Column의 column list와 All Assigned List의 Column list 비교
+        try:
+            assert column_list == display_column_index_list
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n") 
+
+        # 5 steps start! : Reset 버튼을 클릭한다.
+        # Columns 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[5]/div[1]/button").click()
+
+        # Reset 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[1]/div/button").click()
+
+        # Columns 팝업창 > Display Column의 column list 저장
+        time.sleep(1)
+        diplay_column_list = []
+        display_column_index_list = []
+        display_column = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[3]/select/option")
+        for i in display_column:
+            temp = []
+            temp.append(i.text)
+            temp.append(i.get_attribute("value"))
+            display_column_index_list.append(i.text)
+            diplay_column_list.append(temp)
+
+        # Save 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[3]/button[1]").click()
+
+        # All Assigned List > Column list 저장
+        time.sleep(3)
+        column_list = []
+        columns = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr").get_property("outerText")
+        column_list = columns.split('\t')
+        del column_list[0] 
+
+        # Display Column의 column list와 All Assigned List의 Column list 비교
+        try:
+            assert column_list == display_column_index_list
+        except:
+            testResult = "failed"
+            reason.append("5 steps failed\n") 
+
+        # 6 steps start! : Column의 상태를 임의대로 변경한 후, Cancel 버튼을 클릭한다.
+        # Columns 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[5]/div[1]/button").click()
+
+        # Display Column에서 임의의 column을 선택하고, Up 버튼 클릭
+        time.sleep(1)
+        select_column = random.choice(display_column_index_list)
+        for i in diplay_column_list:
+            if i[0] == select_column:
+                driver.find_element(By.CSS_SELECTOR, "#job-column-setting-selected-"+str(i[1])).click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[3]/div/button[1]").click()
+
+        # Display Column에서 임의의 column을 선택하고, Down 버튼 클릭
+        time.sleep(1.5)
+        select_column = random.choice(display_column_index_list)
+        for i in diplay_column_list:
+            if i[0] == select_column:
+                driver.find_element(By.CSS_SELECTOR, "#job-column-setting-selected-"+str(i[1])).click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[3]/div/button[2]").click()
+
+        # Columns 팝업창 > Display Column의 column list 저장
+        time.sleep(1)
+        display_column_index_list = []
+        display_column = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[2]/div/div/div[3]/select/option")
+        for i in display_column:
+            temp = []
+            temp.append(i.text)
+            temp.append(i.get_attribute("value"))
+            display_column_index_list.append(i.text)
+        
+        # Cancel 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[18]/div/div/div[3]/button[2]").click()
+
+        # All Assigned List > Column list 저장
+        time.sleep(3)
+        column_list = []
+        columns = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr").get_property("outerText")
+        column_list = columns.split('\t')
+        del column_list[0]
+
+        # Display Column의 column list와 All Assigned List의 Column list 비교
+        try:
+            assert column_list != display_column_index_list
+        except:
+            testResult = "failed"
+            reason.append("6 steps failed\n") 
+
+        print("ITR-39: Worklist > Columns")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Columns 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1741, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1741, testPlanID, buildName, 'p', "Columns Passed")    
+
+    def Show_Entries():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Show entries의 개수를 10으로 변경한다.
+        # Refer 탭 클릭
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # Test 병원 선택
+        time.sleep(1)
+        del driver.requests
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # All List 탭 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+
+        # Show entries를 10으로 변경
+        Common.refer_show_entries(10)
+
+        # Showing entries 값 저장
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[3]
+
+        # All List > Job list의 개수가 10개로 표시되는지 확인
+        try:
+            if int(temp_cnt[5]) > 10:
+                assert int(list_cnt) == 10
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n") 
+
+        # 2 steps start! : Show entries의 개수를 25으로 변경한다.
+        # Show entries를 25로 변경
+        Common.refer_show_entries(25)
+
+        # Showing entries 값 저장
+        time.sleep(1)
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[3]
+
+        # All List > Job list의 개수가 25개로 표시되는지 확인
+        try:
+            if int(temp_cnt[5]) > 25:
+                assert int(list_cnt) == 25
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n") 
+
+        # 3 steps start! : Show entries의 개수를 50으로 변경한다.
+        # Show entries를 50으로 변경
+        Common.refer_show_entries(50)
+
+        # Showing entries 값 저장
+        time.sleep(1)
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[3]
+
+        # All List > Job list의 개수가 50개로 표시되는지 확인
+        try:
+            if int(temp_cnt[5]) > 50:
+                assert int(list_cnt) == 50
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n") 
+
+        # 4 steps start! : Show entries의 개수를 100으로 변경한다.
+        # Show entries를 100로 변경
+        Common.refer_show_entries(100)
+
+        # Showing entries 값 저장
+        time.sleep(1)
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[3]
+
+        # All List > Job list의 개수가 100개로 표시되는지 확인
+        try:
+            if int(temp_cnt[5]) > 100:
+                assert int(list_cnt) == 100
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n") 
+
+        print("ITR-40: Worklist > Show entries")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Show entries 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1749, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1749, testPlanID, buildName, 'p', "Show entries Passed")  
+
+    def Use_Related_Worklist():
+        testResult = ''
+        reason = list()
+
+        signInOut.admin_sign_in()
+        # 1 steps start! : Use Related Worklist에 체크한 후, worklist에서 임의의 의뢰 검사를 선택한다.
+        # Refer 탭 클릭
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # Test 병원 선택
+        time.sleep(1)
+        del driver.requests
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Use Related Worklist 체크
+        check = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[5]/div[3]/input")
+        if check.get_property("checked") == False:
+            check.click()
+
+        # All List 탭 클릭 후, job list 저장
+        time.sleep(1)
+        del driver.requests
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_list = []
+
+        for i in data:
+            if i["PatientID"] not in job_list:
+                job_list.append(i["PatientID"])
+
+        # All List > job list에서 동일한 Patient ID가 2개 이상인 P.ID를 찾기
+
+        # All List > 해당 P.ID의 job 선택
+        # All List > Job list에서 Related worklist가 표시되는지 확인
 
 
 
@@ -6204,3 +6840,7 @@ class Worklist:
 # Worklist.Schedule_Cancel()
 # Worklist.Revised()
 # Worklist.Discard()
+# Worklist.Retry_Request()
+# Worklist.Columns()
+# Worklist.Show_Entries()
+Worklist.Use_Related_Worklist()
