@@ -28,8 +28,8 @@ tl_helper = TestLinkHelper()
 # testlink.checkDevKey()
 
 # 브라우저 설정
-# baseUrl = 'http://stagingadmin.onpacs.com'
-baseUrl = 'http://vm-onpacs:8082'
+baseUrl = 'http://stagingadmin.onpacs.com'
+# baseUrl = 'http://vm-onpacs:8082'
 # html = requests.get(baseUrl)
 # soup = BeautifulSoup(html.text, 'html.parser')
 # url = baseUrl + quote_plus(plusUrl)
@@ -53,7 +53,7 @@ testPlanID = 2996
 buildName = 1
 
 # 테스트 계정
-adminID = 'testAdmin'
+adminID = 'INF_JH'
 adminPW = 'Server123!@#'
 subadmin = 'testSubadmin'
 subadminPW = 'Server123!@#'
@@ -81,7 +81,7 @@ class Common:
 class signInOut:
     def admin_sign_in():
         driver.find_element(By.ID, 'user-id').clear()
-        driver.find_element(By.ID, 'user-id').send_keys('testAdmin')
+        driver.find_element(By.ID, 'user-id').send_keys('INF_JH')
         driver.find_element(By.ID, 'user-password').send_keys('Server123!@#')
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)
@@ -105,7 +105,8 @@ class Sign:
         reason = list()       
         
         # user ID와 password를 입력하지 않고 sign in을 클릭한다
-        signInOut.admin_sign_in('','')
+        # signInOut.admin_sign_in('','')
+        signInOut.admin_sign_in()
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         # This field is required.
         try:
@@ -6038,7 +6039,7 @@ class Worklist:
         else:
             testlink.reportTCResult(1730, testPlanID, buildName, 'p', "Revised Passed")    
 
-    def DisCard():
+    def Discard():
         testResult = ''
         reason = list()
 
@@ -6175,6 +6176,26 @@ class Worklist:
             reason.append("1 steps failed\n")
 
         # 2 steps start! :Job Stauts가 DiscardRequest 인 의뢰 검사를 선택한 후, Discard 버튼을 클릭한다.
+        # All List 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+
+        # Search filter > Job status를 DiscardCompleted로 선택
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[13]").click()
+
+        # Search filter > Job status를 DiscardCompleted로 선택
+
+
+        # 조회 결과 job list 저장
+        # 조회 결과의 job list 중 임의의 job 선택
+        # Discard 버튼이 비활성화 되어 있는지 확인
+
+
+
+
+
+
 
 
 
@@ -6182,4 +6203,4 @@ class Worklist:
 # Worklist.Set_Schedule()
 # Worklist.Schedule_Cancel()
 # Worklist.Revised()
-Worklist.DisCard()
+# Worklist.Discard()
