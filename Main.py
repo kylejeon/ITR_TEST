@@ -34,6 +34,14 @@ ITR_Admin.Worklist.Canceled() # ITR-29
 ITR_Admin.Worklist.Refer() # ITR-30
 ITR_Admin.Worklist.Refer_Cancel() # ITR-31
 ITR_Admin.Worklist.Refer_Cancel_And_Refer() # ITR-32
+ITR_Admin.Worklist.Set_Schedule() # ITR-33
+ITR_Admin.Worklist.Schedule_Cancel() # ITR-34
+ITR_Admin.Worklist.Revised() # ITR-35
+ITR_Admin.Worklist.Discard() # ITR-36
+ITR_Admin.Worklist.Retry_Request() # ITR-37
+ITR_Admin.Worklist.Columns() # ITR-38
+ITR_Admin.Worklist.Show_Entries() # ITR-39
+ITR_Admin.Worklist.Use_Related_Worklist() # ITR-224
 
 
 

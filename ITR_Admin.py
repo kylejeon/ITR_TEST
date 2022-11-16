@@ -6790,7 +6790,6 @@ class Worklist:
         testResult = ''
         reason = list()
 
-        signInOut.admin_sign_in()
         # 1 steps start! : Use Related Worklist에 체크한 후, worklist에서 임의의 의뢰 검사를 선택한다.
         # Refer 탭 클릭
         time.sleep(0.5)
@@ -6805,9 +6804,10 @@ class Worklist:
                 i.click()
 
         # Use Related Worklist 체크
+        time.sleep(1)
         check = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[5]/div[3]/input")
         if check.get_property("checked") == False:
-            check.click()
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[5]/div[3]/label").click()
 
         # All List 탭 클릭 후, job list 저장
         time.sleep(1)
@@ -6818,15 +6818,145 @@ class Worklist:
         body = request.response.body.decode('utf-8')
         data = json.loads(body)["data"]
         job_list = []
-
-        for i in data:
-            if i["PatientID"] not in job_list:
-                job_list.append(i["PatientID"])
-
+        temp = []
+        
         # All List > job list에서 동일한 Patient ID가 2개 이상인 P.ID를 찾기
+        for i in data:
+            if i["PatientID"] not in temp:
+                temp.append(i["PatientID"])
+            else:
+                job_list.append(i["JobKey"])
 
         # All List > 해당 P.ID의 job 선택
+        job_key = random.choice(job_list)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[normalize-space()="+str(job_key)+"]").click()
+
         # All List > Job list에서 Related worklist가 표시되는지 확인
+        try:
+            assert driver.find_element(By.CSS_SELECTOR, "#refer-related-list_wrapper").get_property("id") == "refer-related-list_wrapper"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n") 
+
+        print("ITR-224: Worklist > Use Related Worklist")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Use Related Worklist 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(3074, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(3074, testPlanID, buildName, 'p', "Use Related Worklist Passed")  
+
+    def Sort_By():
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : 정렬 가능한 컬럼을 확인한다.
+        # Refer 탭 클릭
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+
+        # Test 병원 선택
+        time.sleep(1)
+        del driver.requests
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # All Assigend List > 정렬이 가능한 컬럼 저장
+        time.sleep(1)
+        columns = driver.find_elements(By.XPATH,"/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr/th")
+        column_list = []
+        for i in columns:
+            if "sort" in i.get_attribute("aria-label"):
+                column_list.append(i.get_property("textContent"))
+
+        # All Assigend List > 정렬 가능한 컬럼이 맞는지 확인
+        sort_column_list = ["E","I.CNT","P.ID","P.Name","Study Date","Job Date","Upload Date","Mod","Bodypart","Study Desc","Request Name","Department","Schedule","Emer Date","AI Vendor","AI Complex Score","AI Finding Cnt","AI Probability","AI Disease NM","AI Service","Emer Modifier ","Refer Date "]
+        try:
+            # assert column_list.sort() in sort_column_list.sort() or column_list.sort() == sort_column_list.sort()
+            for i in column_list:
+                assert i in sort_column_list
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n") 
+
+        # Not Assigend List > 정렬이 가능한 컬럼 저장
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+        time.sleep(1)
+        columns = driver.find_elements(By.XPATH,"/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr/th")
+        column_list = []
+        for i in columns:
+            if "sort" in i.get_attribute("aria-label"):
+                column_list.append(i.get_property("textContent"))
+
+        # 정렬 가능한 컬럼이 맞는지 확인
+        sort_column_list = ["E","I.CNT","P.ID","P.Name","Study Date","Job Date","Upload Date","Mod","Bodypart","Study Desc","Request Name","Department","Schedule","Emer Date","AI Vendor","AI Complex Score","AI Finding Cnt","AI Probability","AI Disease NM","AI Service","Emer Modifier ","Refer Date "]
+        try:
+            for i in column_list:
+                assert i in sort_column_list
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n") 
+        
+        # All List > 정렬이 가능한 컬럼 저장
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        time.sleep(1)
+        columns = driver.find_elements(By.CSS_SELECTOR,"#refer-assigned-list_wrapper > div.dataTables_scroll > div.dataTables_scrollHead > div > table > thead > tr > th")
+        column_list = []
+
+        for i in columns:
+            temp_list = []
+            temp = i.get_attribute("class")
+            temp_list = temp.split()
+            if "sorting" in temp_list:
+                column_list.append(i.get_property("textContent"))
+
+        # 정렬 가능한 컬럼이 맞는지 확인
+        sort_column_list = ["Job Date"]
+        try:
+            assert column_list == sort_column_list
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n") 
+
+        print("ITR-41: Worklist > Sort By")
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+
+        # Sort By 결과 전송
+        result = ' '.join(s for s in reason)
+        if testResult == 'failed':
+            testlink.reportTCResult(1755, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1755, testPlanID, buildName, 'p', "Sort By Passed")  
+
+class Statistics:
+    def SearchFilter_Date():
+        testResult = ''
+        reason = list()
+
+        signInOut.admin_sign_in()
+        # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # Statistics 탭 클릭
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
+
+        # Test 병원 선택
+        time.sleep(1)
+        del driver.requests
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+
+        # 2 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 3 steps start! : Date를 Report Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 4 steps start! : Date를 Completed Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 5 steps start! : Date를 Bill Month로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
 
 
 
@@ -6836,11 +6966,8 @@ class Worklist:
 
 
 
-# Worklist.Set_Schedule()
-# Worklist.Schedule_Cancel()
-# Worklist.Revised()
-# Worklist.Discard()
-# Worklist.Retry_Request()
-# Worklist.Columns()
-# Worklist.Show_Entries()
-Worklist.Use_Related_Worklist()
+
+
+
+# Worklist.Sort_By()
+Statistics.SearchFilter_Date()
