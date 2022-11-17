@@ -26,8 +26,8 @@ import json
 #testlink.checkDevKey()
 
 # 브라우저 설정
-baseUrl = 'http://stagingadmin.onpacs.com'
-# baseUrl = 'http://vm-onpacs:8082'
+# baseUrl = 'http://stagingadmin.onpacs.com'
+baseUrl = 'http://vm-onpacs:8082'
 # html = requests.get(baseUrl)
 # soup = BeautifulSoup(html.text, 'html.parser')
 # url = baseUrl + quote_plus(plusUrl)
@@ -507,28 +507,28 @@ import math, random
 WorklistUrl = 'http://vm-onpacs'
 
 admin_id = "testAdmin"
-admin_id = "INF_JH"
+# admin_id = "INF_JH"
 admin_pw = "Server123!@#"
 subadmin_id = "testSubadmin"
 subadmin_pw = "Server123!@#"
 wk_id = "testInfReporter"
 wk_pw = "Server123!@#"
-wk_id_2 = "ITRTestUser" #DownloadControl_User_Add / DownloadControl_User_Modify / DownloadControl_Institution_Add / DownloadControl_Institution_Modify
-wk_pw_2 = "1234qwer!@"#DownloadControl_User_Add / DownloadControl_User_Modify / DownloadControl_Institution_Add / DownloadControl_Institution_Modify
+wk_id_2 = "ITRTestUser" #DownloadControl_User_Add / DownloadControl_User_Modify / DownloadControl_Institution_Add / DownloadControl_Institution_Modify / UserManagement_Registartion_Modify
+wk_pw_2 = "1234qwer!@"#DownloadControl_User_Add / DownloadControl_User_Modify / DownloadControl_Institution_Add / DownloadControl_Institution_Modify 
 search_id = "testInfReporter" #DirectMessageBox_Search / DirectMessageSetting_Search
 search_username = "TestINFReporter" #DirectMessageBox_Search / DirectMessageSetting_Search
 search_text = "test" #DirectMessageBox_Search
 search_institution = "INFINITT" #NewDirectMessage_Institution
-search_institution_2 = "Cloud" #MultiReadingCenterRule / Institution_SearchFilter / DownloadControl_Institution_Add / DownloadControl_Institution_Modify
+search_institution_2 = "Cloud" #MultiReadingCenterRule / Institution_SearchFilter / DownloadControl_Institution_Add / DownloadControl_Institution_Modify / UserManageMent_UserRegistartion_Add
 search_institution_3 = "Cloud Team" #Institution_Modify / DownloadControl_User_Add
 search_institution_code = "997" #Institution_SearchFilter / Institution_Add
-search_center = "인피니트" #NewDirectMessage_Center_Search / MultiReadingCenterRule / Institution_Add
+search_center = "인피니트" #NewDirectMessage_Center_Search / MultiReadingCenterRule / Institution_Add / UserManageMent_UserRegistartion_Add
 search_center_2 = "인피니트테스트" #MultiReadingCenterRule
 search_reporter = "TestINFReporter" #NewDirectMessage_Center_Reporter
 unauth_search_id = "TEST_MAP" #DirectMessageSetting_Search
 unauth_search_username = "김태호" #DirectMessageSetting_Search
-add_test_id = "TestA" #+난수 # DirectMessageSetting_Authorize
-add_test_pw = "1234qwer!" #DirectMessageSetting_Authorize
+add_test_id = "TestA" #+난수 # DirectMessageSetting_Authorize / UserManageMent_UserRegistartion_Add / UserMangement_UserRegistartion_Delete
+add_test_pw = "1234qwer!" #DirectMessageSetting_Authorize / UserManageMent_UserRegistartion_Add
 upload_pic = "C:\\Users\\INFINITT\\Desktop\\uploadtest.png" # NoticeList_NoticeEditBoard
 upload_pic_url = "https://i.ytimg.com/vi/gREpAVOERis/maxresdefault.jpg" # NoticeList_NoticeEditBoards
 specialty = "ITRTest" #DownloadControl_Add / Specialty_SpecialtyList_Search
@@ -1428,7 +1428,9 @@ class DirectMessage:
         # Input
         while(1):
             test_id = add_test_id+str(random.randrange(0,100000))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").clear()
             driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys(test_id)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-add-validation-btn")))
             driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn > span").click()
             WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
             check = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
@@ -10202,7 +10204,1497 @@ class Specialty:
         #else:
         #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "InstitutionList_Modify_Search Test Passed")
 
-    # def InstitutionList_Add():
+class UserManagement:
+    def SearchFilter_Class():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+        
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        select_class = data[0]["ClassCode"]
+
+        del driver.requests
+        time.sleep(1)
+        
+        # Select Class Search #1
+        driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > a > span").click()
+        for n in range(1,7):
+            if driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child("+str(n)+")").text == select_class:
+                driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                break
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        for n in range(0, len(data)):
+            if (data[n]["ClassCode"] != select_class or
+                driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(4)").text != data[n]["ClassCode"]):
+                testResult = False
+                Result_msg += "#1 "
+
+        print("SearchFilter_Class")
+        print(testResult)
+        print(Result_msg)
+
+        ## SearchFilter_Class결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "SearchFilter_Class Test Passed")
+
+    def SearchFilter_Institution():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+        
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        total = math.ceil(data["recordsFiltered"] / data["Length"])
+
+        select_insti = ""
+        for a in range(0, total):
+            request = driver.wait_for_request('.*/GetUserList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for n in range(1, len(data)+1):
+                del driver.requests
+                time.sleep(1)
+                    
+                # Select
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(n)+"]/td[2]/a").click()
+                driver.wait_for_request('.*/GetUserModifyData.*')
+                WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-close-btn")))
+                if driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text != "None":
+                    select_insti = driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text
+                    # Close
+                    element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                    driver.execute_script("arguments[0].click()",element)
+                    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                    # Yes
+                    driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                    break
+                # Close
+                element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                driver.execute_script("arguments[0].click()",element)
+                WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                # Yes
+                driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+            if (a+1 == total or
+                select_insti != ""):
+                break
+
+            del driver.requests
+            time.sleep(1)
+
+            driver.find_element(By.CSS_SELECTOR, "#user-list_next > a").click()
+
+        del driver.requests
+        time.sleep(1)
+        # Select Institution Search #1
+        driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > a > span").click()
+        child = driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > div > ul").get_property("childElementCount")
+        for n in range(1, child+1):
+            if driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > div > ul > li:nth-child("+str(n)+")").text == select_insti:
+                driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                break
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        for n in range(1, len(data)+1):
+            del driver.requests
+            time.sleep(1)
+
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(n)+"]/td[2]/a").click()
+            driver.wait_for_request('.*/GetUserModifyData.*')
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-close-btn")))
+
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text != select_insti:
+                testResult = False
+                Result_msg += "#1 "
+                # Close
+                element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                driver.execute_script("arguments[0].click()",element)
+                WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                # Yes
+                driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                break
+
+            # Close
+            element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+            driver.execute_script("arguments[0].click()",element)
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            # Yes
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        print("SearchFilter_Institution")
+        print(testResult)
+        print(Result_msg)
+
+        ## SearchFilter_Institution결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "SearchFilter_Institution Test Passed")
+
+    def SearchFilter_UserID():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+        
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        total = math.ceil(data["recordsFiltered"] / data["Length"])
+
+        select_insti = ""
+        for a in range(0, total):
+            request = driver.wait_for_request('.*/GetUserList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for n in range(1, len(data)+1):
+                del driver.requests
+                time.sleep(1)
+                    
+                # Select
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(n)+"]/td[2]/a").click()
+                driver.wait_for_request('.*/GetUserModifyData.*')
+                WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-close-btn")))
+                if driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text != "None":
+                    select_user = driver.find_element(By.CSS_SELECTOR, "#user-add-id").get_property("value")
+                    select_class = driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a > span").text
+                    select_insti = driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text
+                    # Close
+                    element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                    driver.execute_script("arguments[0].click()",element)
+                    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                    # Yes
+                    driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                    break
+                # Close
+                element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                driver.execute_script("arguments[0].click()",element)
+                WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                # Yes
+                driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+            if (a+1 == total or
+                select_insti != ""):
+                break
+
+            del driver.requests
+            time.sleep(1)
+
+            driver.find_element(By.CSS_SELECTOR, "#user-list_next > a").click()
+
+        del driver.requests
+        time.sleep(1)
+
+        # User ID Search #1
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").send_keys(select_user)
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        for n in range (0, len(data)):
+            if (select_user not in data[n]["UserID"] or
+                data[n]["UserID"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(2)").get_property("textContent")):
+                testResult = False
+                break
+
+        del driver.requests
+        time.sleep(1)
+
+        if testResult == True:
+            # class
+            driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > a > span").click()
+            child = driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul").get_property("childElementCount")
+            for n in range(1, child+1):
+                if driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child("+str(n)+")").text == select_class:
+                    driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                    break
+            driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+            request = driver.wait_for_request('.*/GetUserList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for n in range(0, len(data)):
+                if (select_user not in data[n]["UserID"] or
+                    data[n]["UserID"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(2)").get_property("textContent") or
+                    data[n]["ClassCode"] != select_class or 
+                    data[n]["ClassCode"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(4)").text):
+                    testResult = False
+                    break
+
+            driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > a > span").click()
+            driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child(1)").click()
+           
+        del driver.requests
+        time.sleep(1)
+
+        if testResult == True:
+            # institution
+            driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > a > span").click()
+            child = driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > div > ul").get_property("childElementCount")
+            for n in range(1, child+1):
+                if driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > div > ul > li:nth-child("+str(n)+")").text == select_insti:
+                    driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                    break
+            driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+            request = driver.wait_for_request('.*/GetUserList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for n in range(0, len(data)):
+                if (select_user not in data[n]["UserID"] or
+                    data[n]["UserID"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(2)").get_property("textContent")):                    
+                    testResult = False
+                    break
+
+            if testResult == True:
+                for n in range(1, len(data)+1):
+                    del driver.requests
+                    time.sleep(1)
+
+                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(n)+"]/td[2]/a").click()
+                    driver.wait_for_request('.*/GetUserModifyData.*')
+                    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-close-btn")))
+
+                    if driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text != select_insti:
+                        testResult = False
+                        # Close
+                        element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                        driver.execute_script("arguments[0].click()",element)
+                        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                        # Yes
+                        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                        break
+
+                    # Close
+                    element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                    driver.execute_script("arguments[0].click()",element)
+                    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                    # Yes
+                    driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        if testResult == True:
+            # class & institution
+            driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > a > span").click()
+            child = driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul").get_property("childElementCount")
+            for n in range(1, child+1):
+                if driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child("+str(n)+")").text == select_class:
+                    driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                    break
+            driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+            request = driver.wait_for_request('.*/GetUserList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for n in range(0, len(data)):
+                if (select_user not in data[n]["UserID"] or
+                    data[n]["UserID"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(2)").get_property("textContent") or
+                    data[n]["ClassCode"] != select_class or 
+                    data[n]["ClassCode"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(4)").text):
+                    testResult = False
+                    break
+
+            if testResult == True:
+                for n in range(1, len(data)+1):
+                    del driver.requests
+                    time.sleep(1)
+
+                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(n)+"]/td[2]/a").click()
+                    driver.wait_for_request('.*/GetUserModifyData.*')
+                    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-close-btn")))
+
+                    if driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text != select_insti:
+                        testResult = False
+                        # Close
+                        element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                        driver.execute_script("arguments[0].click()",element)
+                        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                        # Yes
+                        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                        break
+
+                    # Close
+                    element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                    driver.execute_script("arguments[0].click()",element)
+                    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                    # Yes
+                    driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        if testResult == False:
+            Result_msg += "#1 "
+
+        print("SearchFilter_UserID")
+        print(testResult)
+        print(Result_msg)
+
+        ## SearchFilter_UserID결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "SearchFilter_UserID Test Passed")
+
+    def SearchFilter_UserName():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+        
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        total = math.ceil(data["recordsFiltered"] / data["Length"])
+
+        select_insti = ""
+        for a in range(0, total):
+            request = driver.wait_for_request('.*/GetUserList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for n in range(1, len(data)+1):
+                del driver.requests
+                time.sleep(1)
+                    
+                # Select
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(n)+"]/td[2]/a").click()
+                driver.wait_for_request('.*/GetUserModifyData.*')
+                WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-close-btn")))
+                if driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text != "None":
+                    select_user = driver.find_element(By.CSS_SELECTOR, "#user-add-name").get_property("value")
+                    select_class = driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a > span").text
+                    select_insti = driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text
+                    # Close
+                    element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                    driver.execute_script("arguments[0].click()",element)
+                    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                    # Yes
+                    driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                    break
+                # Close
+                element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                driver.execute_script("arguments[0].click()",element)
+                WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                # Yes
+                driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+            if (a+1 == total or
+                select_insti != ""):
+                break
+
+            del driver.requests
+            time.sleep(1)
+
+            driver.find_element(By.CSS_SELECTOR, "#user-list_next > a").click()
+
+        del driver.requests
+        time.sleep(1)
+
+        # User ID Search #1
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-name").send_keys(select_user)
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        for n in range (0, len(data)):
+            if (select_user not in data[n]["UserName"] or
+                data[n]["UserName"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(3)").get_property("textContent")):
+                testResult = False
+                break
+
+        del driver.requests
+        time.sleep(1)
+
+        if testResult == True:
+            # class
+            driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > a > span").click()
+            child = driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul").get_property("childElementCount")
+            for n in range(1, child+1):
+                if driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child("+str(n)+")").text == select_class:
+                    driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                    break
+            driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+            request = driver.wait_for_request('.*/GetUserList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for n in range(0, len(data)):
+                if (select_user not in data[n]["UserName"] or
+                    data[n]["UserName"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(3)").get_property("textContent") or
+                    data[n]["ClassCode"] != select_class or 
+                    data[n]["ClassCode"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(4)").text):
+                    testResult = False
+                    break
+
+            driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > a > span").click()
+            driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child(1)").click()
+           
+        del driver.requests
+        time.sleep(1)
+
+        if testResult == True:
+            # institution
+            driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > a > span").click()
+            child = driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > div > ul").get_property("childElementCount")
+            for n in range(1, child+1):
+                if driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > div > ul > li:nth-child("+str(n)+")").text == select_insti:
+                    driver.find_element(By.CSS_SELECTOR, "#user_search_institution_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                    break
+            driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+            request = driver.wait_for_request('.*/GetUserList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for n in range(0, len(data)):
+                if (select_user not in data[n]["UserName"] or
+                    data[n]["UserName"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(3)").get_property("textContent")):                    
+                    testResult = False
+                    break
+
+            if testResult == True:
+                for n in range(1, len(data)+1):
+                    del driver.requests
+                    time.sleep(1)
+
+                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(n)+"]/td[2]/a").click()
+                    driver.wait_for_request('.*/GetUserModifyData.*')
+                    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-close-btn")))
+
+                    if driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text != select_insti:
+                        testResult = False
+                        # Close
+                        element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                        driver.execute_script("arguments[0].click()",element)
+                        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                        # Yes
+                        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                        break
+
+                    # Close
+                    element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                    driver.execute_script("arguments[0].click()",element)
+                    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                    # Yes
+                    driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        if testResult == True:
+            # class & institution
+            driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > a > span").click()
+            child = driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul").get_property("childElementCount")
+            for n in range(1, child+1):
+                if driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child("+str(n)+")").text == select_class:
+                    driver.find_element(By.CSS_SELECTOR, "#user_search_class_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                    break
+            driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+            request = driver.wait_for_request('.*/GetUserList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for n in range(0, len(data)):
+                if (select_user not in data[n]["UserName"] or
+                    data[n]["UserName"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(3)").get_property("textContent") or
+                    data[n]["ClassCode"] != select_class or 
+                    data[n]["ClassCode"] != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(4)").text):
+                    testResult = False
+                    break
+
+            if testResult == True:
+                for n in range(1, len(data)+1):
+                    del driver.requests
+                    time.sleep(1)
+
+                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(n)+"]/td[2]/a").click()
+                    driver.wait_for_request('.*/GetUserModifyData.*')
+                    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-close-btn")))
+
+                    if driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text != select_insti:
+                        testResult = False
+                        # Close
+                        element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                        driver.execute_script("arguments[0].click()",element)
+                        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                        # Yes
+                        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                        break
+
+                    # Close
+                    element = driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn")
+                    driver.execute_script("arguments[0].click()",element)
+                    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+                    # Yes
+                    driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        if testResult == False:
+            Result_msg += "#1 "
+
+        print("SearchFilter_UserName")
+        print(testResult)
+        print(Result_msg)
+
+        ## SearchFilter_UserName결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "SearchFilter_UserName Test Passed")
+
+    def SearchFilter_ShowWithMappingID():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+        driver.wait_for_request('.*/GetUserList.*')
+
+        # Show With Mapping ID #1
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div:nth-child(5) > div > label").click()
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        total = math.ceil(data["recordsFiltered"] / data["Length"])
+
+        check = False
+        for a in range (0, total):
+            request = driver.wait_for_request('.*/GetUserList.*')
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for n in range(0, len(data)):
+                if data[n]["IsMappingID"] == "Y":
+                    if driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(7)").text == "Y":
+                        check = True
+                        break
+
+            if (check == True or 
+                a+1 == total):
+                break
+
+            del driver.requests
+            time.sleep(1)
+
+            driver.find_element(By.CSS_SELECTOR, "#user-list_next > a").click()
+
+        if check == False:
+            testResult = False
+            Result_msg += "#1 "
+
+        print("SearchFilter_ShowWithMappingID")
+        print(testResult)
+        print(Result_msg)
+
+        ## SearchFilter_ShowWithMappingID결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "SearchFilter_ShowWithMappingID Test Passed")
+
+    def UserRegistartion_Add():
+        testResult = True
+        Result_msg = "failed at "
+        class_check = True
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+        driver.wait_for_request('.*/GetUserList.*')
+
+        # Add #1
+        driver.find_element(By.CSS_SELECTOR, "#user-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        try:
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3"), "User Registration"))
+        except:
+            testResult = False
+            Result_msg += "#1 "
+
+        # Validation #2
+        check = ""
+        for i in range(0, 30):
+            test_id = add_test_id+str(random.randrange(0,100000))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").clear()
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys(test_id)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-add-validation-btn")))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn").click()
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            check = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            if check == "User ID is available!":
+                break
+        if check != "User ID is available!":
+            testResult = False
+            Result_msg += "#2 "
+
+        # < 5 Validation #3
+        driver.find_element(By.CSS_SELECTOR, "#user-add-id").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys("55555")
+        if driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn").value_of_css_property("cursor") != "not-allowed":
+            testResult = False
+            Result_msg += "#3 "
+
+        # Only Number Validation #4
+        driver.find_element(By.CSS_SELECTOR, "#user-add-id").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys("555555")
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-add-validation-btn")))
+        driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "User ID로 숫자만 사용할 수 없습니다.":
+            testResult = False
+            Result_msg += "#4 "
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        
+        # Korean Validation #5
+        driver.find_element(By.CSS_SELECTOR, "#user-add-id").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys("한글1234")
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-add-validation-btn")))
+        driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "User ID로 한글은 사용할 수 없습니다.":
+            testResult = False
+            Result_msg += "#5 "
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        # Already Validation #6
+        driver.find_element(By.CSS_SELECTOR, "#user-add-id").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys(admin_id)
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-add-validation-btn")))
+        driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "User ID is Exist!":
+            testResult = False
+            Result_msg += "#6 "
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        # Input
+        driver.find_element(By.CSS_SELECTOR, "#user-add-id").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys(test_id)
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-add-validation-btn")))
+        driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        # Short Password #8
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").send_keys("Ser12!@")
+        driver.find_element(By.CSS_SELECTOR, "#user-add-name").send_keys(test_id)
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Password는 8자 이상이여야 합니다.":
+            testResult = False
+            Result_msg += "#8 "
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3")))
+
+        # Single Password #9
+        check = True
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").send_keys("qwerasdf")
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Password의 영문 대 소문자, 숫자, 특수문자를 혼용하여 사용하여야 합니다.":
+            check = False
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3")))
+
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").send_keys("12345678")
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Password의 영문 대 소문자, 숫자, 특수문자를 혼용하여 사용하여야 합니다.":
+            check = False
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3")))
+
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").send_keys("!@#$%^&*")
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Password의 영문 대 소문자, 숫자, 특수문자를 혼용하여 사용하여야 합니다.":
+            check = False
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3")))
+
+        if check == False:
+            testResult = False
+            Result_msg += "#9 "
+
+        # Password input
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").send_keys(wk_pw_2)
+
+        # Non User Name Save #10
+        driver.find_element(By.CSS_SELECTOR, "#user-add-name").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "User Name를 입력해주세요.":
+            testResult = False
+            Result_msg += "#10 "
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3")))
+
+        # Right PW Save, Right User Name Save, Class, E-mail, Phone, License, Administrator, Select Authority, Unselect Authority  #7 11 12 15 16 17 18 23 24
+        driver.find_element(By.CSS_SELECTOR, "#user-add-name").send_keys(test_id)
+
+        driver.find_element(By.CSS_SELECTOR, "#user-add-email").send_keys("EmailTest")
+        driver.find_element(By.CSS_SELECTOR, "#user-add-phone").send_keys("PhoneTest")
+        driver.find_element(By.CSS_SELECTOR, "#user-add-license").send_keys("LicenseTest")
+
+        if (driver.find_element(By.CSS_SELECTOR, "#user-add-authority-view-image").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-view-image").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-config-view").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-config-view").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-config-create").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-config-create").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-config-delete").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-config-delete").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-admin-advanced-result").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-admin-advanced-result").get_property("willValidate") == False):
+            testResult = False
+            Result_msg += "#18 "
+
+        driver.find_element(By.CSS_SELECTOR, "#add-user-popup > div > div > div.modal-body > div:nth-child(10) > div > div.col-lg-9.col-xs-9 > div > div > label:nth-child(2)").click()
+        if driver.find_element(By.CSS_SELECTOR, "#user-add-authority-job-display").get_property("checked") == False:
+            testResult = False
+            Result_msg += "#23 "
+
+        if "#23" not in Result_msg:
+            driver.find_element(By.CSS_SELECTOR, "#add-user-popup > div > div > div.modal-body > div:nth-child(10) > div > div.col-lg-9.col-xs-9 > div > div > label:nth-child(2)").click()
+            if driver.find_element(By.CSS_SELECTOR, "#user-add-authority-job-display").get_property("checked") == True:
+                testResult = False
+                Result_msg += "#24"
+
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+        # no
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3")))
+        no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3").text
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # yes
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+       
+        del driver.requests
+        time.sleep(1)
+
+        # search
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").send_keys(test_id)
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        del driver.requests
+        time.sleep(1)
+
+        idx = -1
+        for n in data:
+            if n["UserID"] == test_id:
+                idx = data.index(n) + 1
+                break
+
+        if (idx == -1 or 
+            msg != "등록하시겠습니까?" or 
+            no_msg != "User Registration"):
+            testResult = False
+            Result_msg += "#7 "
+
+        if "#7" not in Result_msg:
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+
+            driver.wait_for_request('.*/GetUserModifyData.*')
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-save-btn")))
+
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a > span").text != "Administrator":
+                class_check = False
+            if driver.find_element(By.CSS_SELECTOR, "#user-add-email").get_property("value") != "EmailTest":
+                testResult = False
+                Result_msg += "#15 "
+            if driver.find_element(By.CSS_SELECTOR, "#user-add-phone").get_property("value") != "PhoneTest":
+                testResult = False
+                Result_msg += "#16 "
+            if driver.find_element(By.CSS_SELECTOR, "#user-add-license").get_property("value") != "LicenseTest":
+                testResult = False
+                Result_msg += "#17 "
+
+            # close
+            driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        # Center, Class, SubAdministrator #12 13 19
+        # add
+        driver.find_element(By.CSS_SELECTOR, "#user-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3"), "User Registration"))
+        # input
+        while(1):
+            test_id = add_test_id+str(random.randrange(0,100000))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").clear()
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys(test_id)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-add-validation-btn")))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn").click()
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            check = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            if check == "User ID is available!":
+                break
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").send_keys(wk_pw_2)
+        driver.find_element(By.CSS_SELECTOR, "#user-add-name").send_keys(test_id)
+        driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a > span").click()
+        child = driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul").get_property("childElementCount")
+        for n in range(1, child+1):
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul > li:nth-child("+str(n)+")").text == "SubAdministrator":
+                driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                break
+        # center
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user_add_center_chosen > a > span")))
+        driver.find_element(By.CSS_SELECTOR, "#user_add_center_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#user_add_center_chosen > div > div > input[type=text]").send_keys(search_center)
+        driver.find_element(By.CSS_SELECTOR, "#user_add_center_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+
+        # subadministrator
+        if (driver.find_element(By.CSS_SELECTOR, "#user-add-authority-view-image").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-view-image").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-display").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-display").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-delete").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-delete").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-config-view").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-config-view").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-config-create").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-config-create").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-admin-advanced-result").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-admin-advanced-result").get_property("willValidate") == False):
+            testResult = False
+            Result_msg += "#19 "
+
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # yes
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+       
+        del driver.requests
+        time.sleep(1)
+
+        # search
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").send_keys(test_id)
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        del driver.requests
+        time.sleep(1)
+
+        idx = -1
+        for n in data:
+            if n["UserID"] == test_id:
+                idx = data.index(n) + 1
+                break
+
+        if idx != -1:
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+
+            driver.wait_for_request('.*/GetUserModifyData.*')
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-save-btn")))
+
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a > span").text != "SubAdministrator":
+                class_check = False
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_center_chosen > a > span").text != search_center:
+                testResult = False
+                Result_msg += "#13 "
+
+            # close
+            driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        else:
+            testResult = False
+            Result_msg += "#13 "
+            class_check = False
+
+        # Class, Reporter #12 20
+        # add
+        driver.find_element(By.CSS_SELECTOR, "#user-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3"), "User Registration"))
+        # input
+        while(1):
+            test_id = add_test_id+str(random.randrange(0,100000))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").clear()
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys(test_id)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-add-validation-btn")))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn").click()
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            check = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            if check == "User ID is available!":
+                break
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").send_keys(wk_pw_2)
+        driver.find_element(By.CSS_SELECTOR, "#user-add-name").send_keys(test_id)
+        driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a > span").click()
+        child = driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul").get_property("childElementCount")
+        for n in range(1, child+1):
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul > li:nth-child("+str(n)+")").text == "Reporter":
+                driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                break
+
+        # reporter
+        if (driver.find_element(By.CSS_SELECTOR, "#user-add-authority-file-upload-job").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-file-upload-job").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-file-download-job").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-file-download-job").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-file-download-module").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-file-download-module").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-view-image").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-view-image").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-display").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-display").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-create").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-create").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-delete").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-delete").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-admin-advanced-result").get_property("checked") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-admin-advanced-result").get_property("willValidate") == True ):
+            testResult = False
+            Result_msg += "#20 "
+
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # yes
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+       
+        del driver.requests
+        time.sleep(1)
+
+        # search
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").send_keys(test_id)
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        del driver.requests
+        time.sleep(1)
+
+        idx = -1
+        for n in data:
+            if n["UserID"] == test_id:
+                idx = data.index(n) + 1
+                break
+
+        if idx != -1:
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+
+            driver.wait_for_request('.*/GetUserModifyData.*')
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-save-btn")))
+
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a > span").text != "Reporter":
+                class_check = False
+
+            # close
+            driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        else:
+            class_check = False
+
+        # Institution, Class, Requester #12 14 21
+        # add
+        driver.find_element(By.CSS_SELECTOR, "#user-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3"), "User Registration"))
+        # input
+        while(1):
+            test_id = add_test_id+str(random.randrange(0,100000))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").clear()
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys(test_id)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-add-validation-btn")))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn").click()
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            check = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            if check == "User ID is available!":
+                break
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").send_keys(wk_pw_2)
+        driver.find_element(By.CSS_SELECTOR, "#user-add-name").send_keys(test_id)
+        driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a > span").click()
+        child = driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul").get_property("childElementCount")
+        for n in range(1, child+1):
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul > li:nth-child("+str(n)+")").text == "Requester":
+                driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                break
+
+        # institution
+        driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > div > div > input[type=text]").send_keys(search_institution_2)
+        driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+
+
+        # requester
+        if (driver.find_element(By.CSS_SELECTOR, "#user-add-authority-job-display").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-job-display").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-job-edit").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-job-edit").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-job-delete").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-job-delete").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-file-upload-job").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-file-upload-job").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-view-image").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-view-image").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-display").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-display").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-admin-advanced-result").get_property("checked") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-admin-advanced-result").get_property("willValidate") == True ):
+            testResult = False
+            Result_msg += "#21 "
+
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # yes
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+       
+        del driver.requests
+        time.sleep(1)
+
+        # search
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").send_keys(test_id)
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        del driver.requests
+        time.sleep(1)
+
+        idx = -1
+        for n in data:
+            if n["UserID"] == test_id:
+                idx = data.index(n) + 1
+                break
+
+        if idx != -1:
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+
+            driver.wait_for_request('.*/GetUserModifyData.*')
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-save-btn")))
+
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_institution_chosen > a > span").text != search_institution_3:
+                testResult = False
+                Result_msg += "#14 "
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a > span").text != "Requester":
+                class_check = False
+
+            # close
+            driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        else:
+            class_check = False
+
+        # Class, Product #12 22
+        # add
+        driver.find_element(By.CSS_SELECTOR, "#user-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3"), "User Registration"))
+        # input
+        while(1):
+            test_id = add_test_id+str(random.randrange(0,100000))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").clear()
+            driver.find_element(By.CSS_SELECTOR, "#user-add-id").send_keys(test_id)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-add-validation-btn")))
+            driver.find_element(By.CSS_SELECTOR, "#user-add-validation-btn").click()
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+            check = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            if check == "User ID is available!":
+                break
+        driver.find_element(By.CSS_SELECTOR, "#user-add-pw").send_keys(wk_pw_2)
+        driver.find_element(By.CSS_SELECTOR, "#user-add-name").send_keys(test_id)
+        driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a > span").click()
+        child = driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul").get_property("childElementCount")
+        for n in range(1, child+1):
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul > li:nth-child("+str(n)+")").text == "Product":
+                driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                break
+
+        # product
+        if (driver.find_element(By.CSS_SELECTOR, "#user-add-authority-job-delete").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-job-delete").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-display").get_property("checked") == False or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-report-display").get_property("willValidate") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-admin-advanced-result").get_property("checked") == True or
+            driver.find_element(By.CSS_SELECTOR, "#user-add-authority-admin-advanced-result").get_property("willValidate") == True ):
+            testResult = False
+            Result_msg += "#22 "
+
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#user-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # yes
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+       
+        del driver.requests
+        time.sleep(1)
+
+        # search
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").send_keys(test_id)
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        del driver.requests
+        time.sleep(1)
+
+        idx = -1
+        for n in data:
+            if n["UserID"] == test_id:
+                idx = data.index(n) + 1
+                break
+
+        if idx != -1:
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+
+            driver.wait_for_request('.*/GetUserModifyData.*')
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-save-btn")))
+
+            if driver.find_element(By.CSS_SELECTOR, "#user_add_level_chosen > a > span").text != "Product":
+                class_check = False
+
+            # close
+            driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+            time.sleep(0.25)
+            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        else:
+            class_check = False
+
+        if class_check ==  False:
+            testResult = False
+            Result_msg += "#12 "
+
+        print("UserRegistartion_Add")
+        print(testResult)
+        print(Result_msg)
+
+        ## UserRegistartion_Add결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "UserRegistartion_Add Test Passed")
+
+    def UserRegistartion_Delete():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+        driver.wait_for_request('.*/GetUserList.*')
+
+        # None Select Delete #1
+        if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
+            testResult = False
+            Result_msg += "#1 "
+
+        del driver.requests
+        time.sleep(1)
+
+        # Search
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").send_keys(add_test_id)
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        # Select Delete #2
+        # select
+        for n in range(0, len(data)):
+            if data[n]["UserID"].split(add_test_id)[1].isdigit() == True :
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(n+1)+"]/td[1]/label").click()
+                select_user = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(n+1)+"]/td[2]/a").text
+                break
+
+        del driver.requests
+        time.sleep(0.25)
+
+        # delete
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/div[1]/a[2]").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
+        # no
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/div[1]/a[2]")))
+        no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[1]/div[1]/h4").text
+        # delete
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/div[1]/a[2]").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # yes
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        
+        # search
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").send_keys(select_user)
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        for n in data:
+            if n["UserID"] == select_user:
+                testResult = False
+                Result_msg += "#2 "
+
+        del driver.requests
+        time.sleep(1)
+
+        # Search
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").clear()
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        total = math.ceil(data["recordsFiltered"] / data["Length"])
+
+        if total < 2:
+            testResult = False
+            Result_msg += "#3 #4 "
+        else:
+            # Delete Other Tab #3
+            del driver.requests
+            time.sleep(1)
+            
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr[1]/td[1]/label").click()
+            driver.find_element(By.CSS_SELECTOR, "#user-list_next > a").click()
+
+            driver.wait_for_request('.*/GetUserList.*')
+
+            if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
+                testResult = False
+                Result_msg += "#3 "
+
+            # Delete Other Tab > 2
+            del driver.requests
+            time.sleep(1)
+            
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr[1]/td[1]/label").click()
+            driver.find_element(By.CSS_SELECTOR, "#user-list_previous > a").click()
+
+            driver.wait_for_request('.*/GetUserList.*')
+
+            if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
+                testResult = False
+                Result_msg += "#4 "
+
+        print("UserRegistartion_Delete")
+        print(testResult)
+        print(Result_msg)
+
+        ## UserRegistartion_Delete결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "UserRegistartion_Delete Test Passed")
+
+    def UserRegistartion_Modify():
+        testResult = True
+        Result_msg = "failed at "
+        
+        ReFresh()
+
+        # Configuration
+        driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        driver.implicitly_wait(5)
+
+        # DownalodControl
+        driver.find_element(By.CSS_SELECTOR, "#download-control-btn").click()
+        driver.wait_for_request('.*/GetDownloadControlList.*')
+
+        # Add
+        driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[5]/div/div/div[1]/h3")))
+        # User
+        driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_user_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_user_chosen > div > div > input[type=text]").send_keys(wk_id_2)
+        driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_user_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        driver.find_element(By.CSS_SELECTOR, "#download-config-add-user-add-btn").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-user-remove-btn")))
+        # Institution
+        driver.find_element(By.CSS_SELECTOR, "#add_sel_institution_search").send_keys(search_institution_3)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[5]/div/div/div[2]/div[1]/div[2]/div/div/div[1]/select/option[1]").click()
+        driver.find_element(By.CSS_SELECTOR, "#download-config-add-institution-add-btn").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-remove-btn")))
+        # Save
+        driver.find_element(By.CSS_SELECTOR, "#download-contol-add-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # Yes
+        time.sleep(0.25)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        # Ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        del driver.requests
+        time.sleep(1)
+
+        # UserManagement
+        driver.find_element(By.CSS_SELECTOR, "#user-btn").click()
+        driver.wait_for_request('.*/GetUserList.*')
+
+        del driver.requests
+        time.sleep(1)
+
+        # Search
+        driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").send_keys(wk_id_2)
+        driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+        request = driver.wait_for_request('.*/GetUserList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        # Select
+        idx = -1
+        for n in range(0, len(data)):
+            if data[n]["UserID"] == wk_id_2:
+                idx = n+1
+                select_user = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").text
+                break
+        # User ID Click #1
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a")))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-save-btn")))
+        if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3").text != "User Modify":
+            testResult = False
+            Result_msg += "#1 "
+
+        if testResult == True:
+            # Modify ID #2
+            if driver.find_element(By.CSS_SELECTOR, "#user-add-id").value_of_css_property("cursor") != "not-allowed":
+                testResult = False
+                Result_msg += "#2 "
+
+            # Download User ID #3
+            driver.find_element(By.CSS_SELECTOR, "#user-modify-download-userid-btn > span").click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[1]/h3")))
+            if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[1]/h3").text != "User Mapping":
+                testResult = False
+                Result_msg += "#3 "
+
+            #if "#3" not in Result_msg:
+
+
+
+
+
+
+
+
+
+        print("UserRegistartion_Modify")
+        print(testResult)
+        print(Result_msg)
+
+        ## UserRegistartion_Modify결과 전송 ##
+        #if testResult == False:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+        #else:
+        #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "UserRegistartion_Modify Test Passed")
+
+    #def SearchFilter_Class():
     #    testResult = True
     #    Result_msg = "failed at "
         
@@ -10211,32 +11703,24 @@ class Specialty:
     #    # Configuration
     #    driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
     #    driver.implicitly_wait(5)
-
-    #    # Specialty
-    #    driver.find_element(By.CSS_SELECTOR, "#specialty-btn").click()
-    #    driver.wait_for_request('.*/GetSpecialtyList.*')  
-
-    #    # InstitutionList
-    #    driver.find_element(By.CSS_SELECTOR, "#tab-specialty-institution-list > a").click()
-    #    driver.wait_for_request('.*/GetInstitutionListAssignedSpecialty.*')
+    #    driver.wait_for_request('.*/GetUserList.*')
 
 
-
-    #    print("InstitutionList_Add")
+    #    print("SearchFilter_Class")
     #    print(testResult)
     #    print(Result_msg)
 
-    #    ## InstitutionList_Add결과 전송 ##
+    #    ## SearchFilter_Class결과 전송 ##
     #    #if testResult == False:
     #    #    testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
     #    #else:
-    #    #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "InstitutionList_Add Test Passed")
+    #    #    testlink.reportTCResult(2245, testPlanID, buildName, 'p', "SearchFilter_Class Test Passed")
+
 
 
 #subadmin_login()
 admin_login()
-#DownloadControl.User_Modify()
-Specialty.SpecialtyList_Search()
+UserManagement.UserRegistartion_Modify()
 
 
 
