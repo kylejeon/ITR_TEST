@@ -16,6 +16,10 @@ import math
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import random
+import cx_Oracle
+import os
+import pandas as pd
+
 # import ITR_Admin_Common
 
 # User: kyle
@@ -28,8 +32,8 @@ tl_helper = TestLinkHelper()
 # testlink.checkDevKey()
 
 # 브라우저 설정
-# baseUrl = 'http://stagingadmin.onpacs.com'
-baseUrl = 'http://vm-onpacs:8082'
+baseUrl = 'http://stagingadmin.onpacs.com'
+# baseUrl = 'http://vm-onpacs:8082'
 # html = requests.get(baseUrl)
 # soup = BeautifulSoup(html.text, 'html.parser')
 # url = baseUrl + quote_plus(plusUrl)
@@ -53,8 +57,8 @@ testPlanID = 2996
 buildName = 1
 
 # 테스트 계정
-adminID = 'testAdmin'
-adminPW = 'Server123!@#'
+adminID = 'admin'
+adminPW = 'Infinitt1667@'
 subadminID = 'testSubadmin'
 subadminPW = 'Server123!@#'
 
@@ -6939,26 +6943,460 @@ class Statistics:
         reason = list()
 
         signInOut.admin_sign_in()
+
+        # DB 접속
+        os.putenv('NLS_LANG', '.UTF8')
+        cx_Oracle.init_oracle_client(lib_dir=r"D:\app\user\instantclient_21_7")
+        connection = cx_Oracle.connect("pantheon","pantheon","211.43.8.73:1521/spectra", encoding="UTF-8")
+        cursor = connection.cursor()
+
         # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # Statistics 탭 클릭
         time.sleep(0.5)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
 
-        # Test 병원 선택
+        # Show entries 100 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(100))
+
+        # Showing entry 결과 저장
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[5]
+
+        # Study Date 선택
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
         time.sleep(1)
-        del driver.requests
-        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
-        for i in hospital_list:
-            if (i.get_property("dataset"))["institutionName"] == test_hospital:
-                i.click()
+        driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        start_date = start_date.replace("-","")
 
+        # 임의의 병원 선택
+        time.sleep(1)
+        temp_hospital_cnt_list = []
+        hospital_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/ul/li")
+        hospital_cnt = len(hospital_list) - 1
 
-        # 2 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
-        # 3 steps start! : Date를 Report Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
-        # 4 steps start! : Date를 Completed Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        for i in range(2, hospital_cnt):
+            temp_hospital_cnt_list.append(i)
+
+        # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
+        inst_code = []
+        while list_cnt == '0':
+            # 임의의 병원 선택
+            driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            time.sleep(1)
+            select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+            hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+            hospital.click()
+            index = (hospital.get_attribute("for")).split('-')[2]
+            inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
+
+            # Searh 클릭
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+
+            # Showing entry 결과 저장
+            time.sleep(3)
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = temp_cnt[5]
+            list_cnt = list_cnt.replace(",","")
+        inst_code = "','".join(s for s in inst_code)
+
+        # 조회 결과 저장
+        result_list = []
+        pat_list = []
+        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        pages = math.ceil(int(list_cnt) / 100)
+        
+        for page in range(1, pages +1):
+            result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+            for i in result_list:
+                pat_list.append(i.get_property("outerText").split('\t')[2])
+            driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+            time.sleep(2)
+        
+        # DB에서 선택한 병원을 동일한 조건으로 조회
+        end_date = str(today.strftime('%Y%m%d'))
+        sql = f"""
+            select patient_id from MVIEWINSTSTAT 
+            where study_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and study_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
+            and institution_code in ('{inst_code}')
+            """
+
+        # DB 조회 결과 저장
+        cursor.execute(sql)
+        row = cursor.fetchall()
+        db_pat_id = []
+        for i in row:
+            db_pat_id.append(i)
+        
+        # DB 조회 결과와 Admin 조회 결과 비교
+        try:
+            assert db_pat_id.sort() == pat_list.sort()
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # # 2 steps start! : Date를 Request Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # # 페이지 초기화
+        # driver.refresh()
+
+        # # Show entries 100 변경
+        # select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        # select.select_by_value(str(100))
+
+        # # Date를 Requested Date로 선택
+        # WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
+        # driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]").click()
+        # time.sleep(1)
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[2]").click()
+
+        # # Date 선택
+        # time.sleep(2)
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        # time.sleep(1)
+        # driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        # start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        # start_date = start_date.replace("-","")
+
+        # # Showing entry 결과 저장
+        # temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        # temp_cnt = temp_cnt.split()
+        # list_cnt = temp_cnt[5]
+
+        # # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
+        # inst_code = []
+        # while list_cnt == '0':
+        #     # 임의의 병원 선택
+        #     driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+        #     time.sleep(1)
+        #     select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+        #     hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+        #     hospital.click()
+        #     index = (hospital.get_attribute("for")).split('-')[2]
+        #     inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
+
+        #     # Searh 클릭
+        #     time.sleep(1)
+        #     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+
+        #     # Showing entry 결과 저장
+        #     time.sleep(4)
+        #     temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        #     temp_cnt = temp_cnt.split()
+        #     list_cnt = temp_cnt[5]
+        #     list_cnt = list_cnt.replace(",","")
+        # inst_code = "','".join(s for s in inst_code)
+
+        # # 조회 결과 저장
+        # time.sleep(4)
+        # result_list = []
+        # pat_list = []
+        # result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        # pages = math.ceil(int(list_cnt) / 100)
+        
+        # for page in range(1, pages +1):
+        #     result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        #     for i in result_list:
+        #         pat_list.append(i.get_property("outerText").split('\t')[2])
+        #     driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+        #     time.sleep(2)
+
+        # # DB에서 선택한 병원을 동일한 조건으로 조회
+        # end_date = str(today.strftime('%Y%m%d'))
+        # sql = f"""
+        #     select patient_id from MVIEWINSTSTAT 
+        #     where job_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and job_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
+        #     and institution_code in ('{inst_code}')            
+        #     """
+
+        # # DB 조회 결과 저장
+        # cursor.execute(sql)
+        # row = cursor.fetchall()
+        # db_pat_id = []
+        # for i in row:
+        #     db_pat_id.append(i)
+
+        # # DB 조회 결과와 Admin 조회 결과 비교
+        # try:
+        #     assert db_pat_id.sort() == pat_list.sort()
+        # except:
+        #     testResult = "failed"
+        #     reason.append("2 steps failed\n")
+
+        # # 3 steps start! : Date를 Report Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # # 페이지 초기화
+        # driver.refresh()
+        
+        # # Show entries 100 변경
+        # select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        # select.select_by_value(str(100))
+
+        # # Date를 Report Date로 선택
+        # WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
+        # driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]").click()
+        # time.sleep(1)
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[3]").click()
+
+        # # Date 선택
+        # time.sleep(2)
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        # time.sleep(1)
+        # driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        # start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        # start_date = start_date.replace("-","")
+
+        # # Showing entry 결과 저장
+        # temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        # temp_cnt = temp_cnt.split()
+        # list_cnt = temp_cnt[5]
+
+        # # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
+        # inst_code = []
+        # while list_cnt == '0':
+        #     # 임의의 병원 선택
+        #     driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+        #     time.sleep(1)
+        #     select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+        #     hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+        #     hospital.click()
+        #     index = (hospital.get_attribute("for")).split('-')[2]
+        #     inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
+
+        #     # Searh 클릭
+        #     time.sleep(1)
+        #     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+
+        #     # Showing entry 결과 저장
+        #     time.sleep(4)
+        #     temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        #     temp_cnt = temp_cnt.split()
+        #     list_cnt = temp_cnt[5]
+        #     list_cnt = list_cnt.replace(",","")
+        # inst_code = "','".join(s for s in inst_code)
+
+        # # 조회 결과 저장
+        # time.sleep(4)
+        # result_list = []
+        # pat_list = []
+        # result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        # pages = math.ceil(int(list_cnt) / 100)
+        
+        # for page in range(1, pages +1):
+        #     result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        #     for i in result_list:
+        #         pat_list.append(i.get_property("outerText").split('\t')[2])
+            
+        #     driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+        #     time.sleep(2)
+
+        # # DB에서 선택한 병원을 동일한 조건으로 조회
+        # end_date = str(today.strftime('%Y%m%d'))
+        # sql = f"""
+        #     select patient_id from MVIEWINSTSTAT 
+        #     where report_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and report_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
+        #     and institution_code in ('{inst_code}')            
+        #     """
+
+        # # DB 조회 결과 저장
+        # cursor.execute(sql)
+        # row = cursor.fetchall()
+        # db_pat_id = []
+        # for i in row:
+        #     db_pat_id.append(i)
+
+        # # DB 조회 결과와 Admin 조회 결과 비교
+        # try:
+        #     assert db_pat_id.sort() == pat_list.sort()
+        # except:
+        #     testResult = "failed"
+        #     reason.append("3 steps failed\n")
+
+        # # 4 steps start! : Date를 Completed Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # # 페이지 초기화
+        # driver.refresh()
+        
+        # # Show entries 100 변경
+        # select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        # select.select_by_value(str(100))
+
+        # # Date를 Completed Date로 선택
+        # WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
+        # driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]").click()
+        # time.sleep(1)
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[4]").click()
+
+        # # Date 선택
+        # time.sleep(2)
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        # time.sleep(1)
+        # driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        # start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        # start_date = start_date.replace("-","")
+
+        # # Showing entry 결과 저장
+        # temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        # temp_cnt = temp_cnt.split()
+        # list_cnt = temp_cnt[5]
+
+        # # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
+        # inst_code = []
+        # while list_cnt == '0':
+        #     # 임의의 병원 선택
+        #     driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+        #     time.sleep(1)
+        #     select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+        #     hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+        #     hospital.click()
+        #     index = (hospital.get_attribute("for")).split('-')[2]
+        #     inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
+
+        #     # Searh 클릭
+        #     time.sleep(1)
+        #     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+
+        #     # Showing entry 결과 저장
+        #     time.sleep(4)
+        #     temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        #     temp_cnt = temp_cnt.split()
+        #     list_cnt = temp_cnt[5]
+        #     list_cnt = list_cnt.replace(",","")
+        # inst_code = "','".join(s for s in inst_code)
+
+        # # 조회 결과 저장
+        # time.sleep(4)
+        # result_list = []
+        # pat_list = []
+        # result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        # pages = math.ceil(int(list_cnt) / 100)
+        
+        # for page in range(1, pages +1):
+        #     result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        #     for i in result_list:
+        #         pat_list.append(i.get_property("outerText").split('\t')[2])
+        #     driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+        #     time.sleep(2)
+
+        # # DB에서 선택한 병원을 동일한 조건으로 조회
+        # end_date = str(today.strftime('%Y%m%d'))
+        # sql = f"""
+        #     select patient_id from MVIEWINSTSTAT 
+        #     where completed_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and completed_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
+        #     and institution_code in ('{inst_code}')   
+        #     """
+
+        # # DB 조회 결과 저장
+        # cursor.execute(sql)
+        # row = cursor.fetchall()
+        # db_pat_id = []
+        # for i in row:
+        #     db_pat_id.append(i)
+
+        # # DB 조회 결과와 Admin 조회 결과 비교
+        # try:
+        #     assert db_pat_id.sort() == pat_list.sort()
+        # except:
+        #     testResult = "failed"
+        #     reason.append("4 steps failed\n")
+
         # 5 steps start! : Date를 Bill Month로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 페이지 초기화
+        driver.refresh()
+        
+        # Show entries 100 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(100))
+
+        # Date를 Bill Month로 선택
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
+        driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[5]").click()
+
+        # Date 선택
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[1]/div/a").click()
+        time.sleep(1)
+        close_year = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[1]/div/a").get_property("textContent")
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[2]/div/a").click()
+        close_month = int(today.strftime('%m')) - 1
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[2]/div/div/ul/li["+str(close_month)+"]")
+        time.sleep(1)
+
+        # Showing entry 결과 저장
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[5]
+
+        # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
+        inst_code = []
+        while list_cnt == '0':
+            # 임의의 병원 선택
+            driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            time.sleep(1)
+            select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+            hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+            hospital.click()
+            index = (hospital.get_attribute("for")).split('-')[2]
+            inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
+
+            # Searh 클릭
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+
+            # Showing entry 결과 저장
+            time.sleep(4)
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = temp_cnt[5]
+            list_cnt = list_cnt.replace(",","")
+        inst_code = "','".join(s for s in inst_code)
+
+        # 조회 결과 저장
+        time.sleep(4)
+        result_list = []
+        pat_list = []
+        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        pages = math.ceil(int(list_cnt) / 100)
+        
+        for page in range(1, pages +1):
+            result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+            for i in result_list:
+                pat_list.append(i.get_property("outerText").split('\t')[2])
+            driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+            time.sleep(2)
+
+        # DB에서 선택한 병원을 동일한 조건으로 조회
+        end_date = str(today.strftime('%Y%m%d'))
+        sql = f"""
+            select patient_id from closedbill 
+            where closed_year = '{close_year}'
+            and closed_month = '{close_month}'
+            and closed_stat = 'Y'
+            and institution_code in ('{inst_code}')
+            """
+
+        # DB 조회 결과 저장
+        cursor.execute(sql)
+        row = cursor.fetchall()
+        db_pat_id = []
+        for i in row:
+            db_pat_id.append(i)
+
+        # DB 조회 결과와 Admin 조회 결과 비교
+        try:
+            assert db_pat_id.sort() == pat_list.sort()
+        except:
+            testResult = "failed"
+            reason.append("5 steps failed\n")
 
 
+        # DB 연결 해제
+        cursor.close()
+        connection.close()
 
 
 
