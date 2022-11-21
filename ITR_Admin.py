@@ -1,10 +1,8 @@
 from types import NoneType
 from testlink import TestlinkAPIClient, TestLinkHelper
-from bs4 import BeautifulSoup
-from urllib.parse import quote_plus
-# import requests
+# from bs4 import BeautifulSoup
+# from urllib.parse import quote_plus
 from seleniumwire import webdriver
-# from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -19,27 +17,32 @@ import random
 import cx_Oracle
 import os
 import pandas as pd
+import string
 
 # import ITR_Admin_Common
 
-# User: kyle
+# TestLink User: kyle
 URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'
 DevKey = 'adcb86843d0c77e6e0c9950f80a143c0'
-# testlink 초기화
+
+# TestLink 초기화
 tl_helper = TestLinkHelper()
-# testlink = tl_helper.connect(TestlinkAPIClient) 
-# testlink.__init__(URL, DevKey)
-# testlink.checkDevKey()
+testlink = tl_helper.connect(TestlinkAPIClient) 
+testlink.__init__(URL, DevKey)
+testlink.checkDevKey()
 
 # 브라우저 설정
-baseUrl = 'http://stagingadmin.onpacs.com'
-# baseUrl = 'http://vm-onpacs:8082'
+options = webdriver.ChromeOptions()
+options.add_experimental_option("excludeSwitches", ["enable-logging"])
+driver = webdriver.Chrome(options=options)
+# baseUrl = 'http://stagingadmin.onpacs.com'
+baseUrl = 'http://vm-onpacs:8082'
 # html = requests.get(baseUrl)
 # soup = BeautifulSoup(html.text, 'html.parser')
 # url = baseUrl + quote_plus(plusUrl)
-driver = webdriver.Chrome()
 driver.get(baseUrl)
-# ITR_Admin_Common.close_popup()
+
+
 # Notice 창 닫기
 popup = driver.window_handles
 while len(popup) != 1:
@@ -48,19 +51,21 @@ while len(popup) != 1:
     driver.find_element(By.ID, "notice_modal_cancel_week").click()
     popup = driver.window_handles
 driver.switch_to.window(popup[0])
-html = driver.page_source
-soup = BeautifulSoup(html)
-result_list = []
+# html = driver.page_source
+# soup = BeautifulSoup(html)
+# result_list = []
 
 # TestPlanID = AutoTest 버전 테스트
 testPlanID = 2996
 buildName = 1
 
 # 테스트 계정
-adminID = 'admin'
-adminPW = 'Infinitt1667@'
+adminID = 'testAdmin'
+adminPW = 'Server123!@#'
 subadminID = 'testSubadmin'
 subadminPW = 'Server123!@#'
+reporterID = 'testReporter'
+reporterPW = 'Server123!@#'
 
 # 공통 변수
 today = datetime.now()
@@ -105,64 +110,104 @@ class windowSize:
 
 class Sign:
     def Sign_InOut():
+        print("ITR-1: Sign > Sign In/Out")
         testResult = ''
         reason = list()       
         
+        # 2 steps start! : user ID와 password를 입력하지 않고 sign in을 클릭한다
         # user ID와 password를 입력하지 않고 sign in을 클릭한다
-        signInOut.admin_sign_in('','')
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").send_keys("")
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").send_keys("")
+        time.sleep(0.5)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
-        # This field is required.
+
+        # 오류 메시지 확인: This field is required.
         try:
             assert driver.find_element(By.ID, "user-id-error").text == "This field is required."
         except:
             testResult = 'failed'
             reason.append("Sign_InOut step 2 isn't valid")    
         
-        # 잘못된 user ID를 입력하고 sign in을 클릭한다
-        signInOut.admin_sign_in('administrator','Server123!@#')
+        # 3 steps start! : 잘못된 user ID를 입력하고 sign in을 클릭한다
+        # 잘못된 user ID와 Password를 입력하고 sign in을 클릭한다
+        strings = string.ascii_letters
+        userid = ""
+        for i in range(8):
+            userid += random.choice(strings)
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").send_keys(userid)
+        time.sleep(0.5)
+        
+        digits = string.digits
+        pw = ""
+        for i in range(8):
+            pw += random.choice(digits)
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").send_keys(pw)
+        time.sleep(0.5)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
-        # User not found
+        
+        # 오류 메시지 확인: User not found
         try:
             assert driver.find_element(By.CSS_SELECTOR, ".validation-summary-errors > ul > li").text == "User not found"
         except:
             testResult = 'failed'
             reason.append("Sign_InOut step 3 isn't valid")
         
+        # 4 steps start! : password 미입력 하고 sign in을 클릭한다 
         # password 미입력 하고 sign in을 클릭한다        
-        signInOut.admin_sign_in('administrator',' ')
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").clear()
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").send_keys(adminID)
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").clear()
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").send_keys("")
+        time.sleep(0.5)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
-        # This field is required.
+
+        # 오류 메시지 확인: This field is required.
         try:
            assert driver.find_element(By.ID, "user-password-error").text == "This field is required."
         except:
             testResult = 'failed'
             reason.append("Sign_InOut step 3 isn't valid")
         
-        # admin 유저가 아닌 계정으로 로그인 한다.        
-        signInOut.admin_sign_in('yhjeon','1')
+        # 4 steps start! : admin 유저가 아닌 계정으로 로그인 한다.
+        # admin 유저가 아닌 계정으로 로그인 한다.    
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").clear()    
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").send_keys(reporterID)
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").clear()
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").send_keys(reporterPW)
+        time.sleep(0.5)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
-        # not admin user
+
+        # 오류 메시지 확인: not admin user
         try:
             assert driver.find_element(By.CSS_SELECTOR, ".validation-summary-errors >  ul > li").text == "Not admin user"
         except:
             testResult = 'failed'
             reason.append("Sign_InOut step 4 isn't valid")
         
+        # 5 steps start! : 정상적인 계정으로 로그인 한다.
         # 정상적인 계정으로 로그인 한다.
-        signInOut.admin_sign_in('INF_JH','Server123!@#')
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").clear()   
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").send_keys(adminID)
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").clear()
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").send_keys(adminPW)
+        time.sleep(0.5)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)        
+
+        # 정상적으로 로그인 되었는지 확인
         try:
             assert driver.find_element(By.CSS_SELECTOR, ".pull-right > span").text == "Sign Out"
         except:
             testResult = 'failed'
             reason.append("Sign_InOut step 5 isn't valid")
         
-        print("ITR-1: Sign > Sign In/Out")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # sign_InOut 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1531, testPlanID, buildName, 'f', result)            
         else:
@@ -171,13 +216,16 @@ class Sign:
         driver.implicitly_wait(3)
     
     def Rememeber_Me():
+        print("ITR-2: Sign > Remember Me")
         testResult = ''
-        remember_id = 'INF_JH'
+        reason = list() 
         
+        # 1 steps start! : User ID와 User Password를 입력하고, Remember Me를 체크한 후, Sign In을 클릭한다.
         # 정상적인 계정을 입력 및 remind me를 체크하고 로그인 한다.
         driver.find_element(By.ID, 'user-id').clear()
-        driver.find_element(By.ID, 'user-id').send_keys('INF_JH')
-        driver.find_element(By.ID, 'user-password').send_keys('Server123!@#')
+        driver.find_element(By.ID, 'user-id').send_keys(adminID)
+        driver.find_element(By.ID, 'user-password').send_keys(adminPW)
+        time.sleep(0.5)
         driver.find_element(By.CSS_SELECTOR, '.col-xs-8.p-t-5 > label').click()
         driver.find_element(By.CSS_SELECTOR, '.btn').click()         
         driver.implicitly_wait(3)                       
@@ -185,56 +233,94 @@ class Sign:
         # 로그아웃 후, 마지막에 접속한 User ID와 Remind Me 체크 상태를 확인한다.
         signInOut.admin_sign_out()        
         try:
-            assert (driver.find_element(By.ID, 'user-id').text, driver.find_element(By.CSS_SELECTOR, '.col-xs-8.p-t-5 > input').get_attribute('checked')) == (remember_id, 'true')
+            assert (driver.find_element(By.ID, 'user-id').get_property("value"), driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/form/div[5]/div[1]/input').get_property('checked')) == (adminID, True)
         except:
             testResult = 'failed' 
+            reason.append("1 Steps failed")
         
-        print("ITR-2: Sign > Remember Me")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Remember_Me 결과 전송       
+        result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1538, testPlanID, buildName, 'f', "Remember Me Test Failed")            
+            testlink.reportTCResult(1538, testPlanID, buildName, 'f', result)            
         else:
             testlink.reportTCResult(1538, testPlanID, buildName, 'p', "Remember Me Test Passed")    
 
 class Topbar:
     def Search_Schedule_List():
+        print("ITR-3: Topbar > Search Schedule List")
         testResult = '' 
         reason = list() 
         
-        # 로그인 후, 상단의 Schedule badge를 클릭하고, Schedule 개수를 확인한다.
-        signInOut.admin_sign_in('INF_JH','Server123!@#')
+        signInOut.admin_sign_in()
+
+        # 1 steps start! : 상단의 Schedule badge를 클릭하고, Schedule 개수를 확인한다.
+        # 상단의 Schedule badge를 클릭하고, Schedule 개수를 확인한다.
+        time.sleep(3)
         driver.find_element(By.ID, 'schedule_info_box').click()
         sch_info_num = driver.find_element(By.ID, 'schedule_info_number').text
-        driver.find_element(By.ID, 'schedule_info_number').click
         sch_info_num = sch_info_num.split('/')
         refer_sch_num, sch_num = sch_info_num[0], sch_info_num[1].strip()
         time.sleep(3)
+
+        # Hospital list에서 schedule count 저장
+        hospitals = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        hospital_list = []
+        for i in hospitals:
+            hospital_list.append((i.get_property("dataset"))["institutionCode"])
         
-        # Schedule badge의 schedule 개수와 조회 결과 리스트의 schedule 개수를 비교한다.
-        temp_sch_num = driver.find_element(By.ID, 'refer-assigned-list_info').text
-        temp_sch_num = temp_sch_num.split()
-        total_sch_num = temp_sch_num[5]               
+        hospital_schedule_cnt = int()
+        not_refer_joblist_cnt = int()
+        all_joblist_cnt = int()
+        for i in hospital_list:
+            try:
+                # 병원 리스트에서 Schedule badge의 count 저장
+                temp_schedule_cnt = driver.find_element(By.CSS_SELECTOR, "#list-institution-row-"+str(i)+" > span:nth-child(1) > span").get_property("textContent")
+                hospital_schedule_cnt += int((temp_schedule_cnt.split())[2])
+                
+                # Schedule이 있는 병원 선택
+                driver.find_element(By.CSS_SELECTOR, "#list-institution-row-"+str(i)).click()
+                
+                # All Assigned List 탭 클릭
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+                time.sleep(1)         
+                
+                # All Assigned List > Showing entry 결과 저장
+                temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]").text
+                all_joblist_cnt += int((temp_cnt.split())[5])
+
+                # Not Assigned List 탭 클릭
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
+
+                # Not Assigned List > Showing entry 결과 저장
+                time.sleep(1)
+                temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]").text
+                all_joblist_cnt += int((temp_cnt.split())[5])
+                not_refer_joblist_cnt += int((temp_cnt.split())[5])
+
+                # All Assigned List 탭 클릭
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+                time.sleep(1)
+            except:
+                continue
+
+        # Schedule badge의 schedule 개수와 조회 결과 리스트의 schedule 개수를 비교한다.              
         try:
-            assert int(total_sch_num) == int(sch_num)
+            assert int(sch_num) == all_joblist_cnt == hospital_schedule_cnt
         except:
             testResult = 'failed'
-            reason.append("Sign_InOut step 1 isn't valid")
+            reason.append("1 steps failed")
         
         # Schedule badge의 refer된 schedule 개수와 조회 결과 리스트의 refer된 schedule 개수를 비교한다.        
-        cnt_refer = driver.find_elements(By.XPATH, '/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr[1]/td[21]/span/i')
         try:
-            assert int(cnt_refer) == int(refer_sch_num)
+            assert int(refer_sch_num) == not_refer_joblist_cnt
         except:
             testResult = 'failed'
-            reason.append("Sign_InOut step 2 isn't valid")
-
-        print("ITR-3: Topbar > Search Schedule List")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
+            reason.append("2 steps failed")
 
         # Searh_Schedule_List 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1542, testPlanID, buildName, 'f', result)            
         else:
@@ -242,9 +328,14 @@ class Topbar:
 
 class Refer:
     def Hospital_List():
+        print("ITR-7: Refer > Hospital List")
         testResult = ''
         reason = list() 
-        
+
+        # Refer 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        time.sleep(1)
+
         # 1 steps start! : 모든 병원의 badge count와 job list의 결과가 일치하는지 확인
         # Hospital list 저장
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -262,6 +353,7 @@ class Refer:
                 job_cnt = i['JobCount']
                 refer_cnt = i['ReferCount']
                 refer_priority_cnt = 0
+                emer_reporter_list_cnt = int()
                 time.sleep(2)
                 del driver.requests
                 hospital_list[n].click()
@@ -295,8 +387,8 @@ class Refer:
                         # All Assigned List 탭에서 Emergency Job 건수 계산
                         if i["JobPriority"] == 'E':
                             emer_reporter_key = (i["REFERRED_USER_KEYS"])
-                            temp_emer_reporter_list = (emer_reporter_key.split(','))
-                            for j in temp_emer_reporter_list:
+                            temp_emer_reporter = (emer_reporter_key.split(','))
+                            for j in temp_emer_reporter:
                                 emer_reporter_list.append(j)
                             emer_reporter_list_cnt = len(emer_reporter_list)
                             
@@ -311,6 +403,7 @@ class Refer:
                         data = json.loads(body)["data"]
                     refer_text_list_cnt = len(refer_reporter_list)
                     
+                # 병원 리스트의 Refer badge count와 Job list의 refer job list 개수 확인
                 try:
                     assert refer_cnt == refer_text_list_cnt
                 except:
@@ -838,29 +931,35 @@ class Refer:
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
                 n = n + 1
 
-        print("ITR-7: Refer > Hospital List")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Hospital_List 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1567, testPlanID, buildName, 'f', result)            
         else:
             testlink.reportTCResult(1567, testPlanID, buildName, 'p', "Hospital_List Test Passed")  
 
     def Reporter_List():
+        print("ITR-8: Refer > Reporter List")
         testResult = ''
         reason = list()        
 
         # 1 & 2 steps start! : 판독의 탭 > 판독의 리스트에 표시되는 badge count가 job list와 일치하는지 확인
         # Reporter list를 저장한다.
         driver.find_element(By.XPATH, "//*[@id='tab-reporter']").click()
-        reporter_list = driver.find_elements(By.CSS_SELECTOR, "#refer-reporter-list > div > .list-group-item.list-institution")
         request = driver.wait_for_request('.*/GetReferCountsByReporter.*')
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
         reporter_cnt = len(data)
 
+        reporter_list = []
+        for i in data:
+            reporter_list.append(i["ReporterKey"])
+
+        # 판독의 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[1]/ul/li[2]").click()
+        time.sleep(1)
+        
         # 각 reporter의 refer, emergency, schedule job의 건수를 비교한다.
         if reporter_cnt > 0:
             n = 0
@@ -871,7 +970,7 @@ class Refer:
                 
                 # Tap panel의 refer count와 조회 결과 리스트에서의 refer count를 비교한다.
                 del driver.requests
-                reporter_list[n].click()
+                driver.find_element(By.CSS_SELECTOR, "#list-reporter-row-"+str(reporter_list[n])).click()
                 time.sleep(1.5)                
                 if refer_cnt > 0:
                     temp_cnt = driver.find_element(By.XPATH,'/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]').text
@@ -914,14 +1013,13 @@ class Refer:
                         reason.append("1 & 2 steps failed: schedule_cnt isn't valid")
                         
                 n = n + 1
-                
+
                 # 판독의 탭 > Search filter > Priority를 Priority로 선택
-                driver.find_element(By.CSS_SELECTOR, "#refer_search_priority_chosen span").click()
-                driver.find_element(By.CSS_SELECTOR, ".active-result:nth-child(1)").click()         
-        
-                # Refer 탭 클릭
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
-        
+                priority = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[1]/div/a/span").get_property("textContent")
+                if priority == "응급":
+                    driver.find_element(By.CSS_SELECTOR, "#refer_search_priority_chosen span").click()
+                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[1]/div/div/ul/li[1]").click()
+
         # 3 steps start! : 판독의 탭 > Reporter를 클릭했을 때, 표시되는 병원 리스트와 병원 선택 시, 해당 병원의 job list가 표시되는지 확인
         # 판독의 탭 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[1]/ul/li[2]/a").click()
@@ -981,12 +1079,10 @@ class Refer:
 
             # 판독의 탭 클릭
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[1]/ul/li[2]/a").click()
-                
-        print("ITR-8: Refer > Reporter List")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
 
         # Reporter_List 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1577, testPlanID, buildName, 'f', result)
         else:
@@ -994,6 +1090,7 @@ class Refer:
     
 class Search_filter:
     def Priority():
+        print("ITR-9: Search Filter > Priority")
         testResult = ''
         reason = list()
 
@@ -1015,6 +1112,7 @@ class Search_filter:
             while n < hospital_cnt:
                 # Hospital list 저장 및 병원 순서대로 클릭
                 hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+                time.sleep(1)
                 hospital_list[n].click()
         
                 # 병원 선택 > All Assigned List > Priority 드랍박스에서 응급을 선택 후, Search 버튼 클릭
@@ -1036,9 +1134,10 @@ class Search_filter:
                         if i["JobPriority"] not in job_priority:
                             job_priority.append(i["JobPriority"])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1  
 
                 # Not Assigned List 탭 클릭
@@ -1047,6 +1146,7 @@ class Search_filter:
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
                 
                 # 병원 선택 > Not Assigned List > Job list 저장
+                time.sleep(1)
                 pages = Common.cnt_pages()
                 while pages > 0:
                     request = driver.wait_for_request('.*/GetNotAssignedList.*')
@@ -1057,9 +1157,10 @@ class Search_filter:
                         if i["JobPriority"] not in job_priority:
                             job_priority.append(i["JobPriority"])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1  
 
                 # 병원 선택 > Job list에서 응급만 표시되는지 확인
@@ -1071,6 +1172,7 @@ class Search_filter:
                     reason.append("1 steps failed")
                 n = n + 1
                 # All Assigned List 탭 클릭
+                time.sleep(1)
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
 
         # 2 steps start! : Priority 조건을 일반으로 선택한 후, Search 버튼 클릭
@@ -1114,6 +1216,7 @@ class Search_filter:
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
 
                 # 병원 선택 > Not Assigned List > Job list 저장
+                time.sleep(1)
                 pages = Common.cnt_pages()
                 while pages > 0:
                     request = driver.wait_for_request('.*/GetNotAssignedList.*')
@@ -1124,9 +1227,10 @@ class Search_filter:
                         if i["JobPriority"] not in job_priority:
                             job_priority.append(i["JobPriority"])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1  
                 
                 # 병원 선택 > Job list에서 응급만 표시되는지 확인
@@ -1140,17 +1244,16 @@ class Search_filter:
                 # All Assigned List 탭 클릭
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
 
-        print("ITR-9: Search Filter > Priority")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Priority 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1583, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1583, testPlanID, buildName, 'p', "Priority Passed")
 
     def Job_Status():
+        print("ITR-10: Search Filter > Job Status")
         testResult = ''
         reason = list()
 
@@ -1162,6 +1265,8 @@ class Search_filter:
         Common.refer_show_entries(100)
 
         # All List > Job Status를 Requested로 변경하고, Search All 버튼 클릭
+        time.sleep(1)
+        del driver.requests
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[2]").click()
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
@@ -1177,10 +1282,12 @@ class Search_filter:
             for i in data:
                 if i["StatDescription"] not in job_status:
                     job_status.append(i["StatDescription"])
+            
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1  
 
         # Job Status가 Requested 만 조회되었는지 확인
@@ -1194,8 +1301,13 @@ class Search_filter:
         # 2 steps start! : Job Status를 Reported로 선택한 후, Search All버튼을 클릭한다.
         # All List > Job Status를 Reported로 변경하고, Search All 버튼 클릭
         time.sleep(1)
+        driver.refresh()
+        # All List 탭 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+
+        time.sleep(1)
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/a").click()
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[3]").click()
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
 
@@ -1211,9 +1323,10 @@ class Search_filter:
                 if i["StatDescription"] not in job_status:
                     job_status.append(i["StatDescription"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # Job Status가 Reported 만 조회되었는지 확인
@@ -1244,9 +1357,10 @@ class Search_filter:
                 if i["StatDescription"] not in job_status:
                     job_status.append(i["StatDescription"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # Job Status가 Pending 만 조회되었는지 확인
@@ -1277,9 +1391,10 @@ class Search_filter:
                 if i["StatDescription"] not in job_status:
                     job_status.append(i["StatDescription"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # Job Status가 Completed 만 조회되었는지 확인
@@ -1299,21 +1414,24 @@ class Search_filter:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
 
         # All List > Job list의 Job Status 저장
-        pages = Common.cnt_pages()
-        while pages > 0:
-            request = driver.wait_for_request('.*/GetAllList.*')
-            body = request.response.body.decode('utf-8')
-            data = json.loads(body)["data"]
-            job_status = []
+        # pages = Common.cnt_pages()
+        # while pages > 0:
+        request = driver.wait_for_request('.*/GetAllList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        job_status = []
 
-            for i in data:
-                if i["StatDescription"] not in job_status:
-                    job_status.append(i["StatDescription"])
-            # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
-            pages = pages - 1
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+        
+        # Next 클릭
+        if len(data) == 100:
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
+            # pages = pages - 1
 
         # Job Status가 Recalled 만 조회되었는지 확인
         try:
@@ -1332,6 +1450,7 @@ class Search_filter:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
 
         # All List > Job list의 Job Status 저장
+        time.sleep(1)
         pages = Common.cnt_pages()
         while pages > 0:
             request = driver.wait_for_request('.*/GetAllList.*')
@@ -1343,9 +1462,10 @@ class Search_filter:
                 if i["StatDescription"] not in job_status:
                     job_status.append(i["StatDescription"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # Job Status가 Canceled 만 조회되었는지 확인
@@ -1376,9 +1496,10 @@ class Search_filter:
                 if i["StatDescription"] not in job_status:
                     job_status.append(i["StatDescription"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # Job Status가 Canceled2 만 조회되었는지 확인
@@ -1398,6 +1519,7 @@ class Search_filter:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
 
         # All List > Job list의 Job Status 저장
+        time.sleep(1)
         pages = Common.cnt_pages()
         while pages > 0:
             request = driver.wait_for_request('.*/GetAllList.*')
@@ -1409,9 +1531,10 @@ class Search_filter:
                 if i["StatDescription"] not in job_status:
                     job_status.append(i["StatDescription"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # Job Status가 Returned 만 조회되었는지 확인
@@ -1442,9 +1565,10 @@ class Search_filter:
                 if i["StatDescription"] not in job_status:
                     job_status.append(i["StatDescription"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # Job Status가 Failed Download Report 만 조회되었는지 확인
@@ -1475,9 +1599,10 @@ class Search_filter:
                 if i["StatDescription"] not in job_status:
                     job_status.append(i["StatDescription"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # Job Status가 AI Processing 만 조회되었는지 확인
@@ -1508,9 +1633,10 @@ class Search_filter:
                 if i["StatDescription"] not in job_status:
                     job_status.append(i["StatDescription"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # Job Status가 DiscardRequest 만 조회되었는지 확인
@@ -1541,9 +1667,10 @@ class Search_filter:
                 if i["StatDescription"] not in job_status:
                     job_status.append(i["StatDescription"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # Job Status가 DiscardCompleted 만 조회되었는지 확인
@@ -1554,17 +1681,16 @@ class Search_filter:
             testResult = "failed"
             reason.append("12 steps failed\n")
 
-        print("ITR-10: Search Filter > Job Status")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Priority 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1588, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1588, testPlanID, buildName, 'p', "Job Status Passed")
     
     def Date():
+        print("ITR-11: Search Filter > Job Date")
         testResult = ''
         reason = list()
 
@@ -1618,9 +1744,10 @@ class Search_filter:
                         if temp_job_date.split()[0] not in job_date:
                             job_date.append(temp_job_date.split()[0])
                 # Next 클릭
-                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                if next_btn.is_enabled() == 'True':
-                    next_btn.click()
+                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                if "disabled" not in next_btn.get_attribute("class"):
+                    time.sleep(1)
+                    driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                 pages = pages - 1
             
             # All Assigned List > Job list의 결과가 Yesterday 인지 확인
@@ -1658,9 +1785,10 @@ class Search_filter:
                         if temp_job_date.split()[0] not in job_date:
                             job_date.append(temp_job_date.split()[0])
                 # Next 클릭
-                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                if next_btn.is_enabled() == 'True':
-                    next_btn.click()
+                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                if "disabled" not in next_btn.get_attribute("class"):
+                    time.sleep(1)
+                    driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                 pages = pages - 1
 
             # All Assigned List > Job list의 결과가 Today 인지 확인
@@ -1699,9 +1827,10 @@ class Search_filter:
                             if temp_job_date.split()[0] not in job_date:
                                 job_date.append(temp_job_date.split()[0])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1
 
                 # All Assigned List > Job list의 결과가 last 1~5week 인지 확인
@@ -1740,9 +1869,10 @@ class Search_filter:
                             if temp_job_date.split()[0] not in job_date:
                                 job_date.append(temp_job_date.split()[0])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1
 
                 # All Assigned List > Job list의 결과가 last 1~12 month 인지 확인
@@ -1762,6 +1892,7 @@ class Search_filter:
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
 
             # Date를 Job Date로 선택
+            time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[3]/div").click()
             driver.find_element(By.XPATH, date_type[j][0]).click()
 
@@ -1792,9 +1923,10 @@ class Search_filter:
                         if temp_job_date.split()[0] not in job_date:
                             job_date.append(temp_job_date.split()[0])
                 # Next 클릭
-                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                if next_btn.is_enabled() == 'True':
-                    next_btn.click()
+                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                if "disabled" not in next_btn.get_attribute("class"):
+                    time.sleep(1)
+                    driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                 pages = pages - 1
             
             # Not Assigned List > Job list의 결과가 Yesterday 인지 확인
@@ -1832,9 +1964,10 @@ class Search_filter:
                         if temp_job_date.split()[0] not in job_date:
                             job_date.append(temp_job_date.split()[0])
                 # Next 클릭
-                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                if next_btn.is_enabled() == 'True':
-                    next_btn.click()
+                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                if "disabled" not in next_btn.get_attribute("class"):
+                    time.sleep(1)
+                    driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                 pages = pages - 1
 
             # Not Assigned List > Job list의 결과가 Today 인지 확인
@@ -1873,9 +2006,10 @@ class Search_filter:
                             if temp_job_date.split()[0] not in job_date:
                                 job_date.append(temp_job_date.split()[0])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1
 
                 # All Assigned List > Job list의 결과가 last 1~5week 인지 확인
@@ -1914,9 +2048,10 @@ class Search_filter:
                             if temp_job_date.split()[0] not in job_date:
                                 job_date.append(temp_job_date.split()[0])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1
 
                 # Not Assigned List > Job list의 결과가 last 1~12 month 인지 확인
@@ -1963,9 +2098,10 @@ class Search_filter:
                     if temp_job_date.split()[0] not in job_date:
                         job_date.append(temp_job_date.split()[0])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
             
         # All List > Job list의 Job date가 최근 1년 이내의 job 인지 확인
@@ -1976,17 +2112,16 @@ class Search_filter:
             testResult = "failed"
             reason.append("4 steps failed\n")
 
-        print("ITR-11: Search Filter > Job Date")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Job Date 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1603, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1603, testPlanID, buildName, 'p', "Job Date Passed")
 
     def Patient_Location():
+        print("ITR-12: Search Filter > Patient Location")
         testResult = ''
         reason = list()
 
@@ -2028,9 +2163,10 @@ class Search_filter:
                     if i["PatientLocation"] not in pat_location:
                         pat_location.append(i["PatientLocation"])
                 # Next 클릭
-                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                if next_btn.is_enabled() == 'True':
-                    next_btn.click()
+                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                if "disabled" not in next_btn.get_attribute("class"):
+                    time.sleep(1)
+                    driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                 pages = pages - 1
             
             # 선택한 Patient Location과 Job list의 Patient Location이 일치하는지 확인
@@ -2040,18 +2176,17 @@ class Search_filter:
             except:
                 testResult = "failed"
                 reason.append(j+ " steps failed\n")
-
-        print("ITR-12: Search Filter > Patient Location")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # Patient Location 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1608, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1608, testPlanID, buildName, 'p', "Patient Location Passed")
 
     def Patient_ID():
+        print("ITR-13: Search Filter > Patient ID")
         testResult = ''
         reason = list()
 
@@ -2090,9 +2225,10 @@ class Search_filter:
                         if j["PatientID"] not in result_pat_id:
                             result_pat_id.append(j["PatientID"])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1
 
             if pat_id == '':
@@ -2139,9 +2275,10 @@ class Search_filter:
                 if j["PatientID"] not in result_pat_id:
                     result_pat_id.append(j["PatientID"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # 검색한 Patient ID와 Job list의 결과와 비교
@@ -2153,17 +2290,16 @@ class Search_filter:
             testResult = "failed"
             reason.append("2 steps failed\n")
 
-        print("ITR-13: Search Filter > Patient ID")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Patient ID 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1615, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1615, testPlanID, buildName, 'p', "Patient ID Passed")
 
     def Patient_Name():
+        print("ITR-14: Search Filter > Patient Name")
         testResult = ''
         reason = list()
 
@@ -2202,9 +2338,10 @@ class Search_filter:
                         if j["PatientName"] not in result_pat_name:
                             result_pat_name.append(j["PatientName"])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1
 
             if pat_name == '':
@@ -2213,7 +2350,7 @@ class Search_filter:
 
                 # Search filter > Patient_Name을 입력한 후, Search 버튼 클릭
                 if type(pat_name) != NoneType:
-                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[1]/div/div/input").send_keys(pat_name)
+                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[2]/div/div/input").send_keys(pat_name)
                     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
                 # Patient_Name이 모두 Null 인 경우
                 else:
@@ -2251,9 +2388,10 @@ class Search_filter:
                 if j["PatientName"] not in result_pat_name:
                     result_pat_name.append(j["PatientName"])
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-            if next_btn.is_enabled() == 'True':
-                next_btn.click()
+            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            if "disabled" not in next_btn.get_attribute("class"):
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             pages = pages - 1
 
         # 검색한 Patient ID와 Job list의 결과와 비교
@@ -2265,17 +2403,16 @@ class Search_filter:
             testResult = "failed"
             reason.append("2 steps failed\n")
 
-        print("ITR-14: Search Filter > Patient Name")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Patient Name 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1615, testPlanID, buildName, 'f', result)
+            testlink.reportTCResult(1619, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1615, testPlanID, buildName, 'p', "Patient Name Passed")
+            testlink.reportTCResult(1619, testPlanID, buildName, 'p', "Patient Name Passed")
 
     def Age():
+        print("ITR-15: Search Filter > Age")
         testResult = ''
         reason = list()
 
@@ -2325,9 +2462,10 @@ class Search_filter:
                     if j["PatientAge"] not in age:
                         age.append(j["PatientAge"])
                 # Next 클릭
-                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                if next_btn.is_enabled() == 'True':
-                    next_btn.click()
+                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                if "disabled" not in next_btn.get_attribute("class"):
+                    time.sleep(1)
+                    driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                 pages = pages - 1
 
         # 검색 조건과 Job list 결과가 일치하는지 확인
@@ -2375,9 +2513,10 @@ class Search_filter:
                     if j["PatientAge"] not in age:
                         age.append(j["PatientAge"])
                 # Next 클릭
-                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                if next_btn.is_enabled() == 'True':
-                    next_btn.click()
+                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                if "disabled" not in next_btn.get_attribute("class"):
+                    time.sleep(1)
+                    driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                 pages = pages - 1
         
         # 검색 조건과 Job list 결과가 일치하는지 확인
@@ -2425,9 +2564,10 @@ class Search_filter:
                     if j["PatientAge"] not in age:
                         age.append(j["PatientAge"])
                 # Next 클릭
-                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                if next_btn.is_enabled() == 'True':
-                    next_btn.click()
+                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                if "disabled" not in next_btn.get_attribute("class"):
+                    time.sleep(1)
+                    driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                 pages = pages - 1
 
         # 검색 조건과 Job list 결과가 일치하는지 확인
@@ -2438,17 +2578,16 @@ class Search_filter:
             testResult = "failed"
             reason.append("3 steps failed\n")
 
-        print("ITR-15: Search Filter > Age")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Age 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1615, testPlanID, buildName, 'f', result)
+            testlink.reportTCResult(1623, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1615, testPlanID, buildName, 'p', "Age Passed")
+            testlink.reportTCResult(1623, testPlanID, buildName, 'p', "Age Passed")
 
     def Study_Description():
+        print("ITR-16: Search Filter > Study Description")
         testResult = ''
         reason = list()
 
@@ -2488,9 +2627,10 @@ class Search_filter:
                         if j["StudyDesc"] not in result_study_desc:
                             result_study_desc.append(j["StudyDesc"])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1
 
             if study_desc == '':
@@ -2515,18 +2655,17 @@ class Search_filter:
         except:
             testResult = "failed"
             reason.append("1 steps failed\n")
-
-        print("ITR-16: Search Filter > Study Description")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # Study Description 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1629, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1629, testPlanID, buildName, 'p', "Study Description Passed")
 
     def Modality():
+        print("ITR-17: Search Filter > Modality")
         testResult = ''
         reason = list()
 
@@ -2565,9 +2704,10 @@ class Search_filter:
                         if j["Modality"] not in result_modality:
                             result_modality.append(j["Modality"])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1
             
             if modality == '':
@@ -2593,17 +2733,16 @@ class Search_filter:
             testResult = "failed"
             reason.append("1 steps failed\n")
 
-        print("ITR-17: Search Filter > Modality")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Modality 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1629, testPlanID, buildName, 'f', result)
+            testlink.reportTCResult(1632, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1629, testPlanID, buildName, 'p', "Modality Passed")
+            testlink.reportTCResult(1632, testPlanID, buildName, 'p', "Modality Passed")
 
     def Bodypart():
+        print("ITR-18: Search Filter > Bodypart")
         testResult = ''
         reason = list()
 
@@ -2642,9 +2781,10 @@ class Search_filter:
                         if j["Bodypart"] not in result_bodypart:
                             result_bodypart.append(j["Bodypart"])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1
 
             if bodypart == '':
@@ -2670,17 +2810,16 @@ class Search_filter:
             testResult = "failed"
             reason.append("1 steps failed\n")
 
-        print("ITR-18: Search Filter > Bodypart")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Bodypart 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1635, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1635, testPlanID, buildName, 'p', "Bodypart Passed")
 
     def Department():
+        print("ITR-19: Search Filter > Department")
         testResult = ''
         reason = list()
 
@@ -2719,9 +2858,10 @@ class Search_filter:
                         if j["Department"] not in result_department:
                             result_department.append(j["Department"])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1      
 
             if department == '':
@@ -2746,18 +2886,17 @@ class Search_filter:
         except:
             testResult = "failed"
             reason.append("1 steps failed\n")
-
-        print("ITR-19: Search Filter > Department")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # Department 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1638, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1638, testPlanID, buildName, 'p', "Department Passed")
 
     def Request_Name():
+        print("ITR-20: Search Filter > Request_Name")
         testResult = ''
         reason = list()
 
@@ -2796,9 +2935,10 @@ class Search_filter:
                         if j["StudyRequestName"] not in result_request_name:
                             result_request_name.append(j["StudyRequestName"])
                     # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
+                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                    if "disabled" not in next_btn.get_attribute("class"):
+                        time.sleep(1)
+                        driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
                     pages = pages - 1    
 
             if request_name == '':
@@ -2824,22 +2964,22 @@ class Search_filter:
             testResult = "failed"
             reason.append("1 steps failed\n")
 
-        print("ITR-20: Search Filter > Request_Name")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Request Name 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1641, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1641, testPlanID, buildName, 'p', "Request Name Passed")
 
     def Search_All():
+        print("ITR-21: Search Filter > Search All")
         testResult = ''
         reason = list()
 
         # Refer 탭 클릭(화면 초기화)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        time.sleep(1)
 
         # 1 steps start! : 임의의 검색조건을 입력한 후, Search All 버튼을 클릭한다.
         # Test 병원 선택
@@ -2868,88 +3008,111 @@ class Search_filter:
         search_sample_1 = []; search_sample_2 = []; result_sample = []
         search_sample_list = random.sample(search_list, 2)
         
-        # All Assigned/Not Assigned/All List 탭을 이동하면서 조건에 맞는 job list 저장
-        while True:
-            for i in range(0,3):
-                time.sleep(1)
-                del driver.requests
-                driver.find_element(By.XPATH, tab_list[i][0]).click()
-                pages = Common.cnt_pages()
-                while pages > 0:
-                    request = driver.wait_for_request('.*/'+tab_list[i][1]+'.*')
-                    body = request.response.body.decode('utf-8')
-                    data = json.loads(body)["data"]
+        # 아무런 조건없이 All Assigned/Not Assigned/All List 탭을 이동하면서 조건에 맞는 job list 저장
+        for i in range(0,3):
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, tab_list[i][0]).click()
+            pages = Common.cnt_pages()
+            while pages > 0:
+                request = driver.wait_for_request('.*/'+tab_list[i][1]+'.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
 
-                    # Search condition을 임의대로 선택해서 저장
-                    # 첫 번째 조건에 부합되는 job list 저장
-                    if len(search_sample_1) == 0:
-                        for j in data:
-                            if j[search_sample_list[0][0]] not in search_sample_1:
-                                search_sample_1.append(j[search_sample_list[0][0]])
-                    # 두 번째 조건에 부합되는 job list 저장
-                    elif len(search_sample_2) == 0:
-                        for j in data:
-                            if j[search_sample_list[1][0]] not in search_sample_2:
-                                search_sample_2.append(j[search_sample_list[1][0]])
-                    # 1, 2번째 조건에 모두 부합되는 job list 저장
-                    else:
-                        for j in data:
-                            if j[search_sample_list[0][0]] not in result_sample:
-                                temp_list = []
-                                temp_list.append(j[search_sample_list[0][0]])
-                                result_sample.append(temp_list)
-                            if j[search_sample_list[1][0]] not in result_sample:
-                                temp_list = []
-                                temp_list.append(j[search_sample_list[1][0]])
-                                result_sample.append(temp_list)
-                    # Next 클릭
-                    next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a")
-                    if next_btn.is_enabled() == 'True':
-                        next_btn.click()
-                    pages = pages - 1     
-
-            if search_item_1 == '':
-                # 첫 번째 결과에서 임의의 값을 선택
-                search_item_1 = random.choice(search_sample_1)
-                # Search filter > 임의의 Search condition에 값을 입력한 후, Search All 버튼 클릭
-                if type(search_item_1) != NoneType:
-                    driver.find_element(By.XPATH, search_sample_list[0][1]).send_keys(search_item_1)
-                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
-                else:
-                    break
-            elif search_item_2 == '':
-                # 두 번째 결과에서 임의의 값을 선택
-                search_item_2 = random.choice(search_sample_2)
-                # # Search filter > 임의의 Search condition에 값을 입력한 후, Search All 버튼 클릭
-                if type(search_item_2) != NoneType:
-                    driver.find_element(By.XPATH, search_sample_list[1][1]).send_keys(search_item_2)
-                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
-                else:
-                    break
-            else:
-                break 
+                for j in data:
+                    if j[search_sample_list[0][0]] not in search_sample_1 and j[search_sample_list[0][0]] != None:
+                        search_sample_1.append(j[search_sample_list[0][0]])
+          
+                # Next 클릭
+                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                if "disabled" not in next_btn.get_attribute("class"):
+                    time.sleep(1)
+                    driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
+                pages = pages - 1
                 
+        # 저장된 job list에서 첫 번째 Search 조건에 해당하는 임의의 값을 선택
+        search_item_1 = random.choice(search_sample_1)
+
+        # Search filter > 임의의 Search condition에 첫 번째 Search 값을 입력한 후, Search All 버튼 클릭
+        if type(search_item_1) != NoneType:
+            driver.find_element(By.XPATH, search_sample_list[0][1]).send_keys(search_item_1)
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # 첫 번째 Search 조건에 해당하는 job list 저장
+        for i in range(0,3):
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, tab_list[i][0]).click()
+            pages = Common.cnt_pages()
+            while pages > 0:
+                request = driver.wait_for_request('.*/'+tab_list[i][1]+'.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+                for j in data:
+                    if j[search_sample_list[1][0]] not in search_sample_2 and j[search_sample_list[1][0]] != None:
+                        search_sample_2.append(j[search_sample_list[1][0]])
+
+                # Next 클릭
+                time.sleep(1)
+                next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+                if "disabled" not in next_btn.get_attribute("class"):
+                    time.sleep(1)
+                    driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
+                pages = pages - 1
+        
+        # 조회 결과에서 두 번째 Search 조건에 해당하는 임의의 값을 선택
+        search_item_2 = random.choice(search_sample_2)
+
+        # Search filter > 임의의 Search condition에 두 번째 Search 값을 입력한 후, Search All 버튼 클릭
+        if type(search_item_2) != NoneType:
+            driver.find_element(By.XPATH, search_sample_list[1][1]).send_keys(search_item_2)
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+
+        # 첫 번째, 두 번째 Search 조건에 해당하는 job list 저장
+        temp_search_1 = []
+        temp_search_2 = []
+        result_list = []
+        for i in range(0,3):
+            time.sleep(1)
+            del driver.requests
+            driver.find_element(By.XPATH, tab_list[i][0]).click()
+            pages = Common.cnt_pages()
+            while pages > 0:
+                request = driver.wait_for_request('.*/'+tab_list[i][1]+'.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+                for j in data:
+                    if j[search_sample_list[0][0]] not in temp_search_1 and j[search_sample_list[0][0]] != None:
+                        temp_search_1.append(j[search_sample_list[0][0]])
+                        result_list.append(temp_search_1)
+                    if j[search_sample_list[1][0]] not in temp_search_2 and j[search_sample_list[1][0]] != None:
+                        temp_search_2.append(j[search_sample_list[1][0]])
+                        result_list.append(temp_search_2)
+                pages = pages - 1
+                          
         # 검색 조건과 Job list 결과가 일치하는지 확인
         try:
-            if type(search_item_1) != NoneType and type(search_item_2) != NoneType:
-                search_sample_1 = ' '.join(s for s in result_sample[0])
-                search_sample_2 = ' '.join(s for s in result_sample[1])
-            assert (search_item_1, search_item_2) == (search_sample_1, search_sample_2) or (type(search_item_1), type(search_item_2)) == (NoneType, NoneType)
+            result_list_1 = ' '.join(s for s in result_list[0])
+            result_list_2 = ' '.join(s for s in result_list[1])
+            assert (search_item_1, search_item_2) == (result_list_1, result_list_2)
         except:
             testResult = "failed"
             reason.append("1 steps failed\n")
 
-        print("ITR-21: Search Filter > Search All")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Search All 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1644, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1644, testPlanID, buildName, 'p', "Search All Passed")
 
     def RealTime():
+        print("ITR-22: Search Filter > Real Time")
         testResult = ''
         reason = list()
 
@@ -2964,6 +3127,7 @@ class Search_filter:
                 i.click()
 
         # All List 탭으로 이동
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
 
         # Show entries를 50개로 변경
@@ -2995,7 +3159,7 @@ class Search_filter:
 
         # Job list가 새로 고침되었는지 확인
         try:
-            assert status == 'true' and after_data_cnt == 10
+            assert status == True and after_data_cnt == 10
         except:
             testResult = "failed"
             reason.append("1 steps failed\n")
@@ -3028,18 +3192,17 @@ class Search_filter:
             reason.append("2 steps failed\n")
         except:
             time.sleep(0.5)
-
-        print("ITR-22: Search Filter > Real Time")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # Real Time 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1647, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1647, testPlanID, buildName, 'p', "Real Time Passed")
 
     def ShortCut():
+        print("ITR-23: Search Filter > Short cut")
         testResult = ''
         reason = list()
 
@@ -3305,6 +3468,7 @@ class Search_filter:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li[1]").click()
 
         # Short cut 버튼 클릭
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
 
         # Short cut list를 저장하기 위해 Short cut 생성
@@ -3334,6 +3498,8 @@ class Search_filter:
             before_shortcut.append(temp)
 
         # 임의의 Short cut 클릭
+        time.sleep(1)
+        del driver.requests
         random_shortcut_title = random.choice(shortcut_title)
         index = shortcut_title.index(random_shortcut_title)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]").click()
@@ -3435,6 +3601,7 @@ class Search_filter:
         # Short cut > 임의의 Short cut 클릭
         random_shortcut_title = random.choice(shortcut_title)
         index = shortcut_title.index(random_shortcut_title)
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]").click()
 
         # Short cut 버튼 클릭 후, Save 버튼 클릭
@@ -3540,6 +3707,7 @@ class Search_filter:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li[1]").click()
 
         # Short cut 버튼 클릭
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
 
          # Short cut list를 저장하기 위해 Short cut 생성
@@ -3620,6 +3788,7 @@ class Search_filter:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/ul/li["+str(int(index)+2)+"]/span/button").click()
         
         # Short cut 삭제 후, Short cut list의 툴팁에 있는 key 값 저장
+        time.sleep(1)
         after_shortcut_key_list = []
         for n in range(2, shortcut_list_cnt-1):
             shortcut_key = (driver.find_element(By.CSS_SELECTOR, "#settings > div > div:nth-child(1) > ul > li:nth-child("+str(n)+")").get_property("dataset"))["key"]
@@ -3636,11 +3805,9 @@ class Search_filter:
         # Short cut 창 닫기
         driver.find_element(By.XPATH, "/html/body/nav/div").click()
 
-        print("ITR-23: Search Filter > Short cut")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Short cut 결과 전송
-        result = ' '.join(s for s in reason)
+        result = ' '.join(s for s in result)
+        print("Test Result: Pass" if testResult != "failed" else testResult)
         if testResult == 'failed':
             testlink.reportTCResult(1651, testPlanID, buildName, 'f', result)
         else:
@@ -3648,6 +3815,7 @@ class Search_filter:
 
 class Worklist:
     def All_Assigned_List():
+        print("ITR-24: Worklist > All Assigned List")
         testResult = ''
         reason = list()
 
@@ -3677,18 +3845,17 @@ class Worklist:
         except:
             testResult = "failed"
             reason.append("1 steps failed\n")
-
-        print("ITR-24: Worklist > All Assigned List")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # All Assigned List 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1668, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1668, testPlanID, buildName, 'p', "All Assigned List Passed")
 
     def Not_Assigned_List():
+        print("ITR-25: Worklist > Not Assigned List")
         testResult = ''
         reason = list()
 
@@ -3708,18 +3875,17 @@ class Worklist:
         except:
             testResult = "failed"
             reason.append("1 steps failed\n")
-
-        print("ITR-25: Worklist > Not Assigned List")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # Not Assigned List 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1671, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1671, testPlanID, buildName, 'p', "Not Assigned List Passed")
 
     def All_List():
+        print("ITR-26: Worklist > All List")
         testResult = ''
         reason = list()
 
@@ -3740,17 +3906,16 @@ class Worklist:
             testResult = "failed"
             reason.append("1 steps failed\n")
 
-        print("ITR-26: Worklist > All List")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # All List 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1674, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1674, testPlanID, buildName, 'p', "All List Passed")
 
     def Schedule():
+        print("ITR-27: Worklist > Schedule")
         testResult = ''
         reason = list()
 
@@ -3848,7 +4013,7 @@ class Worklist:
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
 
             # All Assigned List의 Job count 저장
-            time.sleep(0.5)
+            time.sleep(1)
             temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]").text
             temp_cnt = temp_cnt.split()
             list_cnt = 0
@@ -3858,7 +4023,7 @@ class Worklist:
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
             
             # Not Assigned List의 Job count 저장
-            time.sleep(0.5)
+            time.sleep(1)
             temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]").text
             temp_cnt = temp_cnt.split()
             list_cnt = int(list_cnt) + int(temp_cnt[5])
@@ -3870,17 +4035,16 @@ class Worklist:
                 testResult = "failed"
                 reason.append("2 steps failed\n")
 
-        print("ITR-27: Worklist > Schedule")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Schedule 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1677, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1677, testPlanID, buildName, 'p', "Schedule Passed")
         
     def Priority():
+        print("ITR-28: Worklist > Priority")
         testResult = ''
         reason = list()
 
@@ -3988,23 +4152,23 @@ class Worklist:
         except:
             testResult = "failed"
             reason.append("2 steps failed\n")
-
-        print("ITR-28: Worklist > Priority")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # Priority 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1681, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1681, testPlanID, buildName, 'p', "Priority Passed")
 
     def Canceled():
+        print("ITR-29: Worklist > Canceled")
         testResult = ''
         reason = list()
 
         # 1 steps start! : Worklist에서 Job Status가 Canceled 이외의 의뢰 검사를 선택한 후, Cancel 버튼을 클릭한다.
         # Refer 탭 클릭
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
         
         # Test 병원 선택
@@ -4101,17 +4265,16 @@ class Worklist:
             testResult = "failed"
             reason.append("3 steps failed\n")    
 
-        print("ITR-29: Worklist > Canceled")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Canceled 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1685, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1685, testPlanID, buildName, 'p', "Canceled Passed")
 
     def Refer():
+        print("ITR-30: Worklist > Refer")
         testResult = ''
         reason = list()
 
@@ -4847,18 +5010,17 @@ class Worklist:
         except:
             testResult = "failed"
             reason.append("9 steps failed\n")
-
-        print("ITR-30: Worklist > Refer")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # Refer 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1690, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1690, testPlanID, buildName, 'p', "Refer Passed")
 
     def Refer_Cancel():
+        print("ITR-31: Worklist > Refer Cancel")
         testResult = ''
         reason = list()
 
@@ -5079,18 +5241,17 @@ class Worklist:
         except:
             testResult = "failed"
             reason.append("6 steps failed\n")
-
-        print("ITR-31: Worklist > Refer Cancel")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # Refer Cancel 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1701, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1701, testPlanID, buildName, 'p', "Refer Cancel Passed")
 
     def Refer_Cancel_And_Refer():
+        print("ITR-32: Worklist > Refer Cancel and Refer")
         testResult = ''
         reason = list()
 
@@ -5270,6 +5431,7 @@ class Worklist:
                 i.click()
         
         # All List 탭 클릭
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
 
         # 3 steps start! : All Assigned/All List에서 Refer 된 Job을 선택한다.
@@ -5277,8 +5439,10 @@ class Worklist:
         time.sleep(1)
         for i in range(0,3):
             refer_job_key = refer_job_list.pop(refer_job_list.index(random.choice(refer_job_list)))
-            driver.find_element(By.XPATH, "//td[normalize-space()='"+str(refer_job_key)+"']").click()
-
+            time.sleep(1)
+            # driver.find_element(By.XPATH, "//td[normalize-space()='"+str(refer_job_key)+"']").click()
+            driver.find_element(By.XPATH, "//label[@for='r_j_c_"+str(refer_job_key)+"']").click()
+            
         # R.Cancel & Refer 버튼이 활성화 상태인지 확인
         btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[4]")
         try:
@@ -5287,12 +5451,20 @@ class Worklist:
             testResult = "failed"
             reason.append("3 steps failed\n")
 
-        # All Assigned List 탭 클릭 후, job list 저장
+        # 새로고침
         time.sleep(1)
+        driver.refresh()
         del driver.requests
-        time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
 
+        # Test 병원 선택
+        time.sleep(1)
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+        
+        # All Assigned List > job list 저장
+        time.sleep(1)
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
         body = request.response.body.decode('utf-8')
         data = json.loads(body)["data"]
@@ -5305,16 +5477,17 @@ class Worklist:
         job_key = random.choice(job_list)
         time.sleep(1)
         driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+        time.sleep(1)
 
         try:
-            assert btn.get_property("disabled") == False
+            assert driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[4]").get_property("disabled") == False
         except:
             testResult = "failed"
             reason.append("3 steps failed\n")
 
         # 4 steps start! : 임의의 의뢰 검사를 선택한 후, Refer Cancel & Refer 버튼을 클릭한다.
         # R.Cancel & Refer 버튼 클릭
-        btn.click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[2]/button[4]").click()
 
         # R.Cancel & Refer 팝업창이 팝업되는지 확인
         try:
@@ -5376,7 +5549,10 @@ class Worklist:
                 if j[0] == i:
                     del driver.requests
                     btn = driver.find_element(By.CSS_SELECTOR, "#institution_reporter_list_row_"+str(j[1]))
-                    driver.execute_script("arguments[0].click()",btn)
+                    try:
+                        driver.execute_script("arguments[0].click()",btn)
+                    except:
+                        driver.find_element(By.CSS_SELECTOR, "#institution_reporter_list_row_"+str(j[1])).click()
                     time.sleep(1)
 
                     request = driver.wait_for_request('.*/GetReferedListByReporter.*')
@@ -5421,8 +5597,8 @@ class Worklist:
 
         # 임의의 job 선택 후, R.Cancel & Refer 버튼 클릭
         job_key_list = []
-        for i in range(0,3):
-            # job_key = random.choice(refer_job_list)
+        refer_job_cnt = len(refer_job_list)
+        for i in range(0, refer_job_list if refer_job_cnt < 2 else 2):
             job_key = refer_job_list.pop(refer_job_list.index(random.choice(refer_job_list)))
             time.sleep(1)
             driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
@@ -5536,24 +5712,27 @@ class Worklist:
             testResult = "failed"
             reason.append("7 steps failed\n")
 
-        print("ITR-32: Worklist > Refer Cancel and Refer")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Refer Cancel and Refer 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1711, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1711, testPlanID, buildName, 'p', "Refer Cancel and Refer Passed")
 
     def Set_Schedule():
+        print("ITR-34: Worklist > Set Schedule")
         testResult = ''
         reason = list()
 
         # 1 steps start! : Job stat이 Requested 인 임의의 의뢰 검사를 선택한 후, Schedule 버튼을 클릭한다.
-        # Refer 탭 클릭
-        time.sleep(0.5)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # 다음 테스트를 위해 선택 해제(새로고침)
+        time.sleep(1)
+        driver.refresh()
+
+        # # Refer 탭 클릭
+        # time.sleep(0.5)
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # Test 병원 선택
         time.sleep(1)
@@ -5706,17 +5885,16 @@ class Worklist:
             testResult = "failed"
             reason.append("5 steps failed\n")
 
-        print("ITR-34: Worklist > Set Schedule")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Set Schedule 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1718, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1718, testPlanID, buildName, 'p', "Set Schedule Passed")        
 
     def Schedule_Cancel():
+        print("ITR-35: Worklist > Cancel Schedule")
         testResult = ''
         reason = list()
 
@@ -5893,17 +6071,20 @@ class Worklist:
             testResult = "failed"
             reason.append("4 steps failed\n")
 
-        print("ITR-35: Worklist > Cancel Schedule")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        # S.Cancel 팝업창 > OK 클릭
+        time.sleep(1)
+        driver.find_element(by.XPATH, "/html/body/div[6]/div[7]/div/button").click()
+        
         # Schedule 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1724, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1724, testPlanID, buildName, 'p', "Schedule Passed")    
 
     def Revised():
+        print("ITR-36: Worklist > Revised")
         testResult = ''
         reason = list()
 
@@ -6032,17 +6213,16 @@ class Worklist:
             testResult = "failed"
             reason.append("1 steps failed\n")
 
-        print("ITR-36: Worklist > Revised")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Revised 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1730, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1730, testPlanID, buildName, 'p', "Revised Passed")    
 
     def Discard():
+        print("ITR-37: Worklist > Discard")
         testResult = ''
         reason = list()
 
@@ -6214,17 +6394,16 @@ class Worklist:
             testResult = "failed"
             reason.append("2 steps failed\n")
         
-        print("ITR-37: Worklist > Discard")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Discard 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1733, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1733, testPlanID, buildName, 'p', "Discard Passed")    
 
     def Retry_Request():
+        print("ITR-38: Worklist > Retry Request")
         testResult = ''
         reason = list()
 
@@ -6412,24 +6591,23 @@ class Worklist:
             testResult = "failed"
             reason.append("2 steps failed\n") 
 
-        print("ITR-38: Worklist > Retry Request")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Retry Request 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1737, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1737, testPlanID, buildName, 'p', "Retry Request Passed")    
 
     def Columns():
+        print("ITR-39: Worklist > Columns")
         testResult = ''
         reason = list()
 
         # 1 steps start! : Columns 버튼을 클릭한다.
-        # Refer 탭 클릭
-        time.sleep(0.5)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # 새로고침
+        time.sleep(1)
+        driver.refresh()
 
         # Test 병원 선택
         time.sleep(1)
@@ -6678,18 +6856,17 @@ class Worklist:
         except:
             testResult = "failed"
             reason.append("6 steps failed\n") 
-
-        print("ITR-39: Worklist > Columns")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # Columns 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1741, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1741, testPlanID, buildName, 'p', "Columns Passed")    
 
     def Show_Entries():
+        print("ITR-40: Worklist > Show entries")
         testResult = ''
         reason = list()
 
@@ -6779,18 +6956,17 @@ class Worklist:
         except:
             testResult = "failed"
             reason.append("4 steps failed\n") 
-
-        print("ITR-40: Worklist > Show entries")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # Show entries 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1749, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1749, testPlanID, buildName, 'p', "Show entries Passed")  
 
     def Use_Related_Worklist():
+        print("ITR-224: Worklist > Use Related Worklist")
         testResult = ''
         reason = list()
 
@@ -6842,25 +7018,25 @@ class Worklist:
         except:
             testResult = "failed"
             reason.append("1 steps failed\n") 
-
-        print("ITR-224: Worklist > Use Related Worklist")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
+        
         # Use Related Worklist 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(3074, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(3074, testPlanID, buildName, 'p', "Use Related Worklist Passed")  
 
     def Sort_By():
+        print("ITR-41: Worklist > Sort By")
         testResult = ''
         reason = list()
 
+        signInOut.admin_sign_in()
+
         # 1 steps start! : 정렬 가능한 컬럼을 확인한다.
-        # Refer 탭 클릭
-        time.sleep(0.5)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # 새로고침
+        driver.refresh()
 
         # Test 병원 선택
         time.sleep(1)
@@ -6927,11 +7103,9 @@ class Worklist:
             testResult = "failed"
             reason.append("1 steps failed\n") 
 
-        print("ITR-41: Worklist > Sort By")
-        print("Test Result: Pass" if testResult != "failed" else testResult)
-
         # Sort By 결과 전송
         result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
             testlink.reportTCResult(1755, testPlanID, buildName, 'f', result)
         else:
@@ -6939,6 +7113,7 @@ class Worklist:
 
 class Statistics:
     def SearchFilter_Date():
+        print("ITR-44: Statistics > Search Filter > Date")
         testResult = ''
         reason = list()
 
@@ -6998,7 +7173,7 @@ class Statistics:
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
 
             # Showing entry 결과 저장
-            time.sleep(3)
+            time.sleep(4)
             temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
             temp_cnt = temp_cnt.split()
             list_cnt = temp_cnt[5]
@@ -7040,267 +7215,267 @@ class Statistics:
             testResult = "failed"
             reason.append("1 steps failed\n")
 
-        # # 2 steps start! : Date를 Request Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
-        # # 페이지 초기화
-        # driver.refresh()
+        # 2 steps start! : Date를 Request Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 페이지 초기화
+        driver.refresh()
 
-        # # Show entries 100 변경
-        # select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
-        # select.select_by_value(str(100))
+        # Show entries 100 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(100))
 
-        # # Date를 Requested Date로 선택
-        # WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
-        # driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]").click()
-        # time.sleep(1)
-        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[2]").click()
+        # Date를 Requested Date로 선택
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
+        driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[2]").click()
 
-        # # Date 선택
-        # time.sleep(2)
-        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
-        # time.sleep(1)
-        # driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
-        # start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
-        # start_date = start_date.replace("-","")
+        # Date 선택
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        start_date = start_date.replace("-","")
 
-        # # Showing entry 결과 저장
-        # temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
-        # temp_cnt = temp_cnt.split()
-        # list_cnt = temp_cnt[5]
+        # Showing entry 결과 저장
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[5]
 
-        # # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
-        # inst_code = []
-        # while list_cnt == '0':
-        #     # 임의의 병원 선택
-        #     driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
-        #     time.sleep(1)
-        #     select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
-        #     hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
-        #     hospital.click()
-        #     index = (hospital.get_attribute("for")).split('-')[2]
-        #     inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
+        # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
+        inst_code = []
+        while list_cnt == '0':
+            # 임의의 병원 선택
+            driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            time.sleep(1)
+            select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+            hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+            hospital.click()
+            index = (hospital.get_attribute("for")).split('-')[2]
+            inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
 
-        #     # Searh 클릭
-        #     time.sleep(1)
-        #     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            # Searh 클릭
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
 
-        #     # Showing entry 결과 저장
-        #     time.sleep(4)
-        #     temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
-        #     temp_cnt = temp_cnt.split()
-        #     list_cnt = temp_cnt[5]
-        #     list_cnt = list_cnt.replace(",","")
-        # inst_code = "','".join(s for s in inst_code)
+            # Showing entry 결과 저장
+            time.sleep(4)
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = temp_cnt[5]
+            list_cnt = list_cnt.replace(",","")
+        inst_code = "','".join(s for s in inst_code)
 
-        # # 조회 결과 저장
-        # time.sleep(4)
-        # result_list = []
-        # pat_list = []
-        # result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
-        # pages = math.ceil(int(list_cnt) / 100)
+        # 조회 결과 저장
+        time.sleep(1)
+        result_list = []
+        pat_list = []
+        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        pages = math.ceil(int(list_cnt) / 100)
         
-        # for page in range(1, pages +1):
-        #     result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
-        #     for i in result_list:
-        #         pat_list.append(i.get_property("outerText").split('\t')[2])
-        #     driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-        #     time.sleep(2)
+        for page in range(1, pages +1):
+            result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+            for i in result_list:
+                pat_list.append(i.get_property("outerText").split('\t')[2])
+            driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+            time.sleep(2)
 
-        # # DB에서 선택한 병원을 동일한 조건으로 조회
-        # end_date = str(today.strftime('%Y%m%d'))
-        # sql = f"""
-        #     select patient_id from MVIEWINSTSTAT 
-        #     where job_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and job_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
-        #     and institution_code in ('{inst_code}')            
-        #     """
+        # DB에서 선택한 병원을 동일한 조건으로 조회
+        end_date = str(today.strftime('%Y%m%d'))
+        sql = f"""
+            select patient_id from MVIEWINSTSTAT 
+            where job_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and job_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
+            and institution_code in ('{inst_code}')            
+            """
 
-        # # DB 조회 결과 저장
-        # cursor.execute(sql)
-        # row = cursor.fetchall()
-        # db_pat_id = []
-        # for i in row:
-        #     db_pat_id.append(i)
+        # DB 조회 결과 저장
+        cursor.execute(sql)
+        row = cursor.fetchall()
+        db_pat_id = []
+        for i in row:
+            db_pat_id.append(i)
 
-        # # DB 조회 결과와 Admin 조회 결과 비교
-        # try:
-        #     assert db_pat_id.sort() == pat_list.sort()
-        # except:
-        #     testResult = "failed"
-        #     reason.append("2 steps failed\n")
+        # DB 조회 결과와 Admin 조회 결과 비교
+        try:
+            assert db_pat_id.sort() == pat_list.sort()
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
 
-        # # 3 steps start! : Date를 Report Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
-        # # 페이지 초기화
-        # driver.refresh()
+        # 3 steps start! : Date를 Report Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 페이지 초기화
+        driver.refresh()
         
-        # # Show entries 100 변경
-        # select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
-        # select.select_by_value(str(100))
+        # Show entries 100 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(100))
 
-        # # Date를 Report Date로 선택
-        # WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
-        # driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]").click()
-        # time.sleep(1)
-        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[3]").click()
+        # Date를 Report Date로 선택
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
+        driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[3]").click()
 
-        # # Date 선택
-        # time.sleep(2)
-        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
-        # time.sleep(1)
-        # driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
-        # start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
-        # start_date = start_date.replace("-","")
+        # Date 선택
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        start_date = start_date.replace("-","")
 
-        # # Showing entry 결과 저장
-        # temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
-        # temp_cnt = temp_cnt.split()
-        # list_cnt = temp_cnt[5]
+        # Showing entry 결과 저장
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[5]
 
-        # # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
-        # inst_code = []
-        # while list_cnt == '0':
-        #     # 임의의 병원 선택
-        #     driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
-        #     time.sleep(1)
-        #     select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
-        #     hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
-        #     hospital.click()
-        #     index = (hospital.get_attribute("for")).split('-')[2]
-        #     inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
+        # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
+        inst_code = []
+        while list_cnt == '0':
+            # 임의의 병원 선택
+            driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            time.sleep(1)
+            select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+            hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+            hospital.click()
+            index = (hospital.get_attribute("for")).split('-')[2]
+            inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
 
-        #     # Searh 클릭
-        #     time.sleep(1)
-        #     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            # Searh 클릭
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
 
-        #     # Showing entry 결과 저장
-        #     time.sleep(4)
-        #     temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
-        #     temp_cnt = temp_cnt.split()
-        #     list_cnt = temp_cnt[5]
-        #     list_cnt = list_cnt.replace(",","")
-        # inst_code = "','".join(s for s in inst_code)
+            # Showing entry 결과 저장
+            time.sleep(4)
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = temp_cnt[5]
+            list_cnt = list_cnt.replace(",","")
+        inst_code = "','".join(s for s in inst_code)
 
-        # # 조회 결과 저장
-        # time.sleep(4)
-        # result_list = []
-        # pat_list = []
-        # result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
-        # pages = math.ceil(int(list_cnt) / 100)
+        # 조회 결과 저장
+        time.sleep(1)
+        result_list = []
+        pat_list = []
+        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        pages = math.ceil(int(list_cnt) / 100)
         
-        # for page in range(1, pages +1):
-        #     result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
-        #     for i in result_list:
-        #         pat_list.append(i.get_property("outerText").split('\t')[2])
+        for page in range(1, pages +1):
+            result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+            for i in result_list:
+                pat_list.append(i.get_property("outerText").split('\t')[2])
             
-        #     driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-        #     time.sleep(2)
+            driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+            time.sleep(2)
 
-        # # DB에서 선택한 병원을 동일한 조건으로 조회
-        # end_date = str(today.strftime('%Y%m%d'))
-        # sql = f"""
-        #     select patient_id from MVIEWINSTSTAT 
-        #     where report_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and report_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
-        #     and institution_code in ('{inst_code}')            
-        #     """
+        # DB에서 선택한 병원을 동일한 조건으로 조회
+        end_date = str(today.strftime('%Y%m%d'))
+        sql = f"""
+            select patient_id from MVIEWINSTSTAT 
+            where report_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and report_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
+            and institution_code in ('{inst_code}')            
+            """
 
-        # # DB 조회 결과 저장
-        # cursor.execute(sql)
-        # row = cursor.fetchall()
-        # db_pat_id = []
-        # for i in row:
-        #     db_pat_id.append(i)
+        # DB 조회 결과 저장
+        cursor.execute(sql)
+        row = cursor.fetchall()
+        db_pat_id = []
+        for i in row:
+            db_pat_id.append(i)
 
-        # # DB 조회 결과와 Admin 조회 결과 비교
-        # try:
-        #     assert db_pat_id.sort() == pat_list.sort()
-        # except:
-        #     testResult = "failed"
-        #     reason.append("3 steps failed\n")
+        # DB 조회 결과와 Admin 조회 결과 비교
+        try:
+            assert db_pat_id.sort() == pat_list.sort()
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")
 
-        # # 4 steps start! : Date를 Completed Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
-        # # 페이지 초기화
-        # driver.refresh()
+        # 4 steps start! : Date를 Completed Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 페이지 초기화
+        driver.refresh()
         
-        # # Show entries 100 변경
-        # select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
-        # select.select_by_value(str(100))
+        # Show entries 100 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(100))
 
-        # # Date를 Completed Date로 선택
-        # WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
-        # driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]").click()
-        # time.sleep(1)
-        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[4]").click()
+        # Date를 Completed Date로 선택
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
+        driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[4]").click()
 
-        # # Date 선택
-        # time.sleep(2)
-        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
-        # time.sleep(1)
-        # driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
-        # start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
-        # start_date = start_date.replace("-","")
+        # Date 선택
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        start_date = start_date.replace("-","")
 
-        # # Showing entry 결과 저장
-        # temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
-        # temp_cnt = temp_cnt.split()
-        # list_cnt = temp_cnt[5]
+        # Showing entry 결과 저장
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[5]
 
-        # # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
-        # inst_code = []
-        # while list_cnt == '0':
-        #     # 임의의 병원 선택
-        #     driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
-        #     time.sleep(1)
-        #     select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
-        #     hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
-        #     hospital.click()
-        #     index = (hospital.get_attribute("for")).split('-')[2]
-        #     inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
+        # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
+        inst_code = []
+        while list_cnt == '0':
+            # 임의의 병원 선택
+            driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            time.sleep(1)
+            select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+            hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+            hospital.click()
+            index = (hospital.get_attribute("for")).split('-')[2]
+            inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
 
-        #     # Searh 클릭
-        #     time.sleep(1)
-        #     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            # Searh 클릭
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
 
-        #     # Showing entry 결과 저장
-        #     time.sleep(4)
-        #     temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
-        #     temp_cnt = temp_cnt.split()
-        #     list_cnt = temp_cnt[5]
-        #     list_cnt = list_cnt.replace(",","")
-        # inst_code = "','".join(s for s in inst_code)
+            # Showing entry 결과 저장
+            time.sleep(4)
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = temp_cnt[5]
+            list_cnt = list_cnt.replace(",","")
+        inst_code = "','".join(s for s in inst_code)
 
-        # # 조회 결과 저장
-        # time.sleep(4)
-        # result_list = []
-        # pat_list = []
-        # result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
-        # pages = math.ceil(int(list_cnt) / 100)
+        # 조회 결과 저장
+        time.sleep(1)
+        result_list = []
+        pat_list = []
+        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        pages = math.ceil(int(list_cnt) / 100)
         
-        # for page in range(1, pages +1):
-        #     result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
-        #     for i in result_list:
-        #         pat_list.append(i.get_property("outerText").split('\t')[2])
-        #     driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-        #     time.sleep(2)
+        for page in range(1, pages +1):
+            result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+            for i in result_list:
+                pat_list.append(i.get_property("outerText").split('\t')[2])
+            driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+            time.sleep(2)
 
-        # # DB에서 선택한 병원을 동일한 조건으로 조회
-        # end_date = str(today.strftime('%Y%m%d'))
-        # sql = f"""
-        #     select patient_id from MVIEWINSTSTAT 
-        #     where completed_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and completed_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
-        #     and institution_code in ('{inst_code}')   
-        #     """
+        # DB에서 선택한 병원을 동일한 조건으로 조회
+        end_date = str(today.strftime('%Y%m%d'))
+        sql = f"""
+            select patient_id from MVIEWINSTSTAT 
+            where completed_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and completed_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
+            and institution_code in ('{inst_code}')   
+            """
 
-        # # DB 조회 결과 저장
-        # cursor.execute(sql)
-        # row = cursor.fetchall()
-        # db_pat_id = []
-        # for i in row:
-        #     db_pat_id.append(i)
+        # DB 조회 결과 저장
+        cursor.execute(sql)
+        row = cursor.fetchall()
+        db_pat_id = []
+        for i in row:
+            db_pat_id.append(i)
 
-        # # DB 조회 결과와 Admin 조회 결과 비교
-        # try:
-        #     assert db_pat_id.sort() == pat_list.sort()
-        # except:
-        #     testResult = "failed"
-        #     reason.append("4 steps failed\n")
+        # DB 조회 결과와 Admin 조회 결과 비교
+        try:
+            assert db_pat_id.sort() == pat_list.sort()
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n")
 
         # 5 steps start! : Date를 Bill Month로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 페이지 초기화
@@ -7318,12 +7493,10 @@ class Statistics:
 
         # Date 선택
         time.sleep(2)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[1]/div/a").click()
-        time.sleep(1)
         close_year = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[1]/div/a").get_property("textContent")
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[2]/div/a").click()
-        close_month = int(today.strftime('%m')) - 1
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[2]/div/div/ul/li["+str(close_month)+"]")
+        close_month = int(today.strftime('%m')) - 2
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[2]/div/div/ul/li["+str(close_month)+"]").click()
         time.sleep(1)
 
         # Showing entry 결과 저장
@@ -7356,7 +7529,7 @@ class Statistics:
         inst_code = "','".join(s for s in inst_code)
 
         # 조회 결과 저장
-        time.sleep(4)
+        time.sleep(1)
         result_list = []
         pat_list = []
         result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
@@ -7371,6 +7544,8 @@ class Statistics:
 
         # DB에서 선택한 병원을 동일한 조건으로 조회
         end_date = str(today.strftime('%Y%m%d'))
+        if len(str(close_month)) < 2:
+            close_month = '0' + str(close_month)
         sql = f"""
             select patient_id from closedbill 
             where closed_year = '{close_year}'
@@ -7393,19 +7568,741 @@ class Statistics:
             testResult = "failed"
             reason.append("5 steps failed\n")
 
+        # DB 연결 해제
+        cursor.close()
+        connection.close()
+        
+        # Search Filter > Date 결과 전송
+        result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
+        if testResult == 'failed':
+            testlink.reportTCResult(1772, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1772, testPlanID, buildName, 'p', "Search Filter > Date Passed")  
+
+    def SearchFilter_Hospital():
+        print("ITR-45: Statistics > Search Filter > Hospital")
+        testResult = ''
+        reason = list()
+
+        # DB 접속
+        os.putenv('NLS_LANG', '.UTF8')
+        cx_Oracle.init_oracle_client(lib_dir=r"D:\app\user\instantclient_21_7")
+        connection = cx_Oracle.connect("pantheon","pantheon","211.43.8.73:1521/spectra", encoding="UTF-8")
+        cursor = connection.cursor()
+
+        # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 페이지 초기화
+        driver.refresh()
+
+        # Show entries 100 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(100))
+
+        # Showing entry 결과 저장
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[5]
+
+        # Study Date 선택
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        start_date = start_date.replace("-","")
+
+        # 임의의 병원 선택
+        time.sleep(1)
+        temp_hospital_cnt_list = []
+        hospital_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/ul/li")
+        hospital_cnt = len(hospital_list) - 1
+
+        for i in range(2, hospital_cnt):
+            temp_hospital_cnt_list.append(i)
+
+        # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
+        inst_code = []
+        while list_cnt == '0':
+            # 임의의 병원 선택
+            driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            time.sleep(1)
+            select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+            hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+            hospital.click()
+            index = (hospital.get_attribute("for")).split('-')[2]
+            inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
+
+            # Searh 클릭
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+
+            # Showing entry 결과 저장
+            time.sleep(4)
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = temp_cnt[5]
+            list_cnt = list_cnt.replace(",","")
+        inst_code = "','".join(s for s in inst_code)
+
+        # 조회 결과 저장
+        result_list = []
+        pat_list = []
+        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        pages = math.ceil(int(list_cnt) / 100)
+        
+        for page in range(1, pages +1):
+            result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+            for i in result_list:
+                pat_list.append(i.get_property("outerText").split('\t')[2])
+            driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+            time.sleep(2)
+        
+        # DB에서 선택한 병원을 동일한 조건으로 조회
+        end_date = str(today.strftime('%Y%m%d'))
+        sql = f"""
+            select patient_id from MVIEWINSTSTAT 
+            where study_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and study_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
+            and institution_code in ('{inst_code}')
+            """
+
+        # DB 조회 결과 저장
+        cursor.execute(sql)
+        row = cursor.fetchall()
+        db_pat_id = []
+        for i in row:
+            db_pat_id.append(i)
+        
+        # DB 조회 결과와 Admin 조회 결과 비교
+        try:
+            assert db_pat_id.sort() == pat_list.sort()
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # DB 연결 해제
+        cursor.close()
+        connection.close()
+        
+        # Search Filter > Hospital 결과 전송
+        result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
+        if testResult == 'failed':
+            testlink.reportTCResult(1779, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1779, testPlanID, buildName, 'p', "Search Filter > Hospital Passed")  
+
+    def SearchFilter_Reporter():
+        print("ITR-46: Statistics > Search Filter > Reporter")
+        testResult = ''
+        reason = list()
+
+        # DB 접속
+        os.putenv('NLS_LANG', '.UTF8')
+        cx_Oracle.init_oracle_client(lib_dir=r"D:\app\user\instantclient_21_7")
+        connection = cx_Oracle.connect("pantheon","pantheon","211.43.8.73:1521/spectra", encoding="UTF-8")
+        cursor = connection.cursor()
+
+        # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 페이지 초기화
+        driver.refresh()
+
+        # Show entries 100 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(100))
+
+        # Showing entry 결과 저장
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[5]
+
+        # Study Date 선택
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        start_date = start_date.replace("-","")
+
+        # 임의의 병원 선택
+        time.sleep(1)
+        temp_hospital_cnt_list = []
+        hospital_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/ul/li")
+        hospital_cnt = len(hospital_list) - 1
+
+        for i in range(2, hospital_cnt):
+            temp_hospital_cnt_list.append(i)
+        
+        # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
+        inst_code = []
+        while list_cnt == '0':
+            # 임의의 병원 선택
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#statistics-search-hospital")))
+            driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            time.sleep(1)
+            select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+            hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+            hospital.click()
+            index = (hospital.get_attribute("for")).split('-')[2]
+            inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
+
+            # Searh 클릭
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+
+            # Showing entry 결과 저장
+            time.sleep(4)
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = temp_cnt[5]
+            list_cnt = list_cnt.replace(",","")
+        inst_code = "','".join(s for s in inst_code)
+
+        # 조회 결과 저장
+        result_list = []
+        pat_list = []
+        reporter_list = []
+        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        pages = math.ceil(int(list_cnt) / 100)
+        
+        for page in range(1, pages +1):
+            result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+            for i in result_list:
+                pat_list.append(i.get_property("outerText").split('\t')[2])
+                if i.get_property("outerText").split('\t')[1] not in reporter_list:
+                    reporter_list.append(i.get_property("outerText").split('\t')[1])
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institution-interpretation-list_next > a")))
+            driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+            time.sleep(2)
+        
+        # 조회 결과 내에서 임의의 Reporter 선택
+        select_reporter = random.choice(reporter_list)
+
+        # 새로고침
+        driver.refresh()
+
+        # Show entries 100 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(100))
+
+        # Study Date 선택
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        start_date = start_date.replace("-","")
+
+        # 이전에 찾았던 병원 선택
+        time.sleep(2)
+        driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+        time.sleep(1)
+        hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+        hospital.click()
+
+        # Search filter에 임의의 Reporter ID 입력 후, Search 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[2]/div/ul/li/input").send_keys(select_reporter)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[2]/div/ul/li/input").send_keys(Keys.ENTER)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+
+        # Showing entry 결과 저장
+        time.sleep(4)
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[5]
+        list_cnt = list_cnt.replace(",","")
+
+        # 조회 결과 저장
+        time.sleep(4)
+        result_list = []
+        pat_list = []
+        reporter_list = []
+        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        pages = math.ceil(int(list_cnt) / 100)
+        
+        for page in range(1, pages +1):
+            # result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+            for i in result_list:
+                pat_list.append(i.get_property("outerText").split('\t')[2])
+                reporter_list.append(i.get_property("outerText").split('\t')[1])
+            driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+            time.sleep(2)
+
+        # DB에서 선택한 병원을 동일한 조건으로 조회
+        end_date = str(today.strftime('%Y%m%d'))
+        sql = f"""
+            select patient_id from MVIEWINSTSTAT 
+            where study_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and study_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
+            and institution_code in ('{inst_code}')
+            and reporter_id = '{select_reporter}'
+            """
+
+        # DB 조회 결과 저장
+        cursor.execute(sql)
+        row = cursor.fetchall()
+        db_pat_id = []
+        for i in row:
+            db_pat_id.append(i)
+        
+        # DB 조회 결과와 Admin 조회 결과 비교
+        try:
+            assert db_pat_id.sort() == pat_list.sort()
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
 
         # DB 연결 해제
         cursor.close()
         connection.close()
 
+        # Search Filter > Reporter 결과 전송
+        result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+        if testResult == 'failed':
+            testlink.reportTCResult(1782, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1782, testPlanID, buildName, 'p', "Search Filter > Reporter Passed")  
 
+    def SearchFilter_Modality():
+        print("ITR-47: Statistics > Search Filter > Modality")
+        testResult = ''
+        reason = list()
 
+        # DB 접속
+        os.putenv('NLS_LANG', '.UTF8')
+        cx_Oracle.init_oracle_client(lib_dir=r"D:\app\user\instantclient_21_7")
+        connection = cx_Oracle.connect("pantheon","pantheon","211.43.8.73:1521/spectra", encoding="UTF-8")
+        cursor = connection.cursor()
 
+        # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
+        # 페이지 초기화
+        driver.refresh()
 
+        # Show entries 100 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(100))
 
+        # Showing entry 결과 저장
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[5]
 
+        # Study Date 선택
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        start_date = start_date.replace("-","")
 
+        # 임의의 병원 선택
+        time.sleep(1)
+        temp_hospital_cnt_list = []
+        hospital_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/ul/li")
+        hospital_cnt = len(hospital_list) - 1
 
+        for i in range(2, hospital_cnt):
+            temp_hospital_cnt_list.append(i)
+        
+        # 조회 결과가 0이 아닐 때까지 임의의 병원을 찾아서 조회
+        inst_code = []
+        while list_cnt == '0':
+            # 임의의 병원 선택
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#statistics-search-hospital")))
+            driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            time.sleep(1)
+            select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+            hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+            hospital.click()
+            index = (hospital.get_attribute("for")).split('-')[2]
+            inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
 
-# Worklist.Sort_By()
-Statistics.SearchFilter_Date()
+            # Searh 클릭
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+
+            # Showing entry 결과 저장
+            time.sleep(4)
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = temp_cnt[5]
+            list_cnt = list_cnt.replace(",","")
+        inst_code = "','".join(s for s in inst_code)
+
+        # 조회 결과 저장
+        result_list = []
+        pat_list = []
+        modality_list = []
+        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        pages = math.ceil(int(list_cnt) / 100)
+        
+        for page in range(1, pages +1):
+            result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+            for i in result_list:
+                pat_list.append(i.get_property("outerText").split('\t')[2])
+                if i.get_property("outerText").split('\t')[1] not in modality_list:
+                    modality_list.append(i.get_property("outerText").split('\t')[8])
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institution-interpretation-list_next > a")))
+            driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+            time.sleep(2)
+        
+        # 조회 결과 내에서 임의의 Modality 선택
+        select_modality = random.choice(modality_list)
+
+        # 새로고침
+        driver.refresh()
+
+        # Show entries 100 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(100))
+
+        # Study Date 선택
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        start_date = start_date.replace("-","")
+
+        # 이전에 찾았던 병원 선택
+        time.sleep(2)
+        driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+        time.sleep(1)
+        hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+        hospital.click()
+
+        # Search filter에 임의의 Modality 입력 후, Search 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[3]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[3]/div/ul/li/input").send_keys(select_modality)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[3]/div/ul/li/input").send_keys(Keys.ENTER)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+
+        # Showing entry 결과 저장
+        time.sleep(4)
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[5]
+        list_cnt = list_cnt.replace(",","")
+
+        # 조회 결과 저장
+        time.sleep(4)
+        result_list = []
+        pat_list = []
+        modality_list = []
+        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+        pages = math.ceil(int(list_cnt) / 100)
+        
+        for page in range(1, pages +1):
+            result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table")))
+            for i in result_list:
+                pat_list.append(i.get_property("outerText").split('\t')[2])
+                modality_list.append(i.get_property("outerText").split('\t')[1])
+            driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
+            time.sleep(2)
+
+        # DB에서 선택한 병원을 동일한 조건으로 조회
+        end_date = str(today.strftime('%Y%m%d'))
+        sql = f"""
+            select patient_id from MVIEWINSTSTAT 
+            where study_dttm >= to_date('{start_date}', 'YYYY-MM-DD') and study_dttm <= to_date('{end_date}', 'YYYY-MM-DD')
+            and institution_code in ('{inst_code}')
+            and modality = '{select_modality}'
+            """
+
+        # DB 조회 결과 저장
+        cursor.execute(sql)
+        row = cursor.fetchall()
+        db_pat_id = []
+        for i in row:
+            db_pat_id.append(i)
+        
+        # DB 조회 결과와 Admin 조회 결과 비교
+        try:
+            assert db_pat_id.sort() == pat_list.sort()
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # DB 연결 해제
+        cursor.close()
+        connection.close()
+
+        # Search Filter > Modality 결과 전송
+        result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else result)
+        if testResult == 'failed':
+            testlink.reportTCResult(1785, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1785, testPlanID, buildName, 'p', "Search Filter > Modality Passed")  
+
+    def Columns():
+        print("ITR-42: Statistics > Columns")
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Columns 버튼을 클릭한다.
+        # 페이지 초기화
+        driver.refresh()
+
+        # Columns 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[2]/button").click()
+
+        # Columns 팝업창 팝업 확인
+        popup = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[1]/h4")
+        try:
+            assert popup.get_property("textContent") == "Column Show/Hide"
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # 2 steps start! : 임의의 컬럼을 체크 또는 언체크하고, Apply 버튼을 클릭한다.
+        # Columns 팝업창 > 임의의 컬럼을 체크 또는 언체크
+        columns = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div/ul/li")
+        columns_cnt = len(columns)
+        column_index = []
+        
+        for i in range(1, columns_cnt+1):
+            column_index.append(i)
+
+        for i in range(0,3):
+            select_column = column_index.pop(column_index.index(random.choice(column_index)))
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div/ul/li["+str(select_column)+"]/label").click()
+            time.sleep(1)
+
+        # 선택한 column list 저장
+        checked_column_list = []
+        unchecked_column_list = []
+        
+        for i in range(1, columns_cnt+1):
+            if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div/ul/li["+str(i)+"]/input").get_property("checked") == True:
+                checked_column_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div/ul/li["+str(i)+"]").get_property("textContent"))
+
+        # Columns 팝업창 > Apply 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[3]/button[3]").click()
+
+        # Statistics > column list 저장
+        time.sleep(2)
+        static_column_list = []
+        static_column = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[1]/div/table/thead/tr/th")
+        for i in static_column:
+            static_column_list.append(i.get_property("textContent"))
+
+        # Columns 팝업창의 column list와 Statistics column list와 비교
+        try:
+            assert checked_column_list.sort() == static_column_list.sort()
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # 3 steps start! : 임의의 컬럼을 체크 또는 언체크하고, Cancel 버튼을 클릭한다.
+        # Columns 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[2]/button").click()
+
+        # Columns 팝업창 > 임의의 컬럼을 체크 또는 언체크
+        for i in range(0,3):
+            select_column = column_index.pop(column_index.index(random.choice(column_index)))
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div/ul/li["+str(select_column)+"]/label").click()
+            time.sleep(1)
+
+        # 선택한 column list 저장
+        checked_column_list = []
+        unchecked_column_list = []
+        
+        for i in range(1, columns_cnt+1):
+            if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div/ul/li["+str(i)+"]/input").get_property("checked") == True:
+                checked_column_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div/ul/li["+str(i)+"]").get_property("textContent"))
+
+        # Columns 팝업창 > Cancel 버튼 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[3]/button[2]").click()
+
+        # Statistics > column list 저장
+        time.sleep(2)
+        static_column_list = []
+        static_column = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[1]/div/table/thead/tr/th")
+        for i in static_column:
+            static_column_list.append(i.get_property("textContent"))
+
+        # Columns 팝업창의 column list와 Statistics column list와 비교
+        try:
+            assert checked_column_list.sort() == static_column_list.sort()
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")
+
+        # 4 steps start! : 임의의 컬럼을 체크 또는 언체크하고, Reset 버튼을 클릭한다.
+        # Columns 클릭
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[2]/button").click()
+
+        # Columns 팝업창 > Reset 버튼 클릭 후, Apply 클릭
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[3]/button[1]").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[3]/button[3]").click()
+
+        # 선택한 column list 저장
+        checked_column_list = []
+        unchecked_column_list = []
+        
+        for i in range(1, columns_cnt+1):
+            if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div/ul/li["+str(i)+"]/input").get_property("checked") == True:
+                checked_column_list.append(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[4]/div/div/div[2]/div/ul/li["+str(i)+"]").get_property("textContent"))
+
+        # Statistics > column list 저장
+        time.sleep(2)
+        static_column_list = []
+        static_column = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[1]/div/table/thead/tr/th")
+        for i in static_column:
+            static_column_list.append(i.get_property("textContent"))
+
+        # Columns 팝업창의 column list와 Statistics column list와 비교
+        try:
+            assert checked_column_list.sort() == static_column_list.sort()
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n")
+        
+        # Columns 결과 전송
+        result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+        if testResult == 'failed':
+            testlink.reportTCResult(1759, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1759, testPlanID, buildName, 'p', "Columns Passed")  
+
+    def Show_Entries():
+        print("ITR-43: Statistics > Show entries")
+        testResult = ''
+        reason = list()
+
+        # 1 steps start! : Show entries의 개수를 10으로 변경한다.
+        # 페이지 초기화
+        driver.refresh()
+
+        # Showing entry 결과 저장
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[5]
+
+        # Study Date 선택
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
+        start_date = start_date.replace("-","")
+
+        # 임의의 병원 선택
+        time.sleep(1)
+        temp_hospital_cnt_list = []
+        hospital_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/ul/li")
+        hospital_cnt = len(hospital_list) - 1
+
+        for i in range(2, hospital_cnt):
+            temp_hospital_cnt_list.append(i)
+        
+        # 조회 결과가 100개를 초과할 때까지 임의의 병원을 찾아서 조회
+        while int(list_cnt) < 100:
+            # 임의의 병원 선택
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#statistics-search-hospital")))
+            driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            time.sleep(1)
+            select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
+            hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
+            hospital.click()
+
+            # Searh 클릭
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+
+            # Showing entry 결과 저장
+            time.sleep(4)
+            temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+            temp_cnt = temp_cnt.split()
+            list_cnt = temp_cnt[5]
+
+        # Show entries 10으로 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(10))
+
+        # Showing entry 결과 저장
+        time.sleep(4)
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[3] 
+
+        # 조회결과 리스트가 10개 단위로 표시되는지 확인
+        try:
+            assert list_cnt == '10'
+        except:
+            testResult = "failed"
+            reason.append("1 steps failed\n")
+
+        # 2 steps start! : Show entries의 개수를 25로 변경한다.
+        # Show entries 25로 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(25))
+
+        # Showing entry 결과 저장
+        time.sleep(4)
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[3] 
+
+        # 조회결과 리스트가 25개 단위로 표시되는지 확인
+        try:
+            assert list_cnt == '25'
+        except:
+            testResult = "failed"
+            reason.append("2 steps failed\n")
+
+        # 3 steps start! : Show entries의 개수를 50으로 변경한다.
+        # Show entries 50으로 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(50))
+
+        # Showing entry 결과 저장
+        time.sleep(4)
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[3] 
+
+        # 조회결과 리스트가 50개 단위로 표시되는지 확인
+        try:
+            assert list_cnt == '50'
+        except:
+            testResult = "failed"
+            reason.append("3 steps failed\n")
+
+        # 4 steps start! : Show entries의 개수를 100으로 변경한다.
+        # Show entries 100으로 변경
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        select.select_by_value(str(100))
+
+        # Showing entry 결과 저장
+        time.sleep(4)
+        temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
+        temp_cnt = temp_cnt.split()
+        list_cnt = temp_cnt[3] 
+
+        # 조회결과 리스트가 100개 단위로 표시되는지 확인
+        try:
+            assert list_cnt == '100'
+        except:
+            testResult = "failed"
+            reason.append("4 steps failed\n")
+
+        # Show entries 결과 전송
+        result = ' '.join(s for s in reason)
+        print("Test Result: Pass" if testResult != "failed" else testResult)
+        if testResult == 'failed':
+            testlink.reportTCResult(1765, testPlanID, buildName, 'f', result)
+        else:
+            testlink.reportTCResult(1765, testPlanID, buildName, 'p', "Show entries Passed")  
