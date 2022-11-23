@@ -16,7 +16,7 @@ from dateutil.relativedelta import relativedelta
 import random
 import cx_Oracle
 import os
-import pandas as pd
+# import pandas as pd
 import string
 
 # import ITR_Admin_Common
@@ -71,6 +71,7 @@ reporterPW = 'Server123!@#'
 today = datetime.now()
 test_hospital = "Cloud Team"
 test_hospital_code = '997'
+start = time.time()
 
 class Common:
     def refer_show_entries(num):
@@ -790,6 +791,7 @@ class Refer:
                 # 선택한 병원의 Reporter list 저장
                 time.sleep(2)
                 reporter_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-sub-item")
+                time.sleep(0.5)
                 reporter_list_cnt = len(reporter_list)
                 
                 # Reporter의 badge count 저장
@@ -1095,8 +1097,10 @@ class Search_filter:
         reason = list()
 
         # 1 steps start! : Priority 조건을 응급으로 선택한 후, Search 버튼 클릭
+        # 새로고침
+        driver.refresh()
         # Refer 탭 클릭
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # Hospital list 저장
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -1258,8 +1262,10 @@ class Search_filter:
         reason = list()
 
         # 1 steps start! : Job Status를 Requested로 선택한 후, Search All버튼을 클릭한다.
+        # 새로고침
+        driver.refresh()
         # All List 탭 클릭
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
 
         # Showing entries 100으로 변경
         Common.refer_show_entries(100)
@@ -1694,6 +1700,9 @@ class Search_filter:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # 1 steps start! : Date를 Job Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 2 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 3 steps start! : Date를 Schedule Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
@@ -1731,12 +1740,12 @@ class Search_filter:
 
             # All Assigned List > Job list의 결과 저장
             pages = Common.cnt_pages()
+            job_date = []
             while pages > 0:
                 time.sleep(1)
                 request = driver.wait_for_request('.*/GetAllAssignedList.*')
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
-                job_date = []
 
                 if data != '':
                     for i in data:
@@ -1772,12 +1781,12 @@ class Search_filter:
 
             # All Assigned List > Job list의 결과 저장
             pages = Common.cnt_pages()
+            job_date = []
             while pages > 0:
                 time.sleep(1)
                 request = driver.wait_for_request('.*/GetAllAssignedList.*')
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
-                job_date = []
 
                 if data != '':
                     for i in data:
@@ -1814,12 +1823,12 @@ class Search_filter:
                 
                 # All Assigned List > Job list의 결과 저장
                 pages = Common.cnt_pages()
+                job_date = []
                 while pages > 0:
                     time.sleep(1)
                     request = driver.wait_for_request('.*/GetAllAssignedList.*')
                     body = request.response.body.decode('utf-8')
                     data = json.loads(body)["data"]
-                    job_date = []
 
                     if data != '':
                         for i in data:
@@ -1857,11 +1866,12 @@ class Search_filter:
             
                 # All Assigned List > Job list의 결과 저장
                 pages = Common.cnt_pages()
+                job_date = []
+
                 while pages > 0:
                     request = driver.wait_for_request('.*/GetAllAssignedList.*')
                     body = request.response.body.decode('utf-8')
                     data = json.loads(body)["data"]
-                    job_date = []
 
                     if data != '':
                         for i in data:
@@ -1910,12 +1920,13 @@ class Search_filter:
 
             # Not Assigned List > Job list의 결과 저장
             pages = Common.cnt_pages()
+            job_date = []
+
             while pages > 0:
                 time.sleep(1)
                 request = driver.wait_for_request('.*/GetNotAssignedList.*')
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
-                job_date = []
 
                 if data != '':
                     for i in data:
@@ -1951,12 +1962,13 @@ class Search_filter:
 
             # Not Assigned List > Job list의 결과 저장
             pages = Common.cnt_pages()
+            job_date = []
+
             while pages > 0:
                 time.sleep(1)
                 request = driver.wait_for_request('.*/GetNotAssignedList.*')
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
-                job_date = []
 
                 if data != '':
                     for i in data:
@@ -1993,12 +2005,13 @@ class Search_filter:
                 
                 # Not Assigned List > Job list의 결과 저장
                 pages = Common.cnt_pages()
+                job_date = []
+
                 while pages > 0:
                     time.sleep(1)
                     request = driver.wait_for_request('.*/GetNotAssignedList.*')
                     body = request.response.body.decode('utf-8')
                     data = json.loads(body)["data"]
-                    job_date = []
 
                     if data != '':
                         for i in data:
@@ -2036,11 +2049,12 @@ class Search_filter:
             
                 # Not Assigned List > Job list의 결과 저장
                 pages = Common.cnt_pages()
+                job_date = []
+
                 while pages > 0:
                     request = driver.wait_for_request('.*/GetNotAssignedList.*')
                     body = request.response.body.decode('utf-8')
                     data = json.loads(body)["data"]
-                    job_date = []
 
                     if data != '':
                         for i in data:
@@ -2086,11 +2100,12 @@ class Search_filter:
         
         # All List > Job list의 job date를 저장
         pages = Common.cnt_pages()
+        job_date = []
+
         while pages > 0:
             request = driver.wait_for_request('.*/GetAllList.*')
             body = request.response.body.decode('utf-8')
             data = json.loads(body)["data"]
-            job_date = []
 
             if data != '':
                 for i in data:
@@ -2125,6 +2140,9 @@ class Search_filter:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # 1 steps start! : Patient Location 조건을 InPatient로 선택한 후, Search 버튼을 클릭한다.
         # 2 steps start! : Patient Location 조건을 OutPatient로 선택한 후, Search 버튼을 클릭한다.
         # 3 steps start! : Patient Location 조건을 Emergency로 선택한 후, Search 버튼을 클릭한다.
@@ -2133,6 +2151,7 @@ class Search_filter:
         ['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[5]/div/div/ul/li[4]','E']]
 
         # All List 탭 클릭
+        time.sleep(2)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
 
         for j in range(0,3):
@@ -2190,8 +2209,11 @@ class Search_filter:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
         
         # 1 steps start! : 임의의 Patient ID를 입력하고 Search 버튼을 클릭한다.
         # Test 병원을 선택
@@ -2303,8 +2325,11 @@ class Search_filter:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
         
         # 1 steps start! : 임의의 Patient Name을 입력하고 Search 버튼을 클릭한다.
         # Test 병원을 선택
@@ -2416,8 +2441,11 @@ class Search_filter:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # 1 steps start! : Age 조건을 Year로 선택하고, 임의의 나이를 입력한 후, Search 버튼을 클릭한다.
         # Test 병원 선택
@@ -2591,8 +2619,11 @@ class Search_filter:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # 1 steps start! : 임의의 Study Description을 입력한 후, Search 버튼을 클릭한다.
         # Test 병원 선택
@@ -2669,8 +2700,11 @@ class Search_filter:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # 1 steps start! : 임의의 Modality를 입력한 후, Search 버튼을 클릭한다.
         # Test 병원 선택
@@ -2745,9 +2779,12 @@ class Search_filter:
         print("ITR-18: Search Filter > Bodypart")
         testResult = ''
         reason = list()
+        
+        # 새로고침
+        driver.refresh()
 
         # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # 1 steps start! : 임의의 Bodypart를 입력한 후, Search 버튼을 클릭한다.
         # Test 병원 선택
@@ -2823,8 +2860,11 @@ class Search_filter:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # 1 steps start! : 임의의 Department를 입력한 후, Search 버튼을 클릭한다.
         # Test 병원 선택
@@ -2899,9 +2939,12 @@ class Search_filter:
         print("ITR-20: Search Filter > Request_Name")
         testResult = ''
         reason = list()
+        
+        # 새로고침
+        driver.refresh()
 
         # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # 1 steps start! : 임의의 Request Name을 입력한 후, Search 버튼을 클릭한다.
         # Test 병원 선택
@@ -2976,9 +3019,12 @@ class Search_filter:
         print("ITR-21: Search Filter > Search All")
         testResult = ''
         reason = list()
+        
+        # 새로고침
+        driver.refresh()
 
         # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
         time.sleep(1)
 
         # 1 steps start! : 임의의 검색조건을 입력한 후, Search All 버튼을 클릭한다.
@@ -3115,9 +3161,12 @@ class Search_filter:
         print("ITR-22: Search Filter > Real Time")
         testResult = ''
         reason = list()
+        
+        # 새로고침
+        driver.refresh()
 
         # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # 1 steps start! : Real Time 토글 버튼을 On으로 변경한다.
         # Test 병원 선택
@@ -3206,9 +3255,9 @@ class Search_filter:
         testResult = ''
         reason = list()
 
-        # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
-
+        # 새로고침
+        driver.refresh()
+        
         # 1 steps start! : 임의의 검색조건을 입력한 후, Short cut 버튼을 클릭한다.
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -3806,7 +3855,7 @@ class Search_filter:
         driver.find_element(By.XPATH, "/html/body/nav/div").click()
 
         # Short cut 결과 전송
-        result = ' '.join(s for s in result)
+        result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else testResult)
         if testResult == 'failed':
             testlink.reportTCResult(1651, testPlanID, buildName, 'f', result)
@@ -3819,8 +3868,11 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # Refer 탭 클릭(화면 초기화)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # 1 steps start! : All Assigned List 탭을 클릭한다.
         # Test 병원 선택
@@ -3859,8 +3911,19 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # 1 steps start! : Not Assigned List 탭을 클릭한다.
-        # All Assigned List 탭 클릭
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        time.sleep(1)
+        del driver.requests
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
+        # Not Assigned List 탭 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
 
         # Job list 저장
@@ -3869,7 +3932,7 @@ class Worklist:
         body = request.response.body.decode('utf-8')
         data = json.loads(body)["data"]
 
-        # All Assigned List의 Job list를 가져오는지 확인
+        # Not Assigned List의 Job list를 가져오는지 확인
         try:
             assert data is not None
         except:
@@ -3889,7 +3952,18 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # 1 steps start! : All List 탭을 클릭한다.
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        time.sleep(1)
+        del driver.requests
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                i.click()
+
         # All List 탭 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
 
@@ -3899,7 +3973,7 @@ class Worklist:
         body = request.response.body.decode('utf-8')
         data = json.loads(body)["data"]
 
-        # All Assigned List의 Job list를 가져오는지 확인
+        # All List의 Job list를 가져오는지 확인
         try:
             assert data is not None
         except:
@@ -3919,9 +3993,12 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # 1 steps start! : Schedule 체크박스를 체크한다.
         # Refer 탭 클릭
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # 병원 리스트와 Schedule count 저장
         time.sleep(1)
@@ -4048,9 +4125,12 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # 1 steps start! : Worklist에서 Priority가 일반인 의뢰 검사를 선택한 후, Priority 버튼을 클릭한다.
         # Refer 탭 클릭
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
         
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -4166,10 +4246,13 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # 1 steps start! : Worklist에서 Job Status가 Canceled 이외의 의뢰 검사를 선택한 후, Cancel 버튼을 클릭한다.
         # Refer 탭 클릭
         time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
         
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -4209,13 +4292,11 @@ class Worklist:
         
         # 2 steps start! : Request Cancel 팝업창에서 "OK"를 클릭한다.
         # Request Cancel > OK 버튼 클릭
+        time.sleep(1)
+        del driver.requests
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[9]/div/div/div[3]/button[1]").click()
 
         # Not Assigned List > Job list 저장
-        time.sleep(1)
-        del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
-        
         request = driver.wait_for_request('.*/GetNotAssignedList.*')
         body = request.response.body.decode('utf-8')
         data = json.loads(body)["data"]
@@ -4234,7 +4315,7 @@ class Worklist:
         # 3 steps start! : Request Cancel 팝업창에서 "Close"를 클릭한다.
         # Not Assigned List > 임의의 Job 선택
         job_key = random.choice(before_job_list)
-        time.sleep(1)
+        time.sleep(1.5)
         driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
 
         # Cancel 버튼 클릭
@@ -4243,6 +4324,7 @@ class Worklist:
             driver.execute_script("arguments[0].click()",cancel_btn)
 
         # Request Cancel > Close 버튼 클릭
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[9]/div/div/div[3]/button[2]").click()
 
         # Net Assigned List 탭 클릭(job list 획득하기 위함)
@@ -4278,6 +4360,10 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        signInOut.admin_sign_in()
+        # 새로고침
+        driver.refresh()
+        
         # 1 steps start! : Worklist에서 임의의 의뢰 검사를 선택한 후, Refer 버튼을 클릭한다.
         # Configuration > Institutions로 이동 후, 테스트 병원 검색
         time.sleep(1)
@@ -4520,10 +4606,13 @@ class Worklist:
             reason.append("5 steps failed\n")
 
         # 6 steps start! : Comment를 선택하고, 추가 Comment가 있다면 입력한다.
+        # 새로 고침
+        time.sleep(1)
+        driver.refresh()
+
         # Configuration > Institutions로 이동 후, 테스트 병원 검색
-        # time.sleep(2)
-        element = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[5]/a")))
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[5]/a").click()
+        element = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[5]")))
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[5]").click()
         time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/button[4]").click()
         time.sleep(0.5)
@@ -4552,10 +4641,14 @@ class Worklist:
             testResult = "failed"
             reason.append("6 steps failed\n")
 
+        # 새로 고침
+        time.sleep(1)
+        driver.refresh()
+
         # Refer 탭 클릭
         time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
-
+        
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
         for i in hospital_list:
@@ -4652,9 +4745,9 @@ class Worklist:
             reason.append("6 steps failed\n")
 
         # 7 steps start! : With Releated Job에 체크한 후, Save 버튼을 클릭한다.
-        # Refer 탭 클릭
+        # 새로고침
         time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        driver.refresh()
 
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -5024,10 +5117,13 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # 1 steps start! : 판독의가 할당된 의뢰 검사를 선택한 후, Refer Cancel 버튼을 클릭한다.
         # Refer 탭 클릭
         time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -5255,10 +5351,13 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # 1 steps start! : 판독의에게 할당된 임의의 의뢰 검사를 선택하고, Refer Cancel and Refer 버튼을 클릭한다.
         # Refer 탭 클릭
         time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -5898,10 +5997,13 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # 1 steps start! : Schedule이 없는 임의의 의뢰 job을 선택한 후, Schedule Cancel 버튼을 클릭한다.
         # Refer 탭 클릭
         time.sleep(0.5)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # Test 병원 선택
         time.sleep(1)
@@ -6073,7 +6175,7 @@ class Worklist:
 
         # S.Cancel 팝업창 > OK 클릭
         time.sleep(1)
-        driver.find_element(by.XPATH, "/html/body/div[6]/div[7]/div/button").click()
+        driver.find_element(By.XPATH, "/html/body/div[6]/div[7]/div/button").click()
         
         # Schedule 결과 전송
         result = ' '.join(s for s in reason)
@@ -6087,6 +6189,9 @@ class Worklist:
         print("ITR-36: Worklist > Revised")
         testResult = ''
         reason = list()
+
+        # 새로고침
+        driver.refresh()
 
         # 1 steps start! : Job Status가 Completed 상태인 의뢰 검사를 선택한 후, Revised 버튼을 클릭한다.
         # Configuration > Institutions > 테스트 병원 선택
@@ -6225,6 +6330,9 @@ class Worklist:
         print("ITR-37: Worklist > Discard")
         testResult = ''
         reason = list()
+
+        # 새로고침
+        driver.refresh()
 
         # 1 steps start! : 임의의 의뢰 검사를 선택한 후, Discard 버튼을 클릭한다.
         # Configuration > Institutions > 테스트 병원 선택
@@ -6406,6 +6514,9 @@ class Worklist:
         print("ITR-38: Worklist > Retry Request")
         testResult = ''
         reason = list()
+
+        # 새로고침
+        driver.refresh()
 
         # 1 steps start! : Job Status가 Reported, Completed, Recalled 이외의 상태인 의뢰 검사를 선택한 후, Retry Request 버튼을 클릭한다.
         # Configuration > Institutions > 테스트 병원 선택
@@ -6869,11 +6980,14 @@ class Worklist:
         print("ITR-40: Worklist > Show entries")
         testResult = ''
         reason = list()
+        
+        # 새로고침
+        driver.refresh()
 
         # 1 steps start! : Show entries의 개수를 10으로 변경한다.
         # Refer 탭 클릭
         time.sleep(0.5)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # Test 병원 선택
         time.sleep(1)
@@ -6970,10 +7084,13 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        # 새로고침
+        driver.refresh()
+
         # 1 steps start! : Use Related Worklist에 체크한 후, worklist에서 임의의 의뢰 검사를 선택한다.
         # Refer 탭 클릭
         time.sleep(0.5)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # Test 병원 선택
         time.sleep(1)
@@ -7117,7 +7234,8 @@ class Statistics:
         testResult = ''
         reason = list()
 
-        signInOut.admin_sign_in()
+        # 새로고침
+        driver.refresh()
 
         # DB 접속
         os.putenv('NLS_LANG', '.UTF8')
@@ -8306,3 +8424,92 @@ class Statistics:
             testlink.reportTCResult(1765, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1765, testPlanID, buildName, 'p', "Show entries Passed")  
+
+
+Worklist.Refer()
+Worklist.Sort_By()
+
+
+failed_test_list = []
+full_test = [
+    # # Sign
+    # Sign.Sign_InOut, # ITR-1
+    # Sign.Rememeber_Me, # ITR-2
+    # # Topbar
+    # Topbar.Search_Schedule_List, # ITR-3
+    # # Refer
+    # Refer.Hospital_List, # ITR-7
+    # Refer.Reporter_List, # ITR-8
+    # Search filter
+    # Search_filter.Priority, # ITR-9
+    # Search_filter.Job_Status, # ITR-10
+    # Search_filter.Date, # ITR-11
+    # Search_filter.Patient_Location, # ITR-12
+    # Search_filter.Patient_ID, # ITR-13
+    # Search_filter.Patient_Name, # ITR-14
+    # Search_filter.Age, # ITR-15
+    # Search_filter.Study_Description, # ITR-16
+    # Search_filter.Modality, # ITR-17
+    # Search_filter.Bodypart, # ITR-18
+    # Search_filter.Department, # ITR-19
+    # Search_filter.Request_Name, # ITR-20
+    # Search_filter.Search_All, # ITR-21
+    # Search_filter.RealTime, # ITR-22
+    # Search_filter.ShortCut, # ITR-23
+    # # Worklist
+    # Worklist.All_Assigned_List, # ITR-24
+    # Worklist.Not_Assigned_List, # ITR-25
+    # Worklist.All_List, # ITR-26
+    # Worklist.Schedule, # ITR-27
+    # Worklist.Priority, # ITR-28
+    # Worklist.Canceled, # ITR-29
+    Worklist.Refer, # ITR-30
+    Worklist.Refer_Cancel, # ITR-31
+    Worklist.Refer_Cancel_And_Refer, # ITR-32
+    Worklist.Set_Schedule, # ITR-34
+    Worklist.Schedule_Cancel, # ITR-35
+    Worklist.Revised, # ITR-36
+    Worklist.Discard, # ITR-37
+    Worklist.Retry_Request, # ITR-38
+    Worklist.Columns, # ITR-39
+    Worklist.Show_Entries, # ITR-40
+    Worklist.Use_Related_Worklist, # ITR-224
+    Worklist.Sort_By, # ITR-41
+    # Statistics
+    Statistics.SearchFilter_Date, # ITR-44
+    Statistics.SearchFilter_Hospital, # ITR-45
+    Statistics.SearchFilter_Reporter, # ITR-46
+    Statistics.SearchFilter_Modality, # ITR-47
+    Statistics.Columns, # ITR-42
+    Statistics.Show_Entries # ITR-43
+    ]
+
+# Full Test
+for test in full_test:
+    time.sleep(0.5)
+    try:
+        print("(",str(full_test.index(test)+1) + " / " + str(len(full_test)),")", round(((full_test.index(test)+1)*100/int(len(full_test))),1),"%")
+        run_time = time.time()
+        test()
+    except:
+        for i in range(0,3):
+            try:
+                if test not in failed_test_list:
+                    failed_test_list.append(test)
+                print("retry ("+str(i+1)+"/3)")
+                print("before",failed_test_list)
+                test()
+                failed_test_list.remove(test)
+                print("after",failed_test_list)
+                break
+            except:
+                print("Occurred Exception")
+                pass
+    finally:
+        print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
+        pass
+
+print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
+print("Failed Test List: ", failed_test_list)
+
+# driver.quit()
