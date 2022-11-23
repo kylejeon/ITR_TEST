@@ -4360,7 +4360,6 @@ class Worklist:
         testResult = ''
         reason = list()
 
-        signInOut.admin_sign_in()
         # 새로고침
         driver.refresh()
         
@@ -4648,7 +4647,7 @@ class Worklist:
         # Refer 탭 클릭
         time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
-        
+
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
         for i in hospital_list:
@@ -8426,43 +8425,39 @@ class Statistics:
             testlink.reportTCResult(1765, testPlanID, buildName, 'p', "Show entries Passed")  
 
 
-Worklist.Refer()
-Worklist.Sort_By()
-
-
 failed_test_list = []
 full_test = [
-    # # Sign
-    # Sign.Sign_InOut, # ITR-1
-    # Sign.Rememeber_Me, # ITR-2
-    # # Topbar
-    # Topbar.Search_Schedule_List, # ITR-3
-    # # Refer
-    # Refer.Hospital_List, # ITR-7
-    # Refer.Reporter_List, # ITR-8
-    # Search filter
-    # Search_filter.Priority, # ITR-9
-    # Search_filter.Job_Status, # ITR-10
-    # Search_filter.Date, # ITR-11
-    # Search_filter.Patient_Location, # ITR-12
-    # Search_filter.Patient_ID, # ITR-13
-    # Search_filter.Patient_Name, # ITR-14
-    # Search_filter.Age, # ITR-15
-    # Search_filter.Study_Description, # ITR-16
-    # Search_filter.Modality, # ITR-17
-    # Search_filter.Bodypart, # ITR-18
-    # Search_filter.Department, # ITR-19
-    # Search_filter.Request_Name, # ITR-20
-    # Search_filter.Search_All, # ITR-21
-    # Search_filter.RealTime, # ITR-22
-    # Search_filter.ShortCut, # ITR-23
-    # # Worklist
-    # Worklist.All_Assigned_List, # ITR-24
-    # Worklist.Not_Assigned_List, # ITR-25
-    # Worklist.All_List, # ITR-26
-    # Worklist.Schedule, # ITR-27
-    # Worklist.Priority, # ITR-28
-    # Worklist.Canceled, # ITR-29
+    # Sign
+    Sign.Sign_InOut, # ITR-1
+    Sign.Rememeber_Me, # ITR-2
+    # Topbar
+    Topbar.Search_Schedule_List, # ITR-3
+    # Refer
+    Refer.Hospital_List, # ITR-7
+    Refer.Reporter_List, # ITR-8
+    Search filter
+    Search_filter.Priority, # ITR-9
+    Search_filter.Job_Status, # ITR-10
+    Search_filter.Date, # ITR-11
+    Search_filter.Patient_Location, # ITR-12
+    Search_filter.Patient_ID, # ITR-13
+    Search_filter.Patient_Name, # ITR-14
+    Search_filter.Age, # ITR-15
+    Search_filter.Study_Description, # ITR-16
+    Search_filter.Modality, # ITR-17
+    Search_filter.Bodypart, # ITR-18
+    Search_filter.Department, # ITR-19
+    Search_filter.Request_Name, # ITR-20
+    Search_filter.Search_All, # ITR-21
+    Search_filter.RealTime, # ITR-22
+    Search_filter.ShortCut, # ITR-23
+    # Worklist
+    Worklist.All_Assigned_List, # ITR-24
+    Worklist.Not_Assigned_List, # ITR-25
+    Worklist.All_List, # ITR-26
+    Worklist.Schedule, # ITR-27
+    Worklist.Priority, # ITR-28
+    Worklist.Canceled, # ITR-29
     Worklist.Refer, # ITR-30
     Worklist.Refer_Cancel, # ITR-31
     Worklist.Refer_Cancel_And_Refer, # ITR-32
