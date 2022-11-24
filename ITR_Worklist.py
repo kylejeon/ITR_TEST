@@ -84,7 +84,7 @@ class signInOut:
             WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[4]/div/div/div[2]/div/div[2]/button[1]")))
             driver.find_element(By.XPATH, "/html/body/div[4]/div/div/div[2]/div/div[2]/button[1]").click()
         except:
-            print("no cert")
+            pass
 
         # waiting loading
         try:
@@ -5011,7 +5011,7 @@ class WORKLIST:
         driver.find_element(By.CSS_SELECTOR ,"#normal-send-btn-position-select-box").click()
         driver.find_element(By.CSS_SELECTOR, "#normal-send-btn-position-select-box > option:nth-child(1)").click()
         driver.find_element(By.CSS_SELECTOR, "#modal_report_settings_save").click()
-        time.sleep(0.1)
+        time.sleep(2)
         try:
             assert(driver.find_element(By.CSS_SELECTOR, "#job-report-view-send-btn-alt-top").text == "Send")
             testResult = False
@@ -5098,7 +5098,13 @@ Login_List = [
     ]
 
 TopMenu_Main_List = [
-    TOPMENU.Badge,
+    #TOPMENU.Badge,
+    TOPMENU.Badge_Emergency,
+    TOPMENU.Badge_Refer,
+    TOPMENU.Badge_AutoRefer,
+    TOPMENU.Badge_Schedule,
+    TOPMENU.Badge_Today,
+
     TOPMENU.Home,
     TOPMENU.new_message,
     TOPMENU.Message,
@@ -5196,6 +5202,6 @@ def All_Scenario():
                 print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
 
     print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
-    print("Failed Test List: ", failed_list)
+    print("Failed List: ", failed_list)
 
 All_Scenario()
