@@ -172,6 +172,7 @@ class TOPMENU:
         print("ITR-127: Badege > Emergency")
         # 캡처 초기화
         del driver.requests
+        time.sleep(1)
         # badge 클릭
         driver.find_element(By.XPATH, '/html/body/nav/div/div[2]/div[1]/div/div[2]/div[1]').click()
         # waiting loading
@@ -182,9 +183,11 @@ class TOPMENU:
 
         # Badge의 표시 갯수 획득
         request = driver.wait_for_request('.*AllInstitutionList.*')
+        time.sleep(0.3)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
-        cmr = data['TotalPriorityCount']
+        cmr1 = data['TotalPriorityCount']
+        cmr2 = int(driver.find_element(By.CSS_SELECTOR, "#emergency_count").text)
 
         # worklist record Total 획득
         request = driver.wait_for_request('.*E&JobStatus=200&JobStartDate.*')
@@ -194,7 +197,8 @@ class TOPMENU:
 
         # 비교
         try:
-            assert (cmr == recordTotal)
+            assert (cmr1 == recordTotal and 
+                    cmr1 == cmr2)
         except:
             testResult = False
             Result_msg+="#1 "
@@ -212,6 +216,7 @@ class TOPMENU:
         print("ITR-128: Badge > Refer")
         # 캡처 초기화
         del driver.requests
+        time.sleep(1)
         # badge 클릭
         driver.find_element(By.XPATH, '/html/body/nav/div/div[2]/div[2]/div/div[2]/div[1]').click()
         # waiting loading
@@ -222,10 +227,12 @@ class TOPMENU:
 
         # Badge의 표시 갯수 획득
         request = driver.wait_for_request('.*AllInstitutionList.*')
+        time.sleep(0.3)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
 
-        cmr = data['TotalReferCount']
+        cmr1 = data['TotalReferCount']
+        cmr2 = int(driver.find_element(By.CSS_SELECTOR, "#refer_count").text)
 
         # worklist record Total 획득
         request = driver.wait_for_request('./GetReferCurrentJobWorklist.*')
@@ -235,7 +242,8 @@ class TOPMENU:
 
         # 비교
         try:
-            assert (cmr == recordTotal)
+            assert (cmr1 == recordTotal and 
+                    cmr1 == cmr2)
         except:
             testResult = False
             Result_msg+="#1 "
@@ -254,6 +262,7 @@ class TOPMENU:
 
         # 캡처 초기화
         del driver.requests
+        time.sleep(1)
         # badge 클릭
         driver.find_element(By.XPATH, '/html/body/nav/div/div[2]/div[3]/div/div[2]/div[1]').click()
         # waiting loading
@@ -264,22 +273,25 @@ class TOPMENU:
 
         # Badge의 표시 갯수 획득
         request = driver.wait_for_request('.*AllInstitutionList.*')
+        time.sleep(0.3)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
 
-        cmr = data['TotalAutoReferCount']
-        TotalScheduleReferCount = data['TotalScheduleReferCount']
-        TotalReportedCompletedCount = data['TotalReportedCompletedCount']
+        cmr1 = data['TotalAutoReferCount']
+        cmr2 = int(driver.find_element(By.CSS_SELECTOR, "#autorefer_count").text)
 
         # worklist record Total 획득
         request = driver.wait_for_request('.*NotRefered=true.*')
+        time.sleep(0.3)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
         recordTotal = data['recordsTotal']
+        refer = int(driver.find_element(By.CSS_SELECTOR, "#refer_count").text)
 
         # 비교
         try:
-            assert (cmr == recordTotal)
+            assert (cmr1 == (recordTotal-refer) and
+                    cmr1 == cmr2)
         except:
             testResult = False
             Result_msg+="#1 "
@@ -298,8 +310,10 @@ class TOPMENU:
 
         # 캡처 초기화
         del driver.requests
+        time.sleep(1)
         # badge 클릭
         driver.find_element(By.XPATH, '/html/body/nav/div/div[2]/div[4]/div/div[2]/div[1]').click()
+        time.sleep(0.3)
         # waiting loading
         try:
             WebDriverWait(driver, 1.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
@@ -311,8 +325,8 @@ class TOPMENU:
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
 
-        cmr = data['TotalScheduleReferCount']
-        TotalReportedCompletedCount = data['TotalReportedCompletedCount']
+        cmr1 = data['TotalScheduleReferCount']
+        cmr2 = int(driver.find_element(By.CSS_SELECTOR, "#schedule_count").text)
 
         # worklist record Total 획득
         request = driver.wait_for_request('./GetScheduleReferCurrentJobWorklist.*')
@@ -322,7 +336,8 @@ class TOPMENU:
 
         # 비교
         try:
-            assert (cmr == recordTotal)
+            assert (cmr1 == recordTotal and 
+                    cmr1 == cmr2)
         except:
             testResult = False
             Result_msg+="#1 "
@@ -341,6 +356,7 @@ class TOPMENU:
 
         # 캡처 초기화
         del driver.requests
+        time.sleep(1)
         # badge 클릭
         driver.find_element(By.XPATH, '/html/body/nav/div/div[2]/div[5]/div/div[2]/div[1]').click()
         # waiting loading
@@ -351,10 +367,12 @@ class TOPMENU:
 
         # Badge의 표시 갯수 획득
         request = driver.wait_for_request('.*AllInstitutionList.*')
+        time.sleep(0.3)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
 
-        cmr = data['TotalReportedCompletedCount']
+        cmr1 = data['TotalReportedCompletedCount']
+        cmr2 = int(driver.find_element(By.CSS_SELECTOR, "#today_completed_reported_count").text)
 
         # worklist record Total 획득
         request = driver.wait_for_request('./GetCompletedReportedJobWorklist.*')
@@ -364,7 +382,8 @@ class TOPMENU:
 
         # 비교
         try:
-            assert (cmr == recordTotal)
+            assert (cmr1 == recordTotal and 
+                    cmr1 == cmr2)
         except:
             testResult = False
             Result_msg+="#1 "
@@ -4465,7 +4484,22 @@ class WORKLIST:
         del driver.requests
         time.sleep(1)
 
+        ReFresh()
+        time.sleep(0.5)
+
+        del driver.requests
+        time.sleep(1)
+
+        # Cloud team
+        driver.find_element(By.CSS_SELECTOR, "#search_institution_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#search_institution_chosen > div > div > input[type=text]").send_keys(testHospital)
+        driver.find_element(By.CSS_SELECTOR, "#search_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        driver.wait_for_request('.*/GetCurrentJobWorklist.*')
+        time.sleep(0.3)
+
         # paste #1
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#search-job-pat-id")))
+        driver.find_element(By.CSS_SELECTOR, "#search-job-pat-id").clear()
         driver.find_element(By.CSS_SELECTOR, "#search-job-pat-id").send_keys(remember_pid)
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#search_current_job")))
         driver.find_element(By.CSS_SELECTOR, "#search_current_job").click()
@@ -4594,6 +4628,7 @@ class WORKLIST:
         time.sleep(1)
 
         # find
+        driver.find_element(By.CSS_SELECTOR, "#search-job-pat-id").clear()
         driver.find_element(By.CSS_SELECTOR, "#search-job-pat-id").send_keys(remember_pid)
         driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
         driver.wait_for_request('.*/GetCurrentJobWorklist.*')
@@ -4630,7 +4665,6 @@ class WORKLIST:
                 break
         body = request.response.body.decode('utf-8')
         data = json.loads(body)["RelatedReportIncludePriorityStudyReport"]
-
         check = False
         for n in data:
             if (n["Conclusion"] == "rnd_Conclusion" and n["ReportTextLob"] == "rnd_Report"):
@@ -4669,6 +4703,7 @@ class WORKLIST:
         driver.find_element(By.CSS_SELECTOR, "#search_current_job").click()
         time.sleep(1)
         request = driver.wait_for_request(".*/GetCurrentJobWorklist.*")
+        time.sleep(0.3)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)["data"]
         page_len = int(json.loads(body)['Length'])
@@ -4676,6 +4711,9 @@ class WORKLIST:
         total = math.ceil(int(json.loads(body)['recordsFiltered']) / page_len)
         check = False
         for a in range(1, total+1):
+            driver.wait_for_request(".*/GetCurrentJobWorklist.*")
+            time.sleep(0.3)
+
             for b in range(0, len(data)):
                 if (driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position)+"]/span/label").get_property("textContent") == "Unreported"):
                     driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr["+str(b+1)+"]/td["+str(position)+"]/span/label").click()
@@ -4690,6 +4728,10 @@ class WORKLIST:
                         driver.switch_to.window(driver.window_handles[0])
             if check == True:
                 break
+
+            del driver.requests
+            time.sleep(1)
+
             element = driver.find_element(By.CSS_SELECTOR, "#current-job-list_next > a")
             driver.execute_script("arguments[0].click();", element)
 
@@ -4853,7 +4895,7 @@ class WORKLIST:
         driver.find_element(By.CSS_SELECTOR, "#search-job-pat-id").clear()
 
         # open report (exclude 3, 4, 7, 8)
-        driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr[2]/td["+str(position)+"]/span/label").click()
+        driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr[1]/td["+str(position)+"]/span/label").click()
         driver.switch_to.window(driver.window_handles[1])
         time.sleep(0.25)
 
@@ -5018,7 +5060,8 @@ Login_List = [
     Login.Remember_me
     ]
 
-TopMenu_Main_List = [
+normal_List = [
+    #TopMenu_Main_List
     #TOPMENU.Badge,
     TOPMENU.Badge_Emergency,
     TOPMENU.Badge_Refer,
@@ -5030,22 +5073,19 @@ TopMenu_Main_List = [
     TOPMENU.new_message,
     TOPMENU.Message,
     TOPMENU.View_More_Messages,
-    TOPMENU.Setting
-    ]
+    TOPMENU.Setting,
 
-TopMenu_Report_List = [
+    #TopMenu_Report_List
     TOPMENU.Report_Search_Filter,
     TOPMENU.Report_Add,
     TOPMENU.Report_Modify,
-    TOPMENU.Report_delete
-    ]
-
-TopMenu_Profile_List = [
+    TOPMENU.Report_delete,
+        
+    #TopMenu_Profile_List
     TOPMENU.Profile_Worklist,
-    TOPMENU.Profile_Standard_Report
-    ]
-
-WorkList_List = [
+    TOPMENU.Profile_Standard_Report,
+        
+    #WorkList_List
     WORKLIST.HospitalList,
     WORKLIST.SearchFilter_JobStatus,
     WORKLIST.SearchFilter_JobDate,
@@ -5070,13 +5110,14 @@ def All_Scenario():
 
     for a in Login_List:
         try:
+            print("(",str(Login_List.index(a)+1) + " / " + str(len(Login_List)),")", round(((Login_List.index(a)+1)*100/int(len(Login_List))),1),"%")
             run_time = time.time()
             a()
         except:
             print("Exception on " + str(a))
             driver.get(WorklistUrl)
             if a not in failed_list:
-                failed_list.append(b)
+                failed_list.append(a)
             for i in range(0,3):
                 try:
                     a()
@@ -5092,35 +5133,27 @@ def All_Scenario():
     # 정상적인 계정으로 로그인
     signInOut.normal_login()
 
-    normal_List = [
-        TopMenu_Main_List,
-        TopMenu_Report_List,
-        TopMenu_Profile_List,
-        WorkList_List
-        ]
-
     for a in normal_List:
-        for b in a:
-            try:
-                run_time = time.time()
-                b()
-            except:
-                print("Exception on " + str(b))
-                driver.get(WorklistUrl)
-                if b not in failed_list:
-                    failed_list.append(b)
-                for i in range(0,3):
-                    try:
-                        b()
-                        failed_list.remove(b)
-                        break
-                    except:
-                        print("Retry Exception on " + str(b))
-                        driver.get(WorklistUrl)
-                        pass
-                break
-            finally:
-                print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
+        try:
+            print("(",str(normal_List.index(a)+1) + " / " + str(len(normal_List)),")", round(((normal_List.index(a)+1)*100/int(len(normal_List))),1),"%")
+            run_time = time.time()
+            a()
+        except:
+            print("Exception on " + str(a))
+            driver.get(WorklistUrl)
+            if a not in failed_list:
+                failed_list.append(a)
+            for i in range(0,3): 
+                try:
+                    a()
+                    failed_list.remove(a)
+                    break
+                except:
+                    print("Retry Exception on " + str(a))
+                    driver.get(WorklistUrl)
+                    pass
+        finally:
+            print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
 
     print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
     print("Failed List: ", failed_list)
