@@ -11122,6 +11122,7 @@ class Specialty:
             testlink.reportTCResult(1893, testPlanID, buildName, 'p', "InstitutionList_Search Test Passed")
 
     def InstitutionList_Add():
+        print("ITR-61: Configuration > Specialty > Institution list > Add")
         testResult = True
         Result_msg = "failed at "
         
@@ -11297,17 +11298,15 @@ class Specialty:
             testResult = False
             Result_Msg += "#5 "
 
-        print("InstitutionList_Add")
-        print(testResult)
-        print(Result_msg)
-
         # InstitutionList_Add결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1896, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(1896, testPlanID, buildName, 'p', "InstitutionList_Add Test Passed")
 
     def InstitutionList_Delete():
+        print("ITR-64: Configuration > Specialty > Institution list > Delete")
         testResult = True
         Result_msg = "failed at "
         
@@ -11434,17 +11433,15 @@ class Specialty:
                 testResult = False
                 Result_msg += "#4 "
 
-        print("InstitutionList_Delete")
-        print(testResult)
-        print(Result_msg)
-
         # InstitutionList_Delete결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1912, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(1912, testPlanID, buildName, 'p', "InstitutionList_Delete Test Passed")
 
     def InstitutionList_Modify():
+        print("ITR-65: Configuration > Specialty > Institution list > Modify")
         testResult = True
         Result_msg = "failed at "
         
@@ -11575,17 +11572,15 @@ class Specialty:
             testResult = False
             Result_msg += "#3 "
 
-        print("InstitutionList_Modify")
-        print(testResult)
-        print(Result_msg)
-
         # InstitutionList_Modify결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1918, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(1918, testPlanID, buildName, 'p', "InstitutionList_Modify Test Passed")
 
     def InstitutionList_Modify_Search():
+        print("ITR-68: Configuration > Specialty > Institution list > Modify - Search")
         testResult = True
         Result_msg = "failed at "
         
@@ -11820,11 +11815,8 @@ class Specialty:
         time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
         
-        print("InstitutionList_Modify_Search")
-        print(testResult)
-        print(Result_msg)
-
         # InstitutionList_Modify_Search결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1931, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -11833,6 +11825,7 @@ class Specialty:
 
 class DownloadControl:
     def User_SearchFilter_Class_Search(num):
+        print("ITR-69: Configuration > Download Control > User > Search Filter - Class")
         del driver.requests
         time.sleep(1)
 
@@ -11875,17 +11868,15 @@ class DownloadControl:
                 Result_msg += "#1 "
                 break
 
-        print("DownloadControl_User_SearchFilter_Class")
-        print(testResult)
-        print(Result_msg)
-
         # User_SearchFilter_Class결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1942, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(1942, testPlanID, buildName, 'p', "User_SearchFilter_Class Test Passed")
 
     def User_SearchFilter_Institution_Search(num):
+        print("ITR-70: Configuration > Download Control > User > Search Filter - Institution")
         del driver.requests
         time.sleep(1)
 
@@ -11948,11 +11939,8 @@ class DownloadControl:
                     Result_msg += "#1 "
                     break
 
-        print("User_SearchFilter_Institution")
-        print(testResult)
-        print(Result_msg)
-
         # User_SearchFilter_Institution결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1945, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -12064,6 +12052,7 @@ class DownloadControl:
         return check
 
     def User_SearchFilter_UserID():
+        print("ITR-71: Configuration > Download Control > User > Search Filter - UserID")
         testResult = True
         Result_msg = "failed at "
         
@@ -12083,17 +12072,15 @@ class DownloadControl:
             testResult = False
             Result_msg += "#1 "
 
-        print("User_SearchFilter_UserID")
-        print(testResult)
-        print(Result_msg)
-
         # User_SearchFilter_UserID결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1948, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(1948, testPlanID, buildName, 'p', "User_SearchFilter_UserID Test Passed")
 
     def User_SearchFilter_UserName():
+        print("ITR-72: Configuration > Download Control > User > Search Filter - User Name")
         testResult = True
         Result_msg = "failed at "
         
@@ -12113,48 +12100,46 @@ class DownloadControl:
             testResult = False
             Result_msg += "#1 "
 
-        print("User_SearchFilter_UserName")
-        print(testResult)
-        print(Result_msg)
-
         # User_SearchFilter_UserName결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1951, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(1951, testPlanID, buildName, 'p', "User_SearchFilter_UserName Test Passed")
 
     def User_Add_DeletionSetup(insti_position):
-            # Deletion
-            driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr > td:nth-child(1) > label").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn")))
-            # delete
-            driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn").click()
-            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
-            # yes
-            time.sleep(1)
-            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
-            # ok
-            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        # Deletion
+        driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr > td:nth-child(1) > label").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn")))
+        # delete
+        driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # yes
+        time.sleep(1)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
 
-            # Add
-            driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
-            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#download-contol-add-save-btn"), "Save"))
+        # Add
+        driver.find_element(By.CSS_SELECTOR, "#download-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#download-contol-add-save-btn"), "Save"))
 
-            # User right
-            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_user_chosen > a > span").click()
-            driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(wk_id_2)
-            driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(Keys.ENTER)
-            driver.find_element(By.CSS_SELECTOR, "#download-config-add-user-add-btn").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-user-remove-btn")))
+        # User right
+        driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_add_user_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(wk_id_2)
+        driver.find_element(By.CSS_SELECTOR, '#sel_available_download_control_add_user_chosen > div > div > input[type=text]').send_keys(Keys.ENTER)
+        driver.find_element(By.CSS_SELECTOR, "#download-config-add-user-add-btn").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-user-remove-btn")))
 
-            # Institution right 
-            driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-add-institution > option:nth-child("+str(insti_position)+")").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-add-btn")))
-            driver.find_element(By.CSS_SELECTOR, "#download-config-add-institution-add-btn").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-remove-btn")))
+        # Institution right 
+        driver.find_element(By.CSS_SELECTOR, "#sel-available-download-control-add-institution > option:nth-child("+str(insti_position)+")").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-add-btn")))
+        driver.find_element(By.CSS_SELECTOR, "#download-config-add-institution-add-btn").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-remove-btn")))
 
     def User_Add():
+        print("ITR-73: Configuration > Download Control > User > Add")
         testResult = True
         Result_msg = "failed at "
         #####request code, request name
@@ -12791,17 +12776,15 @@ class DownloadControl:
                 testResult = False
                 Result_msg += "#13 "
 
-        print("User_Add")
-        print(testResult)
-        print(Result_msg)
-
         # DownloadControl_User_Add결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1954, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(1954, testPlanID, buildName, 'p', "User_Add Test Passed")
 
     def User_Delete():
+        print("ITR-74: Configuration > Download Control > User > Delete")
         testResult = True
         Result_msg = "failed at "
         
@@ -12923,17 +12906,15 @@ class DownloadControl:
             testResult = False
             Result_msg += "#3 #4 "
 
-        print("User_Delete")
-        print(testResult)
-        print(Result_msg)
-
         # User_Delete결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1969, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(1969, testPlanID, buildName, 'p', "User_Delete Test Passed")
 
     def User_Modify():
+        print("ITR-75: Configuration > Download Control > User > Modify")
         testResult = True
         Result_msg = "failed at "
         #####request code, request name
@@ -13778,17 +13759,15 @@ class DownloadControl:
                     testResult= False
                     Reuslt_msg += "#12 "
        
-        print("User_Modify")
-        print(testResult)
-        print(Result_msg)
-
         # User_Modify결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1975, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(1975, testPlanID, buildName, 'p', "User_Modify Test Passed")
 
     def Institution_SearchFilter_Class_Search(num):
+        print("ITR-76: Configuration > Download Control > Institution > Search Filter - Class")
         del driver.requests
         time.sleep(1)
 
@@ -13838,17 +13817,15 @@ class DownloadControl:
                 Result_msg += "#1 "
                 break
 
-        print("Institution_SearchFilter_Class")
-        print(testResult)
-        print(Result_msg)
-
         # Institution_SearchFilter_Class결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1992, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(1992, testPlanID, buildName, 'p', "Institution_SearchFilter_Class Test Passed")
 
     def Institution_SearchFilter_Institution_Search(num):
+        print("ITR-77: Configuration > Download Control > Institution > Search Filter - Institution")
         del driver.requests
         time.sleep(1)
 
@@ -13912,11 +13889,8 @@ class DownloadControl:
                     Result_msg += "#1 "
                     break
 
-        print("Institution_SearchFilter_Institution")
-        print(testResult)
-        print(Result_msg)
-
         # Institution_SearchFilter_Institution결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1995, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -13924,6 +13898,7 @@ class DownloadControl:
 
     # target 1 = id / 2 = name
     def Institution_SearchFilter_Filter(target):
+        print("ITR-78: Configuration > Download Control > Institution > Search Filter - User ID")
         rnd_id = driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child(1) > td:nth-child("+str(target+1)+")").get_property("textContent")
         rnd_insti = driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child(1) > td.align-center.download-control-institution").get_property("innerHTML").split('<br>')[0]
         # User Management
@@ -14057,18 +14032,15 @@ class DownloadControl:
             testResult = False
             Result_msg += "#1 "
 
-
-        print("Institution_SearchFilter_UserID")
-        print(testResult)
-        print(Result_msg)
-
         # Institution_SearchFilter_UserID결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(1998, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(1998, testPlanID, buildName, 'p', "Institution_SearchFilter_UserID Test Passed")
 
     def Institution_SearchFilter_UserName():
+        print("ITR-79: Configuration > Download Control > Institution > Search Filter - User Name")
         testResult = True
         Result_msg = "failed at "
         
@@ -14088,45 +14060,43 @@ class DownloadControl:
             testResult = False
             Result_msg += "#1 "
 
-        print("Institution_SearchFilter_UserName")
-        print(testResult)
-        print(Result_msg)
-
         # Institution_SearchFilter_UserName결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2001, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2001, testPlanID, buildName, 'p', "Institution_SearchFilter_UserName Test Passed")
 
     def Institution_Add_DeletionSetup(insti_position):
-            # Deletion
-            driver.find_element(By.CSS_SELECTOR, "#download-list-byInst > tbody > tr:nth-child(1) > td:nth-child(1) > label").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div/div[1]/a[2]")))
-            # delete
-            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div/div[1]/a[2]").click()
-            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
-            # yes
-            time.sleep(1)
-            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
-            # ok
-            driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        print("ITR-80: Configuration > Download Control > Institution > Add")
+        # Deletion
+        driver.find_element(By.CSS_SELECTOR, "#download-list-byInst > tbody > tr:nth-child(1) > td:nth-child(1) > label").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div/div[1]/a[2]")))
+        # delete
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div/div[1]/a[2]").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # yes
+        time.sleep(1)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
 
-            # Add
-            driver.find_element(By.CSS_SELECTOR, "#download-list-byInst_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
-            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#byInst-download-contol-add-save-btn"), "Save"))
+        # Add
+        driver.find_element(By.CSS_SELECTOR, "#download-list-byInst_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#byInst-download-contol-add-save-btn"), "Save"))
 
-            # Institution right
-            driver.find_element(By.CSS_SELECTOR, "#byInst-sel-available-download-control-add-institution > option:nth-child("+str(insti_position)+")").click()
-            driver.find_element(By.CSS_SELECTOR, "#byInst-download-config-add-institution-add-btn").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#byInst-download-config-add-institution-remove-btn")))
+        # Institution right
+        driver.find_element(By.CSS_SELECTOR, "#byInst-sel-available-download-control-add-institution > option:nth-child("+str(insti_position)+")").click()
+        driver.find_element(By.CSS_SELECTOR, "#byInst-download-config-add-institution-add-btn").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#byInst-download-config-add-institution-remove-btn")))
 
-            # User right
-            driver.find_element(By.CSS_SELECTOR, "#byInst_sel_available_download_control_add_user_chosen > a").click()
-            driver.find_element(By.CSS_SELECTOR, "#byInst_sel_available_download_control_add_user_chosen > div > div > input[type=text]").send_keys(wk_id_2)
-            driver.find_element(By.CSS_SELECTOR, "#byInst_sel_available_download_control_add_user_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
-            driver.find_element(By.CSS_SELECTOR, "#byInst-download-config-add-user-add-btn").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#byInst-download-config-add-user-remove-btn")))
+        # User right
+        driver.find_element(By.CSS_SELECTOR, "#byInst_sel_available_download_control_add_user_chosen > a").click()
+        driver.find_element(By.CSS_SELECTOR, "#byInst_sel_available_download_control_add_user_chosen > div > div > input[type=text]").send_keys(wk_id_2)
+        driver.find_element(By.CSS_SELECTOR, "#byInst_sel_available_download_control_add_user_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        driver.find_element(By.CSS_SELECTOR, "#byInst-download-config-add-user-add-btn").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#byInst-download-config-add-user-remove-btn")))
 
     def Institution_Add():
         testResult = True
@@ -14784,17 +14754,15 @@ class DownloadControl:
                 testResult = False
                 Result_msg += "#13 "
 
-        print("Institution_Add")
-        print(testResult)
-        print(Result_msg)
-
         # Institution_Add결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2004, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2004, testPlanID, buildName, 'p', "Institution_Add Test Passed")
 
     def Institution_Delete():
+        print("ITR-81: Configuration > Download Control > Institution > Delete")
         testResult = True
         Result_msg = "failed at "
         
@@ -14928,17 +14896,15 @@ class DownloadControl:
             testResult = False
             Result_msg += "#3 #4 "
 
-        print("institution_delete")
-        print(testResult)
-        print(Result_msg)
-
         # institution_delete결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2019, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2019, testPlanID, buildName, 'p', "institution_delete Test Passed")
 
     def Institution_Modify():
+        print("ITR-82: Configuration > Download Control > Institution > Modify")
         testResult = True
         Result_msg = "failed at "
         #####request code, request name
@@ -15822,11 +15788,8 @@ class DownloadControl:
             #        testResult= False
             #        Reuslt_msg += "#12 "
 
-        print("Institution_Modify")
-        print(testResult)
-        print(Result_msg)
-
         # Institution_Modify결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2025, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -15834,6 +15797,7 @@ class DownloadControl:
 
 class Institution:
     def insti_idx_find(target):
+        print("ITR-83: Configuration > Institution > Search Filter > Institution Code")
         # Find
         request = driver.wait_for_request('.*/GetInstitutionsList.*')
         body = request.response.body.decode('utf-8')
@@ -15860,7 +15824,7 @@ class Institution:
 
         return idx
 
-    def SearchFilter():
+    def SearchFilter_Institution_Code():
         testResult = True
         Result_msg = "failed at "
         
@@ -15912,16 +15876,15 @@ class Institution:
                 Result_msg += "#1 "
                 break
 
-        print("SearchFilter_InstitutionCode")
-        print(testResult)
-        print(Result_msg)
-
         # SearchFilter_InstitutionCode결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2043, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2043, testPlanID, buildName, 'p', "SearchFilter_InstitutionCode Test Passed")
-
+    
+    def SearchFilter_Institution_Name():
+        print("ITR-84: Configuration > Institution > Search Filter > Institution Name")
         testResult = True
         Result_msg = "failed at "
 
@@ -15962,17 +15925,15 @@ class Institution:
                 Result_msg += "#1 "
                 break
 
-        print("SearchFilter_InstitutionName")
-        print(testResult)
-        print(Result_msg)
-
         # SearchFilter_InstitutionName결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2046, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2046, testPlanID, buildName, 'p', "SearchFilter_InstitutionName Test Passed")
 
     def Add():
+        print("ITR-85: Configuration > Institution > Add")
         testResult = True
         Result_msg = "failed at "
         
@@ -16169,11 +16130,8 @@ class Institution:
                 testResult = False
                 Result_msg += "#14 "
 
-        print("Institution_Add")
-        print(testResult)
-        print(Result_msg)
-
         # Institution_Add결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2049, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -16181,6 +16139,7 @@ class Institution:
 
     # Cloud_ITRTest
     def Delete():
+        print("ITR-86: Configuration > Institution > Delete")
         testResult = True
         Result_msg = "failed at "
         
@@ -16321,17 +16280,15 @@ class Institution:
                 testResult = False
                 Result_msg += "#4 "
 
-        print("Institution_Delete")
-        print(testResult)
-        print(Result_msg)
-
         # Institution_Delete결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2066, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2066, testPlanID, buildName, 'p', "Institution_Delete Test Passed")
 
     def Modify_ToWL(RM_num, RM, RDT_num, RDT):
+        print("ITR-87: Configuration > Institution > Modify")
         Result_msg = ""
         time.sleep(1)
 
@@ -16882,11 +16839,8 @@ class Institution:
                 testResult = False
                 Reulst_msg += "#12 "
 
-        print("Institution_Modify")
-        print(testResult)
-        print(Result_msg)
-
         # Institution_Modify결과 전송 ##
+        print("ITR-86: Configuration > Institution > Delete")
         if testResult == False:
             testlink.reportTCResult(2072, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -16897,6 +16851,7 @@ class Institution:
 # Add > GroupAdd > GroupModify > Modify > Delete
 class StandardReport:
     def GroupAdd():
+        print("ITR-89: Configuration > Standard Report > Group Add")
         testResult = True
         Result_msg = "failed at "
         
@@ -17054,17 +17009,15 @@ class StandardReport:
             testResult = False
             Result_msg += "#3 "
 
-        print("StandardReport_GroupAdd")
-        print(testResult)
-        print(Result_msg)
-
         # StandardReport_GroupAdd결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2091, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2091, testPlanID, buildName, 'p', "StandardReport_GroupAdd Test Passed")
 
     def Add():
+        print("ITR-90: Configuration > Standard Report > Add")
         testResult = True
         Result_msg = "failed at "
         
@@ -17228,17 +17181,15 @@ class StandardReport:
             testResult = False
             Result_msg += "#10 "
 
-        print("StandardReport_Add")
-        print(testResult)
-        print(Result_msg)
-
         # StandardReport_Add결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2096, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2096, testPlanID, buildName, 'p', "StandardReport_Add Test Passed")
 
     def Delete():
+        print("ITR-91: Configuration > Standard Report > Delete")
         testResult = True
         Result_msg = "failed at "
         
@@ -17377,11 +17328,8 @@ class StandardReport:
             testResult = False
             Result_msg += "#4 "
 
-        print("StandardReport_Delete")
-        print(testResult)
-        print(Result_msg)
-
         # StandardReport_Delete결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2108, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -17389,6 +17337,7 @@ class StandardReport:
 
     # ReportCode_Test Search
     def ReportSearch(total):
+        print("ITR-92: Configuration > Standard Report > Group Modify")
         num = 0
         for a in range(1, total+1):
             request = driver.wait_for_request('.*/GetStandardReportList.*')
@@ -17586,17 +17535,15 @@ class StandardReport:
             testResult = False
             Result_msg += "#4 "
 
-        print("StandardReport_GroupModify")
-        print(testResult)
-        print(Result_msg)
-
         # StandardReport_GroupModify결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2114, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2114, testPlanID, buildName, 'p', "StandardReport_GroupModify Test Passed")
 
     def Modify():
+        print("ITR-93: Configuration > Standard Report > Modify")
         testResult = True
         Result_msg = "failed at "
         
@@ -17776,11 +17723,8 @@ class StandardReport:
             testResult = False
             Result_msg += "#10 "
 
-        print("StandardReport_Modify")
-        print(testResult)
-        print(Result_msg)
-
         # StandardReport_Modify결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2120, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -17795,7 +17739,7 @@ class StandardReport:
 
 class MultiReadingCenterRule:
     def SearchFilter():
-        print("ITR-43: Statistics > Show entries")
+        print("ITR-94: Configuration > Multi Reading Center Rule > Search Filter")
         testResult = True
         Result_msg = "failed at "
         
@@ -17894,17 +17838,15 @@ class MultiReadingCenterRule:
                 Result_msg += "#3 "
                 break
 
-        print("MultiReadingCenterRule_SearchFilter")
-        print(testResult)
-        print(Result_msg)
-
         # MultiReadingCenterRule_SearchFilter결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2133, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2133, testPlanID, buildName, 'p', "MultiReadingCenterRule_SearchFilter Test Passed")
 
     def Add():
+        print("ITR-95: Configuration > Multi Reading Center Rule > Add")
         testResult = True
         Result_msg = "failed at "
         
@@ -18192,17 +18134,15 @@ class MultiReadingCenterRule:
             testResult = False
             Result_msg += "#11 "
  
-        print("MultiReadingCenterRule_Add")
-        print(testResult)
-        print(Result_msg)
-
         # MultiReadingCenterRule_Add결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2140, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2140, testPlanID, buildName, 'p', "MultiReadingCenterRule_Add Test Passed")
 
     def Delete():
+        print("ITR-96: Configuration > Multi Reading Center Rule > Delete")
         testResult = True
         Result_msg = "failed at "
         
@@ -18249,18 +18189,15 @@ class MultiReadingCenterRule:
             testResul = False
             Result_msg += "#1 "
 
-
-        print("MultiReadingCenterRule_Delete")
-        print(testResult)
-        print(Result_msg)
-
         # MultiReadingCenterRule_Delete결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2154, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2154, testPlanID, buildName, 'p', "MultiReadingCenterRule_Delete Test Passed")
 
     def Modify():
+        print("ITR-97: Configuration > Multi Reading Center Rule > Modify")
         testResult = True
         Result_msg = "failed at "
         
@@ -18512,11 +18449,8 @@ class MultiReadingCenterRule:
             testResult = False
             Result_msg += "#9 "
         
-        print("MultiReadingCenterRule_Modify")
-        print(testResult)
-        print(Result_msg)
-
         # MultiReadingCenterRule_Modify결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2157, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -18529,6 +18463,7 @@ class MultiReadingCenterRule:
 
 class Auditlog:
     def Auditlog_Search():
+        print("ITR-98: Audit Log > Search")
         testResult = True
         Result_msg = "failed at "
         
@@ -18563,17 +18498,15 @@ class Auditlog:
                 Result_msg += "#1 "
                 break
 
-        print("Auditlog_Search")
-        print(testResult)
-        print(Result_msg)
-
         # Auditlog_Search결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2169, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2169, testPlanID, buildName, 'p', "Auditlog_Search Test Passed")
 
     def Auditlog_Export():
+        print("ITR-99: Audit Log > Export")
         testResult = True
         Result_msg = "failed at "
         
@@ -18601,17 +18534,15 @@ class Auditlog:
             testResult = False
             Result_msg += "#1 "
 
-        print("Auditlog_Export")
-        print(testResult)
-        print(Result_msg)
-
         # Auditlog_Export결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2172, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2172, testPlanID, buildName, 'p', "Auditlog_Export Test Passed")
 
     def Auditlog_Showentries_fun(entries, num):
+        print("ITR-100: Audit Log > Show Entries")
         Result_msg = ""
 
         del driver.requests
@@ -18657,17 +18588,15 @@ class Auditlog:
         Result_msg += Auditlog.Auditlog_Showentries_fun(50, 2)
         Result_msg += Auditlog.Auditlog_Showentries_fun(100, 3)
 
-        print("Auditlog_Showentries")
-        print(testResult)
-        print(Result_msg)
-
         # Auditlog_Showentries결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2175, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2175, testPlanID, buildName, 'p', "Auditlog_Showentries Test Passed")
 
     def Auditlog_Sorting():
+        print("ITR-101: Audit Log > Sorting")
         testResult = True
         Result_msg = "failed at "
         
@@ -18717,17 +18646,15 @@ class Auditlog:
                 Result_msg += "#1 "
                 break
 
-        print("Auditlog_Sorting")
-        print(testResult)
-        print(Result_msg)
-
         # Auditlog_Sorting결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2180, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2180, testPlanID, buildName, 'p', "Auditlog_Sorting Test Passed")
 
     def Auditlog_Data():
+        print("ITR-102: Audit Log > Data")
         testResult = True
         Result_msg = "failed at "
         
@@ -18775,11 +18702,8 @@ class Auditlog:
                 Result_msg += "#1 "
                 break
 
-        print("Auditlog_Data")
-        print(testResult)
-        print(Result_msg)
-
         # Auditlog_Data결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2183, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -18787,6 +18711,7 @@ class Auditlog:
 
 class Notice:
     def NoticeList_NoticeEditBoard():
+        print("ITR-103: Notice > Notice list > Notice Edit Board")
         testResult = True
         Result_msg = "failed at "
         
@@ -19124,17 +19049,15 @@ class Notice:
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
             time.sleep(0.25)
 
-        print("NoticeList_NoticeEditBoard")
-        print(testResult)
-        print(Result_msg)
-
         # NoticeList_NoticeEditBoard결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2188, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2188, testPlanID, buildName, 'p', "NoticeList_NoticeEditBoard Test Passed")
 
     def NoticeList_Edit():
+        print("ITR-104: Notice > Notice list > Edit")
         testResult = True
         Result_msg = "failed at "
         
@@ -19270,17 +19193,15 @@ class Notice:
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
                 time.sleep(0.25)
 
-        print("NoticeList_Edit")
-        print(testResult)
-        print(Result_msg)
-
         # NoticeList_Edit결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2213, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2213, testPlanID, buildName, 'p', "NoticeList_Edit Test Passed")
 
     def NoticeList_Delete():
+        print("ITR-105: Notice > Notice list > Delete")
         testResult = True
         Result_msg = "failed at "
         
@@ -19314,17 +19235,15 @@ class Notice:
         except:
             pass
 
-        print("NoticeList_Delete")
-        print(testResult)
-        print(Result_msg)
-
         # NoticeList_Delete결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2224, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2224, testPlanID, buildName, 'p', "NoticeList_Delete Test Passed")
 
     def NoticeList_NoticeDisplay():
+        print("ITR-106: Notice > Notice list > Display")
         testResult = True
         Result_msg = "failed at "
         
@@ -19364,12 +19283,8 @@ class Notice:
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
         time.sleep(0.25)
 
-
-        print("NoticeList_NoticeDisplay")
-        print(testResult)
-        print(Result_msg)
-
         # NoticeList_NoticeDisplay결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2227, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -19377,6 +19292,7 @@ class Notice:
 
 class DirectMessage:
     def DirectMessageBox_ViewSort(asc):
+        print("ITR-107: Direct Message > Direct Message Box > Search")
         #del driver.requests - need
         testResult = True
         if asc == True:
@@ -19512,17 +19428,15 @@ class DirectMessage:
                 "#4" in Result_msg ):
                 break
 
-        print("DirectMessageBox_Search")
-        print(testResult)
-        print(Result_msg)
-
         # DirectMessageBox_Search결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2232, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2232, testPlanID, buildName, 'p', "DirectMessageBox_Search Test Passed")
 
     def DirectMessageBox_ShowEntries_fun(entries, num):
+        print("ITR-108: Direct Message > Direct Message Box > Show Entries")
         Result_msg = ""
 
         del driver.requests
@@ -19581,17 +19495,15 @@ class DirectMessage:
             testResult = False
             Result_msg += temp
 
-        print("DirectMessageBox_ShowEntries")
-        print(testResult)
-        print(Result_msg)
-
         # DirectMessageBox_ShowEntries결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2238, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2238, testPlanID, buildName, 'p', "DirectMessageBox_ShowEntries Test Passed")
 
     def DirectMessageBox_WNSort(length, asc):
+        print("ITR-109: Direct Message > Direct Message Box > Sorting")
         testResult = True
         sender = []
 
@@ -19710,17 +19622,15 @@ class DirectMessage:
                 testResult = False
                 Result_msg += "#3 "
 
-        print("DirectMessageBox_Sorting")
-        print(testResult)
-        print(Result_msg)
-
         # DirectMessageBox_Sorting결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2245, testPlanID, buildName, 'p', "DirectMessageBox_Sorting Test Passed")
    
     def DirectMessageBox_Badge():
+        print("ITR-110: Direct Message > Direct Message Box > Badge")
         testResult = True
         Result_msg = "failed at "
         
@@ -19764,17 +19674,15 @@ class DirectMessage:
             testResult = False
             Result_msg += "#1 "
             
-        print("DirectMessageBox_Badge")
-        print(testResult)
-        print(Result_msg)
-
         # DirectMessageBox_Badge결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2250, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2250, testPlanID, buildName, 'p', "DirectMessageBox_Badge Test Passed")
 
     def DirectMessageBox_Message():
+        print("ITR-111: Direct Message > Direct Message Box > Message")
         testResult = True
         Result_msg = "failed at "
         
@@ -19807,11 +19715,8 @@ class DirectMessage:
             testResult = False
             Result_msg += "#1 "
         
-        print("DirectMessageBox_Message")
-        print(testResult)
-        print(Result_msg)
-
         # DirectMessageBox_Message결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2253, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -19819,6 +19724,7 @@ class DirectMessage:
 
     # search = Institution, Center, Reporter
     def NewDirectMessage_Search_fun(search, search_target):
+        print("ITR-112: Direct Message > Direct Message Box > Institution - Search")
         testResult = True
         Result_msg = ""
         driver.wait_for_request('.*/GetAccess'+search+'List*')
@@ -19947,17 +19853,15 @@ class DirectMessage:
             testResult = False
             Result_msg += temp
 
-        print("NewDirectMessage_Institution_Search")
-        print(testResult)
-        print(Result_msg)
-
         # NewDirectMessage_Institution_Search결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2256, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2256, testPlanID, buildName, 'p', "NewDirectMessage_Institution_Search Test Passed")
 
     def NewDirectMessage_Institution_Message():
+        print("ITR-113: Direct Message > Direct Message Box > Institution - Message")
         testResult = True
         Result_msg = "failed at "
         
@@ -19978,17 +19882,15 @@ class DirectMessage:
             testResult = False
             Result_msg += temp
 
-        print("NewDirectMessage_Institution_Message")
-        print(testResult)
-        print(Result_msg)
-
         # NewDirectMessage_Institution_Message결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2261, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2261, testPlanID, buildName, 'p', "NewDirectMessage_Institution_Message Test Passed")
 
     def NewDirectMessage_Center_Search():
+        print("ITR-114: Direct Message > Direct Message Box > Center - Search")
         testResult = True
         Result_msg = "failed at "
         
@@ -20009,17 +19911,15 @@ class DirectMessage:
             testResult = False
             Result_msg += temp
 
-        print("NewDirectMessage_Center_Search")
-        print(testResult)
-        print(Result_msg)
-
         # NewDirectMessage_Center_Search결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2266, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2266, testPlanID, buildName, 'p', "NewDirectMessage_Center_Search Test Passed")
 
     def NewDirectMessage_Center_Message():
+        print("ITR-115: Direct Message > Direct Message Box > Center - Message")
         testResult = True
         Result_msg = "failed at "
         
@@ -20040,11 +19940,8 @@ class DirectMessage:
             testResult = False
             Result_msg += temp
 
-        print("NewDirectMessage_Center_Message")
-        print(testResult)
-        print(Result_msg)
-
         # NewDirectMessage_Center_Message결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2271, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -20052,6 +19949,7 @@ class DirectMessage:
 
 
     def NewDirectMessage_Reporter_Search():
+        print("ITR-116: Direct Message > Direct Message Box > Reporter - Search")
         testResult = True
         Result_msg = "failed at "
         
@@ -20072,17 +19970,15 @@ class DirectMessage:
             testResult = False
             Result_msg += temp
 
-        print("NewDirectMessage_Reporter_Search")
-        print(testResult)
-        print(Result_msg)
-
         # NewDirectMessage_Reporter_Search결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2276, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2276, testPlanID, buildName, 'p', "NewDirectMessage_Reporter_Search Test Passed")
 
     def NewDirectMessage_Reporter_Message():
+        print("ITR-117: Direct Message > Direct Message Box > Reporter - Message")
         testResult = True
         Result_msg = "failed at "
         
@@ -20103,17 +19999,15 @@ class DirectMessage:
             testResult = False
             Result_msg += temp
 
-        print("NewDirectMessage_Reporter_Message")
-        print(testResult)
-        print(Result_msg)
-
         # NewDirectMessage_Reporter_Message결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2281, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2281, testPlanID, buildName, 'p', "NewDirectMessage_Reporter_Message Test Passed")
 
     def DirectMessageSetting_Search_fun(auth, search_target):
+        print("ITR-118: Direct Message > Direct Message Setting > Search")
         Result_msg = ""
 
         if auth == "unAuth":
@@ -20169,17 +20063,15 @@ class DirectMessage:
             testResult = False
             Result_msg += temp
 
-        print("DirectMessageSetting_Search")
-        print(testResult)
-        print(Result_msg)
-
         # DirectMessageSetting_Search결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2287, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2287, testPlanID, buildName, 'p', "DirectMessageSetting_Search Test Passed")
 
     def DirectMessageSetting_Authorize():
+        print("ITR-119: Direct Message > Direct Message Setting > Authorize")
         testResult = True
         Result_msg = "failed at "
         
@@ -20306,17 +20198,15 @@ class DirectMessage:
             testResult = False
             Result_msg += "#4 "
 
-        print("DirectMessageSetting_Authorize")
-        print(testResult)
-        print(Result_msg)
-
         # DirectMessageSetting_Authorize결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2293, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2293, testPlanID, buildName, 'p', "DirectMessageSetting_Authorize Test Passed")
 
     def DirectMessageSetting_Selection():
+        print("ITR-120: Direct Message > Direct Message Setting > Selection")
         testResult = True
         Result_msg = "failed at "
         
@@ -20355,17 +20245,12 @@ class DirectMessage:
             tesTresult = False
             Result_msg += "#3 "
 
-        print("DirectMessageSetting_Selection")
-        print(testResult)
-        print(Result_msg)
-
         # DirectMessageSetting_Selection결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2299, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2299, testPlanID, buildName, 'p', "DirectMessageSetting_Selection Test Passed")
-
-UserManagement.SearchFilter_Class()
 
 failed_test_list = []
 full_test = [
