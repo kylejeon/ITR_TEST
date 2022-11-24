@@ -101,6 +101,7 @@ class windowSize:
 
 class Login:
     def Log_InOut():
+        print("ITR-121: Log In/Out > Log In/Out")
         testResult = True
         Result_msg = "failed at "
 
@@ -132,11 +133,8 @@ class Login:
             testResult = False
             Result_msg+="#4 "
 
-        print("Log_InOut")
-        print(testResult)
-        print(Result_msg)
-
         # sign_InOut 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2309, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -145,7 +143,8 @@ class Login:
     def Remember_me():
         testResult = True
         Result_msg = "failed at "
-
+        print("ITR-122: Remember Me > Remember Me")
+        
         # Remember Me 클릭 후, 정상적인 계정으로 로그인 한다.
         driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[4]/div[1]/label").click()
         signInOut.normal_login()
@@ -159,11 +158,8 @@ class Login:
             testResult = False
             Result_msg+="#1 "
 
-        print("Remember_me")
-        print(testResult)
-        print(Result_msg)
-
         # Remember_me 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2316, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -173,7 +169,7 @@ class TOPMENU:
     def Badge_Emergency():
         testResult = True
         Result_msg = "failed at "
-
+        print("ITR-127: Badege > Emergency")
         # 캡처 초기화
         del driver.requests
         # badge 클릭
@@ -203,11 +199,8 @@ class TOPMENU:
             testResult = False
             Result_msg+="#1 "
 
-        print("Badge_Emergency")
-        print(testResult)
-        print(Result_msg)
-
         # Badge_Emergency 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2351, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -216,7 +209,7 @@ class TOPMENU:
     def Badge_Refer():
         testResult = True
         Result_msg = "failed at "
-
+        print("ITR-128: Badge > Refer")
         # 캡처 초기화
         del driver.requests
         # badge 클릭
@@ -247,11 +240,8 @@ class TOPMENU:
             testResult = False
             Result_msg+="#1 "
 
-        print("Badge_Refer")
-        print(testResult)
-        print(Result_msg)
-
         # Badge_Refer 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2354, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -260,6 +250,7 @@ class TOPMENU:
     def Badge_AutoRefer():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-129: Badge > Auto Refer")
 
         # 캡처 초기화
         del driver.requests
@@ -293,11 +284,8 @@ class TOPMENU:
             testResult = False
             Result_msg+="#1 "
 
-        print("Badge_AutoRefer")
-        print(testResult)
-        print(Result_msg)
-
         # Badge_AutoRefer 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2357, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -306,6 +294,7 @@ class TOPMENU:
     def Badge_Schedule():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-130: Badge > Schedule")
 
         # 캡처 초기화
         del driver.requests
@@ -338,11 +327,8 @@ class TOPMENU:
             testResult = False
             Result_msg+="#1 "
 
-        print("Badge_Schedule")
-        print(testResult)
-        print(Result_msg)
-
         # Badge_Schedule 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2360, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -351,6 +337,7 @@ class TOPMENU:
     def Badge_Today():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-131: Badge > Today")
 
         # 캡처 초기화
         del driver.requests
@@ -382,11 +369,8 @@ class TOPMENU:
             testResult = False
             Result_msg+="#1 "
 
-        print("Badge_Today")
-        print(testResult)
-        print(Result_msg)
-
         # Badge_Today 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2363, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -402,6 +386,7 @@ class TOPMENU:
     def Home():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-132: Top Menu > Home")
 
         ReFresh()
         
@@ -459,11 +444,8 @@ class TOPMENU:
             testResult = False
             Result_msg+="#1 "
 
-        print("Home")
-        print(testResult)
-        print(Result_msg)
-
         # Home 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2367, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -472,7 +454,7 @@ class TOPMENU:
     def new_message():
         testResult = True
         Result_msg = "failed at "
-
+        print("ITR-133: Top Menu > Direct Message > New Message")
         ReFresh()
 
         # READ_FLAG T or F 확인 (파란색 회색 확인) 및 읽지 않은 메시지 수 확인 #2
@@ -863,11 +845,8 @@ class TOPMENU:
                 testResult = False
                 Result_msg+="#11 "
 
-        print("new_message")
-        print(testResult)
-        print(Result_msg)
-
         # new_message 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2371, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -876,7 +855,8 @@ class TOPMENU:
     def Message():
         testResult = True
         Result_msg = "failed at "
-        
+        print("ITR-134: Top Menu > Direct Message > Message")
+
         ReFresh()
 
         # add msg
@@ -979,11 +959,8 @@ class TOPMENU:
             Result_msg+="#4 "
         driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[3]/button").click()
 
-        print("Message")
-        print(testResult)
-        print(Result_msg)
-
         # message 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2384, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -992,6 +969,7 @@ class TOPMENU:
     def View_More_Messages():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-135: Top Menu > Direct Message > View More Messages")
 
         ReFresh()
 
@@ -1158,11 +1136,8 @@ class TOPMENU:
             testResult = False
             Result_msg+="#3 "
 
-        print("View_More_Message")
-        print(testResult)
-        print(Result_msg)
-
         # View_More_Message 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2390, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -1171,6 +1146,7 @@ class TOPMENU:
     def Setting():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-137: Top Menu > Setting > Setting")
 
         ReFresh()
 
@@ -1183,11 +1159,8 @@ class TOPMENU:
             testResult = False
             Result_msg+="#1 "
 
-        print("Setting")
-        print(testResult)
-        print(Result_msg)
-
         # Setting 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2404, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -1196,6 +1169,7 @@ class TOPMENU:
     def Report_Search_Filter():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-138: Top Menu > Setting > Standard Report - Search Filter")
 
         ReFresh()
 
@@ -1377,11 +1351,8 @@ class TOPMENU:
                     testResult = False
                     Result_msg+="#6 "
 
-        print("Report_Search_Filter")
-        print(testResult)
-        print(Result_msg)
-
         # Report_Search_Filter 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2407, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -1390,6 +1361,7 @@ class TOPMENU:
     def Report_Add():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-219: Top Menu > Setting > Standard Report - Add")
 
         ReFresh()
         driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[7]/a/span").click()
@@ -1587,11 +1559,8 @@ class TOPMENU:
             # 탭 전환
             driver.switch_to.window(driver.window_handles[0])
 
-        print("Report_Add")
-        print(testResult)
-        print(Result_msg)
-
         # Report_Add 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2870, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -1600,6 +1569,7 @@ class TOPMENU:
     def Report_Modify():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-139: Top Menu > Setting > Standard Report - Modify")
 
         ReFresh()
 
@@ -1761,11 +1731,8 @@ class TOPMENU:
                 testResult = False
                 Result_msg+="#10 "
 
-        print("Report_Modify")
-        print(testResult)
-        print(Result_msg)
-
         # Report_Modify 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2416, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -1774,6 +1741,7 @@ class TOPMENU:
     def Report_delete():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-140: Top Menu > Setting > Standard Report - Delete")
 
         # 정상적인 계정으로 로그인
         ReFresh()
@@ -1840,11 +1808,8 @@ class TOPMENU:
             testResult = False
             Result_msg+="#1 "
 
-        print("Report_delete")
-        print(testResult)
-        print(Result_msg)
-
         # Report_delete 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2428, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -1866,6 +1831,7 @@ class TOPMENU:
     def Profile_Worklist():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-141: Top Menu > Setting > User Profile - Worklist")
 
         # 정상적인 계정으로 로그인
         ReFresh()
@@ -2119,11 +2085,8 @@ class TOPMENU:
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
         time.sleep(0.5)
 
-        print("Profile_Worklist")
-        print(testResult)
-        print(Result_msg)
-
         # Profile_Worklist 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2431, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -2132,6 +2095,7 @@ class TOPMENU:
     def Profile_Standard_Report():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-143: Top Menu > Setting > User Profile - Standard Report")
 
         ReFresh()
 
@@ -2230,11 +2194,8 @@ class TOPMENU:
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
 
-        print("Profile_Standard_Report")
-        print(testResult)
-        print(Result_msg)
-
         # Profile_Standard_Report 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2444, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -2267,7 +2228,7 @@ class WORKLIST:
     def HospitalList():
         testResult = True
         Result_msg = "failed at "
-
+        print("ITR-151: Home > Hospital List")
         ReFresh()
 
         # Dropbox & View All Hospital List #1 & 4
@@ -2537,11 +2498,8 @@ class WORKLIST:
             testResult = False
             Result_msg+="#6 "
 
-        print("HospitalList")
-        print(testResult)
-        print(Result_msg)
-
         # HospitalList 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2506, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -2550,6 +2508,7 @@ class WORKLIST:
     def SearchFilter_JobStatus_Search(job_status_position, target, num):
         testResult = True
         Result_msg = ''
+
         time.sleep(0.3)
         request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
         time.sleep(0.3)
@@ -2585,6 +2544,7 @@ class WORKLIST:
     def SearchFilter_JobStatus():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-159: Home > Search Filter > Job Status")
 
         ReFresh()
 
@@ -2747,11 +2707,8 @@ class WORKLIST:
         driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
         Result_msg+=WORKLIST.SearchFilter_JobStatus_Search(job_status_position,"DiscardCompleted", "11")
 
-        print("SearchFilter_JobStatus")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_JobStatus 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2582, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -2886,7 +2843,7 @@ class WORKLIST:
     def SearchFilter_JobDate():
         testResult = True
         Result_msg = "failed at "
-
+        print("ITR-160: Home > Search Filter > Job Date")
         ReFresh()
 
         # filter hide check
@@ -2897,11 +2854,8 @@ class WORKLIST:
         if Result_msg != "failed at ":
             testResult = False
 
-        print("SearchFilter_JobDate")
-        print(testResult)
-        print(Result_msg)
-
         # SearchFilter_JobDate 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2595, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3054,6 +3008,8 @@ class WORKLIST:
         # Department
         testResult = True
         Result_msg = "failed at "
+        print("ITR-162: Home > Search Filter > Department")
+
         particular = ""
         wk_index_num = WORKLIST.SearchFilter_Etc_setting("19","Department")
         choice = ""
@@ -3066,11 +3022,8 @@ class WORKLIST:
             testResult = False
             Result_msg += "#1 "
 
-        print("SearchFilter_Department")
-        print(testResult)
-        print(Result_msg)
-
         # SearchFilter_Department 결과 전송
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2605, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3079,6 +3032,8 @@ class WORKLIST:
         # Modality ##
         testResult = True
         Result_msg = "failed at "
+        print("ITR-163: Home > Search Filter > Modality")
+
         particular = ""
         wk_index_num = WORKLIST.SearchFilter_Etc_setting("9","Mod") ##
         choice = ""
@@ -3091,11 +3046,8 @@ class WORKLIST:
             testResult = False
             Result_msg += "#1 "
 
-        print("SearchFilter_Modality")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_Modality 결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2608, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3104,6 +3056,8 @@ class WORKLIST:
         # Bodypart ##
         testResult = True
         Result_msg = "failed at "
+        print("ITR-164: Home > Search Filter > Bodypart")
+
         particular = ""
         wk_index_num = WORKLIST.SearchFilter_Etc_setting("16","Bodypart") ##
         choice = ""
@@ -3116,11 +3070,8 @@ class WORKLIST:
             testResult = False
             Result_msg += "#1 "
 
-        print("SearchFilter_Bodypart")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_Bodypart 결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2611, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3129,6 +3080,8 @@ class WORKLIST:
         # Gender ##
         testResult = True
         Result_msg = "failed at "
+        print("ITR-165: Home > Search Filter > Gender")
+
         particular = "Gender"
         wk_index_num = WORKLIST.SearchFilter_Etc_setting("17","Gender/Age") ##
         choice = "F"
@@ -3138,11 +3091,8 @@ class WORKLIST:
             testResult = False
             Result_msg += "#1 "
 
-        print("SearchFilter_Gender")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_Gender 결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2614, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3151,6 +3101,8 @@ class WORKLIST:
         # PatientID ##
         testResult = True
         Result_msg = "failed at "
+        print("ITR-167: Home > Search Filter > Patient ID")
+
         particular = ""
         wk_index_num = WORKLIST.SearchFilter_Etc_setting("8","P.ID") ##
         choice = ""
@@ -3163,11 +3115,8 @@ class WORKLIST:
             testResult = False
             Result_msg += "#1 "
 
-        print("SearchFilter_PatientID")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_PatientID 결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2624, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3176,6 +3125,8 @@ class WORKLIST:
         # PatientName ##
         testResult = True
         Result_msg = "failed at "
+        print("ITR-168: Home > Search Filter > Patient Name")
+
         particular = "PatientName&"
         wk_index_num = WORKLIST.SearchFilter_Etc_setting("7","P.Name") ##
         choice = ""
@@ -3189,11 +3140,8 @@ class WORKLIST:
             testResult = False
             Result_msg += "#1 "
 
-        print("SearchFilter_PatientName")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_PatientName 결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2627, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3202,6 +3150,8 @@ class WORKLIST:
         # PatientAge ##
         testResult = True
         Result_msg = "failed at "
+        print("ITR-169: Home > Search Filter > Patient Age")
+
         particular = ""
         wk_index_num = WORKLIST.SearchFilter_Etc_setting("17","Gender/Age") ##
         choice = ""
@@ -3217,11 +3167,8 @@ class WORKLIST:
             testResult = False
             Result_msg += "#1 "
 
-        print("SearchFilter_PatientAge")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_PatientAge 결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2630, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3230,6 +3177,8 @@ class WORKLIST:
         # ImageCount ##
         testResult = True
         Result_msg = "failed at "
+        print("ITR-170: Home > Search Filter > Image Count")
+
         particular = ""
         wk_index_num = WORKLIST.SearchFilter_Etc_setting("12","I.CNT") ##
         choice = ""
@@ -3242,11 +3191,8 @@ class WORKLIST:
             testResult = False
             Result_msg += "#1 "
 
-        print("SearchFilter_ImageCount")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_ImageCount 결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2633, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3255,6 +3201,7 @@ class WORKLIST:
         # StudyDesc ##
         testResult = True
         Result_msg = "failed at "
+        print("ITR-171: Home > Search Filter > Study Desc")
         particular = ""
         wk_index_num = WORKLIST.SearchFilter_Etc_setting("20","Study Desc") ##
         choice = ""
@@ -3267,19 +3214,17 @@ class WORKLIST:
             testResult = False
             Result_msg += "#1 "
 
-        print("SearchFilter_StudyDesc")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_StudyDesc 결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2624, testPlanID, buildName, 'f', Result_msg)            
+            testlink.reportTCResult(2636, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2624, testPlanID, buildName, 'p', "SearchFilter_StudyDesc Test Passed")
+            testlink.reportTCResult(2636, testPlanID, buildName, 'p', "SearchFilter_StudyDesc Test Passed")
 
         # NotRefered R인 경우 확인 필요##
         testResult = True
         Result_msg = "failed at "
+        print("ITR-172: Home > Search Filter > Not Refered")
         wk_index_num = WORKLIST.SearchFilter_Etc_setting("2","R") ##
         element = driver.find_element(By.CSS_SELECTOR, "#hospital_list > button:nth-child(1)")
         driver.execute_script("arguments[0].click();", element)
@@ -3328,11 +3273,8 @@ class WORKLIST:
                 driver.execute_script("arguments[0].click();", element)
                 time.sleep(0.3)
 
-        print("SearchFilter_NotRefered")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_NotRefered 결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2639, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3341,6 +3283,8 @@ class WORKLIST:
         # SearchFilter_Clear
         testResult = True
         Result_msg = "failed at "
+        print("ITR-173: Home > Search Filter > Clear")
+
         # Clear
         driver.find_element(By.CSS_SELECTOR, "#clear_searchfilter > span").click()
         
@@ -3350,11 +3294,8 @@ class WORKLIST:
             testResult = False
             Result_msg += "#1 "
 
-        print("SearchFilter_Clear")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_Clear 결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2642, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3363,6 +3304,7 @@ class WORKLIST:
         # SearchFilter_SplitBar
         testResult = True
         Result_msg = "failed at "
+        print("ITR-174: Home > Search Filter > Split Bar")
 
         driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").click()
         time.sleep(0.25)
@@ -3376,11 +3318,8 @@ class WORKLIST:
             testResult = False
             Result_msg += "#1 "
 
-        print("SearchFilter_SplitBar")
-        print(testResult)
-        print(Result_msg)
-        
         # SearchFilter_SplitBar 결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2645, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3389,6 +3328,7 @@ class WORKLIST:
     def SearchFilter_ScheduleDate():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-166: Home > Search Filter > Schedule Date")
 
         ReFresh()
 
@@ -3400,11 +3340,8 @@ class WORKLIST:
         if Result_msg != "failed at ":
             testResult = False
 
-        print("SearchFilter_ScheduleDate")
-        print(testResult)
-        print(Result_msg)
-
         # SearchFilter_ScheduleDate결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2617, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -3413,6 +3350,7 @@ class WORKLIST:
     def SearchFilter_Shortcut():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-175: Home > Search Filter > Short cut")
 
         ReFresh()
 
@@ -3719,19 +3657,17 @@ class WORKLIST:
                         Result_msg += "#14 "
                         break
 
-        print("SearchFilter_Shortcut")
-        print(testResult)
-        print(Result_msg)
-
         # SearchFilter_Shortcut결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2642, testPlanID, buildName, 'f', Result_msg)            
+            testlink.reportTCResult(2649, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2642, testPlanID, buildName, 'p', "SearchFilter_Shortcut Test Passed")
+            testlink.reportTCResult(2649, testPlanID, buildName, 'p', "SearchFilter_Shortcut Test Passed")
 
     def Columns():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-154: Home > Columns")
 
         ReFresh()
 
@@ -3909,11 +3845,8 @@ class WORKLIST:
             driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[1]/a").click()
             driver.implicitly_wait(5)
 
-        print("Columns")
-        print(testResult)
-        print(Result_msg)
-
         # Columns결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2528, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -4018,6 +3951,7 @@ class WORKLIST:
     def Sortby():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-156: Home > Sort by")
 
         ReFresh()
 
@@ -4081,11 +4015,8 @@ class WORKLIST:
 
         WORKLIST.option_alloff_after(ai_origin, origin_filter)
 
-        print("Sortby")
-        print(testResult)
-        print(Result_msg)
-
         # Sortby결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2542, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -4100,6 +4031,7 @@ class WORKLIST:
     def Work_list():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-157: Home > Worklist")
 
         ReFresh()
 
@@ -4362,11 +4294,8 @@ class WORKLIST:
 
         WORKLIST.option_alloff_after(ai_origin, origin_filter)
 
-        print("Work_list")
-        print(testResult)
-        print(Result_msg)
-
         # Work_list결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2545, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -4375,6 +4304,7 @@ class WORKLIST:
     def JobReport():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-176: Home > Job Report > Job Report")
 
         ReFresh()
 
@@ -4450,12 +4380,9 @@ class WORKLIST:
                     except:
                         testResult = False
                         Result_msg += "#1 "
-                       
-        print("JobReport")
-        print(testResult)
-        print(Result_msg)
 
         # JobReport결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2665, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -4464,6 +4391,7 @@ class WORKLIST:
     def  JobReport_ReadingHistory():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-177: Home > Job Report > Reading History")
 
         ReFresh()
         time.sleep(0.3)
@@ -4721,11 +4649,8 @@ class WORKLIST:
             driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(5) > label").click()
             driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
 
-        print("JobReport_ReadingHistory")
-        print(testResult)
-        print(Result_msg)
-
         # JobReport_ReadingHistory결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2670, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -4848,6 +4773,7 @@ class WORKLIST:
     def JobReport_ReportSettings():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-178: Home > Job Report > Report Settings")
 
         ReFresh()
 
@@ -5035,11 +4961,8 @@ class WORKLIST:
             driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(5) > label").click()
             driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
 
-        print("JobReport_ReportSettings")
-        print(testResult)
-        print(Result_msg)
-
         # JobReport_ReportSettings결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2675, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -5048,6 +4971,7 @@ class WORKLIST:
     def Related_Exam():
         testResult = True
         Result_msg = "failed at "
+        print("ITR-158: Home > Related Exam List")
 
         ReFresh()
 
@@ -5081,12 +5005,9 @@ class WORKLIST:
                      except:
                          testResult = False
                          Result_msg += "#1 "
-                         
-        print("Related_Exam")
-        print(testResult)
-        print(Result_msg)
 
         # Related_Exam결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             testlink.reportTCResult(2578, testPlanID, buildName, 'f', Result_msg)            
         else:
