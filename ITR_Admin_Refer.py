@@ -24,8 +24,8 @@ class Refer:
         reason = list() 
 
         # SubAdmin 로그인
-        # ITR_Admin_Login.signInOut.admin_sign_out()
-        # time.sleep(2)
+        ITR_Admin_Login.signInOut.admin_sign_out()
+        time.sleep(2)
         ITR_Admin_Login.signInOut.subadmin_sign_in()
         time.sleep(2)
 
@@ -3750,5 +3750,3 @@ class Search_filter:
             testlink.reportTCResult(1651, testPlanID, buildName, 'f', result)
         else:
             testlink.reportTCResult(1651, testPlanID, buildName, 'p', "Short cut Passed")
-
-Refer.Hospital_List()
