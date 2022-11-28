@@ -7,9 +7,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
 import time
 import json
-from selenium.webdriver.support.ui import Select
 import math
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -381,9 +381,10 @@ class Refer:
         print("ITR-7: Refer > Hospital List")
         testResult = ''
         reason = list() 
-
+        signInOut.admin_sign_in()
         # Refer 탭 클릭
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        driver.refresh()
         time.sleep(1)
 
         # 1 steps start! : 모든 병원의 badge count와 job list의 결과가 일치하는지 확인
@@ -461,6 +462,7 @@ class Refer:
                     reason.append("Step1 - Refer count isn't valid")
 
                 # 요청 결과 삭제
+                time.sleep(1)
                 del driver.requests
                 
                 # All Assigned List의 Showing entries 값 저장
@@ -513,7 +515,9 @@ class Refer:
 
         # 2 steps start! : 병원을 선택하면 표시되는 Reporter가 해당 병원의 소속된 Reporter 인지 확인
         # Refer 화면 새로고침
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        time.sleep(1)
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        driver.refresh()
 
         # Hospital list 저장
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -585,7 +589,9 @@ class Refer:
                     reason.append("2 steps failed")
                 
                 # Refer 탭 클릭
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+                # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+                driver.find_element(By.XPATH, "/html/body/nav/div/div[1]/a[2]").click()
+                # driver.refresh()
                 n = n + 1
         
         # 3 steps start! : 병원 리스트 > Reporter 클릭 시, 표시되는 modality job count가 job list와 일치하는지 확인
@@ -670,8 +676,8 @@ class Refer:
                     m = m + 1
                 n = n + 1
                 
-                # Refer 탭 클릭
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+                # 새로고침
+                driver.refresh()
                 
         # 4 steps start! : View All Institution List 체크 시, 표시되는 병원이 올바른 것인지 확인
         # Subadmin 계정으로 로그인
@@ -719,7 +725,9 @@ class Refer:
         # Refer 탭 클릭
         time.sleep(1)
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[1]/a[2]").click()
+        # driver.refresh()
         
         # # View All Instituion List 체크
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[2]/label/span").click()
@@ -909,7 +917,8 @@ class Refer:
 
                     # Refer 탭 클릭
                     time.sleep(1)
-                    driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+                    # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+                    driver.refresh()
 
                     # 병원 선택
                     time.sleep(2)
@@ -924,8 +933,8 @@ class Refer:
                     reason.append("7 steps failed")
                 n = n + 1
 
-                # Refer 탭 클릭
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+                # 새로고침
+                driver.refresh()
 
         # 8 steps start! : 선택한 Reporter의 Job list가 표시되는지 확인
         # Hospital list 저장
@@ -979,7 +988,8 @@ class Refer:
                     m = m + 1
 
                 # Refer 탭 클릭
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+                # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+                driver.refresh()
                 n = n + 1
 
         # Hospital_List 결과 전송
@@ -4042,6 +4052,7 @@ class Worklist:
         testResult = ''
         reason = list()
 
+        
         # 새로고침
         driver.refresh()
 
@@ -4136,6 +4147,7 @@ class Worklist:
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[4]/a/label").click()
 
             # All Assigned List 탭 클릭
+            time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
 
             # All Assigned List의 Job count 저장
@@ -19351,7 +19363,10 @@ class DirectMessage:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        # Common.ReFresh()
+        signInOut.admin_sign_out()
+        time.sleep(1)
+        signInOut.subadmin_sign_in()
 
         # Direct Message Tab #1
         del driver.requests
@@ -20252,87 +20267,93 @@ class DirectMessage:
         else:
             testlink.reportTCResult(2299, testPlanID, buildName, 'p', "DirectMessageSetting_Selection Test Passed")
 
-failed_test_list = []
-full_test = [
-    # Sign
-    Sign.Sign_InOut, # ITR-1
-    Sign.Rememeber_Me, # ITR-2
-    # Topbar
-    Topbar.Search_Schedule_List, # ITR-3
-    # Refer
-    Refer.Hospital_List, # ITR-7
-    Refer.Reporter_List, # ITR-8
-    # Search filter
-    Search_filter.Priority, # ITR-9
-    Search_filter.Job_Status, # ITR-10
-    Search_filter.Date, # ITR-11
-    Search_filter.Patient_Location, # ITR-12
-    Search_filter.Patient_ID, # ITR-13
-    Search_filter.Patient_Name, # ITR-14
-    Search_filter.Age, # ITR-15
-    Search_filter.Study_Description, # ITR-16
-    Search_filter.Modality, # ITR-17
-    Search_filter.Bodypart, # ITR-18
-    Search_filter.Department, # ITR-19
-    Search_filter.Request_Name, # ITR-20
-    Search_filter.Search_All, # ITR-21
-    Search_filter.RealTime, # ITR-22
-    Search_filter.ShortCut, # ITR-23
-    # Worklist
-    Worklist.All_Assigned_List, # ITR-24
-    Worklist.Not_Assigned_List, # ITR-25
-    Worklist.All_List, # ITR-26
-    Worklist.Schedule, # ITR-27
-    Worklist.Priority, # ITR-28
-    Worklist.Canceled, # ITR-29
-    Worklist.Refer, # ITR-30
-    Worklist.Refer_Cancel, # ITR-31
-    Worklist.Refer_Cancel_And_Refer, # ITR-32
-    Worklist.Set_Schedule, # ITR-34
-    Worklist.Schedule_Cancel, # ITR-35
-    Worklist.Revised, # ITR-36
-    Worklist.Discard, # ITR-37
-    Worklist.Retry_Request, # ITR-38
-    Worklist.Columns, # ITR-39
-    Worklist.Show_Entries, # ITR-40
-    Worklist.Use_Related_Worklist, # ITR-224
-    Worklist.Sort_By, # ITR-41
-    # Statistics
-    Statistics.SearchFilter_Date, # ITR-44
-    Statistics.SearchFilter_Hospital, # ITR-45
-    Statistics.SearchFilter_Reporter, # ITR-46
-    Statistics.SearchFilter_Modality, # ITR-47
-    Statistics.Columns, # ITR-42
-    Statistics.Show_Entries # ITR-43
-    ]
 
-# Full Test
-for test in full_test:
-    time.sleep(0.5)
-    try:
-        print("(",str(full_test.index(test)+1) + " / " + str(len(full_test)),")", round(((full_test.index(test)+1)*100/int(len(full_test))),1),"%")
-        run_time = time.time()
-        test()
-    except:
-        for i in range(0,3):
-            try:
-                if test not in failed_test_list:
-                    failed_test_list.append(test)
-                print("retry ("+str(i+1)+"/3)")
-                print("before",failed_test_list)
-                test()
-                failed_test_list.remove(test)
-                print("after",failed_test_list)
-                break
-            except:
-                print("Occurred Exception")
-                pass
-    finally:
-        print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
-        pass
+Refer.Hospital_List()
+Refer.Reporter_List()
+Worklist.Schedule()
+Worklist.Refer_Cancel_And_Refer()
 
-print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
-print("Failed Test List: ", failed_test_list)
+# failed_test_list = []
+# full_test = [
+#     # Sign
+#     Sign.Sign_InOut, # ITR-1
+#     Sign.Rememeber_Me, # ITR-2
+#     # Topbar
+#     Topbar.Search_Schedule_List, # ITR-3
+#     # Refer
+#     Refer.Hospital_List, # ITR-7
+#     Refer.Reporter_List, # ITR-8
+#     # Search filter
+#     Search_filter.Priority, # ITR-9
+#     Search_filter.Job_Status, # ITR-10
+#     Search_filter.Date, # ITR-11
+#     Search_filter.Patient_Location, # ITR-12
+#     Search_filter.Patient_ID, # ITR-13
+#     Search_filter.Patient_Name, # ITR-14
+#     Search_filter.Age, # ITR-15
+#     Search_filter.Study_Description, # ITR-16
+#     Search_filter.Modality, # ITR-17
+#     Search_filter.Bodypart, # ITR-18
+#     Search_filter.Department, # ITR-19
+#     Search_filter.Request_Name, # ITR-20
+#     Search_filter.Search_All, # ITR-21
+#     Search_filter.RealTime, # ITR-22
+#     Search_filter.ShortCut, # ITR-23
+#     # Worklist
+#     Worklist.All_Assigned_List, # ITR-24
+#     Worklist.Not_Assigned_List, # ITR-25
+#     Worklist.All_List, # ITR-26
+#     Worklist.Schedule, # ITR-27
+#     Worklist.Priority, # ITR-28
+#     Worklist.Canceled, # ITR-29
+#     Worklist.Refer, # ITR-30
+#     Worklist.Refer_Cancel, # ITR-31
+#     Worklist.Refer_Cancel_And_Refer, # ITR-32
+#     Worklist.Set_Schedule, # ITR-34
+#     Worklist.Schedule_Cancel, # ITR-35
+#     Worklist.Revised, # ITR-36
+#     Worklist.Discard, # ITR-37
+#     Worklist.Retry_Request, # ITR-38
+#     Worklist.Columns, # ITR-39
+#     Worklist.Show_Entries, # ITR-40
+#     Worklist.Use_Related_Worklist, # ITR-224
+#     Worklist.Sort_By, # ITR-41
+#     # Statistics
+#     Statistics.SearchFilter_Date, # ITR-44
+#     Statistics.SearchFilter_Hospital, # ITR-45
+#     Statistics.SearchFilter_Reporter, # ITR-46
+#     Statistics.SearchFilter_Modality, # ITR-47
+#     Statistics.Columns, # ITR-42
+#     Statistics.Show_Entries # ITR-43
+#     ]
+
+# # Full Test
+# for test in full_test:
+#     time.sleep(0.5)
+#     try:
+#         print("(",str(full_test.index(test)+1) + " / " + str(len(full_test)),")", round(((full_test.index(test)+1)*100/int(len(full_test))),1),"%")
+#         run_time = time.time()
+#         test()
+#     except:
+#         for i in range(0,3):
+#             try:
+#                 if test not in failed_test_list:
+#                     failed_test_list.append(test)
+#                 print("retry ("+str(i+1)+"/3)")
+#                 print("before",failed_test_list)
+#                 test()
+#                 failed_test_list.remove(test)
+#                 print("after",failed_test_list)
+#                 break
+#             except:
+#                 print("Occurred Exception")
+#                 pass
+#     finally:
+#         print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
+#         pass
+
+# print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
+# print("Failed Test List: ", failed_test_list)
 
 
 

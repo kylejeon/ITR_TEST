@@ -2275,7 +2275,7 @@ class WORKLIST:
         # 새로운 탭 + 전환
         driver.execute_script("window.open()")
         driver.switch_to.window(driver.window_handles[1])
-        driver.get(AdminUrl);
+        driver.get(AdminUrl)
 
         # admin 사이트 로그인
         driver.find_element(By.ID, 'user-id').clear()
