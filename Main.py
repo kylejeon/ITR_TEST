@@ -15,51 +15,55 @@ full_test_case = [
     ITR_Admin_Login.Sign.Rememeber_Me, # ITR-2
     # Topbar
     ITR_Admin_Login.Topbar.Search_Schedule_List, # ITR-3
-    ## Refer
-    #ITR_Admin_Refer.Refer.Hospital_List, # ITR-7
-    #ITR_Admin_Refer.Refer.Reporter_List, # ITR-8
-    ## Search filter
-    #ITR_Admin_Refer.Search_filter.Priority, # ITR-9
-    #ITR_Admin_Refer.Search_filter.Job_Status, # ITR-10
-    #ITR_Admin_Refer.Search_filter.Date, # ITR-11
-    #ITR_Admin_Refer.Search_filter.Patient_Location, # ITR-12
-    #ITR_Admin_Refer.Search_filter.Patient_ID, # ITR-13
-    #ITR_Admin_Refer.Search_filter.Patient_Name, # ITR-14
-    #ITR_Admin_Refer.Search_filter.Age, # ITR-15
-    #ITR_Admin_Refer.Search_filter.Study_Description, # ITR-16
-    #ITR_Admin_Refer.Search_filter.Modality, # ITR-17
-    #ITR_Admin_Refer.Search_filter.Bodypart, # ITR-18
-    #ITR_Admin_Refer.Search_filter.Department, # ITR-19
-    #ITR_Admin_Refer.Search_filter.Request_Name, # ITR-20
-    #ITR_Admin_Refer.Search_filter.Search_All, # ITR-21
-    #ITR_Admin_Refer.Search_filter.RealTime, # ITR-22
-    #ITR_Admin_Refer.Search_filter.ShortCut, # ITR-23
-    ## Worklist
-    #ITR_Admin_Worklist.Worklist.All_Assigned_List, # ITR-24
-    #ITR_Admin_Worklist.Worklist.Not_Assigned_List, # ITR-25
-    #ITR_Admin_Worklist.Worklist.All_List, # ITR-26
-    #ITR_Admin_Worklist.Worklist.Schedule, # ITR-27
-    #ITR_Admin_Worklist.Worklist.Priority, # ITR-28
-    #ITR_Admin_Worklist.Worklist.Canceled, # ITR-29
-    #ITR_Admin_Worklist.Worklist.Refer, # ITR-30
-    #ITR_Admin_Worklist.Worklist.Refer_Cancel, # ITR-31
-    #ITR_Admin_Worklist.Worklist.Refer_Cancel_And_Refer, # ITR-32
-    #ITR_Admin_Worklist.Worklist.Set_Schedule, # ITR-34
-    #ITR_Admin_Worklist.Worklist.Schedule_Cancel, # ITR-35
-    #ITR_Admin_Worklist.Worklist.Revised, # ITR-36
-    #ITR_Admin_Worklist.Worklist.Discard, # ITR-37
-    #ITR_Admin_Worklist.Worklist.Retry_Request, # ITR-38
-    #ITR_Admin_Worklist.Worklist.Columns, # ITR-39
-    #ITR_Admin_Worklist.Worklist.Show_Entries, # ITR-40
-    #ITR_Admin_Worklist.Worklist.Use_Related_Worklist, # ITR-224
-    #ITR_Admin_Worklist.Worklist.Sort_By, # ITR-41
-    ## Statistics
-    #ITR_Admin_Statistics.Statistics.SearchFilter_Date, # ITR-44
-    #ITR_Admin_Statistics.Statistics.SearchFilter_Hospital, # ITR-45
-    #ITR_Admin_Statistics.Statistics.SearchFilter_Reporter, # ITR-46
-    #ITR_Admin_Statistics.Statistics.SearchFilter_Modality, # ITR-47
-    #ITR_Admin_Statistics.Statistics.Columns, # ITR-42
-    #ITR_Admin_Statistics.Statistics.Show_Entries, # ITR-43
+    # Refer
+    ITR_Admin_Login.signInOut.admin_sign_out, # SubAdmin login
+    ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
+    ITR_Admin_Refer.Refer.Hospital_List, # ITR-7
+    ITR_Admin_Login.signInOut.subadmin_sign_out, # Admin login
+    ITR_Admin_Login.signInOut.admin_sign_in, # Admin login
+    ITR_Admin_Refer.Refer.Reporter_List, # ITR-8
+    # Search filter
+    ITR_Admin_Refer.Search_filter.Priority, # ITR-9
+    ITR_Admin_Refer.Search_filter.Job_Status, # ITR-10
+    ITR_Admin_Refer.Search_filter.Date, # ITR-11
+    ITR_Admin_Refer.Search_filter.Patient_Location, # ITR-12
+    ITR_Admin_Refer.Search_filter.Patient_ID, # ITR-13
+    ITR_Admin_Refer.Search_filter.Patient_Name, # ITR-14
+    ITR_Admin_Refer.Search_filter.Age, # ITR-15
+    ITR_Admin_Refer.Search_filter.Study_Description, # ITR-16
+    ITR_Admin_Refer.Search_filter.Modality, # ITR-17
+    ITR_Admin_Refer.Search_filter.Bodypart, # ITR-18
+    ITR_Admin_Refer.Search_filter.Department, # ITR-19
+    ITR_Admin_Refer.Search_filter.Request_Name, # ITR-20
+    ITR_Admin_Refer.Search_filter.Search_All, # ITR-21
+    ITR_Admin_Refer.Search_filter.RealTime, # ITR-22
+    ITR_Admin_Refer.Search_filter.ShortCut, # ITR-23
+    # Worklist
+    ITR_Admin_Worklist.Worklist.All_Assigned_List, # ITR-24
+    ITR_Admin_Worklist.Worklist.Not_Assigned_List, # ITR-25
+    ITR_Admin_Worklist.Worklist.All_List, # ITR-26
+    ITR_Admin_Worklist.Worklist.Schedule, # ITR-27
+    ITR_Admin_Worklist.Worklist.Priority, # ITR-28
+    ITR_Admin_Worklist.Worklist.Canceled, # ITR-29
+    ITR_Admin_Worklist.Worklist.Refer, # ITR-30
+    ITR_Admin_Worklist.Worklist.Refer_Cancel, # ITR-31
+    ITR_Admin_Worklist.Worklist.Refer_Cancel_And_Refer, # ITR-32
+    ITR_Admin_Worklist.Worklist.Set_Schedule, # ITR-34
+    ITR_Admin_Worklist.Worklist.Schedule_Cancel, # ITR-35
+    ITR_Admin_Worklist.Worklist.Revised, # ITR-36
+    ITR_Admin_Worklist.Worklist.Discard, # ITR-37
+    ITR_Admin_Worklist.Worklist.Retry_Request, # ITR-38
+    ITR_Admin_Worklist.Worklist.Columns, # ITR-39
+    ITR_Admin_Worklist.Worklist.Show_Entries, # ITR-40
+    ITR_Admin_Worklist.Worklist.Use_Related_Worklist, # ITR-224
+    ITR_Admin_Worklist.Worklist.Sort_By, # ITR-41
+    # Statistics
+    ITR_Admin_Statistics.Statistics.SearchFilter_Date, # ITR-44
+    ITR_Admin_Statistics.Statistics.SearchFilter_Hospital, # ITR-45
+    ITR_Admin_Statistics.Statistics.SearchFilter_Reporter, # ITR-46
+    ITR_Admin_Statistics.Statistics.SearchFilter_Modality, # ITR-47
+    ITR_Admin_Statistics.Statistics.Columns, # ITR-42
+    ITR_Admin_Statistics.Statistics.Show_Entries, # ITR-43
     # Confiuration - User Management
     ITR_Admin_Configuration.UserManagement.SearchFilter_Class, # ITR-49
     ITR_Admin_Configuration.UserManagement.SearchFilter_Institution, # ITR-50
@@ -119,6 +123,8 @@ full_test_case = [
     ITR_Admin_Notice.Notice.NoticeList_Delete, # ITR-105
     ITR_Admin_Notice.Notice.NoticeList_NoticeDisplay, # ITR-106
     # Direct Message
+    ITR_Admin_Login.signInOut.admin_sign_out, # SubAdmin login
+    ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
     ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Search, # ITR-107
     ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_ShowEntries, # ITR-108
     ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Sorting, # ITR-109
@@ -140,31 +146,31 @@ def full_test():
     start = time.time()
     failed_test_list = []
     
-    #for test in full_test_case:
-    #    time.sleep(0.5)
-    #    try:
-    #        print("(",str(full_test_case.index(test)+1) + " / " + str(len(full_test_case)),")", round(((full_test_case.index(test)+1)*100/int(len(full_test_case))),1),"%")
-    #        run_time = time.time()
-    #        test()
-    #    except:
-    #        # print("Exception on " + str(test))
-    #        print("An exception occurred.")
-    #        for i in range(0,3):
-    #            try:
-    #                if test not in failed_test_list:
-    #                    failed_test_list.append(test)
-    #                print("Retry ("+str(i+1)+"/3)")
-    #                test()
-    #                failed_test_list.remove(test)
-    #                break
-    #            except:
-    #                print("An exception occurred.")
-    #                pass
-    #    finally:
-    #        print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
-    #        pass
     for test in full_test_case:
-        test()
+        time.sleep(0.5)
+        try:
+            print("(",str(full_test_case.index(test)+1) + " / " + str(len(full_test_case)),")", round(((full_test_case.index(test)+1)*100/int(len(full_test_case))),1),"%")
+            run_time = time.time()
+            test()
+        except:
+            # print("Exception on " + str(test))
+            print("An exception occurred.")
+            for i in range(0,3):
+                try:
+                    if test not in failed_test_list:
+                        failed_test_list.append(test)
+                    print("Retry ("+str(i+1)+"/3)")
+                    test()
+                    failed_test_list.remove(test)
+                    break
+                except:
+                    print("An exception occurred.")
+                    pass
+        finally:
+            print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
+            pass
+    #for test in full_test_case:
+    #    test()
 
     print("Totla Run Time:", round((int(time.time() - start)/60),2),"min")
     print("failed_test_list: ", failed_test_list)
@@ -173,55 +179,3 @@ def full_test():
 
 # full test 
 full_test()
-    
-    # for a in admin_list:
-    #     for b in a:
-    #         try:
-    #             b()
-    #         except:
-    #             print("Exception on " + str(b))
-    #             ITR_Admin.driver.get(ITR_Admin.baseUrl)
-    #             for i in range(0,2):
-    #                 try:
-    #                     b()
-    #                     break
-    #                 except:
-    #                     print("Retry Exception on " + str(b))
-    #                     ITR_Admin.driver.get(ITR_Admin.baseUrl)
-    #                     pass
-    #             break
-    
-    # # Admin logout
-    # ITR_Admin.signInOut.admin_sign_out()
-    # time.sleep(1)
-
-    # # SubAdmin login
-    # ITR_Admin.signInOut.subadmin_sign_in()
-    # time.sleep(1)
-
-    # subadmin_list = [
-    #     DirectMessageBox_List,
-    #     NewDirectMessage_Institution_List,
-    #     DirectMessageSetting_List
-    #     ]
-
-    # for a in subadmin_list:
-    #     for b in a:
-    #         try:
-    #             b()
-    #         except:
-    #             print("Exception on " + str(b))
-    #             ITR_Admin.driver.get(ITR_Admin.baseUrl)
-    #             for i in range(0,2):
-    #                 try:
-    #                     b()
-    #                     break
-    #                 except:
-    #                     print("Retry Exception on " + str(b))
-    #                     ITR_Admin.driver.get(ITR_Admin.baseUrl)
-    #                     pass
-
-
-    # end = time.time()
-    # print(f"{end - start:.5f} sec")
-

@@ -23,12 +23,6 @@ class Refer:
         testResult = ''
         reason = list() 
 
-        # SubAdmin 로그인
-        ITR_Admin_Login.signInOut.admin_sign_out()
-        time.sleep(2)
-        ITR_Admin_Login.signInOut.subadmin_sign_in()
-        time.sleep(2)
-
         del driver.requests
         time.sleep(1)
 
@@ -674,12 +668,6 @@ class Refer:
             testlink.reportTCResult(1567, testPlanID, buildName, 'f', result)            
         else:
             testlink.reportTCResult(1567, testPlanID, buildName, 'p', "Hospital_List Test Passed")  
-
-        # Admin 로그인
-        ITR_Admin_Login.signInOut.subadmin_sign_out()
-        time.sleep(2)
-        ITR_Admin_Login.signInOut.admin_sign_in()
-        time.sleep(2)
 
     def Reporter_List():
         print("ITR-8: Refer > Reporter List")
@@ -3202,6 +3190,7 @@ class Search_filter:
         test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(str(test_shortcut_title))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut list 저장
@@ -3227,6 +3216,7 @@ class Search_filter:
         driver.find_element(By.XPATH,"/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").clear()
 
         # Title이 없는 상태에서 Save 버튼 클릭
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # 팝업창 메시지 저장
@@ -3256,6 +3246,7 @@ class Search_filter:
 
         # Save Insititution 체크 후, Save 버튼 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[3]/label").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut list 저장
@@ -3288,6 +3279,7 @@ class Search_filter:
         test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut list 저장
@@ -3311,6 +3303,7 @@ class Search_filter:
 
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(random_shortcut_title)
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut 추가 후, Short cut list 저장
@@ -3346,6 +3339,7 @@ class Search_filter:
         test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut list 저장
@@ -3369,8 +3363,16 @@ class Search_filter:
         
         # Title에 이전에 선택했던 Short cut title이 있는지 확인 후, Save 버튼 클릭
         title = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").get_property("value")
-        time.sleep(0.5)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
+        # error handle
+        while(1):
+            try:
+                webdriver.ActionChains(driver).move_to_element(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[3]/label")).perform()
+                webdriver.ActionChains(driver).move_to_element(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")).perform()
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
+                break
+            except:
+                pass
         
         # Search Condition 팝업창이 나타나는지 확인
         try:
@@ -3429,6 +3431,7 @@ class Search_filter:
         time.sleep(1)
         test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut list 저장
@@ -3493,7 +3496,7 @@ class Search_filter:
 
         # Short cut 버튼 클릭 후, Save 버튼 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
-        time.sleep(0.5)
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Search Condition > Edit 버튼 클릭
@@ -3545,6 +3548,7 @@ class Search_filter:
         time.sleep(1)
         test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut list 저장
@@ -3567,7 +3571,7 @@ class Search_filter:
 
         # Short cut 버튼 클릭 후, Save 버튼 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/ul/li/a/i").click()
-        time.sleep(0.5)
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
         
         # Search Condition > Close 버튼 클릭
@@ -3621,6 +3625,7 @@ class Search_filter:
         del driver.requests
         test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut list 저장
@@ -3680,6 +3685,7 @@ class Search_filter:
         del driver.requests
         test_shortcut_title = 'TEST' + str(random.randrange(0,1000))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[1]/div/input").send_keys(test_shortcut_title)
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button")))
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/section/aside/div/div/div[1]/div[2]/button").click()
 
         # Short cut list 저장

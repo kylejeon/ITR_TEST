@@ -92,7 +92,6 @@ class Auditlog:
             testlink.reportTCResult(2172, testPlanID, buildName, 'p', "Auditlog_Export Test Passed")
 
     def Auditlog_Showentries_fun(entries, num):
-        print("ITR-100: Audit Log > Show Entries")
         Result_msg = ""
 
         del driver.requests
@@ -113,6 +112,7 @@ class Auditlog:
         return Result_msg
 
     def Auditlog_Showentries():
+        print("ITR-100: Audit Log > Show Entries")
         testResult = True
         Result_msg = "failed at "
         

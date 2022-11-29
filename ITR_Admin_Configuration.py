@@ -1315,7 +1315,6 @@ class UserManagement:
             testlink.reportTCResult(1813, testPlanID, buildName, 'p', "UserRegistartion_Add Test Passed")
 
     def UserRegistration_Modify_Entry(target):
-        print("ITR-55: Configuration > User Management > User Registration > Modify")
         testResult = True
 
         driver.find_element(By.CSS_SELECTOR, "#mapping-userid-list_length > label > select").click()
@@ -1338,6 +1337,7 @@ class UserManagement:
         return testResult
 
     def UserRegistartion_Modify():
+        print("ITR-55: Configuration > User Management > User Registration > Modify")
         testResult = True
         Result_msg = "failed at "
         
@@ -3367,7 +3367,6 @@ class Specialty:
 
 class DownloadControl:
     def User_SearchFilter_Class_Search(num):
-        print("ITR-69: Configuration > Download Control > User > Search Filter - Class")
         del driver.requests
         time.sleep(1)
 
@@ -3390,6 +3389,7 @@ class DownloadControl:
         return check
     # Render 확인
     def User_SearchFilter_Class():
+        print("ITR-69: Configuration > Download Control > User > Search Filter - Class")
         testResult = True
         Result_msg = "failed at "
         
@@ -3418,7 +3418,6 @@ class DownloadControl:
             testlink.reportTCResult(1942, testPlanID, buildName, 'p', "User_SearchFilter_Class Test Passed")
 
     def User_SearchFilter_Institution_Search(num):
-        print("ITR-70: Configuration > Download Control > User > Search Filter - Institution")
         del driver.requests
         time.sleep(1)
 
@@ -3446,6 +3445,7 @@ class DownloadControl:
         return check
 
     def User_SearchFilter_Institution():
+        print("ITR-70: Configuration > Download Control > User > Search Filter - Institution")
         testResult = True
         Result_msg = "failed at "
         
@@ -5309,7 +5309,6 @@ class DownloadControl:
             testlink.reportTCResult(1975, testPlanID, buildName, 'p', "User_Modify Test Passed")
 
     def Institution_SearchFilter_Class_Search(num):
-        print("ITR-76: Configuration > Download Control > Institution > Search Filter - Class")
         del driver.requests
         time.sleep(1)
 
@@ -5334,6 +5333,7 @@ class DownloadControl:
         return check
 
     def Institution_SearchFilter_Class():
+        print("ITR-76: Configuration > Download Control > Institution > Search Filter - Class")
         testResult = True
         Result_msg = "failed at "
         
@@ -5367,7 +5367,6 @@ class DownloadControl:
             testlink.reportTCResult(1992, testPlanID, buildName, 'p', "Institution_SearchFilter_Class Test Passed")
 
     def Institution_SearchFilter_Institution_Search(num):
-        print("ITR-77: Configuration > Download Control > Institution > Search Filter - Institution")
         del driver.requests
         time.sleep(1)
 
@@ -5394,6 +5393,7 @@ class DownloadControl:
         return check
 
     def Institution_SearchFilter_Institution():
+        print("ITR-77: Configuration > Download Control > Institution > Search Filter - Institution")
         testResult = True
         Result_msg = "failed at "
         
@@ -5610,7 +5610,6 @@ class DownloadControl:
             testlink.reportTCResult(2001, testPlanID, buildName, 'p', "Institution_SearchFilter_UserName Test Passed")
 
     def Institution_Add_DeletionSetup(insti_position):
-        print("ITR-80: Configuration > Download Control > Institution > Add")
         # Deletion
         driver.find_element(By.CSS_SELECTOR, "#download-list-byInst > tbody > tr:nth-child(1) > td:nth-child(1) > label").click()
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div/div[1]/a[2]")))
@@ -5641,6 +5640,7 @@ class DownloadControl:
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#byInst-download-config-add-user-remove-btn")))
 
     def Institution_Add():
+        print("ITR-80: Configuration > Download Control > Institution > Add")
         testResult = True
         Result_msg = "failed at "
 
@@ -7339,7 +7339,6 @@ class DownloadControl:
 
 class Institution:
     def insti_idx_find(target):
-        print("ITR-83: Configuration > Institution > Search Filter > Institution Code")
         # Find
         request = driver.wait_for_request('.*/GetInstitutionsList.*')
         body = request.response.body.decode('utf-8')
@@ -7367,6 +7366,7 @@ class Institution:
         return idx
 
     def SearchFilter_Institution_Code():
+        print("ITR-83: Configuration > Institution > Search Filter > Institution Code")
         testResult = True
         Result_msg = "failed at "
         
@@ -7445,7 +7445,6 @@ class Institution:
         num = 0
         for n in data:
             if Var.search_institution_2 not in n["InstitutionName"]:
-                print("1")
                 check = False
 
             lst = ["InstitutionCode", "InstitutionName", "CenterCodeList", "ReportModificationMode", "ReportingRuleCount", "ReportingDownloadDelayTime"]
@@ -7830,7 +7829,6 @@ class Institution:
             testlink.reportTCResult(2066, testPlanID, buildName, 'p', "Institution_Delete Test Passed")
 
     def Modify_ToWL(RM_num, RM, RDT_num, RDT):
-        print("ITR-87: Configuration > Institution > Modify")
         Result_msg = ""
         time.sleep(1)
 
@@ -7867,7 +7865,7 @@ class Institution:
         # 새로운 탭 + 전환
         driver.execute_script("window.open()")
         driver.switch_to.window(driver.window_handles[1])
-        driver.get(Var.Var.WorklistUrl);
+        driver.get(Var.WorklistUrl);
         driver.implicitly_wait(5)
         signInOut.wk_login(Var.wk_id, Var.wk_pw)
 
@@ -7926,6 +7924,7 @@ class Institution:
         
 
     def Modify():
+        print("ITR-87: Configuration > Institution > Modify")
         testResult = True
         Result_msg = "failed at "
         
@@ -8382,7 +8381,6 @@ class Institution:
                 Reulst_msg += "#12 "
 
         # Institution_Modify결과 전송 ##
-        print("ITR-86: Configuration > Institution > Delete")
         if testResult == False:
             testlink.reportTCResult(2072, testPlanID, buildName, 'f', Result_msg)            
         else:
@@ -8879,7 +8877,6 @@ class StandardReport:
 
     # ReportCode_Test Search
     def ReportSearch(total):
-        print("ITR-92: Configuration > Standard Report > Group Modify")
         num = 0
         for a in range(1, total+1):
             request = driver.wait_for_request('.*/GetStandardReportList.*')
@@ -8905,6 +8902,7 @@ class StandardReport:
 
 
     def GroupModify():
+        print("ITR-92: Configuration > Standard Report > Group Modify")
         testResult = True
         Result_msg = "failed at "
         

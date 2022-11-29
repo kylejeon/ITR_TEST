@@ -10,6 +10,7 @@ from ITR_Admin_Common import testlink
 from ITR_Admin_Common import testPlanID
 from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Common
+from ITR_Admin_Common import Var
 
 class Notice:
     def NoticeList_NoticeEditBoard():
@@ -50,7 +51,7 @@ class Notice:
             Result_msg += "#4 "
         except:
             pass
-        
+       
         # Board Italic #5 6
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-italic").click()
         try:
@@ -130,17 +131,17 @@ class Notice:
             testResult = False
             Result_msg += "#13 "
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button:nth-child(5) > i").click()
-
+        
         # Picture select #14
         driver.find_element(By.CSS_SELECTOR,"#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-insert > button > i").click()
-        WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.modal.note-modal.in > div > div > div.modal-header > h4")))
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.modal.note-modal.in > div > div > div.modal-header > h4")))
         if "Insert Image" != driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.modal.note-modal.in > div > div > div.modal-header > h4").text:
             testResult = False
             Result_msg += "#14 "
 
         if "#14" not in Result_msg:
             # Picture upload #15 16
-            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[7]/div/div/div[2]/div[1]/input").send_keys(upload_pic)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[7]/div/div/div[2]/div[1]/input").send_keys(Var.upload_pic)
             try:
                 WebDriverWait(driver, 0.3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable > p > img")))
             except:
@@ -156,7 +157,7 @@ class Notice:
             WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.modal.note-modal.in > div > div > div.modal-header > h4")))
 
             # Picutre url upload #17
-            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[7]/div/div/div[2]/div[2]/input").send_keys(upload_pic_url)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[7]/div/div/div[2]/div[2]/input").send_keys(Var.upload_pic_url)
             driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.modal.note-modal.in > div > div > div.modal-footer > input").click()
             try:
                 WebDriverWait(driver, 0.3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable > p > img")))
@@ -300,7 +301,7 @@ class Notice:
         # 새로운 탭 + 전환
         driver.execute_script("window.open()")
         driver.switch_to.window(driver.window_handles[1])
-        driver.get(WorklistUrl);
+        driver.get(Var.WorklistUrl);
         driver.implicitly_wait(5)
         time.sleep(1.5)
 
@@ -312,7 +313,7 @@ class Notice:
         driver.close()
         driver.switch_to.window(driver.window_handles[1])
 
-        ITR_Admin_Login.signInOut.wk_login(wk_id, wk_pw)
+        ITR_Admin_Login.signInOut.wk_login(Var.wk_id, Var.wk_pw)
         time.sleep(1)
         driver.switch_to.window(driver.window_handles[2])
         driver.implicitly_wait(5)

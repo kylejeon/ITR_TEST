@@ -21,24 +21,33 @@ class signInOut:
         driver.find_element(By.ID, 'user-password').send_keys(Var.adminPW)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)
+        time.sleep(0.3)
     def admin_sign_out():
         driver.find_element(By.CSS_SELECTOR, '.pull-right > span').click()
+        driver.implicitly_wait(5)
+        time.sleep(0.3)
     def stg_admin_sign_in():
         driver.find_element(By.ID, 'user-id').clear()
         driver.find_element(By.ID, 'user-id').send_keys(Var.stg_adminID)
         driver.find_element(By.ID, 'user-password').send_keys(Var.stg_adminPW)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)
+        time.sleep(0.3)
     def stg_admin_sign_out():
         driver.find_element(By.CSS_SELECTOR, '.pull-right > span').click()
+        driver.implicitly_wait(5)
+        time.sleep(0.3)
     def subadmin_sign_in():
         driver.find_element(By.ID, 'user-id').clear()
         driver.find_element(By.ID, 'user-id').send_keys(Var.subadminID)
         driver.find_element(By.ID, 'user-password').send_keys(Var.subadminPW)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)
+        time.sleep(0.3)
     def subadmin_sign_out():
         driver.find_element(By.CSS_SELECTOR, '.pull-right > span').click()
+        driver.implicitly_wait(5)
+        time.sleep(0.3)
     def wk_login(work_id, work_pw):
         driver.find_element(By.ID, 'user-id').clear()
         driver.find_element(By.ID, 'user-id').send_keys(work_id)
