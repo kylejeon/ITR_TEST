@@ -2444,7 +2444,7 @@ class Worklist:
                 # Test 병원 선택
                 hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
                 for i in hospital_list:
-                    if (i.get_property("dataset"))["institutionName"] == test_hospital:
+                    if (i.get_property("dataset"))["institutionName"] == Var.test_hospital:
                         i.click()
                         break
 

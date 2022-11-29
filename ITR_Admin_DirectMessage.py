@@ -840,7 +840,7 @@ class DirectMessage:
         # UnAuth Search
         del driver.requests
         time.sleep(1)
-        driver.find_element(By.CSS_SELECTOR, "#unAuth_reporter_search_value").send_keys(search_id)
+        driver.find_element(By.CSS_SELECTOR, "#unAuth_reporter_search_value").send_keys(Var.search_id)
         driver.find_element(By.CSS_SELECTOR, "#search_unAuth_reporter").click()
         driver.wait_for_request('.*/GetDirectMessage.*')
         time.sleep(0.5)
