@@ -29,9 +29,11 @@ class Refer:
         ITR_Admin_Login.signInOut.subadmin_sign_in()
         time.sleep(2)
 
+        del driver.requests
+        time.sleep(1)
+
         # Refer 탭 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
-        time.sleep(1)
 
         # 1 steps start! : 모든 병원의 badge count와 job list의 결과가 일치하는지 확인
         # Hospital list 저장
@@ -2592,9 +2594,17 @@ class Search_filter:
         testResult = ''
         reason = list()
         
+        del driver.requests
+        time.sleep(1)
+
         # 새로고침
         driver.refresh()
 
+        driver.wait_for_request('.*/GetAllAssignedList.*')
+        time.sleep(0.3)
+
+        del driver.requests
+        time.sleep(1)
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
@@ -2605,8 +2615,29 @@ class Search_filter:
             if (i.get_property("dataset"))["institutionName"] == Var.test_hospital:
                 i.click()
 
+        driver.wait_for_request('.*/GetAllAssignedList.*')
+        time.sleep(0.3)
+
+        del driver.requests
+        time.sleep(1)
+
         # Showing entries 100으로 변경
         Common.refer_show_entries(100)
+        try:
+            driver.wait_for_request('.*/GetAllAssignedList.*')
+            time.sleep(0.3)
+        except:
+            Common.refer_show_entries(10)
+
+            driver.wait_for_request('.*/GetAllAssignedList.*')
+            time.sleep(0.3)
+
+            del driver.requests
+            time.sleep(1)
+
+            Common.refer_show_entries(100)
+            driver.wait_for_request('.*/GetAllAssignedList.*')
+            time.sleep(0.3)
         
         # All Assigned/Not Assigned/All List 탭을 순서대로 클릭하면서 Job list의 해당 Bodypart를 가진 job이 있으면 저장
         tab_list = [['/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]','GetAllAssignedList'],

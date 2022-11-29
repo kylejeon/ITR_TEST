@@ -77,10 +77,12 @@ class DirectMessage:
         testResult = True
         Result_msg = "failed at "
         
-        # Common.ReFresh()
+        #Common.ReFresh()
+        # SubAdmin 로그인
         ITR_Admin_Login.signInOut.admin_sign_out()
-        time.sleep(1)
+        time.sleep(2)
         ITR_Admin_Login.signInOut.subadmin_sign_in()
+        time.sleep(2)
 
         # Direct Message Tab #1
         del driver.requests

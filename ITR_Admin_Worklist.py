@@ -26,8 +26,10 @@ class Worklist:
         
         # 새로고침
         driver.refresh()
-        driver.wait_for_request('.*/GetAllAssignedList.*')
-        time.sleep(0.3)
+        #driver.wait_for_request('.*/GetAllAssignedList.*')
+        #time.sleep(0.3)
+        driver.implicitly_wait(5)
+        time.sleep(1)
 
         # 1 steps start! : All Assigned List 탭을 클릭한다.
         # Test 병원 선택
@@ -41,7 +43,7 @@ class Worklist:
         driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
 
-        del driver.request
+        del driver.requests
         time.sleep(1)
 
         # All Assigned List 탭 클릭
@@ -182,8 +184,6 @@ class Worklist:
 
         del driver.requests
         time.sleep(1)
-        driver.wait_for_request('.*/GetAllAssignedList.*')
-        time.sleep(0.3)
 
         # 새로고침
         driver.refresh()

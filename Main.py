@@ -163,6 +163,8 @@ def full_test():
         finally:
             print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
             pass
+    #for test in full_test_case:
+    #    test()
 
     print("Totla Run Time:", round((int(time.time() - start)/60),2),"min")
     print("failed_test_list: ", failed_test_list)
