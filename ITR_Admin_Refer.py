@@ -9,6 +9,7 @@ import time
 import json
 import math
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 import random
 from ITR_Admin_Common import driver
 from ITR_Admin_Common import testlink
@@ -122,9 +123,10 @@ class Refer:
                             emer_list.append(i)
                             # emer_reporter_list_cnt = emer_reporter_list_cnt + 1
                             
-                    pages = pages - 1   
-                    del driver.requests
+                    pages = pages - 1
                     time.sleep(0.5)
+                    del driver.requests
+                    time.sleep(1)
 
                     if pages > 0:
                         # 새로운 페이지의 결과 저장
@@ -512,7 +514,7 @@ class Refer:
                     badge_counts.append(i["PriorityCount"])
                     badge_counts.append(i["ReferCount"])
                     badge_counts.append(i["OtherInstitutionReferCount"])
-                    # badge_counts.append(i["ReportedCount"])
+                    # badge_counts.append(i["ReportedCouㅌㅂㅂnt"])
                     badge_counts.append(i["ScheduleCount"])
                     badge_cnt_list.append(badge_counts)
 
@@ -721,19 +723,37 @@ class Refer:
                 if proirity_cnt > 0:
                     driver.find_element(By.CSS_SELECTOR, "#refer_search_priority_chosen span").click()
                     driver.find_element(By.CSS_SELECTOR, ".active-result:nth-child(2)").click()
+                    time.sleep(0.5)
+                    del driver.requests
+                    time.sleep(1)
                     driver.find_element(By.XPATH,'/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]').click()
                     time.sleep(1.5) 
-                    temp_cnt = driver.find_element(By.XPATH,'/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]').text                                   
-                    temp_cnt = temp_cnt.split()
-                    list_cnt = temp_cnt[5]
+                    # temp_cnt = driver.find_element(By.XPATH,'/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]').text                                   
+                    # temp_cnt = temp_cnt.split()
+                    # list_cnt = temp_cnt[5]
+                    request = driver.wait_for_request('.*/GetAllReferedListByReporter.*')
+                    time.sleep(0.3)
+                    body = request.response.body.decode('utf-8')
+                    data = json.loads(body)["data"]
+                    priority_list = []
+
+                    for i in data:
+                        priority_list.append(i)
+
                     try:
-                        assert int(proirity_cnt) == int(list_cnt)                        
+                        assert int(proirity_cnt) == len(priority_list)                        
                     except:
                         testResult = 'failed'
                         reason.append("1 steps failed: proirity_cnt isn't valid")
 
                 # Tap panel의 schedule job count와 조회 결과 리스트에서의 schedule job count를 비교한다.   
                 if schedule_cnt > 0:
+                    driver.find_element(By.CSS_SELECTOR, "#refer_search_priority_chosen span").click()
+                    driver.find_element(By.CSS_SELECTOR, ".active-result:nth-child(1)").click()
+                    time.sleep(0.5)
+                    del driver.requests
+                    time.sleep(1)
+                    driver.find_element(By.XPATH,'/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]').click()
                     request = driver.wait_for_request('.*/GetAllReferedListByReporter.*')
                     time.sleep(0.3)
                     body = request.response.body.decode('utf-8')
@@ -1014,9 +1034,7 @@ class Search_filter:
 
         # 1 steps start! : Job Status를 Requested로 선택한 후, Search All버튼을 클릭한다.
         # 새로고침
-        driver.refresh()
-        # All List 탭 클릭
-        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        Common.ReFresh()
 
         # Showing entries 100으로 변경
         Common.refer_show_entries(100)
@@ -1477,7 +1495,7 @@ class Search_filter:
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        Common.ReFresh()
 
         # 1 steps start! : Date를 Job Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 2 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
@@ -1589,6 +1607,7 @@ class Search_filter:
             # All Assigned List > Job Date를 last 1~4 week으로 선택
             for n in range(2,7):
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").click()
+                time.sleep(0.5)
                 driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(2) > th:nth-child("+str(n)+")").click()
 
                 # Search 버튼 클릭
@@ -1633,6 +1652,7 @@ class Search_filter:
             m = 0
             for n in range(2,7):
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").click()
+                time.sleep(0.5)
                 driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(3) > th:nth-child("+str(n)+")").click()
 
                 # Search 버튼 클릭

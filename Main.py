@@ -16,11 +16,9 @@ full_test_case = [
     # Topbar
     ITR_Admin_Login.Topbar.Search_Schedule_List, # ITR-3
     # Refer
-    ITR_Admin_Login.signInOut.admin_sign_out, # SubAdmin login
+    ITR_Admin_Login.signInOut.admin_sign_out, # Admin logout
     ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
     ITR_Admin_Refer.Refer.Hospital_List, # ITR-7
-    ITR_Admin_Login.signInOut.subadmin_sign_out, # Admin login
-    ITR_Admin_Login.signInOut.admin_sign_in, # Admin login
     ITR_Admin_Refer.Refer.Reporter_List, # ITR-8
     # Search filter
     ITR_Admin_Refer.Search_filter.Priority, # ITR-9
@@ -58,6 +56,8 @@ full_test_case = [
     ITR_Admin_Worklist.Worklist.Use_Related_Worklist, # ITR-224
     ITR_Admin_Worklist.Worklist.Sort_By, # ITR-41
     # Statistics
+    # ITR_Admin_Login.signInOut.subadmin_sign_out, # SubAdmin logout
+    # ITR_Admin_Login.signInOut.admin_sign_in, # Admin login
     ITR_Admin_Statistics.Statistics.SearchFilter_Date, # ITR-44
     ITR_Admin_Statistics.Statistics.SearchFilter_Hospital, # ITR-45
     ITR_Admin_Statistics.Statistics.SearchFilter_Reporter, # ITR-46
@@ -172,7 +172,7 @@ def full_test():
     #for test in full_test_case:
     #    test()
 
-    print("Totla Run Time:", round((int(time.time() - start)/60),2),"min")
+    print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
     print("failed_test_list: ", failed_test_list)
     
     ITR_Admin_Common.driver.quit()

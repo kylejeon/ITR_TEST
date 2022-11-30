@@ -2962,7 +2962,7 @@ class Worklist:
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        Common.ReFresh()
 
         # 1 steps start! : Job Status가 Reported, Completed, Recalled 이외의 상태인 의뢰 검사를 선택한 후, Retry Request 버튼을 클릭한다.
         # Configuration > Institutions > 테스트 병원 선택
@@ -3187,6 +3187,8 @@ class Worklist:
         try:
             sample_job = random.choice(job_list)
             job_key = sample_job["JobKey"]
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
             time.sleep(3)
             driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
         except:
@@ -3195,10 +3197,35 @@ class Worklist:
         
         if "2 steps failed\n" not in reason:
             # Retry Request 클릭
-            time.sleep(1)
+            time.sleep(2)
             btn = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[3]/button[3]")
             WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div[3]/button[3]")))
-            btn.click()
+            try:
+                btn.click()
+            except:
+                Common.ReFresh()
+                time.sleep(3)
+                hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+                for i in hospital_list:
+                    if (i.get_property("dataset"))["institutionName"] == Var.test_hospital:
+                        i.click()
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+                time.sleep(1)
+
+                # Search condition > Job Status를 Discard Completed로 선택하고, Search 클릭
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+                time.sleep(0.5)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[13]").click()
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+                time.sleep(1)
+                
+                # All List > Job stat이 Discard Completed 인 job 선택
+                driver.find_element(By.XPATH, "//td[normalize-space()='"+str(job_key)+"']").click()
+                time.sleep(1)
+                driver.find_element(By.CSS_SELECTOR, "#refer-retry-btn").click()
 
          # Retry Request 팝업창 확인
             popup = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[1]/h4")
@@ -3226,6 +3253,16 @@ class Worklist:
             time.sleep(1)
             WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#tab_all_list > a")))
             driver.find_element(By.CSS_SELECTOR, "#tab_all_list > a").click()
+        
+        # Search condition > Job Status를 Discard Completed로 선택하고, Search 클릭
+        del driver.requests
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[1]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+        time.sleep(1)
 
         # All List > Job list 저장
         request = driver.wait_for_request('.*/GetAllList.*')
