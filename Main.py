@@ -16,6 +16,8 @@ full_test_case = [
     # Topbar
     ITR_Admin_Login.Topbar.Search_Schedule_List, # ITR-3
     # Refer
+    ITR_Admin_Login.signInOut.admin_sign_out, # Admin logout
+    ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
     ITR_Admin_Refer.Refer.Hospital_List, # ITR-7
     ITR_Admin_Refer.Refer.Reporter_List, # ITR-8
     # Search filter
@@ -54,6 +56,8 @@ full_test_case = [
     ITR_Admin_Worklist.Worklist.Use_Related_Worklist, # ITR-224
     ITR_Admin_Worklist.Worklist.Sort_By, # ITR-41
     # Statistics
+    # ITR_Admin_Login.signInOut.subadmin_sign_out, # SubAdmin logout
+    # ITR_Admin_Login.signInOut.admin_sign_in, # Admin login
     ITR_Admin_Statistics.Statistics.SearchFilter_Date, # ITR-44
     ITR_Admin_Statistics.Statistics.SearchFilter_Hospital, # ITR-45
     ITR_Admin_Statistics.Statistics.SearchFilter_Reporter, # ITR-46
@@ -119,6 +123,8 @@ full_test_case = [
     ITR_Admin_Notice.Notice.NoticeList_Delete, # ITR-105
     ITR_Admin_Notice.Notice.NoticeList_NoticeDisplay, # ITR-106
     # Direct Message
+    ITR_Admin_Login.signInOut.admin_sign_out, # SubAdmin login
+    ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
     ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Search, # ITR-107
     ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_ShowEntries, # ITR-108
     ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Sorting, # ITR-109
@@ -158,68 +164,21 @@ def full_test():
                     failed_test_list.remove(test)
                     break
                 except:
+                    ITR_Admin_Common.driver.refresh()
+
                     print("An exception occurred.")
+                    ITR_Admin_Common.driver.refresh()
                     pass
         finally:
             print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
             pass
+    #for test in full_test_case:
+    #    test()
 
-    print("Totla Run Time:", round((int(time.time() - start)/60),2),"min")
+    print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
     print("failed_test_list: ", failed_test_list)
     
     ITR_Admin_Common.driver.quit()
 
 # full test 
 full_test()
-    
-    # for a in admin_list:
-    #     for b in a:
-    #         try:
-    #             b()
-    #         except:
-    #             print("Exception on " + str(b))
-    #             ITR_Admin.driver.get(ITR_Admin.baseUrl)
-    #             for i in range(0,2):
-    #                 try:
-    #                     b()
-    #                     break
-    #                 except:
-    #                     print("Retry Exception on " + str(b))
-    #                     ITR_Admin.driver.get(ITR_Admin.baseUrl)
-    #                     pass
-    #             break
-    
-    # # Admin logout
-    # ITR_Admin.signInOut.admin_sign_out()
-    # time.sleep(1)
-
-    # # SubAdmin login
-    # ITR_Admin.signInOut.subadmin_sign_in()
-    # time.sleep(1)
-
-    # subadmin_list = [
-    #     DirectMessageBox_List,
-    #     NewDirectMessage_Institution_List,
-    #     DirectMessageSetting_List
-    #     ]
-
-    # for a in subadmin_list:
-    #     for b in a:
-    #         try:
-    #             b()
-    #         except:
-    #             print("Exception on " + str(b))
-    #             ITR_Admin.driver.get(ITR_Admin.baseUrl)
-    #             for i in range(0,2):
-    #                 try:
-    #                     b()
-    #                     break
-    #                 except:
-    #                     print("Retry Exception on " + str(b))
-    #                     ITR_Admin.driver.get(ITR_Admin.baseUrl)
-    #                     pass
-
-
-    # end = time.time()
-    # print(f"{end - start:.5f} sec")
-

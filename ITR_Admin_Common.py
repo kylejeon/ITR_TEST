@@ -94,5 +94,5 @@ class Common:
         pages = math.ceil(int(list_cnt) / 100)
         return pages
     def ReFresh():
-        driver.find_element(By.CSS_SELECTOR, "body > nav > div > div:nth-child(1) > a.navbar-brand").click()
+        driver.find_element(By.CSS_SELECTOR, "body > nav > div > div:nth-child(1) > a.navbar-brand").click()        
         driver.implicitly_wait(5)

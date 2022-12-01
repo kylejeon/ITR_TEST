@@ -18,7 +18,6 @@ from ITR_Admin_Common import Common
 
 class DirectMessage:
     def DirectMessageBox_ViewSort(asc):
-        print("ITR-107: Direct Message > Direct Message Box > Search")
         #del driver.requests - need
         testResult = True
         if asc == True:
@@ -74,13 +73,11 @@ class DirectMessage:
 
 
     def DirectMessageBox_Search():
+        print("ITR-107: Direct Message > Direct Message Box > Search")
         testResult = True
         Result_msg = "failed at "
         
-        # Common.ReFresh()
-        ITR_Admin_Login.signInOut.admin_sign_out()
-        time.sleep(1)
-        ITR_Admin_Login.signInOut.subadmin_sign_in()
+        Common.ReFresh()
 
         # Direct Message Tab #1
         del driver.requests
@@ -165,7 +162,6 @@ class DirectMessage:
             testlink.reportTCResult(2232, testPlanID, buildName, 'p', "DirectMessageBox_Search Test Passed")
 
     def DirectMessageBox_ShowEntries_fun(entries, num):
-        print("ITR-108: Direct Message > Direct Message Box > Show Entries")
         Result_msg = ""
 
         del driver.requests
@@ -185,6 +181,7 @@ class DirectMessage:
         return Result_msg
 
     def DirectMessageBox_ShowEntries():
+        print("ITR-108: Direct Message > Direct Message Box > Show Entries")
         testResult = True
         Result_msg = "failed at "
         
@@ -232,7 +229,6 @@ class DirectMessage:
             testlink.reportTCResult(2238, testPlanID, buildName, 'p', "DirectMessageBox_ShowEntries Test Passed")
 
     def DirectMessageBox_WNSort(length, asc):
-        print("ITR-109: Direct Message > Direct Message Box > Sorting")
         testResult = True
         sender = []
 
@@ -273,6 +269,7 @@ class DirectMessage:
             cmr_time = selected_time
 
     def DirectMessageBox_Sorting():
+        print("ITR-109: Direct Message > Direct Message Box > Sorting")
         testResult = True
         Result_msg = "failed at "
         
@@ -736,7 +733,6 @@ class DirectMessage:
             testlink.reportTCResult(2281, testPlanID, buildName, 'p', "NewDirectMessage_Reporter_Message Test Passed")
 
     def DirectMessageSetting_Search_fun(auth, search_target):
-        print("ITR-118: Direct Message > Direct Message Setting > Search")
         Result_msg = ""
 
         if auth == "unAuth":
@@ -769,6 +765,7 @@ class DirectMessage:
         return Result_msg
 
     def DirectMessageSetting_Search():
+        print("ITR-118: Direct Message > Direct Message Setting > Search")
         testResult = True
         Result_msg = "failed at "
         
@@ -838,7 +835,7 @@ class DirectMessage:
         # UnAuth Search
         del driver.requests
         time.sleep(1)
-        driver.find_element(By.CSS_SELECTOR, "#unAuth_reporter_search_value").send_keys(search_id)
+        driver.find_element(By.CSS_SELECTOR, "#unAuth_reporter_search_value").send_keys(Var.search_id)
         driver.find_element(By.CSS_SELECTOR, "#search_unAuth_reporter").click()
         driver.wait_for_request('.*/GetDirectMessage.*')
         time.sleep(0.5)
