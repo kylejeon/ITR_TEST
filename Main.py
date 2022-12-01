@@ -164,6 +164,9 @@ def full_test():
                     failed_test_list.remove(test)
                     break
                 except:
+                    # 새로고침
+                    ITR_Admin_Common.driver.refresh()
+
                     print("An exception occurred.")
                     ITR_Admin_Common.driver.refresh()
                     pass
