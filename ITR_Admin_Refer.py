@@ -514,7 +514,7 @@ class Refer:
                     badge_counts.append(i["PriorityCount"])
                     badge_counts.append(i["ReferCount"])
                     badge_counts.append(i["OtherInstitutionReferCount"])
-                    # badge_counts.append(i["ReportedCouㅌㅂㅂnt"])
+                    # badge_counts.append(i["ReportedCount"])
                     badge_counts.append(i["ScheduleCount"])
                     badge_cnt_list.append(badge_counts)
 
