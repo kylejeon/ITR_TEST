@@ -54,10 +54,32 @@ class Form(QMainWindow, form_class):
         
         # Parent를 선택 이동하는 경우
         if item.parent() == None:
-            source = QTreeWidget.invisibleRootItem(source_tw)
-            source.removeChild(item)
-            root = QTreeWidget.invisibleRootItem(target_tw)
-            root.addChild(item)
+            # Parent를 선택 이동하는데, parent가 존재하지 않는 경우
+            if target_tw.topLevelItemCount() == 0:
+                source = QTreeWidget.invisibleRootItem(source_tw)
+                source.removeChild(item)
+                root = QTreeWidget.invisibleRootItem(target_tw)
+                root.addChild(item)
+            # Parent를 선택 이동하는데, parnet가 존재하는 경우
+            else:
+                # Parent를 선택 이동하는데, 동일한 parent가 있는 경우
+                for n in range(0, target_tw.topLevelItemCount()):
+                    if target_tw.topLevelItem(n).text(0) == item.text(0):
+                        current_pos = target_tw.topLevelItem(n)
+                        for i in range(0, item.childCount()):
+                            new_item = QTreeWidgetItem(current_pos)
+                            new_item.setText(0, item.child(i).text(0))
+                            new_item.setText(1, item.child(i).text(1))
+                        source = QTreeWidget.invisibleRootItem(source_tw)
+                        source.removeChild(item)
+                        break
+                    # Parent를 선택 이동하는데, 동일한 parent가 없는 경우
+                    else:
+                        source = QTreeWidget.invisibleRootItem(source_tw)
+                        source.removeChild(item)
+                        root = QTreeWidget.invisibleRootItem(target_tw)
+                        root.addChild(item)
+
         
         # Sub Child가 없는 child를 선택 이동하는 경우
         elif item.childCount() == 0:
@@ -90,7 +112,7 @@ class Form(QMainWindow, form_class):
                     current_pos = target_tw.topLevelItem(n)
                     break
             
-            # 존재하지 않는 경우
+            # First parent가 존재하지 않는 경우
             if current_pos.text(0) == "":
                 new_item = QTreeWidgetItem(target_tw)
                 item_cnt = len(add_item_list)
@@ -119,43 +141,71 @@ class Form(QMainWindow, form_class):
                             new_child_Count = extra_item.childCount()
                             Form.add_child_all(new_item,extra_item,new_child_Count)
                         break
-            # 존재하는 경우
+            # First parent가 존재하는 경우
             else:
+                first_parent = parent_item.parent()
                 for n in range(0, target_tw.topLevelItemCount()):
                     # Selected list에서 선택한 chlid의 parent 찾기
                     if target_tw.topLevelItem(n).text(0) == current_pos.text(0):
-                        new_item = QTreeWidgetItem(current_pos)
                         item_cnt = len(add_item_list)
                         add_item_list.pop(item_cnt - 2)
                         add_item_list.pop(item_cnt - 2)
                         item_cnt -= 2
-                        
-                    # Selected list에서 선택한 child의 sub parent 찾기
-                    for n in range(0, new_item.parent().childCount()):
-                        if new_item.parent().child(n).text(1) == add_item_list[item_cnt-1]:
-                            new_item = QTreeWidgetItem(new_item.parent().child(n))
-                    add_item_list.pop(item_cnt - 2)
-                    add_item_list.pop(item_cnt - 2)
-                    item_cnt -= 2
 
-                    # child 추가
+                # Second parnet가 존재하는지 확인    
+                if len(item.text(0).split('.')) > 2:
+                    # Selected list에서 선택한 child의 second parent 찾기
+                    for n in range(0, current_pos.childCount()):
+                        # Second parent가 있으면 add_item_list에서 삭제
+                        if len(add_item_list) > 0:
+                            if current_pos.child(n).text(1) == add_item_list[item_cnt-1]:
+                                new_item = QTreeWidgetItem(current_pos.child(n))
+                                add_item_list.pop(item_cnt - 2)
+                                add_item_list.pop(item_cnt - 2)
+                                item_cnt -= 2
+
+                                # child 추가
+                                new_item.setText(0, add_item_list.pop(item_cnt - 2))
+                                new_item.setText(1, add_item_list.pop(item_cnt - 2))
+
+                    # Second parent가 없으면 추가
+                    if item_cnt > 3:
+                        new_item = QTreeWidgetItem(current_pos)
+                        new_item.setText(0, add_item_list.pop(item_cnt - 2))
+                        new_item.setText(1, add_item_list.pop(item_cnt - 2))
+                        item_cnt -= 2
+
+                        # child 추가
+                        sub_item = QTreeWidgetItem()
+                        sub_item.setText(0, add_item_list.pop(item_cnt - 2))
+                        sub_item.setText(1, add_item_list.pop(item_cnt - 2))
+                        new_item.addChild(sub_item)
+                else:
+                # child 추가
+                    new_item = QTreeWidgetItem(current_pos)
                     new_item.setText(0, add_item_list.pop(item_cnt - 2))
                     new_item.setText(1, add_item_list.pop(item_cnt - 2))
 
-                    # Selected list에 추가하고 선택한 item을 select list에서 삭제
-                    for child in children:
-                        item.parent().removeChild(child)
+                # Selected list에 추가하고 선택한 item을 select list에서 삭제
+                for child in children:
+                    item.parent().removeChild(child)
 
-                        # Parent에 child가 존재하지 않는 경우, parenet 삭제
-                        if parent_item.childCount() == 0:
-                            sip.delete(parent_item)
-                    
-                    if len(add_item_list) == 0:
-                        # selected item이 child를 가진 경우
-                        if extra_item.text(0) != "":
-                            new_child_Count = extra_item.childCount()
-                            Form.add_child_all(new_item,extra_item,new_child_Count)
-                        break
+                    # Parent에 child가 존재하지 않는 경우, parenet 삭제
+                    if parent_item.childCount() == 0:
+                        sip.delete(parent_item)
+                        # First parent에 second parent가 존재하지 않을 경우, first parent 삭제
+                        try:
+                            if first_parent.childCount() == 0:
+                                sip.delete(first_parent)                                                    
+                        except:
+                            pass
+                
+                # if len(add_item_list) == 0:
+                #     # selected item이 child를 가진 경우
+                #     if extra_item.text(0) != "":
+                #         new_child_Count = extra_item.childCount()
+                #         Form.add_child_all(new_item,extra_item,new_child_Count)
+                #     break
         # Sub Child가 있는 child를 선택 이동하는 경우
         else:
             add_item_list = []
