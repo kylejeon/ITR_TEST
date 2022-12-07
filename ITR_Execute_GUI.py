@@ -3,7 +3,9 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5.QtCore import QCoreApplication
 import sip
+import Main
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
@@ -19,6 +21,16 @@ class Form(QMainWindow, form_class):
         self.btn_move_to_left:QPushButton
         self.select_list:QTreeWidget
         self.selected_list:QTreeWidget
+        self.text_planid:QTreeWidget
+        self.text_bn:QTreeWidget
+        self.btn_run_test:QTreeWidget
+        self.btn_close:QTreeWidget
+        self.tableview:QTableView
+        self.label_testcase:QLabel
+        self.label_passed:QLabel
+        self.label_failed:QLabel
+        self.label_notexecuted:QLabel
+        self.label_exception:QLabel
 
         self.select_list.setSortingEnabled(True)
         self.select_list.sortByColumn(0, QtCore.Qt.AscendingOrder)
@@ -28,6 +40,17 @@ class Form(QMainWindow, form_class):
         # 시그널 설정
         self.btn_move_to_right.clicked.connect(self.move_item)
         self.btn_move_to_left.clicked.connect(self.move_item)
+        self.btn_run_test.clicked.connect(self.run_test)
+        self.btn_close.clicked.connect(QCoreApplication.instance().quit)
+
+        self.btn_planid:QTreeWidget
+        self.btn_planid.clicked.connect(self.set_testlink)
+
+    def set_testlink(self):
+        planid = self.text_planid.toPlainText()
+        bn = self.text_bn.toPlainText()
+        print(planid)
+        print(bn)
 
     def add_child_all(parent, item, child_Count):
         for n in range(0, child_Count):
@@ -299,6 +322,48 @@ class Form(QMainWindow, form_class):
                     # Parent에 child가 존재하지 않는 경우, parenet 삭제
                     if parent_item.childCount() == 0:
                         sip.delete(parent_item)
+
+    def run_test(self):
+        global testcase_list
+        testcase_list = []
+        
+        # Selected list에서 first parent 개수 확인
+        for n in range(0, self.selected_list.topLevelItemCount()):
+            first_parent = self.selected_list.topLevelItem(n)
+
+            # first parent에 child가 있는지 확인
+            for i in range(0, first_parent.childCount()):
+                # second parent가 아니면 testcase list에 저장
+                if first_parent.child(i).childCount() == 0:
+                    testcase_list.append(first_parent.child(i).text(1))
+                # second parent 일 경우
+                else:
+                    for j in range(0, first_parent.child(i).childCount()):
+                        testcase_list.append(first_parent.child(i).child(j).text(1))
+        
+        
+        Form.test_status(self)
+        # Main.function_test()
+
+    def test_status(self):
+        global test_status_passed
+        global test_status_failed
+        global test_status_notexecuted
+        global test_status_exception
+
+        test_status_passed = 0
+        test_status_failed = 0
+        test_status_notexecuted = 0
+        test_status_exception = 0
+
+
+        
+        # 진행할 테스트 케이스 수
+        self.label_testcase.setText(str(len(testcase_list)))
+
+
+
+
 
 
 if __name__ == '__main__':

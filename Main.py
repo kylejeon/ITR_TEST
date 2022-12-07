@@ -8,6 +8,7 @@ import ITR_Admin_Auditlog
 import ITR_Admin_Notice
 import ITR_Admin_DirectMessage
 import time
+import ITR_Execute_GUI
 
 full_test_case = [
     # Sign
@@ -166,6 +167,7 @@ def full_test():
                 except:
                     ITR_Admin_Common.driver.refresh()
                     print("An exception occurred.")
+                    ITR_Execute_GUI.test_status_exception += 1
                     pass
         finally:
             print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
