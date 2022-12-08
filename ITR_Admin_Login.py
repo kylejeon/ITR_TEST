@@ -11,9 +11,8 @@ from ITR_Admin_Common import testlink
 from ITR_Admin_Common import testPlanID
 from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Var
-# from ITR_Execute_GUI import test_status_failed
-# from ITR_Execute_GUI import test_status_passed
-
+from ITR_Execute_GUI import Form
+import Common_Var
 
 class signInOut:
     def admin_sign_in():
@@ -177,10 +176,10 @@ class Sign:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            test_status_failed = test_status_failed + 1
+            Common_Var.form.update_failed()
             testlink.reportTCResult(1531, testPlanID, buildName, 'f', result)            
         else:
-            test_status_passed = test_status_passed + 1
+            Common_Var.form.update_passed()
             testlink.reportTCResult(1531, testPlanID, buildName, 'p', "Sign In/Out Test Passed")
         driver.find_element(By.CSS_SELECTOR, ".pull-right > span").click()
         driver.implicitly_wait(3)
@@ -213,10 +212,10 @@ class Sign:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            test_status_failed = test_status_failed + 1
+            Common_Var.form.update_failed()
             testlink.reportTCResult(1538, testPlanID, buildName, 'f', result)            
         else:
-            test_status_passed = test_status_passed + 1
+            Common_Var.form.update_passed()
             testlink.reportTCResult(1538, testPlanID, buildName, 'p', "Remember Me Test Passed")    
 
 class Topbar:
@@ -295,8 +294,8 @@ class Topbar:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            test_status_failed = test_status_failed + 1
+            Common_Var.form.update_failed()
             testlink.reportTCResult(1542, testPlanID, buildName, 'f', result)            
         else:
-            test_status_passed = test_status_passed + 1
+            Common_Var.form.update_passed()
             testlink.reportTCResult(1542, testPlanID, buildName, 'p', "Search_Schedule_List Test Passed")  

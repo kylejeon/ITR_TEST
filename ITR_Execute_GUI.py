@@ -1,61 +1,29 @@
 import sys
-import time
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5.QtCore import *
+# from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtCore import QThread
 from PyQt5 import QtGui
-# from PyQt5.QtCore import QCoreApplication
 import sip
-# from Main import function_test
 import Main
+import Common_Var
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
 form_class = uic.loadUiType("Test_GUI_2.ui")[0]
 
-# # Thread 생성
-# class Thread1(QThread):
-#     #parent = MainWidget을 상속 받음.
-#     def __init__(self, parent):
-#         super().__init__(parent)
-#     def run(self):
-#         for i in range(10):
-#             print("Thread :",i)
-#             time.sleep(1)
-
-class ThreadClass(QThread): 
-    def __init__(self, parent = None): 
-        super(ThreadClass,self).__init__(parent)
-    def run(self): 
-        for i in range(10):
-            print("Thread :",i)
-            time.sleep(1)
-
-# class Worker(QThread):
-#     dataLock = QMutex()
-#     data = 0
-
-#     def __init__(self,num):
-#         super(Worker, self).__init__()
-#         self.num = num
-#         print(f'Woker {self.num} 생성')
-
-#     def __del__(self):
-#         print(f'Worker {self.num} 소멸')
-
-#     def run(self) -> None:
-#         Worker.dataLock.lock()
-#         Worker.data += 1
-#         Worker.dataLock.unlock()
-#         print(f'data = {Worker.data}')
-#         self.__del__()
+# Thread 생성
+class Thread1(QThread):
+    def __init__(self, parent):
+        super().__init__(parent)
+    def run(self):
+        Main.Test.function_test(testcase_list)
 
 class Form(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.threadclass = ThreadClass() 
 
         self.btn_move_to_right:QPushButton
         self.btn_move_to_left:QPushButton
@@ -86,6 +54,11 @@ class Form(QMainWindow, form_class):
         self.btn_planid:QTreeWidget
         self.btn_planid.clicked.connect(self.set_testlink)
 
+        Common_Var.test_status_passed = 0
+        Common_Var.test_status_failed = 0
+        Common_Var.test_status_notexecuted = 0
+        Common_Var.test_status_exception = 0
+        
     def set_testlink(self):
         planid = self.text_planid.toPlainText()
         bn = self.text_bn.toPlainText()
@@ -363,6 +336,39 @@ class Form(QMainWindow, form_class):
                     if parent_item.childCount() == 0:
                         sip.delete(parent_item)
 
+    def run(self):
+        h2 = Thread1(self)
+        h2.start()
+
+    def init_status(self):
+        self.label_testcase.setText(str(len(testcase_list)))
+        self.label_passed.setText(str(Common_Var.test_status_passed))
+        self.label_failed.setText(str(Common_Var.test_status_failed))
+        self.label_notexecuted.setText(str(int(len(testcase_list))))
+
+    # def update_status(self):
+    #     print(Common_Var.test_status_passed)
+    #     self.label_passed.setText(str(Common_Var.test_status_passed))
+    #     self.label_failed.setText(str(Common_Var.test_status_failed))
+    #     self.label_notexecuted.setText(str(Common_Var.test_status_notexecuted))
+    #     self.label_exception.setText(str(Common_Var.test_status_exception))
+
+    def update_passed(self):
+        Common_Var.test_status_passed += 1
+        Common_Var.test_status_notexecuted -= 1
+        Common_Var.form.label_passed.setText(str(Common_Var.test_status_passed))
+        Common_Var.form.label_passed.setText(str(Common_Var.test_status_notexecuted))
+
+    def update_failed(self):
+        Common_Var.test_status_failed += 1
+        Common_Var.test_status_notexecuted -= 1
+        Common_Var.form.label_passed.setText(str(Common_Var.test_status_failed))
+        Common_Var.form.label_passed.setText(str(Common_Var.test_status_notexecuted))
+
+    def update_exception(self):
+        Common_Var.test_status_exception -= 1
+        Common_Var.form.label_passed.setText(str(Common_Var.test_status_exception))
+
     def run_test(self):
         global testcase_list
         testcase_list = []
@@ -380,31 +386,13 @@ class Form(QMainWindow, form_class):
                 else:
                     for j in range(0, first_parent.child(i).childCount()):
                         testcase_list.append(first_parent.child(i).child(j).text(1))
-        
-        Form.test_status(self)
-        Main.function_test(testcase_list)
-
-    def test_status(self):
-        global test_status_passed
-        global test_status_failed
-        global test_status_notexecuted
-        global test_status_exception
-
-        test_status_passed = 0
-        test_status_failed = 0
-        test_status_notexecuted = 0
-        test_status_exception = 0
-
-        # 진행할 테스트 케이스 수
-        self.label_testcase.setText(str(len(testcase_list)))
-
-
-
+        self.init_status()
+        self.run()
 
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    form = Form()
-    form.show()
+    Common_Var.form = Form()
+    Common_Var.form.show()
     sys.exit(app.exec_())
