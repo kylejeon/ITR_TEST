@@ -8,7 +8,7 @@ import ITR_Admin_Auditlog
 import ITR_Admin_Notice
 import ITR_Admin_DirectMessage
 import time
-import ITR_Execute_GUI
+# from ITR_Execute_GUI import test_status_exception
 
 full_test_case = [
     # Sign
@@ -142,6 +142,15 @@ full_test_case = [
     ITR_Admin_DirectMessage.DirectMessage.DirectMessageSetting_Selection # ITR-120
     ]
 
+test_index_list = [
+    "Sign In/Out",
+    "Remember Me",
+    "Search Schedule List",
+    "Upload Schedule List File",
+    "Download Register Form",
+    "Guide Download"
+]
+
 # Full Test
 def full_test():
     start = time.time()
@@ -167,7 +176,6 @@ def full_test():
                 except:
                     ITR_Admin_Common.driver.refresh()
                     print("An exception occurred.")
-                    ITR_Execute_GUI.test_status_exception += 1
                     pass
         finally:
             print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
@@ -180,5 +188,43 @@ def full_test():
     
     ITR_Admin_Common.driver.quit()
 
+def function_test(testcase_list):
+    start = time.time()
+    failed_test_list = []
+    
+    # full test case에서 선택한 case 찾기
+    for case in testcase_list:
+        time.sleep(0.5)
+        try:
+            # print("(",str(full_test_case.index(full_test_case[test_index_list.index(case)])+1) + " / " + str(len(full_test_case)),")", round(((full_test_case.index(full_test_case[test_index_list.index(case)])+1)*100/int(len(full_test_case))),1),"%")
+            run_time = time.time()
+            # test()
+            # full_test_case[test_index_list.index(case)]()
+            full_test_case[test_index_list.index(case)]()
+        except:
+            # print("Exception on " + str(test))
+            print("An exception occurred.")
+            for i in range(0,3):
+                try:
+                    if full_test_case[test_index_list.index(case)] not in failed_test_list:
+                        failed_test_list.append(full_test_case[test_index_list.index(case)])
+                    print("Retry ("+str(i+1)+"/3)")
+                    full_test_case[test_index_list.index(case)]()
+                    failed_test_list.remove(full_test_case[test_index_list.index(case)])
+                    break
+                except:
+                    ITR_Admin_Common.driver.refresh()
+                    print("An exception occurred.")
+                    # test_status_exception = test_status_exception + 1
+                    pass
+        finally:
+            print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
+            pass
+
+    print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
+    print("failed_test_list: ", failed_test_list)
+    
+    ITR_Admin_Common.driver.quit()
+
 # full test 
-full_test()
+# full_test()
