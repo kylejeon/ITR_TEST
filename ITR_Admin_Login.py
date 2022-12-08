@@ -11,7 +11,8 @@ from ITR_Admin_Common import testlink
 from ITR_Admin_Common import testPlanID
 from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Var
-import ITR_Execute_GUI
+# from ITR_Execute_GUI import test_status_failed
+# from ITR_Execute_GUI import test_status_passed
 
 
 class signInOut:
@@ -176,10 +177,10 @@ class Sign:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            ITR_Execute_GUI.test_status_failed += 1
+            test_status_failed = test_status_failed + 1
             testlink.reportTCResult(1531, testPlanID, buildName, 'f', result)            
         else:
-            ITR_Execute_GUI.test_status_passed += 1
+            test_status_passed = test_status_passed + 1
             testlink.reportTCResult(1531, testPlanID, buildName, 'p', "Sign In/Out Test Passed")
         driver.find_element(By.CSS_SELECTOR, ".pull-right > span").click()
         driver.implicitly_wait(3)
@@ -212,10 +213,10 @@ class Sign:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            ITR_Execute_GUI.test_status_failed += 1
+            test_status_failed = test_status_failed + 1
             testlink.reportTCResult(1538, testPlanID, buildName, 'f', result)            
         else:
-            ITR_Execute_GUI.test_status_passed += 1
+            test_status_passed = test_status_passed + 1
             testlink.reportTCResult(1538, testPlanID, buildName, 'p', "Remember Me Test Passed")    
 
 class Topbar:
@@ -294,8 +295,8 @@ class Topbar:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            ITR_Execute_GUI.test_status_failed += 1
+            test_status_failed = test_status_failed + 1
             testlink.reportTCResult(1542, testPlanID, buildName, 'f', result)            
         else:
-            ITR_Execute_GUI.test_status_passed += 1
+            test_status_passed = test_status_passed + 1
             testlink.reportTCResult(1542, testPlanID, buildName, 'p', "Search_Schedule_List Test Passed")  

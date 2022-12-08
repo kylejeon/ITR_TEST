@@ -1,22 +1,62 @@
 import sys
+import time
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
-from PyQt5 import QtCore
+from PyQt5.QtCore import *
+from PyQt5.QtCore import QThread
 from PyQt5 import QtGui
-from PyQt5.QtCore import QCoreApplication
+# from PyQt5.QtCore import QCoreApplication
 import sip
+# from Main import function_test
 import Main
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
 form_class = uic.loadUiType("Test_GUI_2.ui")[0]
 
+# # Thread 생성
+# class Thread1(QThread):
+#     #parent = MainWidget을 상속 받음.
+#     def __init__(self, parent):
+#         super().__init__(parent)
+#     def run(self):
+#         for i in range(10):
+#             print("Thread :",i)
+#             time.sleep(1)
+
+class ThreadClass(QThread): 
+    def __init__(self, parent = None): 
+        super(ThreadClass,self).__init__(parent)
+    def run(self): 
+        for i in range(10):
+            print("Thread :",i)
+            time.sleep(1)
+
+# class Worker(QThread):
+#     dataLock = QMutex()
+#     data = 0
+
+#     def __init__(self,num):
+#         super(Worker, self).__init__()
+#         self.num = num
+#         print(f'Woker {self.num} 생성')
+
+#     def __del__(self):
+#         print(f'Worker {self.num} 소멸')
+
+#     def run(self) -> None:
+#         Worker.dataLock.lock()
+#         Worker.data += 1
+#         Worker.dataLock.unlock()
+#         print(f'data = {Worker.data}')
+#         self.__del__()
+
 class Form(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
-        # self.init_ui()
         self.setupUi(self)
-        
+        self.threadclass = ThreadClass() 
+
         self.btn_move_to_right:QPushButton
         self.btn_move_to_left:QPushButton
         self.select_list:QTreeWidget
@@ -33,9 +73,9 @@ class Form(QMainWindow, form_class):
         self.label_exception:QLabel
 
         self.select_list.setSortingEnabled(True)
-        self.select_list.sortByColumn(0, QtCore.Qt.AscendingOrder)
+        self.select_list.sortByColumn(0, Qt.AscendingOrder)
         self.selected_list.setSortingEnabled(True)
-        self.selected_list.sortByColumn(0, QtCore.Qt.AscendingOrder)
+        self.selected_list.sortByColumn(0, Qt.AscendingOrder)
         
         # 시그널 설정
         self.btn_move_to_right.clicked.connect(self.move_item)
@@ -341,9 +381,8 @@ class Form(QMainWindow, form_class):
                     for j in range(0, first_parent.child(i).childCount()):
                         testcase_list.append(first_parent.child(i).child(j).text(1))
         
-        
         Form.test_status(self)
-        # Main.function_test()
+        Main.function_test(testcase_list)
 
     def test_status(self):
         global test_status_passed
@@ -356,8 +395,6 @@ class Form(QMainWindow, form_class):
         test_status_notexecuted = 0
         test_status_exception = 0
 
-
-        
         # 진행할 테스트 케이스 수
         self.label_testcase.setText(str(len(testcase_list)))
 
