@@ -201,6 +201,8 @@ class Test:
             time.sleep(0.5)
             try:
                 print("(",str((test_index_list.index(case)+1)) + " / " + str(len(testcase_list)),")", round((test_index_list.index(case)+1)*100/int(len(testcase_list)),1),"%")
+                Common_Var.progress_bar = round((test_index_list.index(case)+1)*100/int(len(testcase_list)),1)
+                Common_Var.executed = int((test_index_list.index(case)+1)*100/int(len(testcase_list)))
                 run_time = time.time()
                 full_test_case[test_index_list.index(case)]()
                 Test.delay()

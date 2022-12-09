@@ -11,7 +11,6 @@ from ITR_Admin_Common import testlink
 from ITR_Admin_Common import testPlanID
 from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Var
-from ITR_Execute_GUI import Form
 import Common_Var
 
 class signInOut:

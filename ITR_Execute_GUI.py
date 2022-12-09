@@ -33,12 +33,14 @@ class Form(QMainWindow, form_class):
         self.text_bn:QTreeWidget
         self.btn_run_test:QTreeWidget
         self.btn_close:QTreeWidget
-        self.tableview:QTableView
+        self.tableWidget:QTableWidget
         self.label_testcase:QLabel
         self.label_passed:QLabel
         self.label_failed:QLabel
         self.label_notexecuted:QLabel
         self.label_exception:QLabel
+        self.label_executed:QLabel
+        self.progressBar:QProgressBar
 
         self.select_list.setSortingEnabled(True)
         self.select_list.sortByColumn(0, Qt.AscendingOrder)
@@ -54,10 +56,10 @@ class Form(QMainWindow, form_class):
         self.btn_planid:QTreeWidget
         self.btn_planid.clicked.connect(self.set_testlink)
 
-        Common_Var.test_status_passed = 0
-        Common_Var.test_status_failed = 0
-        Common_Var.test_status_notexecuted = 0
-        Common_Var.test_status_exception = 0
+        # Common_Var.test_status_passed = 0
+        # Common_Var.test_status_failed = 0
+        # Common_Var.test_status_notexecuted = 0
+        # Common_Var.test_status_exception = 0
         
     def set_testlink(self):
         planid = self.text_planid.toPlainText()
@@ -344,30 +346,49 @@ class Form(QMainWindow, form_class):
         self.label_testcase.setText(str(len(testcase_list)))
         self.label_passed.setText(str(Common_Var.test_status_passed))
         self.label_failed.setText(str(Common_Var.test_status_failed))
+        Common_Var.test_status_notexecuted = int(len(testcase_list))
         self.label_notexecuted.setText(str(int(len(testcase_list))))
-
-    # def update_status(self):
-    #     print(Common_Var.test_status_passed)
-    #     self.label_passed.setText(str(Common_Var.test_status_passed))
-    #     self.label_failed.setText(str(Common_Var.test_status_failed))
-    #     self.label_notexecuted.setText(str(Common_Var.test_status_notexecuted))
-    #     self.label_exception.setText(str(Common_Var.test_status_exception))
+        Common_Var.form.label_executed.setText(str(Common_Var.executed) + "% executed")
 
     def update_passed(self):
         Common_Var.test_status_passed += 1
         Common_Var.test_status_notexecuted -= 1
         Common_Var.form.label_passed.setText(str(Common_Var.test_status_passed))
-        Common_Var.form.label_passed.setText(str(Common_Var.test_status_notexecuted))
+        Common_Var.form.label_notexecuted.setText(str(Common_Var.test_status_notexecuted))
+        self.progressBar.setValue(int(Common_Var.progress_bar))
+        Common_Var.form.label_executed.setText(str(Common_Var.executed) + "% executed")
 
     def update_failed(self):
         Common_Var.test_status_failed += 1
         Common_Var.test_status_notexecuted -= 1
         Common_Var.form.label_passed.setText(str(Common_Var.test_status_failed))
-        Common_Var.form.label_passed.setText(str(Common_Var.test_status_notexecuted))
+        Common_Var.form.label_notexecuted.setText(str(Common_Var.test_status_notexecuted))
+        self.progressBar.setValue(int(Common_Var.progress_bar))
+        Common_Var.form.label_executed.setText(str(Common_Var.executed) + "% executed")
 
     def update_exception(self):
         Common_Var.test_status_exception -= 1
-        Common_Var.form.label_passed.setText(str(Common_Var.test_status_exception))
+        Common_Var.form.label_exception.setText(str(Common_Var.test_status_exception))
+        self.progressBar.setValue(int(Common_Var.progress_bar))
+        Common_Var.form.label_executed.setText(str(Common_Var.executed) + "% executed")
+    
+    def init_tablewidget(self):
+        Common_Var.form.tableWidget = QTableWidget(self)
+        Common_Var.form.tableWidget.resize(490,310)
+        Common_Var.form.tableWidget.setRowCount(5)
+        Common_Var.form.tableWidget.setColumnCount(5)
+        Common_Var.form.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.update_table()
+
+    def update_table(self):
+        column_headers = ["TestCase Name","Execution Status","Test Steps","Defects"]
+        Common_Var.form.tableWidget.setHorizontalHeaderLabels(column_headers)
+
+        Common_Var.form.tableWidget.setItem(0, 0, QTableWidgetItem(Common_Var.tc_name))
+        Common_Var.form.tableWidget.setItem(0, 1, QTableWidgetItem(Common_Var.executed_status))
+        Common_Var.form.tableWidget.setItem(0, 2, QTableWidgetItem(Common_Var.tc_steps))
+        Common_Var.form.tableWidget.setItem(0, 3, QTableWidgetItem(Common_Var.defects))
+
 
     def run_test(self):
         global testcase_list
@@ -387,6 +408,7 @@ class Form(QMainWindow, form_class):
                     for j in range(0, first_parent.child(i).childCount()):
                         testcase_list.append(first_parent.child(i).child(j).text(1))
         self.init_status()
+        self.init_tablewidget()
         self.run()
 
 
