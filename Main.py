@@ -144,15 +144,155 @@ full_test_case = [
     ]
 
 test_index_list = [
-    "Sign In/Out",
-    "Remember Me",
-    "Search Schedule List",
-    "Upload Schedule List File",
-    "Download Register Form",
-    "Guide Download"
+    ["Sign In/Out",5],
+    ["Remember Me",1],
+    ["Search Schedule List",2],
+    ["Hospital List",8],
+    ["Reporter List",3],
+    ["Search Priority",3],
+    ["Job Status",13],
+    ["Search Date",4],
+    ["Patient Location",5],
+    ["Patient ID",2],
+    ["Patient Name",2],
+    ["Age",4],
+    ["Study Description",1],
+    ["Search Modality",1],
+    ["Bodypart",1],
+    ["Department",1],
+    ["Request Name",1],
+    ["Search All",1],
+    ["Real Time",2],
+    ["Short cut",14],
+    ["All Assigned List",1],
+    ["Not Assigned List",1],
+    ["All List",5],
+    ["Schedule",2],
+    ["Worklist Priority",2],
+    ["Canceled",3],
+    ["Refer",9],
+    ["Refer Cancel",6],
+    ["Refer Cancel and Refer",7],
+    ["Set Schedule",4],
+    ["Schedule Cancel",4],
+    ["Revised",1],
+    ["Discard",2],
+    ["Retry Request",2],
+    ["Worklist Columns",6],
+    ["Show entries",4],
+    ["Sort by",1],
+    ["User Related Wokrlist",1],
+    ["Statistics Date",5],
+    ["Hospital",1],
+    ["Reporter",1],
+    ["Statistics Modality",1],
+    ["Statistics Columns",4],
+    ["Statistics Show entries",4],
+    ["Class",1],
+    ["Insitution",1],
+    ["User ID",1],
+    ["User Name",1],
+    ["Show with Mapping ID",1],
+    ["User Registration Add",24],
+    ["User Registration Modify",22],
+    ["User Registration Delete",4],
+    ["Specialty Search",2],
+    ["Specialty Add",3],
+    ["Specialty Delete",4],
+    ["Specialty Modify",10],
+    ["Institution List Search",1],
+    ["Specialty Institution Add",5],
+    ["Specialty Institution Delete",4],
+    ["Specialty Institution Modify",3],
+    ["Specialty Institution Modify - Search",7],
+    ["User Search Filter - Class",1],
+    ["User Search Filter - Institution",1],
+    ["User Search Filter - User ID",1],
+    ["User Search Filter - User Name",1],
+    ["User Add",13],
+    ["User Delete",4],
+    ["User Modify",14],
+    ["Institution Search Filter - Class", 1],
+    ["Institution Search Filter - Institution",1],
+    ["Institution Search Filter - User ID",1],
+    ["Institution Search Filter - User Name",1],
+    ["D.C. Institution Add",13],
+    ["D.C. Institution Delete",4],
+    ["D.C. Institution Modify",14],
+    ["Institution Code",1],
+    ["Institution Name",1],
+    ["Institution Add",14],
+    ["Institution Delete",4],
+    ["Institution Modify",13],
+    ["Group Add",3],
+    ["Standard Report Add",10],
+    ["Standard Report Delete",4],
+    ["Group Modify",4],
+    ["Standard Report Modify",10],
+    ["Multi Reading Search Filter",12],
+    ["Multi Reading Add",12],
+    ["Multi Reading Delete",1],
+    ["Multi Reading Modify",9],
+    ["Audit Log Search",1],
+    ["Audit Log Export",1],
+    ["Audit Log Show entries",3],
+    ["Audit Log Sorting",1],
+    ["Audit Log Data",1],
+    ["Notice Edit Board",],
+    ["Notice Edit",],
+    ["Notice Delete",],
+    ["Notice Display",],
+    ["Direct Message Search",],
+    ["Direct Message Show entries",],
+    ["Direct Message Sorting",],
+    ["Badge",],
+    ["Message",],
+    ["Institution - Search",],
+    ["Institution - Message",],
+    ["Center - Search",],
+    ["Center - Message",],
+    ["Reporter - Search",],
+    ["Reporter - Message",],
+    ["Direct Message Setting Search",],
+    ["Authorize",],
+    ["Selection"]
 ]
+# test_steps_list = [
+#     5,
+#     1,
+#     1,
+#     8,
+#     8,
+#     3,
+#     3,
+#     13,
+#     4,
+#     5,
+#     2,
+#     2,
+#     4,
+#     1,
+#     1,
+#     1,
+#     1,
+#     1,
+#     1,
+#     2,
+#     14,
+
+# ]
+
+def get_name(name):
+    for i in list:
+        if i[0] == name:
+            return list.index(i)
+
+def get_step(name):
+    for i in list:
+        if i[0] == name:
+            return list[list.index(i)][1]
+
 class Test:
-    
     # Full Test
     def full_test():
         start = time.time()
@@ -204,6 +344,10 @@ class Test:
                 Common_Var.progress_bar = round((test_index_list.index(case)+1)*100/int(len(testcase_list)),1)
                 Common_Var.executed = int((test_index_list.index(case)+1)*100/int(len(testcase_list)))
                 run_time = time.time()
+                # TableWidget 값 추가
+                Common_Var.tc_name = case
+                Common_Var.tc_steps = test_steps_list[int(test_index_list.index(case))-1]
+                # Common_Var.form.update_table()
                 full_test_case[test_index_list.index(case)]()
                 Test.delay()
             except Exception as e:

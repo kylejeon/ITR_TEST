@@ -8,9 +8,13 @@ executed = 0
 
 # tableView
 tc_name = ""
-executed_status = ""
+run_status = ""
 tc_steps = 0
 defects = 0
+row = 0
+rowIndex = 0
 
 # form
 form = None
+
+signal1 = None

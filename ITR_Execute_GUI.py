@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 # from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtCore import QThread
 from PyQt5 import QtGui
+from PyQt5.QtCore import QThreadPool
 import sip
 import Main
 import Common_Var
@@ -15,16 +16,28 @@ form_class = uic.loadUiType("Test_GUI_2.ui")[0]
 
 # Thread 생성
 class Thread1(QThread):
+    finished = pyqtSignal()
+
     def __init__(self, parent):
         super().__init__(parent)
+    def __del__(self):
+        self.wait()
     def run(self):
         Main.Test.function_test(testcase_list)
+
+class UpdateSignal(QObject):
+    signal = pyqtSignal(str, str, str, str)
+
+    def run(self):
+        self.signal.emit(str(Common_Var.tc_name), str(Common_Var.run_status), str(Common_Var.tc_steps), str(Common_Var.defects))
 
 class Form(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.thread_manager = QThreadPool()
 
+        QApplication.processEvents()
         self.btn_move_to_right:QPushButton
         self.btn_move_to_left:QPushButton
         self.select_list:QTreeWidget
@@ -51,16 +64,23 @@ class Form(QMainWindow, form_class):
         self.btn_move_to_right.clicked.connect(self.move_item)
         self.btn_move_to_left.clicked.connect(self.move_item)
         self.btn_run_test.clicked.connect(self.run_test)
+        # self.btn_run_test.clicked.connect(self.run_test_safely)
         self.btn_close.clicked.connect(QCoreApplication.instance().quit)
 
         self.btn_planid:QTreeWidget
         self.btn_planid.clicked.connect(self.set_testlink)
 
-        # Common_Var.test_status_passed = 0
-        # Common_Var.test_status_failed = 0
-        # Common_Var.test_status_notexecuted = 0
-        # Common_Var.test_status_exception = 0
-        
+    @pyqtSlot(str, str, str, str)
+    def signal_emitted(self, arg1, arg2, arg3, arg4):
+        Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 0, QTableWidgetItem(str(arg1)))
+        Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 1, QTableWidgetItem(str(arg2)))
+        Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 2, QTableWidgetItem(str(arg3)))
+        Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 3, QTableWidgetItem(str(arg4)))
+        # Common_Var.form.tableWidget.resizeColumnsToContents()
+        # Common_Var.form.tableWidget.resizeRowsToContents()
+        QApplication.processEvents()
+        Common_Var.rowIndex += 1
+
     def set_testlink(self):
         planid = self.text_planid.toPlainText()
         bn = self.text_bn.toPlainText()
@@ -373,22 +393,43 @@ class Form(QMainWindow, form_class):
         Common_Var.form.label_executed.setText(str(Common_Var.executed) + "% executed")
     
     def init_tablewidget(self):
-        Common_Var.form.tableWidget = QTableWidget(self)
-        Common_Var.form.tableWidget.resize(490,310)
-        Common_Var.form.tableWidget.setRowCount(5)
-        Common_Var.form.tableWidget.setColumnCount(5)
+        Common_Var.form.tableWidget.setColumnCount(4)
+        Common_Var.row = len(testcase_list)
+        Common_Var.form.tableWidget.setRowCount(Common_Var.row)
         Common_Var.form.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.update_table()
+        column_headers = ["TestCase Name","Run Status","Test Steps","Defects"]
+        Common_Var.form.tableWidget.setHorizontalHeaderLabels(column_headers)
+        # Common_Var.form.tableWidget.resizeColumnsToContents()
+        # Common_Var.form.tableWidget.resizeRowsToContents()
+        Common_Var.form.tableWidget.setColumnWidth(0,190)
+        Common_Var.form.tableWidget.setColumnWidth(1,120)
+        Common_Var.form.tableWidget.setColumnWidth(2,80)
+        Common_Var.form.tableWidget.setColumnWidth(3,80)
+        
+    
+    @pyqtSlot()
+    def update_passed_safely(self):
+        self.thread_manager.start(self.update_passed)
+
+    @pyqtSlot()
+    def run_test_safely(self):
+        self.run_test()
+        self.thread = QThread()
+        print("run test", QCoreApplication.instance().thread())
+        self.worker = Thread1(self)
+        self.worker.moveToThread(self.thread)
+
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        # self.worker.progress.connect(self.reportProgress)
+        self.thread.start()
 
     def update_table(self):
-        column_headers = ["TestCase Name","Execution Status","Test Steps","Defects"]
-        Common_Var.form.tableWidget.setHorizontalHeaderLabels(column_headers)
-
-        Common_Var.form.tableWidget.setItem(0, 0, QTableWidgetItem(Common_Var.tc_name))
-        Common_Var.form.tableWidget.setItem(0, 1, QTableWidgetItem(Common_Var.executed_status))
-        Common_Var.form.tableWidget.setItem(0, 2, QTableWidgetItem(Common_Var.tc_steps))
-        Common_Var.form.tableWidget.setItem(0, 3, QTableWidgetItem(Common_Var.defects))
-
+        mysignal = UpdateSignal()
+        mysignal.signal.connect(self.signal_emitted)
+        mysignal.run()
 
     def run_test(self):
         global testcase_list
@@ -410,7 +451,6 @@ class Form(QMainWindow, form_class):
         self.init_status()
         self.init_tablewidget()
         self.run()
-
 
 
 if __name__ == '__main__':
