@@ -183,7 +183,6 @@ class Sign:
             Common_Var.form.update_passed()
             Common_Var.run_status = "Passed"
             Common_Var.form.update_table()
-            # Common_Var.form.update_passed_safely()
             testlink.reportTCResult(1531, testPlanID, buildName, 'p', "Sign In/Out Test Passed")
         driver.find_element(By.CSS_SELECTOR, ".pull-right > span").click()
         driver.implicitly_wait(3)

@@ -238,59 +238,40 @@ test_index_list = [
     ["Audit Log Show entries",3],
     ["Audit Log Sorting",1],
     ["Audit Log Data",1],
-    ["Notice Edit Board",],
-    ["Notice Edit",],
-    ["Notice Delete",],
-    ["Notice Display",],
-    ["Direct Message Search",],
-    ["Direct Message Show entries",],
-    ["Direct Message Sorting",],
-    ["Badge",],
-    ["Message",],
-    ["Institution - Search",],
-    ["Institution - Message",],
-    ["Center - Search",],
-    ["Center - Message",],
-    ["Reporter - Search",],
-    ["Reporter - Message",],
-    ["Direct Message Setting Search",],
-    ["Authorize",],
-    ["Selection"]
+    ["Notice Edit Board",23],
+    ["Notice Edit",9],
+    ["Notice Delete",1],
+    ["Notice Display",1],
+    ["Direct Message Search",4],
+    ["Direct Message Show entries",5],
+    ["Direct Message Sorting",3],
+    ["Badge",1],
+    ["Message",1],
+    ["Institution - Search",3],
+    ["Institution - Message",3],
+    ["Center - Search",3],
+    ["Center - Message",3],
+    ["Reporter - Search",3],
+    ["Reporter - Message",3],
+    ["Direct Message Setting Search",4],
+    ["Authorize",4],
+    ["Selection",6]
 ]
-# test_steps_list = [
-#     5,
-#     1,
-#     1,
-#     8,
-#     8,
-#     3,
-#     3,
-#     13,
-#     4,
-#     5,
-#     2,
-#     2,
-#     4,
-#     1,
-#     1,
-#     1,
-#     1,
-#     1,
-#     1,
-#     2,
-#     14,
-
-# ]
 
 def get_name(name):
-    for i in list:
+    for i in test_index_list:
         if i[0] == name:
-            return list.index(i)
+            return test_index_list.index(i)
 
 def get_step(name):
-    for i in list:
+    for i in test_index_list:
         if i[0] == name:
-            return list[list.index(i)][1]
+            return test_index_list[test_index_list.index(i)][1]
+            
+def get_index(name):
+    for i in test_index_list:
+        if i[0] == name:
+            return test_index_list.index(i)
 
 class Test:
     # Full Test
@@ -338,17 +319,20 @@ class Test:
         
         # full test case에서 선택한 case 찾기
         for case in testcase_list:
+            testname = get_name(case)
+            teststep = get_step(case)
+            testidx = get_index(case)
             time.sleep(0.5)
             try:
-                print("(",str((test_index_list.index(case)+1)) + " / " + str(len(testcase_list)),")", round((test_index_list.index(case)+1)*100/int(len(testcase_list)),1),"%")
-                Common_Var.progress_bar = round((test_index_list.index(case)+1)*100/int(len(testcase_list)),1)
-                Common_Var.executed = int((test_index_list.index(case)+1)*100/int(len(testcase_list)))
+                print("(",str((testidx+1)) + " / " + str(len(testcase_list)),")", round((testidx+1)*100/int(len(testcase_list)),1),"%")
+                Common_Var.progress_bar = round((testidx+1)*100/int(len(testcase_list)),1)
+                Common_Var.executed = int((testidx+1)*100/int(len(testcase_list)))
                 run_time = time.time()
                 # TableWidget 값 추가
                 Common_Var.tc_name = case
-                Common_Var.tc_steps = test_steps_list[int(test_index_list.index(case))-1]
+                Common_Var.tc_steps = teststep
                 # Common_Var.form.update_table()
-                full_test_case[test_index_list.index(case)]()
+                full_test_case[testidx]()
                 Test.delay()
             except Exception as e:
                 print(e)
@@ -357,11 +341,11 @@ class Test:
                 Common_Var.form.update_exception()
                 for i in range(0,3):
                     try:
-                        if full_test_case[test_index_list.index(case)] not in failed_test_list:
-                            failed_test_list.append(full_test_case[test_index_list.index(case)])
+                        if full_test_case[testidx] not in failed_test_list:
+                            failed_test_list.append(full_test_case[testidx])
                         print("Retry ("+str(i+1)+"/3)")
-                        full_test_case[test_index_list.index(case)]()
-                        failed_test_list.remove(full_test_case[test_index_list.index(case)])
+                        full_test_case[testidx]()
+                        failed_test_list.remove(full_test_case[testidx])
                         break
                     except:
                         ITR_Admin_Common.driver.refresh()

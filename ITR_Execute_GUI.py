@@ -76,8 +76,6 @@ class Form(QMainWindow, form_class):
         Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 1, QTableWidgetItem(str(arg2)))
         Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 2, QTableWidgetItem(str(arg3)))
         Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 3, QTableWidgetItem(str(arg4)))
-        # Common_Var.form.tableWidget.resizeColumnsToContents()
-        # Common_Var.form.tableWidget.resizeRowsToContents()
         QApplication.processEvents()
         Common_Var.rowIndex += 1
 
@@ -399,33 +397,11 @@ class Form(QMainWindow, form_class):
         Common_Var.form.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         column_headers = ["TestCase Name","Run Status","Test Steps","Defects"]
         Common_Var.form.tableWidget.setHorizontalHeaderLabels(column_headers)
-        # Common_Var.form.tableWidget.resizeColumnsToContents()
-        # Common_Var.form.tableWidget.resizeRowsToContents()
         Common_Var.form.tableWidget.setColumnWidth(0,190)
         Common_Var.form.tableWidget.setColumnWidth(1,120)
         Common_Var.form.tableWidget.setColumnWidth(2,80)
         Common_Var.form.tableWidget.setColumnWidth(3,80)
         
-    
-    @pyqtSlot()
-    def update_passed_safely(self):
-        self.thread_manager.start(self.update_passed)
-
-    @pyqtSlot()
-    def run_test_safely(self):
-        self.run_test()
-        self.thread = QThread()
-        print("run test", QCoreApplication.instance().thread())
-        self.worker = Thread1(self)
-        self.worker.moveToThread(self.thread)
-
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        # self.worker.progress.connect(self.reportProgress)
-        self.thread.start()
-
     def update_table(self):
         mysignal = UpdateSignal()
         mysignal.signal.connect(self.signal_emitted)
