@@ -27,8 +27,16 @@ class Refer:
         del driver.requests
         time.sleep(1)
 
-        # Refer 탭 클릭
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        # Admin Sign out
+        ITR_Admin_Login.signInOut.admin_sign_out()
+        time.sleep(1)
+
+        # SubAdmin Sign In
+        ITR_Admin_Login.signInOut.subadmin_sign_in()
+        time.sleep(1)
+
+        # # Refer 탭 클릭
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
         # 1 steps start! : 모든 병원의 badge count와 job list의 결과가 일치하는지 확인
         # Hospital list 저장

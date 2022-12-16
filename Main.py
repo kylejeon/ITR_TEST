@@ -18,8 +18,8 @@ full_test_case = [
     # Topbar
     ITR_Admin_Login.Topbar.Search_Schedule_List, # ITR-3
     # Refer
-    ITR_Admin_Login.signInOut.admin_sign_out, # Admin logout
-    ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
+    # ITR_Admin_Login.signInOut.admin_sign_out, # Admin logout
+    # ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
     ITR_Admin_Refer.Refer.Hospital_List, # ITR-7
     ITR_Admin_Refer.Refer.Reporter_List, # ITR-8
     # Search filter
@@ -331,7 +331,6 @@ class Test:
                 # TableWidget 값 추가
                 Common_Var.tc_name = case
                 Common_Var.tc_steps = teststep
-                # Common_Var.form.update_table()
                 full_test_case[testidx]()
                 Test.delay()
             except Exception as e:
