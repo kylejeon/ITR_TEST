@@ -1058,7 +1058,7 @@
         </property>
         <item>
          <property name="text">
-          <string>14.1</string>
+          <string>14.1.1</string>
          </property>
          <property name="text">
           <string>Notice Edit Board</string>
@@ -1066,7 +1066,7 @@
         </item>
         <item>
          <property name="text">
-          <string>14.2</string>
+          <string>14.1.2</string>
          </property>
          <property name="text">
           <string>Notice Edit</string>
@@ -1074,7 +1074,7 @@
         </item>
         <item>
          <property name="text">
-          <string>14.3</string>
+          <string>14.1.3</string>
          </property>
          <property name="text">
           <string>Notice Delete</string>
@@ -1082,7 +1082,7 @@
         </item>
         <item>
          <property name="text">
-          <string>14.4</string>
+          <string>14.1.4</string>
          </property>
          <property name="text">
           <string>Notice Display</string>
