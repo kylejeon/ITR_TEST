@@ -196,8 +196,10 @@ class Form(QMainWindow, form_class):
                         children = []
                         add_child_list = []
                         add_subparent_list = []
+                        add_parent_list = []
                         child = 0
-
+                        
+                        # Subparent에 child가 존재하는 경우
                         if item.child(child).childCount() > 0:
                             children.append(item.child(child))
                         
@@ -206,35 +208,77 @@ class Form(QMainWindow, form_class):
                             for n in range(0, new_child_Count):
                                 add_child_list.append(add_item.child(child).child(n).text(0))
                                 add_child_list.append(add_item.child(child).child(n).text(1))
+                                # Child 저장                    
+                                add_subparent_list.append(add_item.child(child).text(0))
+                                add_subparent_list.append(add_item.child(child).text(1))
+                        # Subparent가 아닌 경우
                         else:
+                            children.append(item)
                             new_child_Count = item.childCount()
                             for n in range(0, new_child_Count):
                                 add_child_list.append(add_item.child(n).text(0))
                                 add_child_list.append(add_item.child(n).text(1))
-                        # Child 저장                    
-                        add_subparent_list.append(add_item.child(child).text(0))
-                        add_subparent_list.append(add_item.child(child).text(1))
+
+                        # parent 저장
+                        add_parent_list.append(add_item.text(0))
+                        add_parent_list.append(add_item.text(1))
+
                         # Parent를 선택 이동하는데, 동일한 parent가 존재하는 경우
                         for n in range(0, target_tw.topLevelItemCount()):
                             if target_tw.topLevelItem(n).text(0) == item.text(0):
                                 parent = target_tw.topLevelItem(n)
                         
-                        # Second parent 존재하는 경우, 추가
-                        for i in range(0, parent.childCount()):
-                            if parent.child(i).text(0) == add_subparent_list[0]:
-                                current_pos = parent.child(i)
-                            else:
-                                current_pos = QTreeWidgetItem(parent)
-                                cnt = len(add_subparent_list)
-                                current_pos.setText(0, add_subparent_list.pop(cnt-2))
-                                current_pos.setText(1, add_subparent_list.pop(cnt-2))
+                        # subparent 존재하는 경우
+                        check = "fail"
+                        try:
+                            for i in range(0, parent.childCount()):
+                                try:
+                                    if parent.child(i).text(0) == add_subparent_list[0]:
+                                        current_pos = parent.child(i)
+                                        check = "subparent"
+                                # subparent가 존재하지 않는 경우
+                                except:
+                                    check = "no subparent"
+                                    break
+                        except:
+                            current_pos = QTreeWidgetItem(target_tw)
+                            current_pos.setText(0, add_parent_list.pop(0))
+                            current_pos.setText(1, add_parent_list.pop(0))
+                            parent = current_pos
+                        
+                        # Second parent가 존재하지 않는 경우, 추가
+                        if check == "fail" and len(add_subparent_list) > 0:
+                            current_pos = QTreeWidgetItem(parent)
+                            cnt = len(add_subparent_list)
+                            current_pos.setText(0, add_subparent_list.pop(cnt-2))
+                            current_pos.setText(1, add_subparent_list.pop(cnt-2))
+                            cnt -= 2
+                        elif check == "no subparent":
+                            current_pos = parent
 
                         # Child 추가
-                        while len(add_child_list) != 0:
-                            new_item = QTreeWidgetItem(current_pos)
-                            cnt = len(add_child_list)
-                            new_item.setText(0, add_child_list.pop(cnt-2))
-                            new_item.setText(1, add_child_list.pop(cnt-2))
+                        cnt = len(add_child_list)
+                        if len(add_subparent_list) != 0:
+                            while len(add_child_list) != 0:
+                                new_item = QTreeWidgetItem(current_pos)
+                                new_item.setText(0, add_child_list.pop(cnt-2))
+                                new_item.setText(1, add_child_list.pop(cnt-2))
+                                cnt -= 2
+                        else:
+                            while len(add_child_list) != 0:
+                                new_item = QTreeWidgetItem(current_pos)
+                                new_item.setText(0, add_child_list.pop(cnt-2))
+                                new_item.setText(1, add_child_list.pop(cnt-2))
+                                cnt -= 2
+
+                            # Selected list에 추가하고 선택한 item을 select list에서 삭제
+                            for child in children:
+                                item.removeChild(child)
+
+                            # Child가 존재하지 않는 경우, parent 삭제
+                            if item.childCount() == 0:
+                                sip.delete(item)    
+                            break
 
                         # Selected list에 추가하고 선택한 item을 select list에서 삭제
                         for child in children:
