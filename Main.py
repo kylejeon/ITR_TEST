@@ -8,6 +8,8 @@ import ITR_Admin_Auditlog
 import ITR_Admin_Notice
 import ITR_Admin_DirectMessage
 import time
+from ITR_Execute_GUI import Form
+import Common_Var
 
 full_test_case = [
     # Sign
@@ -16,8 +18,8 @@ full_test_case = [
     # Topbar
     ITR_Admin_Login.Topbar.Search_Schedule_List, # ITR-3
     # Refer
-    ITR_Admin_Login.signInOut.admin_sign_out, # Admin logout
-    ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
+    # ITR_Admin_Login.signInOut.admin_sign_out, # Admin logout
+    # ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
     ITR_Admin_Refer.Refer.Hospital_List, # ITR-7
     ITR_Admin_Refer.Refer.Reporter_List, # ITR-8
     # Search filter
@@ -141,42 +143,222 @@ full_test_case = [
     ITR_Admin_DirectMessage.DirectMessage.DirectMessageSetting_Selection # ITR-120
     ]
 
-# Full Test
-def full_test():
-    start = time.time()
-    failed_test_list = []
-    
-    for test in full_test_case:
+test_index_list = [
+    ["Sign In/Out",5],
+    ["Remember Me",1],
+    ["Search Schedule List",2],
+    ["Hospital List",8],
+    ["Reporter List",3],
+    ["Search Priority",3],
+    ["Job Status",13],
+    ["Search Date",4],
+    ["Patient Location",5],
+    ["Patient ID",2],
+    ["Patient Name",2],
+    ["Age",4],
+    ["Study Description",1],
+    ["Search Modality",1],
+    ["Bodypart",1],
+    ["Department",1],
+    ["Request Name",1],
+    ["Search All",1],
+    ["Real Time",2],
+    ["Short cut",14],
+    ["All Assigned List",1],
+    ["Not Assigned List",1],
+    ["All List",5],
+    ["Schedule",2],
+    ["Worklist Priority",2],
+    ["Canceled",3],
+    ["Refer",9],
+    ["Refer Cancel",6],
+    ["Refer Cancel and Refer",7],
+    ["Set Schedule",4],
+    ["Schedule Cancel",4],
+    ["Revised",1],
+    ["Discard",2],
+    ["Retry Request",2],
+    ["Worklist Columns",6],
+    ["Show entries",4],
+    ["Sort by",1],
+    ["User Related Wokrlist",1],
+    ["Statistics Date",5],
+    ["Hospital",1],
+    ["Reporter",1],
+    ["Statistics Modality",1],
+    ["Statistics Columns",4],
+    ["Statistics Show entries",4],
+    ["Class",1],
+    ["Insitution",1],
+    ["User ID",1],
+    ["User Name",1],
+    ["Show with Mapping ID",1],
+    ["User Registration Add",24],
+    ["User Registration Modify",22],
+    ["User Registration Delete",4],
+    ["Specialty Search",2],
+    ["Specialty Add",3],
+    ["Specialty Delete",4],
+    ["Specialty Modify",10],
+    ["Institution List Search",1],
+    ["Specialty Institution Add",5],
+    ["Specialty Institution Delete",4],
+    ["Specialty Institution Modify",3],
+    ["Specialty Institution Modify - Search",7],
+    ["User Search Filter - Class",1],
+    ["User Search Filter - Institution",1],
+    ["User Search Filter - User ID",1],
+    ["User Search Filter - User Name",1],
+    ["User Add",13],
+    ["User Delete",4],
+    ["User Modify",14],
+    ["Institution Search Filter - Class", 1],
+    ["Institution Search Filter - Institution",1],
+    ["Institution Search Filter - User ID",1],
+    ["Institution Search Filter - User Name",1],
+    ["D.C. Institution Add",13],
+    ["D.C. Institution Delete",4],
+    ["D.C. Institution Modify",14],
+    ["Institution Code",1],
+    ["Institution Name",1],
+    ["Institution Add",14],
+    ["Institution Delete",4],
+    ["Institution Modify",13],
+    ["Group Add",3],
+    ["Standard Report Add",10],
+    ["Standard Report Delete",4],
+    ["Group Modify",4],
+    ["Standard Report Modify",10],
+    ["Multi Reading Search Filter",12],
+    ["Multi Reading Add",12],
+    ["Multi Reading Delete",1],
+    ["Multi Reading Modify",9],
+    ["Audit Log Search",1],
+    ["Audit Log Export",1],
+    ["Audit Log Show entries",3],
+    ["Audit Log Sorting",1],
+    ["Audit Log Data",1],
+    ["Notice Edit Board",23],
+    ["Notice Edit",9],
+    ["Notice Delete",1],
+    ["Notice Display",1],
+    ["Direct Message Search",4],
+    ["Direct Message Show entries",5],
+    ["Direct Message Sorting",3],
+    ["Badge",1],
+    ["Message",1],
+    ["Institution - Search",3],
+    ["Institution - Message",3],
+    ["Center - Search",3],
+    ["Center - Message",3],
+    ["Reporter - Search",3],
+    ["Reporter - Message",3],
+    ["Direct Message Setting Search",4],
+    ["Authorize",4],
+    ["Selection",6]
+]
+
+def get_name(name):
+    for i in test_index_list:
+        if i[0] == name:
+            return test_index_list.index(i)
+
+def get_step(name):
+    for i in test_index_list:
+        if i[0] == name:
+            return test_index_list[test_index_list.index(i)][1]
+            
+def get_index(name):
+    for i in test_index_list:
+        if i[0] == name:
+            return test_index_list.index(i)
+
+class Test:
+    # Full Test
+    def full_test():
+        start = time.time()
+        failed_test_list = []
+        
+        for test in full_test_case:
+            time.sleep(0.5)
+            try:
+                print("(",str(full_test_case.index(test)+1) + " / " + str(len(full_test_case)),")", round(((full_test_case.index(test)+1)*100/int(len(full_test_case))),1),"%")
+                run_time = time.time()
+                test()
+            except:
+                # print("Exception on " + str(test))
+                print("An exception occurred.")
+                for i in range(0,3):
+                    try:
+                        if test not in failed_test_list:
+                            failed_test_list.append(test)
+                        print("Retry ("+str(i+1)+"/3)")
+                        test()
+                        failed_test_list.remove(test)
+                        break
+                    except:
+                        ITR_Admin_Common.driver.refresh()
+                        print("An exception occurred.")
+                        pass
+            finally:
+                print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
+                pass
+        #for test in full_test_case:
+        #    test()
+
+        print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
+        print("failed_test_list: ", failed_test_list)
+        
+        ITR_Admin_Common.driver.quit()
+    def delay():
         time.sleep(0.5)
-        try:
-            print("(",str(full_test_case.index(test)+1) + " / " + str(len(full_test_case)),")", round(((full_test_case.index(test)+1)*100/int(len(full_test_case))),1),"%")
-            run_time = time.time()
-            test()
-        except:
-            # print("Exception on " + str(test))
-            print("An exception occurred.")
-            for i in range(0,3):
-                try:
-                    if test not in failed_test_list:
-                        failed_test_list.append(test)
-                    print("Retry ("+str(i+1)+"/3)")
-                    test()
-                    failed_test_list.remove(test)
-                    break
-                except:
-                    ITR_Admin_Common.driver.refresh()
-                    print("An exception occurred.")
-                    pass
-        finally:
-            print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
-            pass
-    #for test in full_test_case:
-    #    test()
 
-    print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
-    print("failed_test_list: ", failed_test_list)
-    
-    ITR_Admin_Common.driver.quit()
+    def function_test(testcase_list):
+        start = time.time()
+        failed_test_list = []
+        
+        # full test case에서 선택한 case 찾기
+        for case in testcase_list:
+            testname = get_name(case)
+            teststep = get_step(case)
+            testidx = get_index(case)
+            time.sleep(0.5)
+            try:
+                print("(",str((testidx+1)) + " / " + str(len(testcase_list)),")", round((testidx+1)*100/int(len(testcase_list)),1),"%")
+                Common_Var.progress_bar = round((testidx+1)*100/int(len(testcase_list)),1)
+                Common_Var.executed = int((testidx+1)*100/int(len(testcase_list)))
+                run_time = time.time()
+                # TableWidget 값 추가
+                Common_Var.tc_name = case
+                Common_Var.tc_steps = teststep
+                full_test_case[testidx]()
+                Test.delay()
+            except Exception as e:
+                print(e)
+                # print("Exception on " + str(test))
+                print("An exception occurred.")
+                Common_Var.form.update_exception()
+                for i in range(0,3):
+                    try:
+                        if full_test_case[testidx] not in failed_test_list:
+                            failed_test_list.append(full_test_case[testidx])
+                        print("Retry ("+str(i+1)+"/3)")
+                        full_test_case[testidx]()
+                        failed_test_list.remove(full_test_case[testidx])
+                        break
+                    except:
+                        ITR_Admin_Common.driver.refresh()
+                        print("An exception occurred.")
+                        Common_Var.form.update_exception()
+                        pass
+            finally:
+                print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
+                pass
 
-# full test 
-full_test()
+        print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
+        print("failed_test_list: ", failed_test_list)
+        
+        ITR_Admin_Common.driver.quit()
+
+    # full test 
+    # full_test()
