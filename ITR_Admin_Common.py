@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from datetime import datetime
 import math
+import Common_Var
 
 # TestLink User: kyle
 URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'
@@ -17,8 +18,8 @@ testlink.__init__(URL, DevKey)
 testlink.checkDevKey()
 
 # TestPlanID = AutoTest 버전 테스트
-testPlanID = 2996
-buildName = 1
+testPlanID = Common_Var.planid
+buildName = Common_Var.bn
 
 # 브라우저 설정
 options = webdriver.ChromeOptions()

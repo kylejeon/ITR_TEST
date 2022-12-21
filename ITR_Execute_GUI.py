@@ -8,6 +8,7 @@ from PyQt5 import QtGui
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QThreadPool
 import sip
+import re
 import Main
 import Common_Var
 
@@ -29,10 +30,10 @@ class Thread1(QThread):
         Main.Test.function_test(testcase_list)
 
 class UpdateTableSignal(QObject):
-    signal = pyqtSignal(str, str, str, str)
+    signal = pyqtSignal(str, str, str, str, str)
 
     def run(self):
-        self.signal.emit(str(Common_Var.tc_name), str(Common_Var.run_status), str(Common_Var.tc_steps), str(Common_Var.defects))
+        self.signal.emit(str(Common_Var.tc_name), str(Common_Var.run_status), str(Common_Var.tc_steps), str(Common_Var.defects), str(Common_Var.runtime))
 
 class UpdatePassSignal(QObject):
     signal = pyqtSignal()
@@ -80,11 +81,17 @@ class Form(QMainWindow, form_class):
         self.label_3:QLabel
         self.label_4:QLabel
         self.label_6:QLabel
+        self.noTestlink:QRadioButton
+        self.Testlink:QRadioButton
 
-        self.select_list.setSortingEnabled(True)
-        self.select_list.sortByColumn(0, Qt.AscendingOrder)
-        self.selected_list.setSortingEnabled(True)
-        self.selected_list.sortByColumn(0, Qt.AscendingOrder)
+        # self.select_list.setSortingEnabled(True)
+        # self.select_list.sortByColumn(0, Qt.AscendingOrder)
+        # self.selected_list.setSortingEnabled(True)
+        # self.selected_list.sortByColumn(0, Qt.AscendingOrder)
+        
+        # TestPlan ID, BN No. 레이블 비활성화
+        self.text_planid.setDisabled(True)
+        self.text_bn.setDisabled(True)
         
         # 시그널 설정
         self.btn_move_to_right.clicked.connect(self.move_item)
@@ -93,30 +100,46 @@ class Form(QMainWindow, form_class):
         self.btn_close.clicked.connect(QCoreApplication.instance().quit)
         self.btn_select_all.clicked.connect(self.select_all)
         self.btn_deselect_all.clicked.connect(self.deselect_all)
+        self.noTestlink.clicked.connect(self.update_testlink)
+        self.Testlink.clicked.connect(self.update_testlink)
+     
+    def __lt__(self, other):
+        column1 = self.select_list.sortColumn()
+        column2 = self.selected_list.sortColumn()
+        if column1 == 0:
+            key1 = self.text(column1)
+            key2 = other.text(column1)
+            return self.natural_sort_key(key1) < self.natural_sort_key(key2)
+        if column2 == 0:
+            key3 = self.text(column2)
+            key4 = other.text(column2)
+            return self.natural_sort_key(key3) < self.natural_sort_key(key4)
 
-        self.btn_planid:QTreeWidget
-        self.btn_planid.clicked.connect(self.set_testlink)
+    @staticmethod
+    def natural_sort_key(key):
+        regex = '(\d*\.\d+|\d+)'
+        parts = re.split(regex, key)
+        return tuple((e if i % 2 == 0 else float(e)) for i, e in enumerate(parts))
 
-    @pyqtSlot(str, str, str, str)
-    def signal_update_table(self, arg1, arg2, arg3, arg4):
+    @pyqtSlot(str, str, str, str, str)
+    def signal_update_table(self, arg1, arg2, arg3, arg4, arg5):
         Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 0, QTableWidgetItem(str(arg1)))
-        # Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 1, QTableWidgetItem(str(arg2)))
         if QTableWidgetItem(str(arg2)).text == "Failed":
             Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 1, QTableWidgetItem(str(arg2)))
             Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setBackground(QtGui.QColor(191,38,0))
             Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setForeground(QtGui.QColor(255,255,255))
-            # Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setFont(font)
             Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setTextAlignment(Qt.AlignCenter)
         else:
             Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 1, QTableWidgetItem(str(arg2)))
             Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setBackground(QtGui.QColor(0,135,90))
             Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setForeground(QtGui.QColor(255,255,255))
-            # Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setFont(font)
             Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setTextAlignment(Qt.AlignCenter)
         Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 2, QTableWidgetItem(str(arg3)))
         Common_Var.form.tableWidget.item(Common_Var.rowIndex, 2).setTextAlignment(Qt.AlignCenter)
         Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 3, QTableWidgetItem(str(arg4)))
         Common_Var.form.tableWidget.item(Common_Var.rowIndex, 3).setTextAlignment(Qt.AlignCenter)
+        Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 4, QTableWidgetItem(str(arg5)))
+        Common_Var.form.tableWidget.item(Common_Var.rowIndex, 4).setTextAlignment(Qt.AlignCenter)
         QApplication.processEvents()
         Common_Var.form.tableWidget.resizeRowsToContents()
         Common_Var.rowIndex += 1
@@ -146,11 +169,17 @@ class Form(QMainWindow, form_class):
         self.progressBar.setValue(int(Common_Var.progress_bar))
         Common_Var.form.label_executed.setText(str(Common_Var.executed) + "% executed")
 
+    def update_testlink(self):
+        if self.noTestlink.isChecked() == True:
+            self.text_planid.setDisabled(True)
+            self.text_bn.setDisabled(True)
+        else:
+            self.text_planid.setEnabled(True)
+            self.text_bn.setEnabled(True)
+
     def set_testlink(self):
-        planid = self.text_planid.toPlainText()
-        bn = self.text_bn.toPlainText()
-        print(planid)
-        print(bn)
+        Common_Var.planid = self.text_planid.toPlainText()
+        Common_Var.bn = self.text_bn.toPlainText()
 
     def add_child_all(parent, item, child_Count):
         for n in range(0, child_Count):
@@ -242,6 +271,8 @@ class Form(QMainWindow, form_class):
                                     break
                         except:
                             current_pos = QTreeWidgetItem(target_tw)
+                            # current_pos.setData(0, Qt.DisplayRole, int(add_parent_list.pop(0)))
+                            # current_pos.setData(1, Qt.DisplayRole, add_parent_list.pop(0))
                             current_pos.setText(0, add_parent_list.pop(0))
                             current_pos.setText(1, add_parent_list.pop(0))
                             parent = current_pos
@@ -250,6 +281,8 @@ class Form(QMainWindow, form_class):
                         if check == "fail" and len(add_subparent_list) > 0:
                             current_pos = QTreeWidgetItem(parent)
                             cnt = len(add_subparent_list)
+                            # current_pos.setData(0, Qt.DisplayRole, float(add_subparent_list.pop(item_cnt - 2)))
+                            # current_pos.setData(1, Qt.DisplayRole, add_subparent_list.pop(item_cnt - 2))
                             current_pos.setText(0, add_subparent_list.pop(cnt-2))
                             current_pos.setText(1, add_subparent_list.pop(cnt-2))
                             cnt -= 2
@@ -261,12 +294,16 @@ class Form(QMainWindow, form_class):
                         if len(add_subparent_list) != 0:
                             while len(add_child_list) != 0:
                                 new_item = QTreeWidgetItem(current_pos)
+                                # new_item.setData(0, Qt.DisplayRole, float(add_child_list.pop(item_cnt - 2)))
+                                # new_item.setData(1, Qt.DisplayRole, add_child_list.pop(item_cnt - 2))
                                 new_item.setText(0, add_child_list.pop(cnt-2))
                                 new_item.setText(1, add_child_list.pop(cnt-2))
                                 cnt -= 2
                         else:
                             while len(add_child_list) != 0:
                                 new_item = QTreeWidgetItem(current_pos)
+                                # new_item.setData(0, Qt.DisplayRole, float(add_child_list.pop(item_cnt - 2)))
+                                # new_item.setData(1, Qt.DisplayRole, add_child_list.pop(item_cnt - 2))
                                 new_item.setText(0, add_child_list.pop(cnt-2))
                                 new_item.setText(1, add_child_list.pop(cnt-2))
                                 cnt -= 2
@@ -323,8 +360,10 @@ class Form(QMainWindow, form_class):
                 if current_pos.text(0) == "":
                     new_item = QTreeWidgetItem(target_tw)
                     item_cnt = len(add_item_list)
-                    new_item.setText(0, add_item_list.pop(item_cnt - 2))
+                    # new_item.setData(0, Qt.DisplayRole, int(add_item_list.pop(item_cnt - 2)))
+                    # new_item.setData(1, Qt.DisplayRole, add_item_list.pop(item_cnt - 2))
                     new_item.setText(1, add_item_list.pop(item_cnt - 2))
+                    new_item.setText(0, add_item_list.pop(item_cnt - 2))
                     item_cnt -= 2
 
                     # Selected list에 추가하고 선택한 item을 select list에서 삭제
@@ -338,9 +377,14 @@ class Form(QMainWindow, form_class):
                     while(1):
                         # child 추가
                         new_item = QTreeWidgetItem(new_item)
-                        new_item.setText(0, add_item_list.pop(item_cnt - 2))
-                        new_item.setText(1, add_item_list.pop(item_cnt - 2))
-                        item_cnt -= 2
+                        try:
+                            # new_item.setData(0, Qt.DisplayRole, float(add_item_list.pop(item_cnt - 2)))
+                            # new_item.setData(1, Qt.DisplayRole, add_item_list.pop(item_cnt - 2))
+                            new_item.setText(0, add_item_list.pop(item_cnt - 2))
+                            new_item.setText(1, add_item_list.pop(item_cnt - 2))
+                            item_cnt -= 2
+                        except Exception as e:
+                            print(e)
 
                         if len(add_item_list) == 0:
                             # selected item(child)이 child를 가진 경우
@@ -371,30 +415,33 @@ class Form(QMainWindow, form_class):
                                     add_item_list.pop(item_cnt - 2)
                                     item_cnt -= 2
 
-                                    # child 추가
+                                    # # child 추가
+                                    # new_item.setData(0, Qt.DisplayRole, float(add_item_list.pop(item_cnt - 2)))
+                                    # new_item.setData(1, Qt.DisplayRole, add_item_list.pop(item_cnt - 2))
                                     new_item.setText(0, add_item_list.pop(item_cnt - 2))
                                     new_item.setText(1, add_item_list.pop(item_cnt - 2))
-                                # else:
-                                #     new_item = QTreeWidgetItem(current_pos)
-                                #     new_item.setText(0, add_item_list.pop(item_cnt - 2))
-                                #     new_item.setText(1, add_item_list.pop(item_cnt - 2))
-
-
+                
                         # Second parent가 없으면 추가
                         if item_cnt > 3:
                             new_item = QTreeWidgetItem(current_pos)
+                            # new_item.setData(0, Qt.DisplayRole, float(add_item_list.pop(item_cnt - 2)))
+                            # new_item.setData(1, Qt.DisplayRole, add_item_list.pop(item_cnt - 2))
                             new_item.setText(0, add_item_list.pop(item_cnt - 2))
                             new_item.setText(1, add_item_list.pop(item_cnt - 2))
                             item_cnt -= 2
 
                             # child 추가
                             sub_item = QTreeWidgetItem()
+                            # new_item.setData(0, Qt.DisplayRole, float(add_item_list.pop(item_cnt - 2)))
+                            # new_item.setData(1, Qt.DisplayRole, add_item_list.pop(item_cnt - 2))
                             sub_item.setText(0, add_item_list.pop(item_cnt - 2))
                             sub_item.setText(1, add_item_list.pop(item_cnt - 2))
                             new_item.addChild(sub_item)
                     else:
                     # child 추가
                         new_item = QTreeWidgetItem(current_pos)
+                        # new_item.setData(0, Qt.DisplayRole, float(add_item_list.pop(item_cnt - 2)))
+                        # new_item.setData(1, Qt.DisplayRole, add_item_list.pop(item_cnt - 2))
                         new_item.setText(0, add_item_list.pop(item_cnt - 2))
                         new_item.setText(1, add_item_list.pop(item_cnt - 2))
 
@@ -412,12 +459,7 @@ class Form(QMainWindow, form_class):
                             except:
                                 pass
                     
-                    # if len(add_item_list) == 0:
-                    #     # selected item이 child를 가진 경우
-                    #     if extra_item.text(0) != "":
-                    #         new_child_Count = extra_item.childCount()
-                    #         Form.add_child_all(new_item,extra_item,new_child_Count)
-                    #     break
+                
             # Sub Child가 있는 child를 선택 이동하는 경우
             else:
                 add_item_list = []
@@ -459,6 +501,8 @@ class Form(QMainWindow, form_class):
                 cnt = len(add_item_list)
                 if current_pos.text(0) == "":
                     new_item = QTreeWidgetItem(target_tw)
+                    # new_item.setData(0, Qt.DisplayRole, int(add_item_list.pop(cnt-2)))
+                    # new_item.setData(1, Qt.DisplayRole, add_item_list.pop(cnt-2))
                     new_item.setText(0, add_item_list.pop(cnt-2))
                     new_item.setText(1, add_item_list.pop(cnt-2))
                     cnt -= 2
@@ -466,8 +510,10 @@ class Form(QMainWindow, form_class):
                     # Second parent 추가
                     if cnt > new_child_Count*2:
                         new_item = QTreeWidgetItem(new_item)
-                        new_item.setText(0, add_item_list.pop(cnt-2))
-                        new_item.setText(1, add_item_list.pop(cnt-2))
+                        new_item.setData(0, Qt.DisplayRole, float(add_item_list.pop(cnt-2)))
+                        new_item.setData(1, Qt.DisplayRole, add_item_list.pop(cnt-2))
+                        # new_item.setText(0, add_item_list.pop(cnt-2))
+                        # new_item.setText(1, add_item_list.pop(cnt-2))
 
                     # Selected list에 추가하고 선택한 item을 select list에서 삭제
                     for child in children:
@@ -480,10 +526,15 @@ class Form(QMainWindow, form_class):
                     # Child 추가            
                     if len(add_item_list) > 0:
                         while len(add_item_list) > 0:
-                            sub_item = QTreeWidgetItem()
-                            sub_item.setText(0, add_item_list.pop(0))
-                            sub_item.setText(1, add_item_list.pop(0))
-                            new_item.addChild(sub_item)
+                            try:
+                                sub_item = QTreeWidgetItem()
+                                sub_item.setData(0, Qt.DisplayRole, add_item_list.pop(0))
+                                sub_item.setData(1, Qt.DisplayRole, add_item_list.pop(0))
+                                # sub_item.setText(0, add_item_list.pop(0))
+                                # sub_item.setText(1, add_item_list.pop(0))
+                                new_item.addChild(sub_item)
+                            except Exception as e:
+                                print(e)
                 # Selected list에 선택한 item의 parent가 존재하는 경우
                 else:
                     if target_tw.topLevelItem(n).text(0) == current_pos.text(0):
@@ -504,34 +555,14 @@ class Form(QMainWindow, form_class):
 
                         if check == False:
                             new_item = QTreeWidgetItem(current_pos)
+                            # new_item.setData(0, Qt.DisplayRole, float(add_item_list.pop(cnt-2)))
+                            # new_item.setData(1, Qt.DisplayRole, add_item_list.pop(cnt-2))
                             new_item.setText(0, add_item_list.pop(cnt-2))
                             new_item.setText(1, add_item_list.pop(cnt-2))
-                    # if target_tw.topLevelItem(n).text(0) == current_pos.text(0):
-                    #     new_item = QTreeWidgetItem(current_pos)
-                    #     add_item_list.pop(cnt-2)
-                    #     add_item_list.pop(cnt-2)
-                    #     cnt -= 2
-
-                    # # Second parent 존재하는 경우
-                    # if new_item.parent().childCount() != 0:
-                    #     for i in range(0, new_item.parent().childCount()):
-                    #         if new_item.parent().child(i).text(0) == add_item_list[cnt-2]:
-                    #             print(new_item.parent().child(i).text(0))
-                    #             subparent = QTreeWidgetItem(new_item.parent().child(i))
-                    #             print(subparent.text())
-                    #     add_item_list.pop(cnt-2)
-                    #     add_item_list.pop(cnt-2)
-                    #     cnt -= 2
-                    #     # Child 추가            
-                    #     if len(add_item_list) > 0:
-                    #         while len(add_item_list) > 0:
-                    #             sub_item = QTreeWidgetItem()
-                    #             sub_item.setText(0, add_item_list.pop(0))
-                    #             sub_item.setText(1, add_item_list.pop(0))
-                    #             subparent.addChild(sub_item)
-                        
                     else:
                         # Second parent 추가
+                        # new_item.setData(0, Qt.DisplayRole, float(add_item_list.pop(cnt-2)))
+                        # new_item.setData(1, Qt.DisplayRole, add_item_list.pop(cnt-2))
                         new_item.setText(0, add_item_list.pop(cnt-2))
                         new_item.setText(1, add_item_list.pop(cnt-2))
 
@@ -539,6 +570,8 @@ class Form(QMainWindow, form_class):
                     if len(add_item_list) > 0:
                         while len(add_item_list) > 0:
                             sub_item = QTreeWidgetItem()
+                            # sub_item.setData(0, Qt.DisplayRole, float(add_item_list.pop(0)))
+                            # sub_item.setData(1, Qt.DisplayRole, add_item_list.pop(0))
                             sub_item.setText(0, add_item_list.pop(0))
                             sub_item.setText(1, add_item_list.pop(0))
                             new_item.addChild(sub_item)
@@ -616,16 +649,17 @@ class Form(QMainWindow, form_class):
         mysignal.run()
     
     def init_tablewidget(self):
-        Common_Var.form.tableWidget.setColumnCount(4)
+        Common_Var.form.tableWidget.setColumnCount(5)
         Common_Var.row = len(testcase_list)
         Common_Var.form.tableWidget.setRowCount(Common_Var.row)
         Common_Var.form.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        column_headers = ["TestCase Name","Run Status","Test Steps","Defects"]
+        column_headers = ["TestCase Name","Run Status","Test Steps","Defects","Run Time(min)"]
         Common_Var.form.tableWidget.setHorizontalHeaderLabels(column_headers)
-        Common_Var.form.tableWidget.setColumnWidth(0,190)
-        Common_Var.form.tableWidget.setColumnWidth(1,120)
-        Common_Var.form.tableWidget.setColumnWidth(2,80)
-        Common_Var.form.tableWidget.setColumnWidth(3,80)
+        Common_Var.form.tableWidget.setColumnWidth(0,220)
+        Common_Var.form.tableWidget.setColumnWidth(1,130)
+        Common_Var.form.tableWidget.setColumnWidth(2,90)
+        Common_Var.form.tableWidget.setColumnWidth(3,90)
+        Common_Var.form.tableWidget.setColumnWidth(4,110)
         Common_Var.form.tableWidget.resizeRowsToContents()
         
     def update_table(self):
@@ -652,11 +686,13 @@ class Form(QMainWindow, form_class):
                         testcase_list.append(first_parent.child(i).child(j).text(1))
         self.init_status()
         self.init_tablewidget()
+        self.update_testlink()
         self.run()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     Common_Var.form = Form()
+    Common_Var.form.setWindowTitle("ITR Automation Test")
     Common_Var.form.show()
     sys.exit(app.exec_())

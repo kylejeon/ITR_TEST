@@ -77,6 +77,7 @@ class windowSize:
 class Sign:
     def Sign_InOut():
         print("ITR-1: Sign > Sign In/Out")
+        run_time = time.time()
         testResult = ''
         reason = list()       
         
@@ -177,18 +178,23 @@ class Sign:
         if testResult == 'failed':
             Common_Var.form.update_failed()
             Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
             Common_Var.form.update_table()
-            testlink.reportTCResult(1531, testPlanID, buildName, 'f', result)            
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1531, testPlanID, buildName, 'f', result)            
         else:
             Common_Var.form.update_passed()
             Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
             Common_Var.form.update_table()
-            testlink.reportTCResult(1531, testPlanID, buildName, 'p', "Sign In/Out Test Passed")
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1531, testPlanID, buildName, 'p', "Sign In/Out Test Passed")
         driver.find_element(By.CSS_SELECTOR, ".pull-right > span").click()
         driver.implicitly_wait(3)
     
     def Rememeber_Me():
         print("ITR-2: Sign > Remember Me")
+        run_time = time.time()
         testResult = ''
         reason = list() 
 
@@ -217,17 +223,22 @@ class Sign:
         if testResult == 'failed':
             Common_Var.form.update_failed()
             Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
             Common_Var.form.update_table()
-            testlink.reportTCResult(1538, testPlanID, buildName, 'f', result)            
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1538, testPlanID, buildName, 'f', result)            
         else:
             Common_Var.form.update_passed()
             Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
             Common_Var.form.update_table()
-            testlink.reportTCResult(1538, testPlanID, buildName, 'p', "Remember Me Test Passed")    
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1538, testPlanID, buildName, 'p', "Remember Me Test Passed")    
 
 class Topbar:
     def Search_Schedule_List():
         print("ITR-3: Topbar > Search Schedule List")
+        run_time = time.time()
         testResult = '' 
         reason = list() 
         
@@ -303,10 +314,14 @@ class Topbar:
         if testResult == 'failed':
             Common_Var.form.update_failed()
             Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
             Common_Var.form.update_table()
-            testlink.reportTCResult(1542, testPlanID, buildName, 'f', result)            
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1542, testPlanID, buildName, 'f', result)            
         else:
             Common_Var.form.update_passed()
             Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
             Common_Var.form.update_table()
-            testlink.reportTCResult(1542, testPlanID, buildName, 'p', "Search_Schedule_List Test Passed")  
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1542, testPlanID, buildName, 'p', "Search_Schedule_List Test Passed")  
