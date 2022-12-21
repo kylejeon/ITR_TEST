@@ -15,10 +15,12 @@ from ITR_Admin_Common import testlink
 from ITR_Admin_Common import testPlanID
 from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Var
+import Common_Var
 
 class Statistics:
     def SearchFilter_Date():
         print("ITR-44: Statistics > Search Filter > Date")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
@@ -491,12 +493,23 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1772, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1772, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1772, testPlanID, buildName, 'p', "Search Filter > Date Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1772, testPlanID, buildName, 'p', "Search Filter > Date Passed")  
 
     def SearchFilter_Hospital():
         print("ITR-45: Statistics > Search Filter > Hospital")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
@@ -603,12 +616,23 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1779, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1779, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1779, testPlanID, buildName, 'p', "Search Filter > Hospital Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1779, testPlanID, buildName, 'p', "Search Filter > Hospital Passed")  
 
     def SearchFilter_Reporter():
         print("ITR-46: Statistics > Search Filter > Reporter")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
@@ -777,12 +801,23 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else testResult)
         if testResult == 'failed':
-            testlink.reportTCResult(1782, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1782, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1782, testPlanID, buildName, 'p', "Search Filter > Reporter Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1782, testPlanID, buildName, 'p', "Search Filter > Reporter Passed")  
 
     def SearchFilter_Modality():
         print("ITR-47: Statistics > Search Filter > Modality")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
@@ -952,9 +987,19 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1785, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1785, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1785, testPlanID, buildName, 'p', "Search Filter > Modality Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1785, testPlanID, buildName, 'p', "Search Filter > Modality Passed")  
 
     def Columns():
         # Statistics 탭 클릭
@@ -962,6 +1007,7 @@ class Statistics:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
 
         print("ITR-42: Statistics > Columns")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
@@ -1093,12 +1139,23 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else testResult)
         if testResult == 'failed':
-            testlink.reportTCResult(1759, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1759, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1759, testPlanID, buildName, 'p', "Columns Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1759, testPlanID, buildName, 'p', "Columns Passed")  
 
     def Show_Entries():
         print("ITR-43: Statistics > Show entries")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
@@ -1225,9 +1282,19 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else testResult)
         if testResult == 'failed':
-            testlink.reportTCResult(1765, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1765, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1765, testPlanID, buildName, 'p', "Show entries Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1765, testPlanID, buildName, 'p', "Show entries Passed")  
         
         # 탭 종료 및 vmonpacs로 전환
         driver.close()

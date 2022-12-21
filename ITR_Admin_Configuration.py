@@ -15,9 +15,12 @@ from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Var
 from ITR_Admin_Common import Common
 from ITR_Admin_Login import signInOut
+import Common_Var
+
 class UserManagement:
     def SearchFilter_Class():
         print("ITR-49: Configuration > User Management > Search Filter > Class")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -57,12 +60,23 @@ class UserManagement:
         # SearchFilter_Class결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1797, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1797, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1797, testPlanID, buildName, 'p', "SearchFilter_Class Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1797, testPlanID, buildName, 'p', "SearchFilter_Class Test Passed")
 
     def SearchFilter_Institution():
         print("ITR-50: Configuration > User Management > Search Filter > Institution")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -173,12 +187,23 @@ class UserManagement:
         # SearchFilter_Institution결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1800, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1800, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1800, testPlanID, buildName, 'p', "SearchFilter_Institution Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1800, testPlanID, buildName, 'p', "SearchFilter_Institution Test Passed")
 
     def SearchFilter_UserID():
         print("ITR-51: Configuration > User Management > Search Filter > User ID")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -388,12 +413,23 @@ class UserManagement:
         # SearchFilter_UserID결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1803, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1803, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1803, testPlanID, buildName, 'p', "SearchFilter_UserID Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1803, testPlanID, buildName, 'p', "SearchFilter_UserID Test Passed")
 
     def SearchFilter_UserName():
         print("ITR-52: Configuration > User Management > Search Filter > User Name")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -613,12 +649,23 @@ class UserManagement:
         # SearchFilter_UserName결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1806, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1806, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1806, testPlanID, buildName, 'p', "SearchFilter_UserName Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1806, testPlanID, buildName, 'p', "SearchFilter_UserName Test Passed")
 
     def SearchFilter_ShowWithMappingID():
         print("ITR-53: Configuration > User Management > Search Filter > Show With Mapping ID")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -669,12 +716,23 @@ class UserManagement:
         # SearchFilter_ShowWithMappingID결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1809, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1809, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1809, testPlanID, buildName, 'p', "SearchFilter_ShowWithMappingID Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1809, testPlanID, buildName, 'p', "SearchFilter_ShowWithMappingID Test Passed")
 
     def UserRegistartion_Add():
         print("ITR-54: Configuration > User Management > User Registration > Add")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         class_check = True
@@ -1310,9 +1368,19 @@ class UserManagement:
         # UserRegistartion_Add결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1813, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1813, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1813, testPlanID, buildName, 'p', "UserRegistartion_Add Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1813, testPlanID, buildName, 'p', "UserRegistartion_Add Test Passed")
 
     def UserRegistration_Modify_Entry(target):
         testResult = True
@@ -1338,6 +1406,7 @@ class UserManagement:
 
     def UserRegistartion_Modify():
         print("ITR-55: Configuration > User Management > User Registration > Modify")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -1868,12 +1937,23 @@ class UserManagement:
         # UserRegistartion_Modify결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1839, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1839, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1839, testPlanID, buildName, 'p', "UserRegistartion_Modify Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1839, testPlanID, buildName, 'p', "UserRegistartion_Modify Test Passed")
 
     def UserRegistartion_Delete():
         print("ITR-218: Configuration > User Management > User Registration > Delete")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -1986,13 +2066,24 @@ class UserManagement:
         # UserRegistartion_Delete결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2864, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2864, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2864, testPlanID, buildName, 'p', "UserRegistartion_Delete Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2864, testPlanID, buildName, 'p', "UserRegistartion_Delete Test Passed")
 
 class Specialty:
     def SpecialtyList_Search():
         print("ITR-56: Configuration > Specialty > Specialty list > Search")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -2042,12 +2133,23 @@ class Specialty:
         # SpecialtyList_Search결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1865, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1865, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1865, testPlanID, buildName, 'p', "SpecialtyList_Search Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1865, testPlanID, buildName, 'p', "SpecialtyList_Search Test Passed")
 
     def SpecialtyList_Add():
         print("ITR-57: Configuration > Specialty > Specialty list > Add")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -2165,12 +2267,23 @@ class Specialty:
         # SpecialtyList_Add결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1869, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1869, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1869, testPlanID, buildName, 'p', "SpecialtyList_Add Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1869, testPlanID, buildName, 'p', "SpecialtyList_Add Test Passed")
 
     def SpecialtyList_Delete():
         print("ITR-58: Configuration > Specialty > Specialty list > Delete")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -2290,12 +2403,23 @@ class Specialty:
         # SpecialtyList_Delete결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1874, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1874, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1874, testPlanID, buildName, 'p', "SpecialtyList_Delete Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1874, testPlanID, buildName, 'p', "SpecialtyList_Delete Test Passed")
 
     def SpecialtyList_Modify():
         print("ITR-59: Configuration > Specialty > Specialty list > Modify")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -2610,12 +2734,23 @@ class Specialty:
         # SpecialtyList_Modify결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1880, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1880, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1880, testPlanID, buildName, 'p', "SpecialtyList_Modify Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1880, testPlanID, buildName, 'p', "SpecialtyList_Modify Test Passed")
 
     def InstitutionList_Search():
         print("ITR-60: Configuration > Specialty > Institution list > Search")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -2659,12 +2794,23 @@ class Specialty:
         # InstitutionList_Search결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1893, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1893, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1893, testPlanID, buildName, 'p', "InstitutionList_Search Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1893, testPlanID, buildName, 'p', "InstitutionList_Search Test Passed")
 
     def InstitutionList_Add():
         print("ITR-61: Configuration > Specialty > Institution list > Add")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -2843,12 +2989,23 @@ class Specialty:
         # InstitutionList_Add결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1896, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1896, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1896, testPlanID, buildName, 'p', "InstitutionList_Add Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1896, testPlanID, buildName, 'p', "InstitutionList_Add Test Passed")
 
     def InstitutionList_Delete():
         print("ITR-64: Configuration > Specialty > Institution list > Delete")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -2978,12 +3135,23 @@ class Specialty:
         # InstitutionList_Delete결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1912, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1912, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1912, testPlanID, buildName, 'p', "InstitutionList_Delete Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1912, testPlanID, buildName, 'p', "InstitutionList_Delete Test Passed")
 
     def InstitutionList_Modify():
         print("ITR-65: Configuration > Specialty > Institution list > Modify")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -3117,12 +3285,23 @@ class Specialty:
         # InstitutionList_Modify결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1918, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1918, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1918, testPlanID, buildName, 'p', "InstitutionList_Modify Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1918, testPlanID, buildName, 'p', "InstitutionList_Modify Test Passed")
 
     def InstitutionList_Modify_Search():
         print("ITR-68: Configuration > Specialty > Institution list > Modify - Search")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -3360,9 +3539,19 @@ class Specialty:
         # InstitutionList_Modify_Search결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1931, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1931, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1931, testPlanID, buildName, 'p', "InstitutionList_Modify_Search Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1931, testPlanID, buildName, 'p', "InstitutionList_Modify_Search Test Passed")
 
 
 class DownloadControl:
@@ -3390,6 +3579,7 @@ class DownloadControl:
     # Render 확인
     def User_SearchFilter_Class():
         print("ITR-69: Configuration > Download Control > User > Search Filter - Class")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -3413,9 +3603,19 @@ class DownloadControl:
         # User_SearchFilter_Class결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1942, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1942, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1942, testPlanID, buildName, 'p', "User_SearchFilter_Class Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1942, testPlanID, buildName, 'p', "User_SearchFilter_Class Test Passed")
 
     def User_SearchFilter_Institution_Search(num):
         del driver.requests
@@ -3446,6 +3646,7 @@ class DownloadControl:
 
     def User_SearchFilter_Institution():
         print("ITR-70: Configuration > Download Control > User > Search Filter - Institution")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -3484,9 +3685,19 @@ class DownloadControl:
         # User_SearchFilter_Institution결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1945, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1945, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1945, testPlanID, buildName, 'p', "User_SearchFilter_Institution Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1945, testPlanID, buildName, 'p', "User_SearchFilter_Institution Test Passed")
 
     # target 1 = id / 2 = name
     def User_SearchFilter_Filter(target):
@@ -3595,6 +3806,7 @@ class DownloadControl:
 
     def User_SearchFilter_UserID():
         print("ITR-71: Configuration > Download Control > User > Search Filter - UserID")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -3617,12 +3829,23 @@ class DownloadControl:
         # User_SearchFilter_UserID결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1948, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1948, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1948, testPlanID, buildName, 'p', "User_SearchFilter_UserID Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1948, testPlanID, buildName, 'p', "User_SearchFilter_UserID Test Passed")
 
     def User_SearchFilter_UserName():
         print("ITR-72: Configuration > Download Control > User > Search Filter - User Name")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -3645,9 +3868,19 @@ class DownloadControl:
         # User_SearchFilter_UserName결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1951, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1951, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1951, testPlanID, buildName, 'p', "User_SearchFilter_UserName Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1951, testPlanID, buildName, 'p', "User_SearchFilter_UserName Test Passed")
 
     def User_Add_DeletionSetup(insti_position):
         # Deletion
@@ -3682,6 +3915,7 @@ class DownloadControl:
 
     def User_Add():
         print("ITR-73: Configuration > Download Control > User > Add")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         #####request code, request name
@@ -4321,12 +4555,23 @@ class DownloadControl:
         # DownloadControl_User_Add결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1954, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1954, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1954, testPlanID, buildName, 'p', "User_Add Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1954, testPlanID, buildName, 'p', "User_Add Test Passed")
 
     def User_Delete():
         print("ITR-74: Configuration > Download Control > User > Delete")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -4451,12 +4696,23 @@ class DownloadControl:
         # User_Delete결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1969, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1969, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1969, testPlanID, buildName, 'p', "User_Delete Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1969, testPlanID, buildName, 'p', "User_Delete Test Passed")
 
     def User_Modify():
         print("ITR-75: Configuration > Download Control > User > Modify")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         #####request code, request name
@@ -5304,9 +5560,19 @@ class DownloadControl:
         # User_Modify결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1975, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1975, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1975, testPlanID, buildName, 'p', "User_Modify Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1975, testPlanID, buildName, 'p', "User_Modify Test Passed")
 
     def Institution_SearchFilter_Class_Search(num):
         del driver.requests
@@ -5334,6 +5600,7 @@ class DownloadControl:
 
     def Institution_SearchFilter_Class():
         print("ITR-76: Configuration > Download Control > Institution > Search Filter - Class")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -5362,9 +5629,19 @@ class DownloadControl:
         # Institution_SearchFilter_Class결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1992, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1992, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1992, testPlanID, buildName, 'p', "Institution_SearchFilter_Class Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1992, testPlanID, buildName, 'p', "Institution_SearchFilter_Class Test Passed")
 
     def Institution_SearchFilter_Institution_Search(num):
         del driver.requests
@@ -5394,6 +5671,7 @@ class DownloadControl:
 
     def Institution_SearchFilter_Institution():
         print("ITR-77: Configuration > Download Control > Institution > Search Filter - Institution")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -5434,13 +5712,24 @@ class DownloadControl:
         # Institution_SearchFilter_Institution결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1995, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1995, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1995, testPlanID, buildName, 'p', "Institution_SearchFilter_Institution Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1995, testPlanID, buildName, 'p', "Institution_SearchFilter_Institution Test Passed")
 
     # target 1 = id / 2 = name
     def Institution_SearchFilter_Filter(target):
         print("ITR-78: Configuration > Download Control > Institution > Search Filter - User ID")
+        run_time = time.time()
         rnd_id = driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child(1) > td:nth-child("+str(target+1)+")").get_property("textContent")
         rnd_insti = driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child(1) > td.align-center.download-control-institution").get_property("innerHTML").split('<br>')[0]
         # User Management
@@ -5577,12 +5866,23 @@ class DownloadControl:
         # Institution_SearchFilter_UserID결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(1998, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1998, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(1998, testPlanID, buildName, 'p', "Institution_SearchFilter_UserID Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1998, testPlanID, buildName, 'p', "Institution_SearchFilter_UserID Test Passed")
 
     def Institution_SearchFilter_UserName():
         print("ITR-79: Configuration > Download Control > Institution > Search Filter - User Name")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -5605,9 +5905,19 @@ class DownloadControl:
         # Institution_SearchFilter_UserName결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2001, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2001, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2001, testPlanID, buildName, 'p', "Institution_SearchFilter_UserName Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2001, testPlanID, buildName, 'p', "Institution_SearchFilter_UserName Test Passed")
 
     def Institution_Add_DeletionSetup(insti_position):
         # Deletion
@@ -5641,6 +5951,7 @@ class DownloadControl:
 
     def Institution_Add():
         print("ITR-80: Configuration > Download Control > Institution > Add")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
 
@@ -6299,12 +6610,23 @@ class DownloadControl:
         # Institution_Add결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2004, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2004, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2004, testPlanID, buildName, 'p', "Institution_Add Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2004, testPlanID, buildName, 'p', "Institution_Add Test Passed")
 
     def Institution_Delete():
         print("ITR-81: Configuration > Download Control > Institution > Delete")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -6441,12 +6763,23 @@ class DownloadControl:
         # institution_delete결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2019, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2019, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2019, testPlanID, buildName, 'p', "institution_delete Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2019, testPlanID, buildName, 'p', "institution_delete Test Passed")
 
     def Institution_Modify():
         print("ITR-82: Configuration > Download Control > Institution > Modify")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         #####request code, request name
@@ -7333,9 +7666,19 @@ class DownloadControl:
         # Institution_Modify결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2025, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2025, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2025, testPlanID, buildName, 'p', "Institution_Modify Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2025, testPlanID, buildName, 'p', "Institution_Modify Test Passed")
 
 class Institution:
     def insti_idx_find(target):
@@ -7367,6 +7710,7 @@ class Institution:
 
     def SearchFilter_Institution_Code():
         print("ITR-83: Configuration > Institution > Search Filter > Institution Code")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -7421,12 +7765,23 @@ class Institution:
         # SearchFilter_InstitutionCode결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2043, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":    
+                testlink.reportTCResult(2043, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2043, testPlanID, buildName, 'p', "SearchFilter_InstitutionCode Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2043, testPlanID, buildName, 'p', "SearchFilter_InstitutionCode Test Passed")
     
     def SearchFilter_Institution_Name():
         print("ITR-84: Configuration > Institution > Search Filter > Institution Name")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
 
@@ -7469,12 +7824,23 @@ class Institution:
         # SearchFilter_InstitutionName결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2046, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2046, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2046, testPlanID, buildName, 'p', "SearchFilter_InstitutionName Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2046, testPlanID, buildName, 'p', "SearchFilter_InstitutionName Test Passed")
 
     def Add():
         print("ITR-85: Configuration > Institution > Add")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -7674,13 +8040,24 @@ class Institution:
         # Institution_Add결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2049, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2049, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2049, testPlanID, buildName, 'p', "Institution_Add Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2049, testPlanID, buildName, 'p', "Institution_Add Test Passed")
 
     # Cloud_ITRTest
     def Delete():
         print("ITR-86: Configuration > Institution > Delete")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -7824,9 +8201,19 @@ class Institution:
         # Institution_Delete결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2066, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2066, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2066, testPlanID, buildName, 'p', "Institution_Delete Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2066, testPlanID, buildName, 'p', "Institution_Delete Test Passed")
 
     def Modify_ToWL(RM_num, RM, RDT_num, RDT):
         Result_msg = ""
@@ -7925,6 +8312,7 @@ class Institution:
 
     def Modify():
         print("ITR-87: Configuration > Institution > Modify")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -8382,9 +8770,19 @@ class Institution:
 
         # Institution_Modify결과 전송 ##
         if testResult == False:
-            testlink.reportTCResult(2072, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2072, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2072, testPlanID, buildName, 'p', "Institution_Modify Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2072, testPlanID, buildName, 'p', "Institution_Modify Test Passed")
 
 #GroupCode_Test
 #ReportCode_Test
@@ -8392,6 +8790,7 @@ class Institution:
 class StandardReport:
     def GroupAdd():
         print("ITR-89: Configuration > Standard Report > Group Add")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -8552,12 +8951,23 @@ class StandardReport:
         # StandardReport_GroupAdd결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2091, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2091, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2091, testPlanID, buildName, 'p', "StandardReport_GroupAdd Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2091, testPlanID, buildName, 'p', "StandardReport_GroupAdd Test Passed")
 
     def Add():
         print("ITR-90: Configuration > Standard Report > Add")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -8724,12 +9134,23 @@ class StandardReport:
         # StandardReport_Add결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2096, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2096, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2096, testPlanID, buildName, 'p', "StandardReport_Add Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2096, testPlanID, buildName, 'p', "StandardReport_Add Test Passed")
 
     def Delete():
         print("ITR-91: Configuration > Standard Report > Delete")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -8871,9 +9292,19 @@ class StandardReport:
         # StandardReport_Delete결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2108, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2108, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2108, testPlanID, buildName, 'p', "StandardReport_Delete Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2108, testPlanID, buildName, 'p', "StandardReport_Delete Test Passed")
 
     # ReportCode_Test Search
     def ReportSearch(total):
@@ -8903,6 +9334,7 @@ class StandardReport:
 
     def GroupModify():
         print("ITR-92: Configuration > Standard Report > Group Modify")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -9078,12 +9510,23 @@ class StandardReport:
         # StandardReport_GroupModify결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2114, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2114, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2114, testPlanID, buildName, 'p', "StandardReport_GroupModify Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2114, testPlanID, buildName, 'p', "StandardReport_GroupModify Test Passed")
 
     def Modify():
         print("ITR-93: Configuration > Standard Report > Modify")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -9266,9 +9709,19 @@ class StandardReport:
         # StandardReport_Modify결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2120, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2120, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2120, testPlanID, buildName, 'p', "StandardReport_Modify Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2120, testPlanID, buildName, 'p', "StandardReport_Modify Test Passed")
     
     def All():
         StandardReport.Add()
@@ -9280,6 +9733,7 @@ class StandardReport:
 class MultiReadingCenterRule:
     def SearchFilter():
         print("ITR-94: Configuration > Multi Reading Center Rule > Search Filter")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -9381,12 +9835,23 @@ class MultiReadingCenterRule:
         # MultiReadingCenterRule_SearchFilter결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2133, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2133, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2133, testPlanID, buildName, 'p', "MultiReadingCenterRule_SearchFilter Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2133, testPlanID, buildName, 'p', "MultiReadingCenterRule_SearchFilter Test Passed")
 
     def Add():
         print("ITR-95: Configuration > Multi Reading Center Rule > Add")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -9677,12 +10142,23 @@ class MultiReadingCenterRule:
         # MultiReadingCenterRule_Add결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2140, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2140, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2140, testPlanID, buildName, 'p', "MultiReadingCenterRule_Add Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2140, testPlanID, buildName, 'p', "MultiReadingCenterRule_Add Test Passed")
 
     def Delete():
         print("ITR-96: Configuration > Multi Reading Center Rule > Delete")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -9732,12 +10208,23 @@ class MultiReadingCenterRule:
         # MultiReadingCenterRule_Delete결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2154, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2154, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2154, testPlanID, buildName, 'p', "MultiReadingCenterRule_Delete Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2154, testPlanID, buildName, 'p', "MultiReadingCenterRule_Delete Test Passed")
 
     def Modify():
         print("ITR-97: Configuration > Multi Reading Center Rule > Modify")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
@@ -9992,9 +10479,19 @@ class MultiReadingCenterRule:
         # MultiReadingCenterRule_Modify결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2157, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2157, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2157, testPlanID, buildName, 'p', "MultiReadingCenterRule_Modify Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2157, testPlanID, buildName, 'p', "MultiReadingCenterRule_Modify Test Passed")
 
     def All():
         MultiReadingCenterRule.Add()
