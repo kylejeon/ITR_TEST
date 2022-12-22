@@ -15,6 +15,7 @@ from ITR_Admin_Common import testPlanID
 from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Var
 from ITR_Admin_Common import Common
+import Common_Var
 
 class DirectMessage:
     def DirectMessageBox_ViewSort(asc):

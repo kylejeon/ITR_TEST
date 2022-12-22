@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 import json, math, time
-
+import Common_Var
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 # User: kyle
@@ -24,8 +24,10 @@ testlink.__init__(URL, DevKey)
 testlink.checkDevKey()
 
 # 브라우저 설정
-WorklistUrl = 'http://vm-onpacs'
-AdminUrl = 'http://vm-onpacs:8082'
+# WorklistUrl = 'http://vm-onpacs'
+# AdminUrl = 'http://vm-onpacs:8082'
+WorklistUrl = Common_Var.base_worklist_url
+adminUrl = Common_Var.base_admin_url
 #WorklistUrl = 'https://stagingworklist.onpacs.com'
 #AdminUrl = 'http://stagingadmin.onpacs.com/'
 

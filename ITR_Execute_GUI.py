@@ -1,4 +1,4 @@
-import sys
+import sys, time
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5.QtCore import *
@@ -11,6 +11,7 @@ import sip
 import re
 import Main
 import Common_Var
+from ITR_Admin_Common import launch_webdriver
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
@@ -28,6 +29,23 @@ class Thread1(QThread):
         self.wait()
     def run(self):
         Main.Test.function_test(testcase_list)
+
+class Thread2(QThread):
+    timer = pyqtSignal(str)
+    running = False
+    times = 0.0
+    def run(self):
+        while True:
+            if self.running:
+                self.times += 0.01
+                self.timer.emit(self.convert(self.times))
+            time.sleep(0.01)
+    def convert(self, times):
+        Second = str(times).split('.')[0]
+        Hours = str(int((int(Second) / 60) / 60)).zfill(2)
+        Minutes = str(int((int(Second) / 60) % 60)).zfill(2)
+        Seconds = str(int(int(Second) % 60)).zfill(2)
+        return '%s:%s:%s'%(Hours,Minutes,Seconds)
 
 class UpdateTableSignal(QObject):
     signal = pyqtSignal(str, str, str, str, str)
@@ -66,8 +84,8 @@ class Form(QMainWindow, form_class):
         self.btn_deselect_all:QPushButton
         self.select_list:QTreeWidget
         self.selected_list:QTreeWidget
-        self.text_planid:QTreeWidget
-        self.text_bn:QTreeWidget
+        self.text_planid:QLineEdit
+        self.text_bn:QLineEdit
         self.btn_run_test:QTreeWidget
         self.btn_close:QTreeWidget
         self.tableWidget:QTableWidget
@@ -83,26 +101,40 @@ class Form(QMainWindow, form_class):
         self.label_6:QLabel
         self.noTestlink:QRadioButton
         self.Testlink:QRadioButton
+        self.comboBox_browser:QComboBox
+        self.label_time:QLabel
+        self.label_admin_url:QLineEdit
+        self.label_worklist_url:QLineEdit
+        self.comboBox_server:QComboBox
 
         # self.select_list.setSortingEnabled(True)
         # self.select_list.sortByColumn(0, Qt.AscendingOrder)
         # self.selected_list.setSortingEnabled(True)
         # self.selected_list.sortByColumn(0, Qt.AscendingOrder)
         
-        # TestPlan ID, BN No. 레이블 비활성화
+        # TestPlan ID, BN No., admin_url, worklist_url 레이블 비활성화
         self.text_planid.setDisabled(True)
         self.text_bn.setDisabled(True)
+        self.label_admin_url.setDisabled(True)
+        self.label_worklist_url.setDisabled(True)
         
         # 시그널 설정
         self.btn_move_to_right.clicked.connect(self.move_item)
         self.btn_move_to_left.clicked.connect(self.move_item)
         self.btn_run_test.clicked.connect(self.run_test)
+        self.btn_run_test.clicked.connect(self.start_timer)
         self.btn_close.clicked.connect(QCoreApplication.instance().quit)
         self.btn_select_all.clicked.connect(self.select_all)
         self.btn_deselect_all.clicked.connect(self.deselect_all)
         self.noTestlink.clicked.connect(self.update_testlink)
         self.Testlink.clicked.connect(self.update_testlink)
-     
+        self.comboBox_server.activated[str].connect(self.change_server)     
+        self.comboBox_browser.activated[str].connect(self.change_browser)     
+
+        self.thread2 = Thread2()
+        self.thread2.timer.connect(self.label_time.setText)
+        self.thread2.start()
+
     def __lt__(self, other):
         column1 = self.select_list.sortColumn()
         column2 = self.selected_list.sortColumn()
@@ -124,7 +156,7 @@ class Form(QMainWindow, form_class):
     @pyqtSlot(str, str, str, str, str)
     def signal_update_table(self, arg1, arg2, arg3, arg4, arg5):
         Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 0, QTableWidgetItem(str(arg1)))
-        if QTableWidgetItem(str(arg2)).text == "Failed":
+        if QTableWidgetItem(str(arg2)).text() == "Failed":
             Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 1, QTableWidgetItem(str(arg2)))
             Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setBackground(QtGui.QColor(191,38,0))
             Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setForeground(QtGui.QColor(255,255,255))
@@ -180,6 +212,35 @@ class Form(QMainWindow, form_class):
     def set_testlink(self):
         Common_Var.planid = self.text_planid.toPlainText()
         Common_Var.bn = self.text_bn.toPlainText()
+
+    def change_server(self):
+        if self.comboBox_server.currentText() == "Staging Server":
+            self.label_admin_url.setDisabled(True)
+            self.label_worklist_url.setDisabled(True)
+            Common_Var.base_admin_url = Common_Var.staging_admin
+            Common_Var.base_worklist_url = Common_Var.staging_worklist
+        elif self.comboBox_server.currentText() == "Live Server":
+            self.label_admin_url.setDisabled(True)
+            self.label_worklist_url.setDisabled(True)
+            Common_Var.base_admin_url = Common_Var.live_admin
+            Common_Var.base_worklist_url = Common_Var.live_worklist
+        else:
+            self.label_admin_url.setEnabled(True)
+            self.label_worklist_url.setEnabled(True)    
+
+    def set_server(self):
+        Common_Var.base_admin_url = self.label_admin_url.text()
+        Common_Var.base_worklist_url = self.label_worklist_url.text()
+    
+    def start_timer(self):
+        if self.thread2.running:
+            self.thread2.running = False
+        else:
+            self.thread2.running = True
+
+    def change_browser(self):
+        if self.comboBox_browser.currentText() == "Edge":
+            launch_webdriver()
 
     def add_child_all(parent, item, child_Count):
         for n in range(0, child_Count):
@@ -687,6 +748,14 @@ class Form(QMainWindow, form_class):
         self.init_status()
         self.init_tablewidget()
         self.update_testlink()
+        if self.comboBox_server.currentText() == "Custom Server":            
+            self.set_server()
+        else: 
+            self.change_server()
+        if self.noTestlink.isChecked() != True:
+            self.set_testlink()
+        if self.comboBox_browser.currentText() == "Edge":
+            launch_webdriver()
         self.run()
 
 

@@ -18,7 +18,19 @@ rowIndex = 0
 # form
 form = None
 signal1 = None
+timer = ""
 
 # TestLink
 planid = ""
 bn = ""
+
+# Server URL
+staging_admin = "http://stagingadmin.onpacs.com"
+staging_worklist = "https://stagingworklist.onpacs.com/"
+live_admin = "http://mw.onpacs.com:8082/"
+live_worklist = "https://new.onpacs.com/"
+base_admin_url = "http://stagingadmin.onpacs.com"
+base_worklist_url = "https://stagingworklist.onpacs.com/"
+
+# Web Driver
+web_driver = ""

@@ -10,6 +10,7 @@ import ITR_Admin_DirectMessage
 import time
 from ITR_Execute_GUI import Form
 import Common_Var
+from ITR_Admin_Common import driver
 
 full_test_case = [
     # Sign
@@ -314,6 +315,7 @@ class Test:
         time.sleep(0.5)
 
     def function_test(testcase_list):
+        driver.get(Common_Var.base_admin_url)
         start = time.time()
         failed_test_list = []
         
