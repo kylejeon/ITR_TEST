@@ -10,7 +10,8 @@ import ITR_Admin_DirectMessage
 import time
 from ITR_Execute_GUI import Form
 import Common_Var
-from ITR_Admin_Common import driver
+import importlib
+import sys
 
 full_test_case = [
     # Sign
@@ -313,15 +314,14 @@ class Test:
         ITR_Admin_Common.driver.quit()
     def delay():
         time.sleep(0.5)
-
     def function_test(testcase_list):
-        driver.get(Common_Var.base_admin_url)
+        importlib.reload(sys.modules['ITR_Admin_Common'])
+        importlib.reload(sys.modules['ITR_Admin_Login'])
+        from ITR_Admin_Common import driver
+        ITR_Admin_Common.driver.get(Common_Var.base_admin_url)
         start = time.time()
         failed_test_list = []
-        
-        # full test case에서 선택한 case 찾기
         for case in testcase_list:
-            testname = get_name(case)
             teststep = get_step(case)
             testidx = get_index(case)
             time.sleep(0.5)
@@ -349,7 +349,7 @@ class Test:
                         failed_test_list.remove(full_test_case[testidx])
                         break
                     except:
-                        ITR_Admin_Common.driver.refresh()
+                        # ITR_Admin_Common.driver.refresh()
                         print("An exception occurred.")
                         Common_Var.form.update_exception()
                         pass
@@ -360,7 +360,7 @@ class Test:
         print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
         print("failed_test_list: ", failed_test_list)
         
-        ITR_Admin_Common.driver.quit()
+        # ITR_Admin_Common.driver.quit()
 
     # full test 
     # full_test()

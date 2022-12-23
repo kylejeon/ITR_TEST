@@ -11,7 +11,6 @@ import sip
 import re
 import Main
 import Common_Var
-from ITR_Admin_Common import launch_webdriver
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
@@ -106,6 +105,7 @@ class Form(QMainWindow, form_class):
         self.label_admin_url:QLineEdit
         self.label_worklist_url:QLineEdit
         self.comboBox_server:QComboBox
+        self.checkBox_browser:QCheckBox
 
         # self.select_list.setSortingEnabled(True)
         # self.select_list.sortByColumn(0, Qt.AscendingOrder)
@@ -129,7 +129,8 @@ class Form(QMainWindow, form_class):
         self.noTestlink.clicked.connect(self.update_testlink)
         self.Testlink.clicked.connect(self.update_testlink)
         self.comboBox_server.activated[str].connect(self.change_server)     
-        self.comboBox_browser.activated[str].connect(self.change_browser)     
+        # self.comboBox_browser.activated[str].connect(self.change_browser)     
+        self.checkBox_browser.stateChanged.connect(self.change_check)
 
         self.thread2 = Thread2()
         self.thread2.timer.connect(self.label_time.setText)
@@ -237,10 +238,16 @@ class Form(QMainWindow, form_class):
             self.thread2.running = False
         else:
             self.thread2.running = True
+    
+    def change_check(self, state):
+        if state == Qt.Checked:
+            Common_Var.check = "Checked"
+        else:
+            Common_Var.check = "Unchecked"
 
-    def change_browser(self):
-        if self.comboBox_browser.currentText() == "Edge":
-            launch_webdriver()
+    # def change_browser(self):
+    #     if self.comboBox_browser.currentText() == "Edge":
+    #         launch_webdriver()
 
     def add_child_all(parent, item, child_Count):
         for n in range(0, child_Count):
@@ -755,7 +762,9 @@ class Form(QMainWindow, form_class):
         if self.noTestlink.isChecked() != True:
             self.set_testlink()
         if self.comboBox_browser.currentText() == "Edge":
-            launch_webdriver()
+            Common_Var.web_driver = "Edge"
+        else:
+            Common_Var.web_driver = "Chrome"
         self.run()
 
 

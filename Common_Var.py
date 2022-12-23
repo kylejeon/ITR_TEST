@@ -19,6 +19,7 @@ rowIndex = 0
 form = None
 signal1 = None
 timer = ""
+check = "Unchecked"
 
 # TestLink
 planid = ""
