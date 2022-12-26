@@ -25,7 +25,14 @@ class Statistics:
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # DB 접속
         os.putenv('NLS_LANG', '.UTF8')
@@ -521,7 +528,14 @@ class Statistics:
 
         # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 페이지 초기화
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Show entries 100 변경
         select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
@@ -644,7 +658,14 @@ class Statistics:
 
         # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 페이지 초기화
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Show entries 100 변경
         select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
@@ -829,7 +850,14 @@ class Statistics:
 
         # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 페이지 초기화
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Show entries 100 변경
         select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
@@ -1013,7 +1041,14 @@ class Statistics:
 
         # 1 steps start! : Columns 버튼을 클릭한다.
         # 페이지 초기화
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Columns 클릭
         time.sleep(1)
@@ -1161,7 +1196,14 @@ class Statistics:
 
         # 1 steps start! : Show entries의 개수를 10으로 변경한다.
         # 페이지 초기화
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Showing entry 결과 저장
         temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text

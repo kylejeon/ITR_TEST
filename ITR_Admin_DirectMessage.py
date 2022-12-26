@@ -75,10 +75,18 @@ class DirectMessage:
 
     def DirectMessageBox_Search():
         print("ITR-107: Direct Message > Direct Message Box > Search")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Direct Message Tab #1
         del driver.requests
@@ -158,9 +166,19 @@ class DirectMessage:
         # DirectMessageBox_Search결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2232, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2232, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2232, testPlanID, buildName, 'p', "DirectMessageBox_Search Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2232, testPlanID, buildName, 'p', "DirectMessageBox_Search Test Passed")
 
     def DirectMessageBox_ShowEntries_fun(entries, num):
         Result_msg = ""
@@ -183,10 +201,18 @@ class DirectMessage:
 
     def DirectMessageBox_ShowEntries():
         print("ITR-108: Direct Message > Direct Message Box > Show Entries")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -225,9 +251,19 @@ class DirectMessage:
         # DirectMessageBox_ShowEntries결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2238, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2238, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2238, testPlanID, buildName, 'p', "DirectMessageBox_ShowEntries Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2238, testPlanID, buildName, 'p', "DirectMessageBox_ShowEntries Test Passed")
 
     def DirectMessageBox_WNSort(length, asc):
         testResult = True
@@ -271,10 +307,18 @@ class DirectMessage:
 
     def DirectMessageBox_Sorting():
         print("ITR-109: Direct Message > Direct Message Box > Sorting")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -352,16 +396,34 @@ class DirectMessage:
         # DirectMessageBox_Sorting결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2245, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2245, testPlanID, buildName, 'p', "DirectMessageBox_Sorting Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2245, testPlanID, buildName, 'p', "DirectMessageBox_Sorting Test Passed")
    
     def DirectMessageBox_Badge():
         print("ITR-110: Direct Message > Direct Message Box > Badge")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessageBox
         del driver.requests
@@ -404,16 +466,34 @@ class DirectMessage:
         # DirectMessageBox_Badge결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2250, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2250, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2250, testPlanID, buildName, 'p', "DirectMessageBox_Badge Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2250, testPlanID, buildName, 'p', "DirectMessageBox_Badge Test Passed")
 
     def DirectMessageBox_Message():
         print("ITR-111: Direct Message > Direct Message Box > Message")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         del driver.requests
         time.sleep(1)
@@ -445,13 +525,24 @@ class DirectMessage:
         # DirectMessageBox_Message결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2253, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2253, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2253, testPlanID, buildName, 'p', "DirectMessageBox_Message Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2253, testPlanID, buildName, 'p', "DirectMessageBox_Message Test Passed")
 
     # search = Institution, Center, Reporter
     def NewDirectMessage_Search_fun(search, search_target):
         print("ITR-112: Direct Message > Direct Message Box > Institution - Search")
+        run_time = time.time()
         testResult = True
         Result_msg = ""
         driver.wait_for_request('.*/GetAccess'+search+'List*')
@@ -563,7 +654,14 @@ class DirectMessage:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -583,16 +681,34 @@ class DirectMessage:
         # NewDirectMessage_Institution_Search결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2256, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2256, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2256, testPlanID, buildName, 'p', "NewDirectMessage_Institution_Search Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2256, testPlanID, buildName, 'p', "NewDirectMessage_Institution_Search Test Passed")
 
     def NewDirectMessage_Institution_Message():
         print("ITR-113: Direct Message > Direct Message Box > Institution - Message")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -612,16 +728,34 @@ class DirectMessage:
         # NewDirectMessage_Institution_Message결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2261, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2261, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2261, testPlanID, buildName, 'p', "NewDirectMessage_Institution_Message Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2261, testPlanID, buildName, 'p', "NewDirectMessage_Institution_Message Test Passed")
 
     def NewDirectMessage_Center_Search():
         print("ITR-114: Direct Message > Direct Message Box > Center - Search")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -641,16 +775,34 @@ class DirectMessage:
         # NewDirectMessage_Center_Search결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2266, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2266, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2266, testPlanID, buildName, 'p', "NewDirectMessage_Center_Search Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2266, testPlanID, buildName, 'p', "NewDirectMessage_Center_Search Test Passed")
 
     def NewDirectMessage_Center_Message():
         print("ITR-115: Direct Message > Direct Message Box > Center - Message")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -670,17 +822,35 @@ class DirectMessage:
         # NewDirectMessage_Center_Message결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2271, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2271, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2271, testPlanID, buildName, 'p', "NewDirectMessage_Center_Message Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2271, testPlanID, buildName, 'p', "NewDirectMessage_Center_Message Test Passed")
 
 
     def NewDirectMessage_Reporter_Search():
         print("ITR-116: Direct Message > Direct Message Box > Reporter - Search")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -700,16 +870,34 @@ class DirectMessage:
         # NewDirectMessage_Reporter_Search결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2276, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2276, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2276, testPlanID, buildName, 'p', "NewDirectMessage_Reporter_Search Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2276, testPlanID, buildName, 'p', "NewDirectMessage_Reporter_Search Test Passed")
 
     def NewDirectMessage_Reporter_Message():
         print("ITR-117: Direct Message > Direct Message Box > Reporter - Message")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -729,9 +917,19 @@ class DirectMessage:
         # NewDirectMessage_Reporter_Message결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2281, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2281, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2281, testPlanID, buildName, 'p', "NewDirectMessage_Reporter_Message Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2281, testPlanID, buildName, 'p', "NewDirectMessage_Reporter_Message Test Passed")
 
     def DirectMessageSetting_Search_fun(auth, search_target):
         Result_msg = ""
@@ -767,10 +965,18 @@ class DirectMessage:
 
     def DirectMessageSetting_Search():
         print("ITR-118: Direct Message > Direct Message Setting > Search")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessage
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -793,16 +999,34 @@ class DirectMessage:
         # DirectMessageSetting_Search결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2287, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2287, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2287, testPlanID, buildName, 'p', "DirectMessageSetting_Search Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2287, testPlanID, buildName, 'p', "DirectMessageSetting_Search Test Passed")
 
     def DirectMessageSetting_Authorize():
         print("ITR-119: Direct Message > Direct Message Setting > Authorize")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessage
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -928,16 +1152,34 @@ class DirectMessage:
         # DirectMessageSetting_Authorize결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2293, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2293, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2293, testPlanID, buildName, 'p', "DirectMessageSetting_Authorize Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2293, testPlanID, buildName, 'p', "DirectMessageSetting_Authorize Test Passed")
 
     def DirectMessageSetting_Selection():
         print("ITR-120: Direct Message > Direct Message Setting > Selection")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # DirectMessage
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -975,6 +1217,16 @@ class DirectMessage:
         # DirectMessageSetting_Selection결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2299, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2299, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2299, testPlanID, buildName, 'p', "DirectMessageSetting_Selection Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2299, testPlanID, buildName, 'p', "DirectMessageSetting_Selection Test Passed")

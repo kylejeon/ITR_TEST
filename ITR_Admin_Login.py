@@ -16,8 +16,8 @@ import Common_Var
 class signInOut:
     def admin_sign_in():
         driver.find_element(By.ID, 'user-id').clear()
-        driver.find_element(By.ID, 'user-id').send_keys(Var.adminID)
-        driver.find_element(By.ID, 'user-password').send_keys(Var.adminPW)
+        driver.find_element(By.ID, 'user-id').send_keys(Var.stg_adminID)
+        driver.find_element(By.ID, 'user-password').send_keys(Var.stg_adminPW)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)
         time.sleep(0.3)
@@ -157,10 +157,10 @@ class Sign:
         # 5 steps start! : 정상적인 계정으로 로그인 한다.
         # 정상적인 계정으로 로그인 한다.
         driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").clear()   
-        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").send_keys(Var.adminID)
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").send_keys(Var.stg_adminID)
         time.sleep(0.5)
         driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").clear()
-        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").send_keys(Var.adminPW)
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").send_keys(Var.stg_adminPW)
         time.sleep(0.5)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)        

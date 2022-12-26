@@ -107,10 +107,10 @@ class Form(QMainWindow, form_class):
         self.comboBox_server:QComboBox
         self.checkBox_browser:QCheckBox
 
-        # self.select_list.setSortingEnabled(True)
-        # self.select_list.sortByColumn(0, Qt.AscendingOrder)
-        # self.selected_list.setSortingEnabled(True)
-        # self.selected_list.sortByColumn(0, Qt.AscendingOrder)
+        self.select_list.setSortingEnabled(True)
+        self.select_list.sortByColumn(0, Qt.AscendingOrder)
+        self.selected_list.setSortingEnabled(True)
+        self.selected_list.sortByColumn(0, Qt.AscendingOrder)
         
         # TestPlan ID, BN No., admin_url, worklist_url 레이블 비활성화
         self.text_planid.setDisabled(True)
@@ -136,23 +136,29 @@ class Form(QMainWindow, form_class):
         self.thread2.timer.connect(self.label_time.setText)
         self.thread2.start()
 
-    def __lt__(self, other):
-        column1 = self.select_list.sortColumn()
-        column2 = self.selected_list.sortColumn()
-        if column1 == 0:
-            key1 = self.text(column1)
-            key2 = other.text(column1)
-            return self.natural_sort_key(key1) < self.natural_sort_key(key2)
-        if column2 == 0:
-            key3 = self.text(column2)
-            key4 = other.text(column2)
-            return self.natural_sort_key(key3) < self.natural_sort_key(key4)
+        # 리스트 초기 column size 설정
+        self.select_list.setColumnWidth(0, 130)
+        self.selected_list.setColumnWidth(0, 130)
+        # self.select_list.setColumnHidden(0, True)
+        # self.selected_list.setColumnHidden(0, True)
 
-    @staticmethod
-    def natural_sort_key(key):
-        regex = '(\d*\.\d+|\d+)'
-        parts = re.split(regex, key)
-        return tuple((e if i % 2 == 0 else float(e)) for i, e in enumerate(parts))
+    # def __lt__(self, other):
+    #     column1 = self.select_list.sortColumn()
+    #     column2 = self.selected_list.sortColumn()
+    #     if column1 == 0:
+    #         key1 = self.text(column1)
+    #         key2 = other.text(column1)
+    #         return self.natural_sort_key(key1) < self.natural_sort_key(key2)
+    #     if column2 == 0:
+    #         key3 = self.text(column2)
+    #         key4 = other.text(column2)
+    #         return self.natural_sort_key(key3) < self.natural_sort_key(key4)
+
+    # @staticmethod
+    # def natural_sort_key(key):
+    #     regex = '(\d*\.\d+|\d+)'
+    #     parts = re.split(regex, key)
+    #     return tuple((e if i % 2 == 0 else float(e)) for i, e in enumerate(parts))
 
     @pyqtSlot(str, str, str, str, str)
     def signal_update_table(self, arg1, arg2, arg3, arg4, arg5):
@@ -430,8 +436,8 @@ class Form(QMainWindow, form_class):
                     item_cnt = len(add_item_list)
                     # new_item.setData(0, Qt.DisplayRole, int(add_item_list.pop(item_cnt - 2)))
                     # new_item.setData(1, Qt.DisplayRole, add_item_list.pop(item_cnt - 2))
-                    new_item.setText(1, add_item_list.pop(item_cnt - 2))
                     new_item.setText(0, add_item_list.pop(item_cnt - 2))
+                    new_item.setText(1, add_item_list.pop(item_cnt - 2))
                     item_cnt -= 2
 
                     # Selected list에 추가하고 선택한 item을 select list에서 삭제
@@ -699,6 +705,7 @@ class Form(QMainWindow, form_class):
         self.label_notexecuted.setText(str(int(len(testcase_list))))
         self.label_6.setStyleSheet("Color : orange")
         self.label_exception.setStyleSheet("Color : orange")
+        self.label_exception.setText("0")
         Common_Var.form.label_executed.setText(str(Common_Var.executed) + "% executed")
 
     def update_passed(self):

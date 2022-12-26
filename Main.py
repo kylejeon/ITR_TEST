@@ -317,23 +317,33 @@ class Test:
     def function_test(testcase_list):
         importlib.reload(sys.modules['ITR_Admin_Common'])
         importlib.reload(sys.modules['ITR_Admin_Login'])
-        from ITR_Admin_Common import driver
+        importlib.reload(sys.modules['ITR_Admin_Refer'])
+        importlib.reload(sys.modules['ITR_Admin_Worklist'])
+        importlib.reload(sys.modules['ITR_Admin_Statistics'])
+        importlib.reload(sys.modules['ITR_Admin_Configuration'])
+        importlib.reload(sys.modules['ITR_Admin_Notice'])
+        importlib.reload(sys.modules['ITR_Admin_Auditlog'])
+        importlib.reload(sys.modules['ITR_Admin_DirectMessage'])
+
+        # from ITR_Admin_Common import driver
         ITR_Admin_Common.driver.get(Common_Var.base_admin_url)
         start = time.time()
         failed_test_list = []
+        testnum = 0
         for case in testcase_list:
             teststep = get_step(case)
-            testidx = get_index(case)
-            time.sleep(0.5)
+            testidx = get_index(case)            
+            time.sleep(0.5)            
             try:
-                print("(",str((testidx+1)) + " / " + str(len(testcase_list)),")", round((testidx+1)*100/int(len(testcase_list)),1),"%")
-                Common_Var.progress_bar = round((testidx+1)*100/int(len(testcase_list)),1)
-                Common_Var.executed = int((testidx+1)*100/int(len(testcase_list)))
+                print("(",str((testnum+1)) + " / " + str(len(testcase_list)),")", round((testnum+1)*100/int(len(testcase_list)),1),"%")
+                Common_Var.progress_bar = round((testnum+1)*100/int(len(testcase_list)),1)
+                Common_Var.executed = int((testnum+1)*100/int(len(testcase_list)))
                 run_time = time.time()
                 # TableWidget 값 추가
                 Common_Var.tc_name = case
                 Common_Var.tc_steps = teststep
                 full_test_case[testidx]()
+                testnum += 1
                 Test.delay()
             except Exception as e:
                 print(e)
@@ -347,11 +357,13 @@ class Test:
                         print("Retry ("+str(i+1)+"/3)")
                         full_test_case[testidx]()
                         failed_test_list.remove(full_test_case[testidx])
+                        testnum += 1
                         break
                     except:
                         # ITR_Admin_Common.driver.refresh()
                         print("An exception occurred.")
                         Common_Var.form.update_exception()
+                        testnum += 1
                         pass
             finally:
                 print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")

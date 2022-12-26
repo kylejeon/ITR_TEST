@@ -17,15 +17,24 @@ from ITR_Admin_Common import testPlanID
 from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Var
 from ITR_Admin_Common import Common
+import Common_Var
 
 class Worklist:
     def All_Assigned_List():
         print("ITR-24: Worklist > All Assigned List")
+        run_time = time.time()
         testResult = ''
         reason = list()
         
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
         #driver.wait_for_request('.*/GetAllAssignedList.*')
         #time.sleep(0.3)
         driver.implicitly_wait(5)
@@ -74,17 +83,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1668, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1668, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1668, testPlanID, buildName, 'p', "All Assigned List Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1668, testPlanID, buildName, 'p', "All Assigned List Passed")
 
     def Not_Assigned_List():
         print("ITR-25: Worklist > Not Assigned List")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
         driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
 
@@ -123,19 +150,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1671, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1671, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1671, testPlanID, buildName, 'p', "Not Assigned List Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1671, testPlanID, buildName, 'p', "Not Assigned List Passed")
 
     def All_List():
         print("ITR-26: Worklist > All List")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
-        driver.wait_for_request('.*/GetAllAssignedList.*')
-        time.sleep(0.3)
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # 1 steps start! : All List 탭을 클릭한다.
         # Test 병원 선택
@@ -173,12 +216,23 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1674, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1674, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1674, testPlanID, buildName, 'p', "All List Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1674, testPlanID, buildName, 'p', "All List Passed")
 
     def Schedule():
         print("ITR-27: Worklist > Schedule")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
@@ -186,7 +240,14 @@ class Worklist:
         time.sleep(1)
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : Schedule 체크박스를 체크한다.
         # Refer 탭 클릭
@@ -329,17 +390,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1677, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1677, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1677, testPlanID, buildName, 'p', "Schedule Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1677, testPlanID, buildName, 'p', "Schedule Passed")
         
     def Priority():
         print("ITR-28: Worklist > Priority")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : Worklist에서 Priority가 일반인 의뢰 검사를 선택한 후, Priority 버튼을 클릭한다.
         # Refer 탭 클릭
@@ -455,17 +534,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1681, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1681, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1681, testPlanID, buildName, 'p', "Priority Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1681, testPlanID, buildName, 'p', "Priority Passed")
 
     def Canceled():
         print("ITR-29: Worklist > Canceled")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : Worklist에서 Job Status가 Canceled 이외의 의뢰 검사를 선택한 후, Cancel 버튼을 클릭한다.
         # Refer 탭 클릭
@@ -576,17 +673,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1685, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1685, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1685, testPlanID, buildName, 'p', "Canceled Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1685, testPlanID, buildName, 'p', "Canceled Passed")
 
     def Refer():
         print("ITR-30: Worklist > Refer")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
         
         # 1 steps start! : Worklist에서 임의의 의뢰 검사를 선택한 후, Refer 버튼을 클릭한다.
         # Configuration > Institutions로 이동 후, 테스트 병원 검색
@@ -1351,17 +1466,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1690, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1690, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1690, testPlanID, buildName, 'p', "Refer Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1690, testPlanID, buildName, 'p', "Refer Passed")
 
     def Refer_Cancel():
         print("ITR-31: Worklist > Refer Cancel")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : 판독의가 할당된 의뢰 검사를 선택한 후, Refer Cancel 버튼을 클릭한다.
         # Refer 탭 클릭
@@ -1611,17 +1744,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1701, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1701, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1701, testPlanID, buildName, 'p', "Refer Cancel Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1701, testPlanID, buildName, 'p', "Refer Cancel Passed")
 
     def Refer_Cancel_And_Refer():
         print("ITR-32: Worklist > Refer Cancel and Refer")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : 판독의에게 할당된 임의의 의뢰 검사를 선택하고, Refer Cancel and Refer 버튼을 클릭한다.
         # Refer 탭 클릭
@@ -2108,19 +2259,37 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1711, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1711, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1711, testPlanID, buildName, 'p', "Refer Cancel and Refer Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1711, testPlanID, buildName, 'p', "Refer Cancel and Refer Passed")
 
     def Set_Schedule():
         print("ITR-34: Worklist > Set Schedule")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 1 steps start! : Job stat이 Requested 인 임의의 의뢰 검사를 선택한 후, Schedule 버튼을 클릭한다.
         # 다음 테스트를 위해 선택 해제(새로고침)
         time.sleep(1)
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Test 병원 선택
         del driver.requests
@@ -2336,17 +2505,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1718, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1718, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1718, testPlanID, buildName, 'p', "Set Schedule Passed")        
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1718, testPlanID, buildName, 'p', "Set Schedule Passed")        
 
     def Schedule_Cancel():
         print("ITR-35: Worklist > Cancel Schedule")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : Schedule이 없는 임의의 의뢰 job을 선택한 후, Schedule Cancel 버튼을 클릭한다.
         # Refer 탭 클릭
@@ -2594,17 +2781,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1724, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1724, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1724, testPlanID, buildName, 'p', "Schedule Passed")    
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1724, testPlanID, buildName, 'p', "Schedule Passed")    
 
     def Revised():
         print("ITR-36: Worklist > Revised")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : Job Status가 Completed 상태인 의뢰 검사를 선택한 후, Revised 버튼을 클릭한다.
         # Configuration > Institutions > 테스트 병원 선택
@@ -2765,17 +2970,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1730, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1730, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1730, testPlanID, buildName, 'p', "Revised Passed")    
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1730, testPlanID, buildName, 'p', "Revised Passed")    
 
     def Discard():
         print("ITR-37: Worklist > Discard")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : 임의의 의뢰 검사를 선택한 후, Discard 버튼을 클릭한다.
         # Configuration > Institutions > 테스트 병원 선택
@@ -2954,17 +3177,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1733, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1733, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1733, testPlanID, buildName, 'p', "Discard Passed")    
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1733, testPlanID, buildName, 'p', "Discard Passed")    
 
     def Retry_Request():
         print("ITR-38: Worklist > Retry Request")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : Job Status가 Reported, Completed, Recalled 이외의 상태인 의뢰 검사를 선택한 후, Retry Request 버튼을 클릭한다.
         # Configuration > Institutions > 테스트 병원 선택
@@ -3307,19 +3548,37 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1737, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1737, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1737, testPlanID, buildName, 'p', "Retry Request Passed")    
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1737, testPlanID, buildName, 'p', "Retry Request Passed")    
 
     def Columns():
         print("ITR-39: Worklist > Columns")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 1 steps start! : Columns 버튼을 클릭한다.
         # 새로고침
         time.sleep(1)
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Test 병원 선택
         time.sleep(1)
@@ -3575,17 +3834,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1741, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1741, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1741, testPlanID, buildName, 'p', "Columns Passed")    
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1741, testPlanID, buildName, 'p', "Columns Passed")    
 
     def Show_Entries():
         print("ITR-40: Worklist > Show entries")
+        run_time = time.time()
         testResult = ''
         reason = list()
         
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : Show entries의 개수를 10으로 변경한다.
         # Refer 탭 클릭
@@ -3684,17 +3961,35 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1749, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1749, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1749, testPlanID, buildName, 'p', "Show entries Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1749, testPlanID, buildName, 'p', "Show entries Passed")  
 
     def Use_Related_Worklist():
         print("ITR-224: Worklist > Use Related Worklist")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : Use Related Worklist에 체크한 후, worklist에서 임의의 의뢰 검사를 선택한다.
         # Refer 탭 클릭
@@ -3750,18 +4045,36 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(3074, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(3074, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(3074, testPlanID, buildName, 'p', "Use Related Worklist Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(3074, testPlanID, buildName, 'p', "Use Related Worklist Passed")  
 
     def Sort_By():
         print("ITR-41: Worklist > Sort By")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 1 steps start! : 정렬 가능한 컬럼을 확인한다.
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Test 병원 선택
         time.sleep(1)
@@ -3832,7 +4145,17 @@ class Worklist:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1755, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1755, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1755, testPlanID, buildName, 'p', "Sort By Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1755, testPlanID, buildName, 'p', "Sort By Passed")  
 

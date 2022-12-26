@@ -1,5 +1,7 @@
 import ITR_Admin_Login
+# from selenium import webdriver
 from seleniumwire import webdriver
+# import selenium.webdriver as webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
@@ -26,16 +28,25 @@ class Refer:
         testResult = ''
         reason = list() 
 
-        del driver.requests
+        # del driver.requests
         time.sleep(1)
 
-        # Admin Sign out
-        ITR_Admin_Login.signInOut.admin_sign_out()
-        time.sleep(1)
+        # # Admin Sign out
+        # ITR_Admin_Login.signInOut.admin_sign_out()
+        # time.sleep(1)
 
-        # SubAdmin Sign In
-        ITR_Admin_Login.signInOut.subadmin_sign_in()
-        time.sleep(1)
+        # # SubAdmin Sign In
+        # ITR_Admin_Login.signInOut.subadmin_sign_in()
+        # time.sleep(1)
+        # ITR_Admin_Login.signInOut.stg_admin_sign_in()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # # Refer 탭 클릭
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -697,6 +708,15 @@ class Refer:
         testResult = ''
         reason = list()        
 
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
+
         # 1 & 2 steps start! : 판독의 탭 > 판독의 리스트에 표시되는 badge count가 job list와 일치하는지 확인
         # Reporter list를 저장한다.
         driver.find_element(By.XPATH, "//*[@id='tab-reporter']").click()
@@ -890,7 +910,14 @@ class Search_filter:
 
         # 1 steps start! : Priority 조건을 응급으로 선택한 후, Search 버튼 클릭
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Hospital list 저장
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -1077,7 +1104,14 @@ class Search_filter:
 
         # 1 steps start! : Job Status를 Requested로 선택한 후, Search All버튼을 클릭한다.
         # 새로고침
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Showing entries 100으로 변경
         Common.refer_show_entries(100)
@@ -1549,7 +1583,14 @@ class Search_filter:
         reason = list()
 
         # 새로고침
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : Date를 Job Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 2 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
@@ -2014,7 +2055,14 @@ class Search_filter:
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # 1 steps start! : Patient Location 조건을 InPatient로 선택한 후, Search 버튼을 클릭한다.
         # 2 steps start! : Patient Location 조건을 OutPatient로 선택한 후, Search 버튼을 클릭한다.
@@ -2095,7 +2143,14 @@ class Search_filter:
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -2225,7 +2280,14 @@ class Search_filter:
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -2355,7 +2417,14 @@ class Search_filter:
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -2547,8 +2616,14 @@ class Search_filter:
         reason = list()
 
         # 새로고침
-        driver.refresh()
-
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
@@ -2641,7 +2716,14 @@ class Search_filter:
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -2737,7 +2819,14 @@ class Search_filter:
         time.sleep(1)
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
@@ -2857,7 +2946,14 @@ class Search_filter:
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -2950,7 +3046,14 @@ class Search_filter:
         reason = list()
         
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -3043,7 +3146,14 @@ class Search_filter:
         reason = list()
         
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -3199,7 +3309,14 @@ class Search_filter:
         reason = list()
         
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -3312,7 +3429,14 @@ class Search_filter:
         time.sleep(1)
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
         
         driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)

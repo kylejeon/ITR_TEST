@@ -16,6 +16,7 @@ from ITR_Admin_Common import Var
 from ITR_Admin_Common import Common
 from ITR_Admin_Login import signInOut
 import Common_Var
+import ITR_Admin_Login
 
 class UserManagement:
     def SearchFilter_Class():
@@ -24,7 +25,14 @@ class UserManagement:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -80,7 +88,14 @@ class UserManagement:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -207,7 +222,14 @@ class UserManagement:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -433,7 +455,14 @@ class UserManagement:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -669,7 +698,14 @@ class UserManagement:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -737,7 +773,14 @@ class UserManagement:
         Result_msg = "failed at "
         class_check = True
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -1957,7 +2000,14 @@ class UserManagement:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2087,7 +2137,14 @@ class Specialty:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2153,7 +2210,14 @@ class Specialty:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2287,7 +2351,14 @@ class Specialty:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2423,7 +2494,14 @@ class Specialty:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2754,7 +2832,14 @@ class Specialty:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2814,7 +2899,14 @@ class Specialty:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3009,7 +3101,14 @@ class Specialty:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3155,7 +3254,14 @@ class Specialty:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3305,7 +3411,14 @@ class Specialty:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3583,7 +3696,14 @@ class DownloadControl:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3650,7 +3770,14 @@ class DownloadControl:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3810,7 +3937,14 @@ class DownloadControl:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3849,7 +3983,14 @@ class DownloadControl:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3922,7 +4063,14 @@ class DownloadControl:
         request_name = "Chest PA"
         #####
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         del driver.requests
         time.sleep(0.5)
@@ -4575,7 +4723,14 @@ class DownloadControl:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -4719,7 +4874,14 @@ class DownloadControl:
         request_name = "Chest PA"
         #####
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         del driver.requests
         time.sleep(0.5)
@@ -5604,7 +5766,14 @@ class DownloadControl:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -5675,7 +5844,14 @@ class DownloadControl:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -5847,7 +6023,14 @@ class DownloadControl:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -5886,7 +6069,14 @@ class DownloadControl:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -5959,7 +6149,14 @@ class DownloadControl:
         request_name = "Chest PA"
         #####
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         del driver.requests
         time.sleep(0.5)
@@ -6630,7 +6827,14 @@ class DownloadControl:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -6786,7 +6990,14 @@ class DownloadControl:
         request_name = "Chest PA"
         #####
 
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         del driver.requests
         time.sleep(0.5)
@@ -7714,7 +7925,14 @@ class Institution:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -7844,7 +8062,14 @@ class Institution:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -8061,7 +8286,14 @@ class Institution:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -8316,7 +8548,14 @@ class Institution:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -8794,7 +9033,14 @@ class StandardReport:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
         time.sleep(1)
 
         # Configuration
@@ -8971,7 +9217,14 @@ class StandardReport:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -9154,7 +9407,14 @@ class StandardReport:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -9338,7 +9598,14 @@ class StandardReport:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -9530,7 +9797,14 @@ class StandardReport:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -9737,7 +10011,14 @@ class MultiReadingCenterRule:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -9855,7 +10136,14 @@ class MultiReadingCenterRule:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -10162,7 +10450,14 @@ class MultiReadingCenterRule:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -10228,7 +10523,14 @@ class MultiReadingCenterRule:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()

@@ -1,6 +1,7 @@
 import time
 from testlink import TestlinkAPIClient, TestLinkHelper
-import selenium.webdriver as webdriver
+# import selenium.webdriver as webdriver
+from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from datetime import datetime
