@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import Select
 from datetime import datetime
 import math
 import Common_Var
+from selenium.webdriver.chrome.service import Service
 
 # TestLink User: kyle
 URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'

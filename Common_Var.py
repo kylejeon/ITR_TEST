@@ -18,7 +18,7 @@ rowIndex = 0
 # form
 form = None
 signal1 = None
-timer = ""
+timer = "On"
 check = "Unchecked"
 
 # TestLink
@@ -35,3 +35,4 @@ base_worklist_url = "https://stagingworklist.onpacs.com/"
 
 # Web Driver
 web_driver = ""
+

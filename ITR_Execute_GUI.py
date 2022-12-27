@@ -8,13 +8,19 @@ from PyQt5 import QtGui
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QThreadPool
 import sip
-import re
+import os
 import Main
 import Common_Var
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
-form_class = uic.loadUiType("Test_GUI.ui")[0]
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+form = resource_path("Test_GUI.ui")
+form_class = uic.loadUiType(form)[0]
+# form_class = uic.loadUiType("Test_GUI.ui")[0]
 font = QFont()
 font.setBold(True)
 
@@ -69,6 +75,12 @@ class UpdateExceptionSignal(QObject):
 
     def run(self):
         self.signal.emit()
+    
+class UpdateTimerSignal(QObject):
+    signal = pyqtSignal()
+
+    def run(self):
+        self.signal.emit()
 
 class Form(QMainWindow, form_class):
     def __init__(self):
@@ -76,6 +88,12 @@ class Form(QMainWindow, form_class):
         self.setupUi(self)
         self.thread_manager = QThreadPool()
 
+        # 아이콘 설정
+        window_ico = resource_path('cop.png')
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("./cop.png"),QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(QtGui.QIcon(icon))
+        
         QApplication.processEvents()
         self.btn_move_to_right:QPushButton
         self.btn_move_to_left:QPushButton
@@ -207,6 +225,11 @@ class Form(QMainWindow, form_class):
         Common_Var.form.label_exception.setText(str(Common_Var.test_status_exception))
         self.progressBar.setValue(int(Common_Var.progress_bar))
         Common_Var.form.label_executed.setText(str(Common_Var.executed) + "% executed")
+    
+    pyqtSlot()
+    def signal_timer(self):
+        if Common_Var.timer == "Off":
+            self.start_timer()
 
     def update_testlink(self):
         if self.noTestlink.isChecked() == True:
@@ -245,15 +268,16 @@ class Form(QMainWindow, form_class):
         else:
             self.thread2.running = True
     
+    def update_timer(self):
+        mysignal = UpdateTimerSignal()
+        mysignal.signal.connect(self.start_timer)
+        mysignal.run()
+    
     def change_check(self, state):
         if state == Qt.Checked:
             Common_Var.check = "Checked"
         else:
             Common_Var.check = "Unchecked"
-
-    # def change_browser(self):
-    #     if self.comboBox_browser.currentText() == "Edge":
-    #         launch_webdriver()
 
     def add_child_all(parent, item, child_Count):
         for n in range(0, child_Count):
@@ -778,6 +802,6 @@ class Form(QMainWindow, form_class):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     Common_Var.form = Form()
-    Common_Var.form.setWindowTitle("ITR Automation Test")
+    Common_Var.form.setWindowTitle("ITR Automation Test")    
     Common_Var.form.show()
     sys.exit(app.exec_())

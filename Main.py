@@ -8,7 +8,7 @@ import ITR_Admin_Auditlog
 import ITR_Admin_Notice
 import ITR_Admin_DirectMessage
 import time
-from ITR_Execute_GUI import Form
+# from ITR_Execute_GUI import Form
 import Common_Var
 import importlib
 import sys
@@ -368,11 +368,13 @@ class Test:
             finally:
                 print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
                 pass
+    
+        Common_Var.form.update_timer()
 
         print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
         print("failed_test_list: ", failed_test_list)
         
-        # ITR_Admin_Common.driver.quit()
+        ITR_Admin_Common.driver.quit()
 
     # full test 
     # full_test()
