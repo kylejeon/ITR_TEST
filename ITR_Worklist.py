@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 import json, math, time
-
+import Common_Var
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 # User: kyle
@@ -24,8 +24,10 @@ testlink.__init__(URL, DevKey)
 testlink.checkDevKey()
 
 # 브라우저 설정
-WorklistUrl = 'http://vm-onpacs'
-AdminUrl = 'http://vm-onpacs:8082'
+# WorklistUrl = 'http://vm-onpacs'
+# AdminUrl = 'http://vm-onpacs:8082'
+WorklistUrl = Common_Var.base_worklist_url
+adminUrl = Common_Var.base_admin_url
 #WorklistUrl = 'https://stagingworklist.onpacs.com'
 #AdminUrl = 'http://stagingadmin.onpacs.com/'
 
@@ -102,6 +104,7 @@ class windowSize:
 class Login:
     def Log_InOut():
         print("ITR-121: Log In/Out > Log In/Out")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
 
@@ -136,14 +139,25 @@ class Login:
         # sign_InOut 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2309, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2309, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2309, testPlanID, buildName, 'p', "Log_InOut Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2309, testPlanID, buildName, 'p', "Log_InOut Test Passed")
     
     def Remember_me():
         testResult = True
         Result_msg = "failed at "
         print("ITR-122: Remember Me > Remember Me")
+        run_time = time.time()
         
         # Remember Me 클릭 후, 정상적인 계정으로 로그인 한다.
         driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[4]/div[1]/label").click()
@@ -161,15 +175,26 @@ class Login:
         # Remember_me 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2316, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2316, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2316, testPlanID, buildName, 'p', "Remember me Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2316, testPlanID, buildName, 'p', "Remember me Test Passed")
 
 class TOPMENU:
     def Badge_Emergency():
         testResult = True
         Result_msg = "failed at "
         print("ITR-127: Badege > Emergency")
+        run_time = time.time()
         # 캡처 초기화
         del driver.requests
         time.sleep(1)
@@ -206,14 +231,25 @@ class TOPMENU:
         # Badge_Emergency 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2351, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2351, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2351, testPlanID, buildName, 'p', "Badge Emergency Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2351, testPlanID, buildName, 'p', "Badge Emergency Test Passed")
 
     def Badge_Refer():
         testResult = True
         Result_msg = "failed at "
         print("ITR-128: Badge > Refer")
+        run_time = time.time()
         # 캡처 초기화
         del driver.requests
         time.sleep(1)
@@ -251,14 +287,25 @@ class TOPMENU:
         # Badge_Refer 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2354, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2354, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2354, testPlanID, buildName, 'p', "Badge Refer Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2354, testPlanID, buildName, 'p', "Badge Refer Test Passed")
 
     def Badge_AutoRefer():
         testResult = True
         Result_msg = "failed at "
         print("ITR-129: Badge > Auto Refer")
+        run_time = time.time()
 
         # 캡처 초기화
         del driver.requests
@@ -299,14 +346,25 @@ class TOPMENU:
         # Badge_AutoRefer 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2357, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2357, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2357, testPlanID, buildName, 'p', "Badge AutoRefer Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2357, testPlanID, buildName, 'p', "Badge AutoRefer Test Passed")
 
     def Badge_Schedule():
         testResult = True
         Result_msg = "failed at "
         print("ITR-130: Badge > Schedule")
+        run_time = time.time()
 
         # 캡처 초기화
         del driver.requests
@@ -345,14 +403,25 @@ class TOPMENU:
         # Badge_Schedule 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2360, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2360, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2360, testPlanID, buildName, 'p', "Badge Schedule Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2360, testPlanID, buildName, 'p', "Badge Schedule Test Passed")
 
     def Badge_Today():
         testResult = True
         Result_msg = "failed at "
         print("ITR-131: Badge > Today")
+        run_time = time.time()
 
         # 캡처 초기화
         del driver.requests
@@ -391,9 +460,19 @@ class TOPMENU:
         # Badge_Today 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2363, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2363, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2363, testPlanID, buildName, 'p', "Badge Today Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2363, testPlanID, buildName, 'p', "Badge Today Test Passed")
 
     def Badge():
         TOPMENU.Badge_Emergency()
@@ -406,6 +485,7 @@ class TOPMENU:
         testResult = True
         Result_msg = "failed at "
         print("ITR-132: Top Menu > Home")
+        run_time = time.time()
 
         ReFresh()
         
@@ -466,14 +546,25 @@ class TOPMENU:
         # Home 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2367, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2367, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2367, testPlanID, buildName, 'p', "Home Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2367, testPlanID, buildName, 'p', "Home Test Passed")
 
     def new_message():
         testResult = True
         Result_msg = "failed at "
         print("ITR-133: Top Menu > Direct Message > New Message")
+        run_time = time.time()
         ReFresh()
 
         # READ_FLAG T or F 확인 (파란색 회색 확인) 및 읽지 않은 메시지 수 확인 #2
@@ -867,14 +958,25 @@ class TOPMENU:
         # new_message 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2371, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2371, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2371, testPlanID, buildName, 'p', "new_message Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2371, testPlanID, buildName, 'p', "new_message Test Passed")
 
     def Message():
         testResult = True
         Result_msg = "failed at "
         print("ITR-134: Top Menu > Direct Message > Message")
+        run_time = time.time()
 
         ReFresh()
 
@@ -981,14 +1083,25 @@ class TOPMENU:
         # message 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2384, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2384, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2384, testPlanID, buildName, 'p', "Message Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2384, testPlanID, buildName, 'p', "Message Test Passed")
 
     def View_More_Messages():
         testResult = True
         Result_msg = "failed at "
         print("ITR-135: Top Menu > Direct Message > View More Messages")
+        run_time = time.time()
 
         ReFresh()
 
@@ -1158,14 +1271,25 @@ class TOPMENU:
         # View_More_Message 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2390, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2390, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2390, testPlanID, buildName, 'p', "View_More_Message Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2390, testPlanID, buildName, 'p', "View_More_Message Test Passed")
         
     def Setting():
         testResult = True
         Result_msg = "failed at "
         print("ITR-137: Top Menu > Setting > Setting")
+        run_time = time.time()
 
         ReFresh()
 
@@ -1181,14 +1305,25 @@ class TOPMENU:
         # Setting 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2404, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2404, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2404, testPlanID, buildName, 'p', "Setting Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2404, testPlanID, buildName, 'p', "Setting Test Passed")
 
     def Report_Search_Filter():
         testResult = True
         Result_msg = "failed at "
         print("ITR-138: Top Menu > Setting > Standard Report - Search Filter")
+        run_time = time.time()
 
         ReFresh()
 
@@ -1373,14 +1508,25 @@ class TOPMENU:
         # Report_Search_Filter 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2407, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2407, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2407, testPlanID, buildName, 'p', "Report_Search_Filter Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2407, testPlanID, buildName, 'p', "Report_Search_Filter Test Passed")
 
     def Report_Add():
         testResult = True
         Result_msg = "failed at "
         print("ITR-219: Top Menu > Setting > Standard Report - Add")
+        run_time = time.time()
 
         ReFresh()
         driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[7]/a/span").click()
@@ -1581,14 +1727,25 @@ class TOPMENU:
         # Report_Add 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2870, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2870, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2870, testPlanID, buildName, 'p', "Report_Add Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2870, testPlanID, buildName, 'p', "Report_Add Test Passed")
 
     def Report_Modify():
         testResult = True
         Result_msg = "failed at "
         print("ITR-139: Top Menu > Setting > Standard Report - Modify")
+        run_time = time.time()
 
         ReFresh()
 
@@ -1753,14 +1910,25 @@ class TOPMENU:
         # Report_Modify 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2416, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2416, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2416, testPlanID, buildName, 'p', "Report_Modify Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2416, testPlanID, buildName, 'p', "Report_Modify Test Passed")
 
     def Report_delete():
         testResult = True
         Result_msg = "failed at "
         print("ITR-140: Top Menu > Setting > Standard Report - Delete")
+        run_time = time.time()
 
         # 정상적인 계정으로 로그인
         ReFresh()
@@ -1830,9 +1998,19 @@ class TOPMENU:
         # Report_delete 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2428, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2428, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2428, testPlanID, buildName, 'p', "Report_delete Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2428, testPlanID, buildName, 'p', "Report_delete Test Passed")
 
     def Profile_Worklist_inUserProfile():
         # Setting 접속
@@ -1851,6 +2029,7 @@ class TOPMENU:
         testResult = True
         Result_msg = "failed at "
         print("ITR-141: Top Menu > Setting > User Profile - Worklist")
+        run_time = time.time()
 
         # 정상적인 계정으로 로그인
         ReFresh()
@@ -2107,14 +2286,25 @@ class TOPMENU:
         # Profile_Worklist 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2431, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2431, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2431, testPlanID, buildName, 'p', "Profile_Worklist Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2431, testPlanID, buildName, 'p', "Profile_Worklist Test Passed")
 
     def Profile_Standard_Report():
         testResult = True
         Result_msg = "failed at "
         print("ITR-143: Top Menu > Setting > User Profile - Standard Report")
+        run_time = time.time()
 
         ReFresh()
 
@@ -2216,9 +2406,19 @@ class TOPMENU:
         # Profile_Standard_Report 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2444, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2444, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2444, testPlanID, buildName, 'p', "Profile_Standard_Report Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2444, testPlanID, buildName, 'p', "Profile_Standard_Report Test Passed")
 
 class WORKLIST:
     # get target position in worklist and option check
@@ -2248,6 +2448,7 @@ class WORKLIST:
         testResult = True
         Result_msg = "failed at "
         print("ITR-151: Home > Hospital List")
+        run_time = time.time()
         ReFresh()
 
         # Dropbox & View All Hospital List #1 & 4
@@ -2520,9 +2721,19 @@ class WORKLIST:
         # HospitalList 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2506, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2506, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2506, testPlanID, buildName, 'p', "HospitalList Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2506, testPlanID, buildName, 'p', "HospitalList Test Passed")
 
     def SearchFilter_JobStatus_Search(job_status_position, target, num):
         testResult = True
@@ -2564,6 +2775,7 @@ class WORKLIST:
         testResult = True
         Result_msg = "failed at "
         print("ITR-159: Home > Search Filter > Job Status")
+        run_time = time.time()
 
         ReFresh()
 
@@ -2729,9 +2941,19 @@ class WORKLIST:
         # SearchFilter_JobStatus 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2582, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2582, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2582, testPlanID, buildName, 'p', "SearchFilter_JobStatus Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2582, testPlanID, buildName, 'p', "SearchFilter_JobStatus Test Passed")
 
     def SearchFilter_Date(s_css, e_css):
         testResult = True
@@ -2863,6 +3085,7 @@ class WORKLIST:
         testResult = True
         Result_msg = "failed at "
         print("ITR-160: Home > Search Filter > Job Date")
+        run_time = time.time()
         ReFresh()
 
         # filter hide check
@@ -2876,9 +3099,19 @@ class WORKLIST:
         # SearchFilter_JobDate 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2595, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2595, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2595, testPlanID, buildName, 'p', "SearchFilter_JobDate Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2595, testPlanID, buildName, 'p', "SearchFilter_JobDate Test Passed")
 
     def SearchFilter_Etc_Search(target_position, target, particular):
         testResult = True
@@ -3340,14 +3573,25 @@ class WORKLIST:
         # SearchFilter_SplitBar 결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2645, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2645, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2645, testPlanID, buildName, 'p', "SearchFilter_SplitBar Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2645, testPlanID, buildName, 'p', "SearchFilter_SplitBar Test Passed")
 
     def SearchFilter_ScheduleDate():
         testResult = True
         Result_msg = "failed at "
         print("ITR-166: Home > Search Filter > Schedule Date")
+        run_time = time.time()
 
         ReFresh()
 
@@ -3362,14 +3606,25 @@ class WORKLIST:
         # SearchFilter_ScheduleDate결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2617, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2617, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2617, testPlanID, buildName, 'p', "SearchFilter_ScheduleDate Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2617, testPlanID, buildName, 'p', "SearchFilter_ScheduleDate Test Passed")
 
     def SearchFilter_Shortcut():
         testResult = True
         Result_msg = "failed at "
         print("ITR-175: Home > Search Filter > Short cut")
+        run_time = time.time()
 
         ReFresh()
 
@@ -3679,14 +3934,25 @@ class WORKLIST:
         # SearchFilter_Shortcut결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2649, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2649, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2649, testPlanID, buildName, 'p', "SearchFilter_Shortcut Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2649, testPlanID, buildName, 'p', "SearchFilter_Shortcut Test Passed")
 
     def Columns():
         testResult = True
         Result_msg = "failed at "
         print("ITR-154: Home > Columns")
+        run_time = time.time()
 
         ReFresh()
 
@@ -3867,9 +4133,19 @@ class WORKLIST:
         # Columns결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2528, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2528, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2528, testPlanID, buildName, 'p', "Columns Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2528, testPlanID, buildName, 'p', "Columns Test Passed")
 
     def option_alloff_before():
         # Setting + User profile + waiting접속
@@ -3971,6 +4247,7 @@ class WORKLIST:
         testResult = True
         Result_msg = "failed at "
         print("ITR-156: Home > Sort by")
+        run_time = time.time()
 
         ReFresh()
 
@@ -4037,9 +4314,19 @@ class WORKLIST:
         # Sortby결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2542, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2542, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2542, testPlanID, buildName, 'p', "Sortby Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2542, testPlanID, buildName, 'p', "Sortby Test Passed")
 
     def option_findposition(target):
         for n in range (2,33):
@@ -4051,6 +4338,7 @@ class WORKLIST:
         testResult = True
         Result_msg = "failed at "
         print("ITR-157: Home > Worklist")
+        run_time = time.time()
 
         ReFresh()
 
@@ -4316,14 +4604,25 @@ class WORKLIST:
         # Work_list결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2545, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2545, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2545, testPlanID, buildName, 'p', "Work_list Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2545, testPlanID, buildName, 'p', "Work_list Test Passed")
 
     def JobReport():
         testResult = True
         Result_msg = "failed at "
         print("ITR-176: Home > Job Report > Job Report")
+        run_time = time.time()
 
         ReFresh()
 
@@ -4403,14 +4702,25 @@ class WORKLIST:
         # JobReport결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2665, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2665, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2665, testPlanID, buildName, 'p', "JobReport Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2665, testPlanID, buildName, 'p', "JobReport Test Passed")
 
     def  JobReport_ReadingHistory():
         testResult = True
         Result_msg = "failed at "
         print("ITR-177: Home > Job Report > Reading History")
+        run_time = time.time()
 
         ReFresh()
         time.sleep(0.3)
@@ -4686,9 +4996,19 @@ class WORKLIST:
         # JobReport_ReadingHistory결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2670, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2670, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2670, testPlanID, buildName, 'p', "JobReport_ReadingHistory Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2670, testPlanID, buildName, 'p', "JobReport_ReadingHistory Test Passed")
 
     #ND = 1 (Normal), 2 (Delay) / SC = 3 (Send), 4 (Send&Close)
     def JobReport_ReportSettings_Send(position, ND, SC):
@@ -4816,6 +5136,7 @@ class WORKLIST:
         testResult = True
         Result_msg = "failed at "
         print("ITR-178: Home > Job Report > Report Settings")
+        run_time = time.time()
 
         ReFresh()
 
@@ -5006,14 +5327,25 @@ class WORKLIST:
         # JobReport_ReportSettings결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2675, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2675, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2675, testPlanID, buildName, 'p', "JobReport_ReportSettings Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2675, testPlanID, buildName, 'p', "JobReport_ReportSettings Test Passed")
 
     def Related_Exam():
         testResult = True
         Result_msg = "failed at "
         print("ITR-158: Home > Related Exam List")
+        run_time = time.time()
 
         ReFresh()
 
@@ -5051,9 +5383,19 @@ class WORKLIST:
         # Related_Exam결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2578, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2578, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2578, testPlanID, buildName, 'p', "Related_Exam Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2578, testPlanID, buildName, 'p', "Related_Exam Test Passed")
 
 Login_List = [
     Login.Log_InOut,

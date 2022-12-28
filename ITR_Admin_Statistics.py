@@ -15,15 +15,24 @@ from ITR_Admin_Common import testlink
 from ITR_Admin_Common import testPlanID
 from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Var
+import Common_Var
 
 class Statistics:
     def SearchFilter_Date():
         print("ITR-44: Statistics > Search Filter > Date")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 새로고침
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # DB 접속
         os.putenv('NLS_LANG', '.UTF8')
@@ -31,12 +40,12 @@ class Statistics:
         connection = cx_Oracle.connect("pantheon","pantheon",Var.staging_tns, encoding="UTF-8")
         cursor = connection.cursor()
 
-        # Staging Admin으로 탭 전환
-        driver.execute_script("window.open()")
-        driver.switch_to.window(driver.window_handles[1])
-        driver.get(Var.StagingAdmin)
+        # # Staging Admin으로 탭 전환
+        # driver.execute_script("window.open()")
+        # driver.switch_to.window(driver.window_handles[1])
+        # driver.get(Var.StagingAdmin)
 
-        ITR_Admin_Login.signInOut.stg_admin_sign_in()
+        # ITR_Admin_Login.signInOut.stg_admin_sign_in()
 
         # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # Statistics 탭 클릭
@@ -491,12 +500,23 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1772, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1772, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1772, testPlanID, buildName, 'p', "Search Filter > Date Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1772, testPlanID, buildName, 'p', "Search Filter > Date Passed")  
 
     def SearchFilter_Hospital():
         print("ITR-45: Statistics > Search Filter > Hospital")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
@@ -508,7 +528,14 @@ class Statistics:
 
         # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 페이지 초기화
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Show entries 100 변경
         select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
@@ -603,12 +630,23 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1779, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1779, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1779, testPlanID, buildName, 'p', "Search Filter > Hospital Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1779, testPlanID, buildName, 'p', "Search Filter > Hospital Passed")  
 
     def SearchFilter_Reporter():
         print("ITR-46: Statistics > Search Filter > Reporter")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
@@ -620,7 +658,14 @@ class Statistics:
 
         # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 페이지 초기화
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Show entries 100 변경
         select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
@@ -777,12 +822,23 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else testResult)
         if testResult == 'failed':
-            testlink.reportTCResult(1782, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1782, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1782, testPlanID, buildName, 'p', "Search Filter > Reporter Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1782, testPlanID, buildName, 'p', "Search Filter > Reporter Passed")  
 
     def SearchFilter_Modality():
         print("ITR-47: Statistics > Search Filter > Modality")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
@@ -794,7 +850,14 @@ class Statistics:
 
         # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 페이지 초기화
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Show entries 100 변경
         select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
@@ -952,9 +1015,19 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else result)
         if testResult == 'failed':
-            testlink.reportTCResult(1785, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1785, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1785, testPlanID, buildName, 'p', "Search Filter > Modality Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1785, testPlanID, buildName, 'p', "Search Filter > Modality Passed")  
 
     def Columns():
         # Statistics 탭 클릭
@@ -962,12 +1035,20 @@ class Statistics:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
 
         print("ITR-42: Statistics > Columns")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 1 steps start! : Columns 버튼을 클릭한다.
         # 페이지 초기화
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Columns 클릭
         time.sleep(1)
@@ -1093,18 +1174,36 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else testResult)
         if testResult == 'failed':
-            testlink.reportTCResult(1759, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1759, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1759, testPlanID, buildName, 'p', "Columns Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1759, testPlanID, buildName, 'p', "Columns Passed")  
 
     def Show_Entries():
         print("ITR-43: Statistics > Show entries")
+        run_time = time.time()
         testResult = ''
         reason = list()
 
         # 1 steps start! : Show entries의 개수를 10으로 변경한다.
         # 페이지 초기화
-        driver.refresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                driver.refresh()
+        except:
+            pass
 
         # Showing entry 결과 저장
         temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
@@ -1225,10 +1324,20 @@ class Statistics:
         result = ' '.join(s for s in reason)
         print("Test Result: Pass" if testResult != "failed" else testResult)
         if testResult == 'failed':
-            testlink.reportTCResult(1765, testPlanID, buildName, 'f', result)
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1765, testPlanID, buildName, 'f', result)
         else:
-            testlink.reportTCResult(1765, testPlanID, buildName, 'p', "Show entries Passed")  
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(1765, testPlanID, buildName, 'p', "Show entries Passed")  
         
-        # 탭 종료 및 vmonpacs로 전환
-        driver.close()
-        driver.switch_to.window(driver.window_handles[0])
+        # # 탭 종료 및 vmonpacs로 전환
+        # driver.close()
+        # driver.switch_to.window(driver.window_handles[0])

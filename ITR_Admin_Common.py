@@ -1,11 +1,13 @@
 import time
 from testlink import TestlinkAPIClient, TestLinkHelper
+# import selenium.webdriver as webdriver
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from datetime import datetime
 import math
 import Common_Var
+from selenium.webdriver.chrome.service import Service
 
 # TestLink User: kyle
 URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'
@@ -21,21 +23,42 @@ testlink.checkDevKey()
 testPlanID = Common_Var.planid
 buildName = Common_Var.bn
 
+driver = None
+
 # 브라우저 설정
-options = webdriver.ChromeOptions()
-options.add_experimental_option("excludeSwitches", ["enable-logging"])
-driver = webdriver.Chrome(options=options)
+# options = webdriver.ChromeOptions()
+# options.add_experimental_option("excludeSwitches", ["enable-logging"])
+# driver = webdriver.Chrome(options=options)
+# name = driver.name
 # baseUrl = 'http://stagingadmin.onpacs.com'
-baseUrl = 'http://vm-onpacs:8082'
-driver.get(baseUrl)
+# baseUrl = 'http://vm-onpacs:8082'
+# baseUrl = Common_Var.base_admin_url
+# driver.get(baseUrl)
+
+if Common_Var.web_driver == "Edge":
+    options = webdriver.EdgeOptions()
+    options.binary_location = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+    driver = webdriver.Edge(options=options)
+    baseUrl = Common_Var.base_admin_url
+else:
+    options = webdriver.ChromeOptions()
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    if Common_Var.check == "Unchecked":
+        options.add_argument("headless")
+    # options.add_argument("disable-gpu")
+    driver = webdriver.Chrome(options=options)
+    baseUrl = Common_Var.base_admin_url
 
 # Notice 창 닫기
-popup = driver.window_handles
-while len(popup) != 1:
-    driver.switch_to.window(popup[1])
-    driver.find_element(By.ID, "notice_modal_cancel_week").click()
+if Common_Var.web_driver != None and Common_Var.web_driver != "":
     popup = driver.window_handles
-driver.switch_to.window(popup[0])
+    while len(popup) != 1:
+        driver.switch_to.window(popup[1])
+        driver.find_element(By.ID, "notice_modal_cancel_week").click()
+        popup = driver.window_handles
+    driver.switch_to.window(popup[0])
+else:
+    print("Null")
 
 class Var:
     # 테스트 계정

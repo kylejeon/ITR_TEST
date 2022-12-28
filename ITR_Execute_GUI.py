@@ -1,4 +1,4 @@
-import sys
+import sys, time
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5.QtCore import *
@@ -8,15 +8,27 @@ from PyQt5 import QtGui
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QThreadPool
 import sip
-import re
+import os
 import Main
 import Common_Var
+from os import environ
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
-form_class = uic.loadUiType("Test_GUI.ui")[0]
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+form = resource_path("Test_GUI.ui")
+form_class = uic.loadUiType(form)[0]
 font = QFont()
 font.setBold(True)
+
+def suppress_qt_warnings():
+    environ["QT_DEVICE_PIXEL_RATIO"] = "0"
+    environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    environ["QT_SCREEN_SCALE_FACTORS"] = "1"
+    environ["QT_SCALE_FACTOR"] = "1"
 
 # Thread 생성
 class Thread1(QThread):
@@ -28,6 +40,36 @@ class Thread1(QThread):
         self.wait()
     def run(self):
         Main.Test.function_test(testcase_list)
+
+class Thread2(QThread):
+    timer = pyqtSignal(str)
+    running = False
+    times = 0.0
+    def run(self):
+        while True:
+            if self.running:
+                self.times += 0.01
+                self.timer.emit(self.convert(self.times))
+            time.sleep(0.01)
+    def convert(self, times):
+        Second = str(times).split('.')[0]
+        Hours = str(int((int(Second) / 60) / 60)).zfill(2)
+        Minutes = str(int((int(Second) / 60) % 60)).zfill(2)
+        Seconds = str(int(int(Second) % 60)).zfill(2)
+        return '%s:%s:%s'%(Hours,Minutes,Seconds)
+
+class Thread3(QThread):
+    pause = pyqtSignal(str)
+    running = False
+    def run(self):
+        while True:
+            if self.running:
+                self.pause.emit("Pause")
+                Common_Var.btn_play = "Pause"
+            else:
+                self.pause.emit("Play")
+                Common_Var.btn_play = "Play"
+            time.sleep(1)        
 
 class UpdateTableSignal(QObject):
     signal = pyqtSignal(str, str, str, str, str)
@@ -52,6 +94,18 @@ class UpdateExceptionSignal(QObject):
 
     def run(self):
         self.signal.emit()
+    
+class UpdateTimerSignal(QObject):
+    signal = pyqtSignal()
+
+    def run(self):
+        self.signal.emit()
+
+class UpdatePlaySignal(QObject):
+    signal = pyqtSignal()
+
+    def run(self):
+        self.signal.emit()
 
 class Form(QMainWindow, form_class):
     def __init__(self):
@@ -59,6 +113,10 @@ class Form(QMainWindow, form_class):
         self.setupUi(self)
         self.thread_manager = QThreadPool()
 
+        # 아이콘 설정
+        window_ico = resource_path('cop.png')
+        self.setWindowIcon(QtGui.QIcon(window_ico))
+        
         QApplication.processEvents()
         self.btn_move_to_right:QPushButton
         self.btn_move_to_left:QPushButton
@@ -66,8 +124,8 @@ class Form(QMainWindow, form_class):
         self.btn_deselect_all:QPushButton
         self.select_list:QTreeWidget
         self.selected_list:QTreeWidget
-        self.text_planid:QTreeWidget
-        self.text_bn:QTreeWidget
+        self.text_planid:QLineEdit
+        self.text_bn:QLineEdit
         self.btn_run_test:QTreeWidget
         self.btn_close:QTreeWidget
         self.tableWidget:QTableWidget
@@ -83,48 +141,74 @@ class Form(QMainWindow, form_class):
         self.label_6:QLabel
         self.noTestlink:QRadioButton
         self.Testlink:QRadioButton
+        self.comboBox_browser:QComboBox
+        self.label_time:QLabel
+        self.label_admin_url:QLineEdit
+        self.label_worklist_url:QLineEdit
+        self.comboBox_server:QComboBox
+        self.checkBox_browser:QCheckBox
+        self.btn_play:QPushButton
 
-        # self.select_list.setSortingEnabled(True)
-        # self.select_list.sortByColumn(0, Qt.AscendingOrder)
-        # self.selected_list.setSortingEnabled(True)
-        # self.selected_list.sortByColumn(0, Qt.AscendingOrder)
+        self.select_list.setSortingEnabled(True)
+        self.select_list.sortByColumn(0, Qt.AscendingOrder)
+        self.selected_list.setSortingEnabled(True)
+        self.selected_list.sortByColumn(0, Qt.AscendingOrder)
         
-        # TestPlan ID, BN No. 레이블 비활성화
+        # TestPlan ID, BN No., admin_url, worklist_url 레이블 비활성화
         self.text_planid.setDisabled(True)
         self.text_bn.setDisabled(True)
+        self.label_admin_url.setDisabled(True)
+        self.label_worklist_url.setDisabled(True)
         
         # 시그널 설정
         self.btn_move_to_right.clicked.connect(self.move_item)
         self.btn_move_to_left.clicked.connect(self.move_item)
         self.btn_run_test.clicked.connect(self.run_test)
+        self.btn_run_test.clicked.connect(self.start_timer)
+        self.btn_run_test.clicked.connect(self.test_pause)
         self.btn_close.clicked.connect(QCoreApplication.instance().quit)
         self.btn_select_all.clicked.connect(self.select_all)
         self.btn_deselect_all.clicked.connect(self.deselect_all)
         self.noTestlink.clicked.connect(self.update_testlink)
         self.Testlink.clicked.connect(self.update_testlink)
-     
-    def __lt__(self, other):
-        column1 = self.select_list.sortColumn()
-        column2 = self.selected_list.sortColumn()
-        if column1 == 0:
-            key1 = self.text(column1)
-            key2 = other.text(column1)
-            return self.natural_sort_key(key1) < self.natural_sort_key(key2)
-        if column2 == 0:
-            key3 = self.text(column2)
-            key4 = other.text(column2)
-            return self.natural_sort_key(key3) < self.natural_sort_key(key4)
+        self.comboBox_server.activated[str].connect(self.change_server)     
+        self.checkBox_browser.stateChanged.connect(self.change_check)
+        self.btn_play.clicked.connect(self.test_pause)
 
-    @staticmethod
-    def natural_sort_key(key):
-        regex = '(\d*\.\d+|\d+)'
-        parts = re.split(regex, key)
-        return tuple((e if i % 2 == 0 else float(e)) for i, e in enumerate(parts))
+        self.thread2 = Thread2()
+        self.thread2.timer.connect(self.label_time.setText)
+        self.thread2.start()
+
+        self.thread3 = Thread3()
+        self.thread3.pause.connect(self.btn_play.setText)
+        self.thread3.start()
+
+        # 리스트 초기 column size 설정
+        self.select_list.setColumnWidth(0, 130)
+        self.selected_list.setColumnWidth(0, 130)
+
+    # def __lt__(self, other):
+    #     column1 = self.select_list.sortColumn()
+    #     column2 = self.selected_list.sortColumn()
+    #     if column1 == 0:
+    #         key1 = self.text(column1)
+    #         key2 = other.text(column1)
+    #         return self.natural_sort_key(key1) < self.natural_sort_key(key2)
+    #     if column2 == 0:
+    #         key3 = self.text(column2)
+    #         key4 = other.text(column2)
+    #         return self.natural_sort_key(key3) < self.natural_sort_key(key4)
+
+    # @staticmethod
+    # def natural_sort_key(key):
+    #     regex = '(\d*\.\d+|\d+)'
+    #     parts = re.split(regex, key)
+    #     return tuple((e if i % 2 == 0 else float(e)) for i, e in enumerate(parts))
 
     @pyqtSlot(str, str, str, str, str)
     def signal_update_table(self, arg1, arg2, arg3, arg4, arg5):
         Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 0, QTableWidgetItem(str(arg1)))
-        if QTableWidgetItem(str(arg2)).text == "Failed":
+        if QTableWidgetItem(str(arg2)).text() == "Failed":
             Common_Var.form.tableWidget.setItem(Common_Var.rowIndex, 1, QTableWidgetItem(str(arg2)))
             Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setBackground(QtGui.QColor(191,38,0))
             Common_Var.form.tableWidget.item(Common_Var.rowIndex, 1).setForeground(QtGui.QColor(255,255,255))
@@ -168,6 +252,11 @@ class Form(QMainWindow, form_class):
         Common_Var.form.label_exception.setText(str(Common_Var.test_status_exception))
         self.progressBar.setValue(int(Common_Var.progress_bar))
         Common_Var.form.label_executed.setText(str(Common_Var.executed) + "% executed")
+    
+    pyqtSlot()
+    def signal_timer(self):
+        if Common_Var.timer == "Off":
+            self.start_timer()
 
     def update_testlink(self):
         if self.noTestlink.isChecked() == True:
@@ -180,6 +269,57 @@ class Form(QMainWindow, form_class):
     def set_testlink(self):
         Common_Var.planid = self.text_planid.toPlainText()
         Common_Var.bn = self.text_bn.toPlainText()
+
+    def change_server(self):
+        if self.comboBox_server.currentText() == "Staging Server":
+            self.label_admin_url.setDisabled(True)
+            self.label_worklist_url.setDisabled(True)
+            Common_Var.base_admin_url = Common_Var.staging_admin
+            Common_Var.base_worklist_url = Common_Var.staging_worklist
+        elif self.comboBox_server.currentText() == "Live Server":
+            self.label_admin_url.setDisabled(True)
+            self.label_worklist_url.setDisabled(True)
+            Common_Var.base_admin_url = Common_Var.live_admin
+            Common_Var.base_worklist_url = Common_Var.live_worklist
+        else:
+            self.label_admin_url.setEnabled(True)
+            self.label_worklist_url.setEnabled(True)    
+
+    def set_server(self):
+        Common_Var.base_admin_url = self.label_admin_url.text()
+        Common_Var.base_worklist_url = self.label_worklist_url.text()
+    
+    def start_timer(self):
+        if self.thread2.running:
+            self.thread2.running = False
+        else:
+            self.thread2.running = True
+    
+    def update_timer(self):
+        mysignal = UpdateTimerSignal()
+        mysignal.signal.connect(self.start_timer)
+        mysignal.run()
+    
+    def change_check(self, state):
+        if state == Qt.Checked:
+            Common_Var.check = "Checked"
+        else:
+            Common_Var.check = "Unchecked"
+
+    def test_pause(self):
+        if self.thread3.running:
+            self.thread3.running = False
+            play_icon = resource_path('play.png')
+            self.btn_play.setIcon(QtGui.QIcon(play_icon))
+        else:
+            self.thread3.running = True       
+            pause_icon = resource_path('pause.png')
+            self.btn_play.setIcon(QtGui.QIcon(pause_icon))
+    
+    def update_play(self):
+        mysignal = UpdatePlaySignal()
+        mysignal.signal.connect(self.test_pause)
+        mysignal.run()
 
     def add_child_all(parent, item, child_Count):
         for n in range(0, child_Count):
@@ -362,8 +502,8 @@ class Form(QMainWindow, form_class):
                     item_cnt = len(add_item_list)
                     # new_item.setData(0, Qt.DisplayRole, int(add_item_list.pop(item_cnt - 2)))
                     # new_item.setData(1, Qt.DisplayRole, add_item_list.pop(item_cnt - 2))
-                    new_item.setText(1, add_item_list.pop(item_cnt - 2))
                     new_item.setText(0, add_item_list.pop(item_cnt - 2))
+                    new_item.setText(1, add_item_list.pop(item_cnt - 2))
                     item_cnt -= 2
 
                     # Selected list에 추가하고 선택한 item을 select list에서 삭제
@@ -631,6 +771,7 @@ class Form(QMainWindow, form_class):
         self.label_notexecuted.setText(str(int(len(testcase_list))))
         self.label_6.setStyleSheet("Color : orange")
         self.label_exception.setStyleSheet("Color : orange")
+        self.label_exception.setText("0")
         Common_Var.form.label_executed.setText(str(Common_Var.executed) + "% executed")
 
     def update_passed(self):
@@ -687,12 +828,25 @@ class Form(QMainWindow, form_class):
         self.init_status()
         self.init_tablewidget()
         self.update_testlink()
+        if self.comboBox_server.currentText() == "Custom Server":            
+            self.set_server()
+        else: 
+            self.change_server()
+        if self.noTestlink.isChecked() != True:
+            self.set_testlink()
+        if self.comboBox_browser.currentText() == "Edge":
+            Common_Var.web_driver = "Edge"
+        else:
+            Common_Var.web_driver = "Chrome"
         self.run()
 
 
 if __name__ == '__main__':
+    suppress_qt_warnings()
     app = QApplication(sys.argv)
     Common_Var.form = Form()
-    Common_Var.form.setWindowTitle("ITR Automation Test")
+    window_ico = resource_path('cop.png')
+    Common_Var.form.setWindowIcon(QtGui.QIcon(window_ico))
+    Common_Var.form.setWindowTitle("ITR Automation Test v1.0")    
     Common_Var.form.show()
     sys.exit(app.exec_())

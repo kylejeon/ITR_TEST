@@ -16,8 +16,8 @@ import Common_Var
 class signInOut:
     def admin_sign_in():
         driver.find_element(By.ID, 'user-id').clear()
-        driver.find_element(By.ID, 'user-id').send_keys(Var.adminID)
-        driver.find_element(By.ID, 'user-password').send_keys(Var.adminPW)
+        driver.find_element(By.ID, 'user-id').send_keys(Var.stg_adminID)
+        driver.find_element(By.ID, 'user-password').send_keys(Var.stg_adminPW)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)
         time.sleep(0.3)
@@ -89,6 +89,17 @@ class Sign:
         time.sleep(0.5)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
 
+        # Notice 창 닫기
+        if Common_Var.web_driver != None and Common_Var.web_driver != "":
+            popup = driver.window_handles
+            while len(popup) != 1:
+                driver.switch_to.window(popup[1])
+                driver.find_element(By.ID, "notice_modal_cancel_week").click()
+                popup = driver.window_handles
+            driver.switch_to.window(popup[0])
+        else:
+            print("Null")
+
         # 오류 메시지 확인: This field is required.
         try:
             assert driver.find_element(By.ID, "user-id-error").text == "This field is required."
@@ -157,10 +168,10 @@ class Sign:
         # 5 steps start! : 정상적인 계정으로 로그인 한다.
         # 정상적인 계정으로 로그인 한다.
         driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").clear()   
-        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").send_keys(Var.adminID)
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[3]/div/input").send_keys(Var.stg_adminID)
         time.sleep(0.5)
         driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").clear()
-        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").send_keys(Var.adminPW)
+        driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").send_keys(Var.stg_adminPW)
         time.sleep(0.5)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)        

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>725</width>
-    <height>589</height>
+    <width>722</width>
+    <height>642</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -35,6 +35,11 @@
       <height>16</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Yu Gothic</family>
+     </font>
+    </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
@@ -50,6 +55,7 @@
     </property>
     <property name="font">
      <font>
+      <family>Yu Gothic</family>
       <pointsize>12</pointsize>
       <weight>75</weight>
       <bold>true</bold>
@@ -65,11 +71,12 @@
       <x>10</x>
       <y>50</y>
       <width>701</width>
-      <height>501</height>
+      <height>551</height>
      </rect>
     </property>
     <property name="font">
      <font>
+      <family>Yu Gothic</family>
       <pointsize>10</pointsize>
      </font>
     </property>
@@ -87,10 +94,21 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
+        <y>110</y>
         <width>301</width>
         <height>371</height>
        </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <family>Yu Gothic</family>
+       </font>
       </property>
       <column>
        <property name="text">
@@ -104,14 +122,14 @@
       </column>
       <item>
        <property name="text">
-        <string>1</string>
+        <string>01</string>
        </property>
        <property name="text">
         <string>Sign</string>
        </property>
        <item>
         <property name="text">
-         <string>1.1</string>
+         <string>1.01</string>
         </property>
         <property name="text">
          <string>Sign In/Out</string>
@@ -119,7 +137,7 @@
        </item>
        <item>
         <property name="text">
-         <string>1.2</string>
+         <string>1.02</string>
         </property>
         <property name="text">
          <string>Remember Me</string>
@@ -128,14 +146,14 @@
       </item>
       <item>
        <property name="text">
-        <string>2</string>
+        <string>02</string>
        </property>
        <property name="text">
         <string>Topbar</string>
        </property>
        <item>
         <property name="text">
-         <string>2.1</string>
+         <string>2.01</string>
         </property>
         <property name="text">
          <string>Search Schedule List</string>
@@ -144,14 +162,14 @@
       </item>
       <item>
        <property name="text">
-        <string>3</string>
+        <string>03</string>
        </property>
        <property name="text">
         <string>Refer</string>
        </property>
        <item>
         <property name="text">
-         <string>3.1</string>
+         <string>3.01</string>
         </property>
         <property name="text">
          <string>Hospital List</string>
@@ -159,7 +177,7 @@
        </item>
        <item>
         <property name="text">
-         <string>3.2</string>
+         <string>3.02</string>
         </property>
         <property name="text">
          <string>Reporter List</string>
@@ -168,14 +186,14 @@
       </item>
       <item>
        <property name="text">
-        <string>4</string>
+        <string>04</string>
        </property>
        <property name="text">
         <string>Search Filter</string>
        </property>
        <item>
         <property name="text">
-         <string>4.1</string>
+         <string>4.01</string>
         </property>
         <property name="text">
          <string>Search Priority</string>
@@ -183,7 +201,7 @@
        </item>
        <item>
         <property name="text">
-         <string>4.2</string>
+         <string>4.02</string>
         </property>
         <property name="text">
          <string>Job Status</string>
@@ -191,7 +209,7 @@
        </item>
        <item>
         <property name="text">
-         <string>4.3</string>
+         <string>4.03</string>
         </property>
         <property name="text">
          <string>Search Date</string>
@@ -199,7 +217,7 @@
        </item>
        <item>
         <property name="text">
-         <string>4.4</string>
+         <string>4.04</string>
         </property>
         <property name="text">
          <string>Patient Location</string>
@@ -207,7 +225,7 @@
        </item>
        <item>
         <property name="text">
-         <string>4.5</string>
+         <string>4.05</string>
         </property>
         <property name="text">
          <string>Patient ID</string>
@@ -215,7 +233,7 @@
        </item>
        <item>
         <property name="text">
-         <string>4.6</string>
+         <string>4.06</string>
         </property>
         <property name="text">
          <string>Patient Name</string>
@@ -223,7 +241,7 @@
        </item>
        <item>
         <property name="text">
-         <string>4.7</string>
+         <string>4.07</string>
         </property>
         <property name="text">
          <string>Age</string>
@@ -231,7 +249,7 @@
        </item>
        <item>
         <property name="text">
-         <string>4.8</string>
+         <string>4.08</string>
         </property>
         <property name="text">
          <string>Study Description</string>
@@ -239,7 +257,7 @@
        </item>
        <item>
         <property name="text">
-         <string>4.9</string>
+         <string>4.09</string>
         </property>
         <property name="text">
          <string>Search Modality</string>
@@ -296,14 +314,14 @@
       </item>
       <item>
        <property name="text">
-        <string>5</string>
+        <string>05</string>
        </property>
        <property name="text">
         <string>Worklist</string>
        </property>
        <item>
         <property name="text">
-         <string>5.1</string>
+         <string>5.01</string>
         </property>
         <property name="text">
          <string>All Assigned List</string>
@@ -311,7 +329,7 @@
        </item>
        <item>
         <property name="text">
-         <string>5.2</string>
+         <string>5.02</string>
         </property>
         <property name="text">
          <string>Not Assigned List</string>
@@ -319,7 +337,7 @@
        </item>
        <item>
         <property name="text">
-         <string>5.3</string>
+         <string>5.03</string>
         </property>
         <property name="text">
          <string>All List</string>
@@ -327,7 +345,7 @@
        </item>
        <item>
         <property name="text">
-         <string>5.4</string>
+         <string>5.04</string>
         </property>
         <property name="text">
          <string>Schedule</string>
@@ -335,7 +353,7 @@
        </item>
        <item>
         <property name="text">
-         <string>5.5</string>
+         <string>5.05</string>
         </property>
         <property name="text">
          <string>Worklist Priority</string>
@@ -343,7 +361,7 @@
        </item>
        <item>
         <property name="text">
-         <string>5.6</string>
+         <string>5.06</string>
         </property>
         <property name="text">
          <string>Canceled</string>
@@ -351,7 +369,7 @@
        </item>
        <item>
         <property name="text">
-         <string>5.7</string>
+         <string>5.07</string>
         </property>
         <property name="text">
          <string>Refer</string>
@@ -359,7 +377,7 @@
        </item>
        <item>
         <property name="text">
-         <string>5.8</string>
+         <string>5.08</string>
         </property>
         <property name="text">
          <string>Refer Cancel</string>
@@ -367,7 +385,7 @@
        </item>
        <item>
         <property name="text">
-         <string>5.9</string>
+         <string>5.09</string>
         </property>
         <property name="text">
          <string>Refer Cancel and Refer</string>
@@ -448,14 +466,14 @@
       </item>
       <item>
        <property name="text">
-        <string>6</string>
+        <string>06</string>
        </property>
        <property name="text">
         <string>Statistics</string>
        </property>
        <item>
         <property name="text">
-         <string>6.1</string>
+         <string>6.01</string>
         </property>
         <property name="text">
          <string>Search Filter</string>
@@ -495,7 +513,7 @@
        </item>
        <item>
         <property name="text">
-         <string>6.2</string>
+         <string>6.02</string>
         </property>
         <property name="text">
          <string>Statistics Columns</string>
@@ -503,7 +521,7 @@
        </item>
        <item>
         <property name="text">
-         <string>6.3</string>
+         <string>6.03</string>
         </property>
         <property name="text">
          <string>Statistics Show entries</string>
@@ -512,14 +530,14 @@
       </item>
       <item>
        <property name="text">
-        <string>7</string>
+        <string>07</string>
        </property>
        <property name="text">
         <string>User Management</string>
        </property>
        <item>
         <property name="text">
-         <string>7.1</string>
+         <string>7.01</string>
         </property>
         <property name="text">
          <string>User Management Search Filter</string>
@@ -567,7 +585,7 @@
        </item>
        <item>
         <property name="text">
-         <string>7.2</string>
+         <string>7.02</string>
         </property>
         <property name="text">
          <string>User Registration</string>
@@ -600,14 +618,14 @@
       </item>
       <item>
        <property name="text">
-        <string>8</string>
+        <string>08</string>
        </property>
        <property name="text">
         <string>Specialty</string>
        </property>
        <item>
         <property name="text">
-         <string>8.1</string>
+         <string>8.01</string>
         </property>
         <property name="text">
          <string>Specialty List</string>
@@ -647,7 +665,7 @@
        </item>
        <item>
         <property name="text">
-         <string>8.2</string>
+         <string>8.02</string>
         </property>
         <property name="text">
          <string>Institution List</string>
@@ -696,14 +714,14 @@
       </item>
       <item>
        <property name="text">
-        <string>9</string>
+        <string>09</string>
        </property>
        <property name="text">
         <string>Download Control</string>
        </property>
        <item>
         <property name="text">
-         <string>9.1</string>
+         <string>9.01</string>
         </property>
         <property name="text">
          <string>User</string>
@@ -767,7 +785,7 @@
        </item>
        <item>
         <property name="text">
-         <string>9.2</string>
+         <string>9.02</string>
         </property>
         <property name="text">
          <string>Institution</string>
@@ -839,7 +857,7 @@
        </property>
        <item>
         <property name="text">
-         <string>10.1</string>
+         <string>10.01</string>
         </property>
         <property name="text">
          <string>Institution Search Filter</string>
@@ -863,7 +881,7 @@
        </item>
        <item>
         <property name="text">
-         <string>10.2</string>
+         <string>10.02</string>
         </property>
         <property name="text">
          <string>Institution Add</string>
@@ -871,7 +889,7 @@
        </item>
        <item>
         <property name="text">
-         <string>10.3</string>
+         <string>10.03</string>
         </property>
         <property name="text">
          <string>Institution Delete</string>
@@ -879,7 +897,7 @@
        </item>
        <item>
         <property name="text">
-         <string>10.4</string>
+         <string>10.04</string>
         </property>
         <property name="text">
          <string>Institution Modify</string>
@@ -895,7 +913,7 @@
        </property>
        <item>
         <property name="text">
-         <string>11.1</string>
+         <string>11.01</string>
         </property>
         <property name="text">
          <string>Group Add</string>
@@ -903,7 +921,7 @@
        </item>
        <item>
         <property name="text">
-         <string>11.2</string>
+         <string>11.02</string>
         </property>
         <property name="text">
          <string>Standard Report Add</string>
@@ -911,7 +929,7 @@
        </item>
        <item>
         <property name="text">
-         <string>11.3</string>
+         <string>11.03</string>
         </property>
         <property name="text">
          <string>Standard Report Delete</string>
@@ -919,7 +937,7 @@
        </item>
        <item>
         <property name="text">
-         <string>11.4</string>
+         <string>11.04</string>
         </property>
         <property name="text">
          <string>Group Modify</string>
@@ -927,7 +945,7 @@
        </item>
        <item>
         <property name="text">
-         <string>11.5</string>
+         <string>11.05</string>
         </property>
         <property name="text">
          <string>Standard Report Modify</string>
@@ -943,7 +961,7 @@
        </property>
        <item>
         <property name="text">
-         <string>12.1</string>
+         <string>12.01</string>
         </property>
         <property name="text">
          <string>Multi Reading Search Filter</string>
@@ -951,7 +969,7 @@
        </item>
        <item>
         <property name="text">
-         <string>12.2</string>
+         <string>12.02</string>
         </property>
         <property name="text">
          <string>Multi Reading Add</string>
@@ -959,7 +977,7 @@
        </item>
        <item>
         <property name="text">
-         <string>12.3</string>
+         <string>12.03</string>
         </property>
         <property name="text">
          <string>Multi Reading Delete</string>
@@ -967,7 +985,7 @@
        </item>
        <item>
         <property name="text">
-         <string>12.4</string>
+         <string>12.04</string>
         </property>
         <property name="text">
          <string>Multi Reading Modify</string>
@@ -983,7 +1001,7 @@
        </property>
        <item>
         <property name="text">
-         <string>13.1</string>
+         <string>13.01</string>
         </property>
         <property name="text">
          <string>Audit Log Search</string>
@@ -991,7 +1009,7 @@
        </item>
        <item>
         <property name="text">
-         <string>13.2</string>
+         <string>13.02</string>
         </property>
         <property name="text">
          <string>Audit Log Export</string>
@@ -999,7 +1017,7 @@
        </item>
        <item>
         <property name="text">
-         <string>13.3</string>
+         <string>13.03</string>
         </property>
         <property name="text">
          <string>Audit Log Show entries</string>
@@ -1007,7 +1025,7 @@
        </item>
        <item>
         <property name="text">
-         <string>13.4</string>
+         <string>13.04</string>
         </property>
         <property name="text">
          <string>Audit Log Sorting</string>
@@ -1015,7 +1033,7 @@
        </item>
        <item>
         <property name="text">
-         <string>13.5</string>
+         <string>13.05</string>
         </property>
         <property name="text">
          <string>Audit Log Data</string>
@@ -1031,7 +1049,7 @@
        </property>
        <item>
         <property name="text">
-         <string>14.1</string>
+         <string>14.01</string>
         </property>
         <property name="text">
          <string>Notice List</string>
@@ -1079,14 +1097,14 @@
        </property>
        <item>
         <property name="text">
-         <string>15.1</string>
+         <string>15.01</string>
         </property>
         <property name="text">
          <string>Direct Message Box</string>
         </property>
         <item>
          <property name="text">
-          <string>15.1.1</string>
+          <string>15.1.01</string>
          </property>
          <property name="text">
           <string>Direct Message Search</string>
@@ -1094,7 +1112,7 @@
         </item>
         <item>
          <property name="text">
-          <string>15.1.2</string>
+          <string>15.1.02</string>
          </property>
          <property name="text">
           <string>Direct Message Show Entries</string>
@@ -1102,7 +1120,7 @@
         </item>
         <item>
          <property name="text">
-          <string>15.1.3</string>
+          <string>15.1.03</string>
          </property>
          <property name="text">
           <string>Direct Message Sorting</string>
@@ -1110,7 +1128,7 @@
         </item>
         <item>
          <property name="text">
-          <string>15.1.4</string>
+          <string>15.1.04</string>
          </property>
          <property name="text">
           <string>Badge</string>
@@ -1118,7 +1136,7 @@
         </item>
         <item>
          <property name="text">
-          <string>15.1.5</string>
+          <string>15.1.05</string>
          </property>
          <property name="text">
           <string>Message</string>
@@ -1126,7 +1144,7 @@
         </item>
         <item>
          <property name="text">
-          <string>15.1.6</string>
+          <string>15.1.06</string>
          </property>
          <property name="text">
           <string>Institution - Search</string>
@@ -1134,7 +1152,7 @@
         </item>
         <item>
          <property name="text">
-          <string>15.1.7</string>
+          <string>15.1.07</string>
          </property>
          <property name="text">
           <string>Institution - Message</string>
@@ -1142,7 +1160,7 @@
         </item>
         <item>
          <property name="text">
-          <string>15.1.8</string>
+          <string>15.1.08</string>
          </property>
          <property name="text">
           <string>Center - Search</string>
@@ -1150,7 +1168,7 @@
         </item>
         <item>
          <property name="text">
-          <string>15.1.9</string>
+          <string>15.1.09</string>
          </property>
          <property name="text">
           <string>Center - Message</string>
@@ -1175,7 +1193,7 @@
        </item>
        <item>
         <property name="text">
-         <string>15.2</string>
+         <string>15.02</string>
         </property>
         <property name="text">
          <string>Direct Message Setting</string>
@@ -1211,10 +1229,15 @@
       <property name="geometry">
        <rect>
         <x>590</x>
-        <y>450</y>
+        <y>490</y>
         <width>75</width>
         <height>23</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Yu Gothic</family>
+       </font>
       </property>
       <property name="text">
        <string>Close</string>
@@ -1224,13 +1247,14 @@
       <property name="geometry">
        <rect>
         <x>320</x>
-        <y>230</y>
+        <y>270</y>
         <width>41</width>
         <height>17</height>
        </rect>
       </property>
       <property name="font">
        <font>
+        <family>Yu Gothic</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -1243,7 +1267,7 @@
       <property name="geometry">
        <rect>
         <x>370</x>
-        <y>70</y>
+        <y>110</y>
         <width>301</width>
         <height>371</height>
        </rect>
@@ -1253,6 +1277,11 @@
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <family>Yu Gothic</family>
+       </font>
       </property>
       <column>
        <property name="text">
@@ -1269,10 +1298,15 @@
       <property name="geometry">
        <rect>
         <x>510</x>
-        <y>450</y>
+        <y>490</y>
         <width>75</width>
         <height>23</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Yu Gothic</family>
+       </font>
       </property>
       <property name="text">
        <string>Run Test</string>
@@ -1282,13 +1316,14 @@
       <property name="geometry">
        <rect>
         <x>320</x>
-        <y>290</y>
+        <y>330</y>
         <width>41</width>
         <height>17</height>
        </rect>
       </property>
       <property name="font">
        <font>
+        <family>Yu Gothic</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -1301,13 +1336,14 @@
       <property name="geometry">
        <rect>
         <x>320</x>
-        <y>200</y>
+        <y>240</y>
         <width>41</width>
         <height>17</height>
        </rect>
       </property>
       <property name="font">
        <font>
+        <family>Yu Gothic</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -1320,13 +1356,14 @@
       <property name="geometry">
        <rect>
         <x>320</x>
-        <y>260</y>
+        <y>300</y>
         <width>41</width>
         <height>17</height>
        </rect>
       </property>
       <property name="font">
        <font>
+        <family>Yu Gothic</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -1335,37 +1372,18 @@
        <string>&lt;</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="text_planid">
-      <property name="geometry">
-       <rect>
-        <x>460</x>
-        <y>40</y>
-        <width>71</width>
-        <height>21</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="text_bn">
-      <property name="geometry">
-       <rect>
-        <x>610</x>
-        <y>40</y>
-        <width>61</width>
-        <height>21</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QRadioButton" name="noTestlink">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>10</y>
+        <y>60</y>
         <width>531</width>
         <height>16</height>
        </rect>
       </property>
       <property name="font">
        <font>
+        <family>Yu Gothic</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -1381,13 +1399,14 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>40</y>
+        <y>80</y>
         <width>331</width>
         <height>16</height>
        </rect>
       </property>
       <property name="font">
        <font>
+        <family>Yu Gothic</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -1396,30 +1415,301 @@
        <string>Do update test results to the TestLink.</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_8">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>370</x>
-        <y>40</y>
-        <width>81</width>
-        <height>16</height>
+        <y>5</y>
+        <width>301</width>
+        <height>21</height>
        </rect>
       </property>
-      <property name="text">
-       <string>TestPlan ID:</string>
+      <property name="font">
+       <font>
+        <family>Yu Gothic</family>
+       </font>
       </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_browser_3">
+         <property name="font">
+          <font>
+           <family>Yu Gothic</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>  Admin URL:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="label_admin_url">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="font">
+          <font>
+           <family>Yu Gothic</family>
+          </font>
+         </property>
+         <property name="frame">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
-     <widget class="QLabel" name="label_9">
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>370</x>
+        <y>30</y>
+        <width>301</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Yu Gothic</family>
+       </font>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_browser_4">
+         <property name="font">
+          <font>
+           <family>Yu Gothic</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Worklist URL:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="label_worklist_url">
+         <property name="font">
+          <font>
+           <family>Yu Gothic</family>
+          </font>
+         </property>
+         <property name="frame">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>370</x>
+        <y>70</y>
+        <width>179</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Yu Gothic</family>
+       </font>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLabel" name="label_8">
+         <property name="font">
+          <font>
+           <family>Yu Gothic</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>  TestPlan ID:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="text_planid">
+         <property name="font">
+          <font>
+           <family>Yu Gothic</family>
+          </font>
+         </property>
+         <property name="frame">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>560</x>
-        <y>40</y>
-        <width>51</width>
+        <y>70</y>
+        <width>111</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Yu Gothic</family>
+       </font>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QLabel" name="label_9">
+         <property name="font">
+          <font>
+           <family>Yu Gothic</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>BN No.:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="text_bn">
+         <property name="font">
+          <font>
+           <family>Yu Gothic</family>
+          </font>
+         </property>
+         <property name="frame">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QSplitter" name="splitter">
+      <property name="geometry">
+       <rect>
+        <x>11</x>
+        <y>11</y>
+        <width>131</width>
+        <height>19</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QLabel" name="label_browser">
+       <property name="font">
+        <font>
+         <family>Yu Gothic</family>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Browser:</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="comboBox_browser">
+       <property name="font">
+        <font>
+         <family>Yu Gothic</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <item>
+        <property name="text">
+         <string>Chrome</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Edge</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
+     <widget class="QSplitter" name="splitter_2">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>10</y>
+        <width>191</width>
+        <height>19</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QLabel" name="label_browser_2">
+       <property name="font">
+        <font>
+         <family>Yu Gothic</family>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Test Sever:</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="comboBox_server">
+       <property name="font">
+        <font>
+         <family>Yu Gothic</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <item>
+        <property name="text">
+         <string>Staging Server</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Live Server</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Custom Server</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_browser">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>271</width>
         <height>16</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
       <property name="text">
-       <string>BN No.:</string>
+       <string>Launch a browser for monitoring</string>
       </property>
      </widget>
     </widget>
@@ -1480,7 +1770,7 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>84</width>
+        <width>131</width>
         <height>19</height>
        </rect>
       </property>
@@ -1739,8 +2029,58 @@
         <x>10</x>
         <y>140</y>
         <width>671</width>
-        <height>321</height>
+        <height>361</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_11">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>100</y>
+        <width>101</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Running Time:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_time">
+      <property name="geometry">
+       <rect>
+        <x>580</x>
+        <y>100</y>
+        <width>91</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>00:00:00</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_play">
+      <property name="geometry">
+       <rect>
+        <x>385</x>
+        <y>96</y>
+        <width>61</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Stop</string>
       </property>
      </widget>
     </widget>
@@ -1751,7 +2091,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>725</width>
+     <width>722</width>
      <height>18</height>
     </rect>
    </property>

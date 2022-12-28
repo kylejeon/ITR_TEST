@@ -10,14 +10,24 @@ from ITR_Admin_Common import testlink
 from ITR_Admin_Common import testPlanID
 from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Common
+import Common_Var
+import ITR_Admin_Login
 
 class Auditlog:
     def Auditlog_Search():
         print("ITR-98: Audit Log > Search")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Get Job Key & Insti Name
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
@@ -51,16 +61,34 @@ class Auditlog:
         # Auditlog_Search결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2169, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2169, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2169, testPlanID, buildName, 'p', "Auditlog_Search Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2169, testPlanID, buildName, 'p', "Auditlog_Search Test Passed")
 
     def Auditlog_Export():
         print("ITR-99: Audit Log > Export")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Get Job Key & Insti Name
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
@@ -87,7 +115,12 @@ class Auditlog:
         # Auditlog_Export결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2172, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2172, testPlanID, buildName, 'f', Result_msg)            
         else:
             testlink.reportTCResult(2172, testPlanID, buildName, 'p', "Auditlog_Export Test Passed")
 
@@ -113,10 +146,18 @@ class Auditlog:
 
     def Auditlog_Showentries():
         print("ITR-100: Audit Log > Show Entries")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Get Job Key & Insti Name
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
@@ -139,16 +180,34 @@ class Auditlog:
         # Auditlog_Showentries결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2175, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2175, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2175, testPlanID, buildName, 'p', "Auditlog_Showentries Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2175, testPlanID, buildName, 'p', "Auditlog_Showentries Test Passed")
 
     def Auditlog_Sorting():
         print("ITR-101: Audit Log > Sorting")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Get Job Key
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
@@ -197,16 +256,34 @@ class Auditlog:
         # Auditlog_Sorting결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2180, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2180, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2180, testPlanID, buildName, 'p', "Auditlog_Sorting Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2180, testPlanID, buildName, 'p', "Auditlog_Sorting Test Passed")
 
     def Auditlog_Data():
         print("ITR-102: Audit Log > Data")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Auditlog
         driver.find_element(By.CSS_SELECTOR, "#tab-auditlog > a").click()
@@ -253,6 +330,16 @@ class Auditlog:
         # Auditlog_Data결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2183, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2183, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2183, testPlanID, buildName, 'p', "Auditlog_Data Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2183, testPlanID, buildName, 'p', "Auditlog_Data Test Passed")

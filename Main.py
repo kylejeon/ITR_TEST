@@ -8,8 +8,10 @@ import ITR_Admin_Auditlog
 import ITR_Admin_Notice
 import ITR_Admin_DirectMessage
 import time
-from ITR_Execute_GUI import Form
+# from ITR_Execute_GUI import Form
 import Common_Var
+import importlib
+import sys
 
 full_test_case = [
     # Sign
@@ -273,6 +275,62 @@ def get_index(name):
         if i[0] == name:
             return test_index_list.index(i)
 
+def input_timer(prompt, timeout_sec):
+    import subprocess
+    import sys
+    import threading
+    import locale
+
+    class Local:
+        # check if timeout occured
+        _timeout_occured = False
+
+        def on_timeout(self, process):
+            self._timeout_occured = True
+            process.kill()
+            # clear stdin buffer (for linux)
+            # when some keys hit and timeout occured before enter key press,
+            # that input text passed to next input().
+            # remove stdin buffer.
+            try:
+                import termios
+                termios.tcflush(sys.stdin, termios.TCIFLUSH)
+            except ImportError:
+                # windows, just exit
+                pass
+
+        def input_timer_main(self, prompt_in, timeout_sec_in):
+            # print with no new line
+            print(prompt_in, end="")
+
+            # print prompt_in immediately
+            sys.stdout.flush()
+
+            # new python input process create.
+            # and print it for pass stdout
+            cmd = [sys.executable, '-c', 'print(input())']
+            with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as proc:
+                timer_proc = threading.Timer(timeout_sec_in, self.on_timeout, [proc])
+                try:
+                    # timer set
+                    timer_proc.start()
+                    stdout, stderr = proc.communicate()
+
+                    # get stdout and trim new line character
+                    result = stdout.decode(locale.getpreferredencoding()).strip("\r\n")
+                finally:
+                    # timeout clear
+                    timer_proc.cancel()
+
+            # timeout check
+            if self._timeout_occured is True:
+                # move the cursor to next line
+                print("")
+                raise TimeoutError
+            return result
+
+    t = Local()
+    return t.input_timer_main(prompt, timeout_sec)
 class Test:
     # Full Test
     def full_test():
@@ -312,26 +370,42 @@ class Test:
         ITR_Admin_Common.driver.quit()
     def delay():
         time.sleep(0.5)
-
     def function_test(testcase_list):
+        importlib.reload(sys.modules['ITR_Admin_Common'])
+        importlib.reload(sys.modules['ITR_Admin_Login'])
+        importlib.reload(sys.modules['ITR_Admin_Refer'])
+        importlib.reload(sys.modules['ITR_Admin_Worklist'])
+        importlib.reload(sys.modules['ITR_Admin_Statistics'])
+        importlib.reload(sys.modules['ITR_Admin_Configuration'])
+        importlib.reload(sys.modules['ITR_Admin_Notice'])
+        importlib.reload(sys.modules['ITR_Admin_Auditlog'])
+        importlib.reload(sys.modules['ITR_Admin_DirectMessage'])
+
+        # from ITR_Admin_Common import driver
+        ITR_Admin_Common.driver.get(Common_Var.base_admin_url)
         start = time.time()
         failed_test_list = []
-        
-        # full test case에서 선택한 case 찾기
+        testnum = 0
         for case in testcase_list:
-            testname = get_name(case)
             teststep = get_step(case)
-            testidx = get_index(case)
-            time.sleep(0.5)
+            testidx = get_index(case)            
+            time.sleep(0.5)            
             try:
-                print("(",str((testidx+1)) + " / " + str(len(testcase_list)),")", round((testidx+1)*100/int(len(testcase_list)),1),"%")
-                Common_Var.progress_bar = round((testidx+1)*100/int(len(testcase_list)),1)
-                Common_Var.executed = int((testidx+1)*100/int(len(testcase_list)))
+                print("(",str((testnum+1)) + " / " + str(len(testcase_list)),")", round((testnum+1)*100/int(len(testcase_list)),1),"%")
+                Common_Var.progress_bar = round((testnum+1)*100/int(len(testcase_list)),1)
+                Common_Var.executed = int((testnum+1)*100/int(len(testcase_list)))
                 run_time = time.time()
                 # TableWidget 값 추가
                 Common_Var.tc_name = case
                 Common_Var.tc_steps = teststep
                 full_test_case[testidx]()
+                while Common_Var.btn_play == "Play":
+                    try:
+                        a = input_timer("Pause the test: ", 1)
+                    except:
+                        time.sleep(1)
+                        pass
+                testnum += 1
                 Test.delay()
             except Exception as e:
                 print(e)
@@ -345,15 +419,19 @@ class Test:
                         print("Retry ("+str(i+1)+"/3)")
                         full_test_case[testidx]()
                         failed_test_list.remove(full_test_case[testidx])
+                        testnum += 1
                         break
                     except:
-                        ITR_Admin_Common.driver.refresh()
+                        # ITR_Admin_Common.driver.refresh()
                         print("An exception occurred.")
                         Common_Var.form.update_exception()
+                        testnum += 1
                         pass
             finally:
                 print("Run Time:", round((int(time.time() - run_time)/60),2),"min\n")
                 pass
+    
+        Common_Var.form.update_timer()
 
         print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
         print("failed_test_list: ", failed_test_list)

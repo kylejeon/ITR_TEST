@@ -11,14 +11,23 @@ from ITR_Admin_Common import testPlanID
 from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Common
 from ITR_Admin_Common import Var
+import Common_Var
 
 class Notice:
     def NoticeList_NoticeEditBoard():
         print("ITR-103: Notice > Notice list > Notice Edit Board")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Notice
         driver.find_element(By.CSS_SELECTOR, "#tab-notice > a").click()
@@ -355,16 +364,34 @@ class Notice:
         # NoticeList_NoticeEditBoard결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2188, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2188, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2188, testPlanID, buildName, 'p', "NoticeList_NoticeEditBoard Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2188, testPlanID, buildName, 'p', "NoticeList_NoticeEditBoard Test Passed")
 
     def NoticeList_Edit():
         print("ITR-104: Notice > Notice list > Edit")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Notice
         driver.find_element(By.CSS_SELECTOR, "#tab-notice > a").click()
@@ -499,16 +526,34 @@ class Notice:
         # NoticeList_Edit결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2213, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2213, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2213, testPlanID, buildName, 'p', "NoticeList_Edit Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2213, testPlanID, buildName, 'p', "NoticeList_Edit Test Passed")
 
     def NoticeList_Delete():
         print("ITR-105: Notice > Notice list > Delete")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Notice
         driver.find_element(By.CSS_SELECTOR, "#tab-notice > a").click()
@@ -541,16 +586,34 @@ class Notice:
         # NoticeList_Delete결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2224, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2224, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2224, testPlanID, buildName, 'p', "NoticeList_Delete Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2224, testPlanID, buildName, 'p', "NoticeList_Delete Test Passed")
 
     def NoticeList_NoticeDisplay():
         print("ITR-106: Notice > Notice list > Display")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            pass
 
         # Notice
         driver.find_element(By.CSS_SELECTOR, "#tab-notice > a").click()
@@ -589,6 +652,16 @@ class Notice:
         # NoticeList_NoticeDisplay결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
-            testlink.reportTCResult(2227, testPlanID, buildName, 'f', Result_msg)            
+            Common_Var.form.update_failed()
+            Common_Var.run_status = "Failed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2227, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2227, testPlanID, buildName, 'p', "NoticeList_NoticeDisplay Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2227, testPlanID, buildName, 'p', "NoticeList_NoticeDisplay Test Passed")
