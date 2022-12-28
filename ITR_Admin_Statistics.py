@@ -40,12 +40,12 @@ class Statistics:
         connection = cx_Oracle.connect("pantheon","pantheon",Var.staging_tns, encoding="UTF-8")
         cursor = connection.cursor()
 
-        # Staging Admin으로 탭 전환
-        driver.execute_script("window.open()")
-        driver.switch_to.window(driver.window_handles[1])
-        driver.get(Var.StagingAdmin)
+        # # Staging Admin으로 탭 전환
+        # driver.execute_script("window.open()")
+        # driver.switch_to.window(driver.window_handles[1])
+        # driver.get(Var.StagingAdmin)
 
-        ITR_Admin_Login.signInOut.stg_admin_sign_in()
+        # ITR_Admin_Login.signInOut.stg_admin_sign_in()
 
         # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # Statistics 탭 클릭
@@ -1338,6 +1338,6 @@ class Statistics:
             if Common_Var.planid != "":
                 testlink.reportTCResult(1765, testPlanID, buildName, 'p', "Show entries Passed")  
         
-        # 탭 종료 및 vmonpacs로 전환
-        driver.close()
-        driver.switch_to.window(driver.window_handles[0])
+        # # 탭 종료 및 vmonpacs로 전환
+        # driver.close()
+        # driver.switch_to.window(driver.window_handles[0])

@@ -11,6 +11,7 @@ import sip
 import os
 import Main
 import Common_Var
+from os import environ
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
@@ -20,9 +21,14 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 form = resource_path("Test_GUI.ui")
 form_class = uic.loadUiType(form)[0]
-# form_class = uic.loadUiType("Test_GUI.ui")[0]
 font = QFont()
 font.setBold(True)
+
+def suppress_qt_warnings():
+    environ["QT_DEVICE_PIXEL_RATIO"] = "0"
+    environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    environ["QT_SCREEN_SCALE_FACTORS"] = "1"
+    environ["QT_SCALE_FACTOR"] = "1"
 
 # Thread 생성
 class Thread1(QThread):
@@ -51,6 +57,17 @@ class Thread2(QThread):
         Minutes = str(int((int(Second) / 60) % 60)).zfill(2)
         Seconds = str(int(int(Second) % 60)).zfill(2)
         return '%s:%s:%s'%(Hours,Minutes,Seconds)
+
+class Thread3(QThread):
+    pause = pyqtSignal(str)
+    running = False
+    def run(self):
+        while True:
+            if self.running:
+                self.pause.emit("Pause")
+            else:
+                self.pause.emit("Play")
+            time.sleep(1)        
 
 class UpdateTableSignal(QObject):
     signal = pyqtSignal(str, str, str, str, str)
@@ -82,6 +99,12 @@ class UpdateTimerSignal(QObject):
     def run(self):
         self.signal.emit()
 
+class UpdatePlaySignal(QObject):
+    signal = pyqtSignal()
+
+    def run(self):
+        self.signal.emit()
+
 class Form(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
@@ -90,9 +113,7 @@ class Form(QMainWindow, form_class):
 
         # 아이콘 설정
         window_ico = resource_path('cop.png')
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("./cop.png"),QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.setWindowIcon(QtGui.QIcon(icon))
+        self.setWindowIcon(QtGui.QIcon(window_ico))
         
         QApplication.processEvents()
         self.btn_move_to_right:QPushButton
@@ -124,6 +145,7 @@ class Form(QMainWindow, form_class):
         self.label_worklist_url:QLineEdit
         self.comboBox_server:QComboBox
         self.checkBox_browser:QCheckBox
+        self.btn_play:QPushButton
 
         self.select_list.setSortingEnabled(True)
         self.select_list.sortByColumn(0, Qt.AscendingOrder)
@@ -141,24 +163,27 @@ class Form(QMainWindow, form_class):
         self.btn_move_to_left.clicked.connect(self.move_item)
         self.btn_run_test.clicked.connect(self.run_test)
         self.btn_run_test.clicked.connect(self.start_timer)
+        self.btn_run_test.clicked.connect(self.test_pause)
         self.btn_close.clicked.connect(QCoreApplication.instance().quit)
         self.btn_select_all.clicked.connect(self.select_all)
         self.btn_deselect_all.clicked.connect(self.deselect_all)
         self.noTestlink.clicked.connect(self.update_testlink)
         self.Testlink.clicked.connect(self.update_testlink)
         self.comboBox_server.activated[str].connect(self.change_server)     
-        # self.comboBox_browser.activated[str].connect(self.change_browser)     
         self.checkBox_browser.stateChanged.connect(self.change_check)
+        self.btn_play.clicked.connect(self.test_pause)
 
         self.thread2 = Thread2()
         self.thread2.timer.connect(self.label_time.setText)
         self.thread2.start()
 
+        self.thread3 = Thread3()
+        self.thread3.pause.connect(self.btn_play.setText)
+        self.thread3.start()
+
         # 리스트 초기 column size 설정
         self.select_list.setColumnWidth(0, 130)
         self.selected_list.setColumnWidth(0, 130)
-        # self.select_list.setColumnHidden(0, True)
-        # self.selected_list.setColumnHidden(0, True)
 
     # def __lt__(self, other):
     #     column1 = self.select_list.sortColumn()
@@ -278,6 +303,21 @@ class Form(QMainWindow, form_class):
             Common_Var.check = "Checked"
         else:
             Common_Var.check = "Unchecked"
+
+    def test_pause(self):
+        if self.thread3.running:
+            self.thread3.running = False
+            play_icon = resource_path('play.png')
+            self.btn_play.setIcon(QtGui.QIcon(play_icon))
+        else:
+            pause_icon = resource_path('pause.png')
+            self.btn_play.setIcon(QtGui.QIcon(pause_icon))
+            self.thread3.running = True            
+    
+    def update_play(self):
+        mysignal = UpdatePlaySignal()
+        mysignal.signal.connect(self.test_pause)
+        mysignal.run()
 
     def add_child_all(parent, item, child_Count):
         for n in range(0, child_Count):
@@ -800,8 +840,11 @@ class Form(QMainWindow, form_class):
 
 
 if __name__ == '__main__':
+    suppress_qt_warnings()
     app = QApplication(sys.argv)
     Common_Var.form = Form()
-    Common_Var.form.setWindowTitle("ITR Automation Test")    
+    window_ico = resource_path('cop.png')
+    Common_Var.form.setWindowIcon(QtGui.QIcon(window_ico))
+    Common_Var.form.setWindowTitle("ITR Automation Test v1.0")    
     Common_Var.form.show()
     sys.exit(app.exec_())

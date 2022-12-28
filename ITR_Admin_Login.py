@@ -89,6 +89,17 @@ class Sign:
         time.sleep(0.5)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
 
+        # Notice 창 닫기
+        if Common_Var.web_driver != None and Common_Var.web_driver != "":
+            popup = driver.window_handles
+            while len(popup) != 1:
+                driver.switch_to.window(popup[1])
+                driver.find_element(By.ID, "notice_modal_cancel_week").click()
+                popup = driver.window_handles
+            driver.switch_to.window(popup[0])
+        else:
+            print("Null")
+
         # 오류 메시지 확인: This field is required.
         try:
             assert driver.find_element(By.ID, "user-id-error").text == "This field is required."

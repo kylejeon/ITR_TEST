@@ -2065,6 +2065,24 @@
        <string>00:00:00</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="btn_play">
+      <property name="geometry">
+       <rect>
+        <x>385</x>
+        <y>96</y>
+        <width>61</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Stop</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
