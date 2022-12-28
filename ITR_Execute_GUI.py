@@ -65,8 +65,10 @@ class Thread3(QThread):
         while True:
             if self.running:
                 self.pause.emit("Pause")
+                Common_Var.btn_play = "Pause"
             else:
                 self.pause.emit("Play")
+                Common_Var.btn_play = "Play"
             time.sleep(1)        
 
 class UpdateTableSignal(QObject):
@@ -310,9 +312,9 @@ class Form(QMainWindow, form_class):
             play_icon = resource_path('play.png')
             self.btn_play.setIcon(QtGui.QIcon(play_icon))
         else:
+            self.thread3.running = True       
             pause_icon = resource_path('pause.png')
             self.btn_play.setIcon(QtGui.QIcon(pause_icon))
-            self.thread3.running = True            
     
     def update_play(self):
         mysignal = UpdatePlaySignal()

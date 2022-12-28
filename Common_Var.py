@@ -20,6 +20,7 @@ form = None
 signal1 = None
 timer = "On"
 check = "Unchecked"
+btn_play = "Pause"
 
 # TestLink
 planid = ""

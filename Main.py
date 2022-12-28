@@ -399,7 +399,7 @@ class Test:
                 Common_Var.tc_name = case
                 Common_Var.tc_steps = teststep
                 full_test_case[testidx]()
-                while Common_Var.form.btn_play.text() == "Play":
+                while Common_Var.btn_play == "Play":
                     try:
                         a = input_timer("Pause the test: ", 1)
                     except:
