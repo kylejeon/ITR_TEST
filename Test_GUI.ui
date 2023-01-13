@@ -31,7 +31,7 @@
      <rect>
       <x>10</x>
       <y>30</y>
-      <width>691</width>
+      <width>631</width>
       <height>16</height>
      </rect>
     </property>
@@ -1377,7 +1377,7 @@
        <rect>
         <x>10</x>
         <y>60</y>
-        <width>531</width>
+        <width>331</width>
         <height>16</height>
        </rect>
       </property>
@@ -1389,7 +1389,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Don't update test results to the TestLink.</string>
+       <string>ONLY TEST.</string>
       </property>
       <property name="checked">
        <bool>true</bool>
@@ -1412,7 +1412,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Do update test results to the TestLink.</string>
+       <string>UPDATE TEST RESULT TO THE TESTLINK.</string>
       </property>
      </widget>
      <widget class="QWidget" name="layoutWidget">
@@ -1461,7 +1461,7 @@
           </font>
          </property>
          <property name="frame">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1510,7 +1510,7 @@
           </font>
          </property>
          <property name="frame">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1553,7 +1553,7 @@
           </font>
          </property>
          <property name="frame">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1596,7 +1596,7 @@
           </font>
          </property>
          <property name="frame">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -2084,6 +2084,42 @@
       </property>
      </widget>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="btn_new">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>10</y>
+      <width>71</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Yu Gothic</family>
+      <pointsize>9</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="toolTip">
+     <string>Click me! I'll show you the release notes.</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>30</width>
+      <height>30</height>
+     </size>
+    </property>
+    <property name="autoExclusive">
+     <bool>true</bool>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
