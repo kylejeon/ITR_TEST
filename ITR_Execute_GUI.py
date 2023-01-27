@@ -12,6 +12,7 @@ import os
 import Main
 import Common_Var
 from os import environ
+import webbrowser
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
@@ -148,6 +149,8 @@ class Form(QMainWindow, form_class):
         self.comboBox_server:QComboBox
         self.checkBox_browser:QCheckBox
         self.btn_play:QPushButton
+        self.btn_new:QPushButton
+        self.tabWidget:QTabWidget
 
         self.select_list.setSortingEnabled(True)
         self.select_list.sortByColumn(0, Qt.AscendingOrder)
@@ -166,6 +169,7 @@ class Form(QMainWindow, form_class):
         self.btn_run_test.clicked.connect(self.run_test)
         self.btn_run_test.clicked.connect(self.start_timer)
         self.btn_run_test.clicked.connect(self.test_pause)
+        self.btn_run_test.clicked.connect(self.change_tab)
         self.btn_close.clicked.connect(QCoreApplication.instance().quit)
         self.btn_select_all.clicked.connect(self.select_all)
         self.btn_deselect_all.clicked.connect(self.deselect_all)
@@ -174,6 +178,7 @@ class Form(QMainWindow, form_class):
         self.comboBox_server.activated[str].connect(self.change_server)     
         self.checkBox_browser.stateChanged.connect(self.change_check)
         self.btn_play.clicked.connect(self.test_pause)
+        self.btn_new.clicked.connect(lambda: webbrowser.open('https://kylejeon83.notion.site/Release-Notes-ITR-Automation-Test-449621a663064d84abd20f3e922628b2'))
 
         self.thread2 = Thread2()
         self.thread2.timer.connect(self.label_time.setText)
@@ -186,6 +191,14 @@ class Form(QMainWindow, form_class):
         # 리스트 초기 column size 설정
         self.select_list.setColumnWidth(0, 130)
         self.selected_list.setColumnWidth(0, 130)
+
+        # Main 창 크기 고정
+        self.setFixedSize(QSize(720,620))
+        
+        # Release notes 아이콘 설정
+        new_icon = resource_path('new.png')
+        self.btn_new.setIcon(QtGui.QIcon(new_icon))
+        self.btn_new.setIconSize(QSize(50,50))        
 
     # def __lt__(self, other):
     #     column1 = self.select_list.sortColumn()
@@ -320,6 +333,10 @@ class Form(QMainWindow, form_class):
         mysignal = UpdatePlaySignal()
         mysignal.signal.connect(self.test_pause)
         mysignal.run()
+
+    # Run Test 클릭 시, Test Status 탭으로 이동
+    def change_tab(self):
+        self.tabWidget.setCurrentIndex(1)
 
     def add_child_all(parent, item, child_Count):
         for n in range(0, child_Count):
@@ -847,6 +864,6 @@ if __name__ == '__main__':
     Common_Var.form = Form()
     window_ico = resource_path('cop.png')
     Common_Var.form.setWindowIcon(QtGui.QIcon(window_ico))
-    Common_Var.form.setWindowTitle("ITR Automation Test v1.0")    
+    Common_Var.form.setWindowTitle("ITR Automation Test v1.1")    
     Common_Var.form.show()
     sys.exit(app.exec_())
