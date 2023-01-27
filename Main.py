@@ -20,8 +20,6 @@ full_test_case = [
     # Topbar
     ITR_Admin_Login.Topbar.Search_Schedule_List, # ITR-3
     # Refer
-    # ITR_Admin_Login.signInOut.admin_sign_out, # Admin logout
-    # ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
     ITR_Admin_Refer.Refer.Hospital_List, # ITR-7
     ITR_Admin_Refer.Refer.Reporter_List, # ITR-8
     # Search filter
@@ -343,7 +341,8 @@ class Test:
                 print("(",str(full_test_case.index(test)+1) + " / " + str(len(full_test_case)),")", round(((full_test_case.index(test)+1)*100/int(len(full_test_case))),1),"%")
                 run_time = time.time()
                 test()
-            except:
+            except Exception as e:
+                print(e)
                 # print("Exception on " + str(test))
                 print("An exception occurred.")
                 for i in range(0,3):
@@ -354,7 +353,8 @@ class Test:
                         test()
                         failed_test_list.remove(test)
                         break
-                    except:
+                    except Exception as e:
+                        print(e)
                         ITR_Admin_Common.driver.refresh()
                         print("An exception occurred.")
                         pass

@@ -32,9 +32,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
         #driver.wait_for_request('.*/GetAllAssignedList.*')
         #time.sleep(0.3)
         driver.implicitly_wait(5)
@@ -59,9 +59,9 @@ class Worklist:
         while(1):
             try:
                 webdriver.ActionChains(driver).move_to_element(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]")).perform()
-                webdriver.ActionChains(driver).move_to_element(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]")).perform()
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]")))
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+                webdriver.ActionChains(driver).move_to_element(driver.find_element(By.ID, "tab_all_assigned_list")).perform()
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "tab_all_assigned_list")))
+                driver.find_element(By.ID, "tab_all_assigned_list").click()
                 break
             except:
                 pass
@@ -109,9 +109,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
         driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
 
@@ -178,7 +178,7 @@ class Worklist:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : All List 탭을 클릭한다.
         # Test 병원 선택
@@ -197,7 +197,7 @@ class Worklist:
         time.sleep(1)
 
         # All List 탭 클릭
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab_all_list").click()
 
         # Job list 저장
         request = driver.wait_for_request('.*/GetAllList.*')
@@ -245,9 +245,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : Schedule 체크박스를 체크한다.
         # Refer 탭 클릭
@@ -287,7 +287,7 @@ class Worklist:
             # All Assigned List 클릭
             del driver.requests
             time.sleep(1)
-            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+            driver.find_element(By.ID, "tab_all_assigned_list").click()
             
             # All Assigned List의 scheduled job list 저장
             request = driver.wait_for_request('.*/GetAllAssignedList.*')
@@ -325,7 +325,7 @@ class Worklist:
              # All Assigned List 클릭
             del driver.requests
             time.sleep(1)
-            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+            driver.find_element(By.ID, "tab_all_assigned_list").click()
             driver.wait_for_request('.*/GetAllAssignedList.*')
             time.sleep(0.3)
 
@@ -361,7 +361,7 @@ class Worklist:
 
             # All Assigned List 탭 클릭
             time.sleep(1)
-            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+            driver.find_element(By.ID, "tab_all_assigned_list").click()
 
             # All Assigned List의 Job count 저장
             time.sleep(1)
@@ -416,9 +416,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : Worklist에서 Priority가 일반인 의뢰 검사를 선택한 후, Priority 버튼을 클릭한다.
         # Refer 탭 클릭
@@ -560,9 +560,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : Worklist에서 Job Status가 Canceled 이외의 의뢰 검사를 선택한 후, Cancel 버튼을 클릭한다.
         # Refer 탭 클릭
@@ -699,9 +699,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
         
         # 1 steps start! : Worklist에서 임의의 의뢰 검사를 선택한 후, Refer 버튼을 클릭한다.
         # Configuration > Institutions로 이동 후, 테스트 병원 검색
@@ -723,21 +723,23 @@ class Worklist:
          
         # Save 클릭
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[3]/div/button[2]").click()
+        time.sleep(2)        
 
         # 팝업창에서 Yes 클릭
         try:
             EC.element_attribute_to_include(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible")
             if (driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible").get_property("classList"))[2] == "visible":
                 driver.find_element(By.XPATH, "/html/body/div[14]/div[7]/div/button").click()
-                time.sleep(1)
+                time.sleep(2)
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                time.sleep(3)
         except:
             testResult = "failed"
             reason.append("1 steps failed\n")
 
         # Refer 탭 클릭
         time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab-refer").click()
 
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -958,7 +960,8 @@ class Worklist:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/button[4]").click()
         time.sleep(0.5)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[1]/div[2]/div/div[1]/div/div/input").send_keys(Var.test_hospital_code)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[1]/div[2]/div/div[3]/button").click()
+        time.sleep(1)
+        driver.find_element(By.ID, "institutions-search").click()        
 
         # Configuration > Institutions > Institutions Modify 팝업창 > Use Default Referring Comment 체크
         time.sleep(1)
@@ -988,7 +991,7 @@ class Worklist:
 
         # Refer 탭 클릭
         time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab-refer").click()
 
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -1061,8 +1064,15 @@ class Worklist:
 
             # All Assigned List 탭 클릭
             time.sleep(1)
+            Common.ReFresh()
             del driver.requests
-            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+            time.sleep(3)
+            hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+            for i in hospital_list:
+                if (i.get_property("dataset"))["institutionName"] == Var.test_hospital:
+                    i.click()
+            time.sleep(2)
+            driver.find_element(By.ID, "tab_all_assigned_list").click()
 
             # All Assigned List 저장
             request = driver.wait_for_request('.*/GetAllAssignedList.*')
@@ -1096,7 +1106,8 @@ class Worklist:
         # 7 steps start! : With Releated Job에 체크한 후, Save 버튼을 클릭한다.
         # 새로고침
         time.sleep(1)
-        driver.refresh()
+        Common.ReFresh()
+        time.sleep(3)
 
         # Test 병원 선택
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -1180,8 +1191,14 @@ class Worklist:
 
         # All Assigned List 탭 클릭 및 job list 저장
         time.sleep(2)
+        Common.ReFresh()
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+        time.sleep(3)
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == Var.test_hospital:
+                i.click()
+        driver.find_element(By.ID, "tab_all_assigned_list").click()
 
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
@@ -1234,8 +1251,14 @@ class Worklist:
         # 8 steps start! : With Releated Job에 체크 해제한 후, Save 버튼을 클릭한다.
         # All Assigned List 탭 클릭
         time.sleep(1)
+        Common.ReFresh()
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+        time.sleep(3)
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == Var.test_hospital:
+                i.click()
+        driver.find_element(By.ID, "tab_all_assigned_list").click()
 
         # All Assigned List 저장
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
@@ -1327,8 +1350,14 @@ class Worklist:
 
         # All Assigned List 탭 클릭 및 job list 저장
         time.sleep(1)
+        Common.ReFresh()
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+        time.sleep(3)
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == Var.test_hospital:
+                i.click()
+        driver.find_element(By.ID, "tab_all_assigned_list").click()
 
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
@@ -1378,6 +1407,7 @@ class Worklist:
         # Not Assigned List 탭 클릭 후, job list 저장
         time.sleep(1)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[2]").click()
 
         request = driver.wait_for_request('.*/GetNotAssignedList.*')
@@ -1492,29 +1522,31 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : 판독의가 할당된 의뢰 검사를 선택한 후, Refer Cancel 버튼을 클릭한다.
         # Refer 탭 클릭
         time.sleep(1)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
-        # Test 병원 선택
-        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
-        for i in hospital_list:
-            if (i.get_property("dataset"))["institutionName"] == Var.test_hospital:
-                i.click()
-
         # Show entries를 100개로 변경
         Common.refer_show_entries(100)
 
         # All Assigned List 저장
         time.sleep(1)
+        Common.ReFresh()
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
-
+        
+        # Test 병원 선택
+        hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
+        for i in hospital_list:
+            if (i.get_property("dataset"))["institutionName"] == Var.test_hospital:
+                i.click()
+        time.sleep(3)        
+        driver.find_element(By.ID, "tab_all_assigned_list").click()
+        
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
         body = request.response.body.decode('utf-8')
@@ -1551,10 +1583,10 @@ class Worklist:
         while(1):
             try:
                 del driver.requests
-                time.sleep(1)
+                time.sleep(3)
 
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]")))
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "tab_all_assigned_list")))
+                driver.find_element(By.ID, "tab_all_assigned_list").click()
                 break
             except:
                 # 새로고침
@@ -1605,7 +1637,8 @@ class Worklist:
         # All Assigned List 저장
         time.sleep(1)
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+        time.sleep(3)
+        driver.find_element(By.ID, "tab_all_assigned_list").click()
 
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
@@ -1770,9 +1803,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : 판독의에게 할당된 임의의 의뢰 검사를 선택하고, Refer Cancel and Refer 버튼을 클릭한다.
         # Refer 탭 클릭
@@ -1802,8 +1835,8 @@ class Worklist:
         # All Assigned List 탭 클릭 후, job list 저장
         del driver.requests
         time.sleep(1)
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]")))
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "tab_all_assigned_list")))
+        driver.find_element(By.ID, "tab_all_assigned_list").click()
 
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
@@ -1914,7 +1947,7 @@ class Worklist:
         time.sleep(0.3)
 
         # All List 탭 클릭 후, job list 저장
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab_all_list").click()
 
         request = driver.wait_for_request('.*/GetAllList.*')
         time.sleep(0.3)
@@ -1963,7 +1996,7 @@ class Worklist:
         
         # All List 탭 클릭
         time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab_all_list").click()
 
         driver.wait_for_request('.*/GetAllList.*')
         time.sleep(0.3)
@@ -2287,9 +2320,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Test 병원 선택
         del driver.requests
@@ -2394,7 +2427,7 @@ class Worklist:
         try:
             WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[6]/h2")))
             popup_msg = driver.find_element(By.XPATH ,"/html/body/div[6]/h2")
-            assert popup_msg.get_property("textContent") == "예약 환자가 등록되었습니다"
+            assert popup_msg.get_property("textContent") == "예약환자가 등록되었습니다"
         except:
             testResult = "failed"
             reason.append("2 steps failed\n")
@@ -2406,7 +2439,7 @@ class Worklist:
         # All Assigned List에서 schedule이 있는 job list 저장
         time.sleep(1)
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+        driver.find_element(By.ID, "tab_all_assigned_list").click()
 
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
@@ -2477,7 +2510,7 @@ class Worklist:
             reason.append("4 steps failed\n")
 
         # Schedule 팝업창 > 확인 클릭
-        time.sleep(1)
+        time.sleep(3)
         driver.find_element(By.XPATH, "/html/body/div[6]/div[7]/div/button").click()
 
         # All Assigned List의 job list 저장
@@ -2531,9 +2564,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : Schedule이 없는 임의의 의뢰 job을 선택한 후, Schedule Cancel 버튼을 클릭한다.
         # Refer 탭 클릭
@@ -2625,9 +2658,9 @@ class Worklist:
                 del driver.requests
                 time.sleep(1)
                 webdriver.ActionChains(driver).move_to_element(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]/a")).perform()
-                webdriver.ActionChains(driver).move_to_element(driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]")).perform()
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]")))
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+                webdriver.ActionChains(driver).move_to_element(driver.find_element(By.ID, "tab_all_assigned_list")).perform()
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "tab_all_assigned_list")))
+                driver.find_element(By.ID, "tab_all_assigned_list").click()
                 break
             except:
                 # 새로고침
@@ -2682,7 +2715,7 @@ class Worklist:
         # All Assigned List > Schedule이 없는 job list 저장
         time.sleep(1)
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+        driver.find_element(By.ID, "tab_all_assigned_list").click()
 
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
@@ -2708,7 +2741,7 @@ class Worklist:
         time.sleep(1)
         del driver.requests
         time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+        driver.find_element(By.ID, "tab_all_assigned_list").click()
 
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
@@ -2807,9 +2840,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : Job Status가 Completed 상태인 의뢰 검사를 선택한 후, Revised 버튼을 클릭한다.
         # Configuration > Institutions > 테스트 병원 선택
@@ -2842,7 +2875,7 @@ class Worklist:
 
         # Refer 탭 클릭
         time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab-refer").click()
 
         # Test 병원 선택
         time.sleep(1)
@@ -2856,10 +2889,10 @@ class Worklist:
         Common.refer_show_entries(100)
 
         # All List 탭 클릭 후, job list 저장
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
-        request = driver.wait_for_request('.*/GetAllList.*')
-        time.sleep(0.3)
+        driver.find_element(By.ID, "tab_all_list").click()
         time.sleep(1)
+        request = driver.wait_for_request('.*/GetAllList.*')
+        time.sleep(2)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)["data"]
         job_list = []
@@ -2871,21 +2904,37 @@ class Worklist:
         # Search Condition > Job status를 Completed로 선택 후, Search 클릭
         time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
-        time.sleep(0.25)
+        time.sleep(0.5)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[5]").click()
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()        
 
         # All List > Completed job 개수 확인
+        time.sleep(3)
+        # all_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr")
+        request = driver.wait_for_request('.*/GetAllList.*')
+        time.sleep(2)
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
         time.sleep(1)
-        all_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr")
+        completed_job_list = []
+
+        for i in data:
+            completed_job_list.append(i)
+        # completed_job_cnt = len(completed_job_list)
+
+        time.sleep(1)
+        del driver.requests
+        time.sleep(1)
 
         # All List > Completed job 개수가 0인 경우
-        if len(all_list) == 1:
+        if len(completed_job_list) == 0:
             # DB 접속
             os.putenv('NLS_LANG', '.UTF8')
-            cx_Oracle.init_oracle_client(lib_dir=r"D:\app\user\instantclient_21_7")
-            connection = cx_Oracle.connect("pantheon","pantheon",Var.vmonpacs_tns, encoding="UTF-8")
+            cx_Oracle.init_oracle_client(lib_dir=r"D:\app\yhjeon\instantclient_21_8")
+            connection = cx_Oracle.connect("pantheon","pantheon",Var.staging_tns, encoding="UTF-8")
             cursor = connection.cursor()
 
             # DB에서 선택한 병원의 All list의 첫번째 job의 job stat을 Completed로 변경
@@ -2996,9 +3045,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : 임의의 의뢰 검사를 선택한 후, Discard 버튼을 클릭한다.
         # Configuration > Institutions > 테스트 병원 선택
@@ -3031,8 +3080,8 @@ class Worklist:
             reason.append("1 steps failed\n")
 
         # Refer 탭 클릭
-        time.sleep(0.5)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        time.sleep(2)
+        driver.find_element(By.ID, "tab-refer").click()
 
         # Test 병원 선택
         time.sleep(1)
@@ -3081,8 +3130,8 @@ class Worklist:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[14]/div/div/div[3]/button[2]").click()
 
         # All Assigend List > job list 저장
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]")))
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "tab_all_assigned_list")))
+        driver.find_element(By.ID, "tab_all_assigned_list").click()
         time.sleep(1)
         request = driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
@@ -3137,7 +3186,7 @@ class Worklist:
         # 2 steps start! :Job Stauts가 DiscardRequest 인 의뢰 검사를 선택한 후, Discard 버튼을 클릭한다.
         # All List 탭 클릭
         time.sleep(2)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab_all_list").click()
 
         # Search filter > Job status를 DiscardRequest로 선택 후, Search 클릭
         time.sleep(1)
@@ -3203,9 +3252,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : Job Status가 Reported, Completed, Recalled 이외의 상태인 의뢰 검사를 선택한 후, Retry Request 버튼을 클릭한다.
         # Configuration > Institutions > 테스트 병원 선택
@@ -3239,7 +3288,7 @@ class Worklist:
 
         # Refer 탭 클릭
         time.sleep(0.5)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab-refer").click()
 
         # Test 병원 선택
         time.sleep(1)
@@ -3254,7 +3303,7 @@ class Worklist:
 
         # All List 탭 클릭
         time.sleep(2)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab_all_list").click()
 
         # Search condition > Job Status를 All로 선택하고, Search 클릭
         time.sleep(1)
@@ -3408,8 +3457,8 @@ class Worklist:
         if len(job_list) == 0:
             # DB 접속
             os.putenv('NLS_LANG', '.UTF8')
-            cx_Oracle.init_oracle_client(lib_dir=r"D:\app\user\instantclient_21_7")
-            connection = cx_Oracle.connect("pantheon","pantheon",Var.vmonpacs_tns, encoding="UTF-8")
+            cx_Oracle.init_oracle_client(lib_dir=r"D:\app\yhjeon\instantclient_21_8")
+            connection = cx_Oracle.connect("pantheon","pantheon",Var.staging_tns, encoding="UTF-8")
             cursor = connection.cursor()
 
             # DB에서 선택한 병원의 All list의 첫번째 job의 job stat을 Completed로 변경
@@ -3453,7 +3502,7 @@ class Worklist:
                     if (i.get_property("dataset"))["institutionName"] == Var.test_hospital:
                         i.click()
                 time.sleep(1)
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+                driver.find_element(By.ID, "tab_all_list").click()
                 time.sleep(1)
 
                 # Search condition > Job Status를 Discard Completed로 선택하고, Search 클릭
@@ -3576,9 +3625,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Test 병원 선택
         time.sleep(1)
@@ -3860,9 +3909,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : Show entries의 개수를 10으로 변경한다.
         # Refer 탭 클릭
@@ -3879,7 +3928,7 @@ class Worklist:
 
         # All List 탭 클릭
         time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab_all_list").click()
 
         del driver.requests
         time.sleep(1)
@@ -3987,9 +4036,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : Use Related Worklist에 체크한 후, worklist에서 임의의 의뢰 검사를 선택한다.
         # Refer 탭 클릭
@@ -4013,7 +4062,7 @@ class Worklist:
         # All List 탭 클릭 후, job list 저장
         time.sleep(1)
         del driver.requests
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab_all_list").click()
         
         request = driver.wait_for_request('.*/GetAllList.*')
         time.sleep(0.3)
@@ -4050,7 +4099,7 @@ class Worklist:
             Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
             Common_Var.form.update_table()
             if Common_Var.planid != "":
-                testlink.reportTCResult(3074, testPlanID, buildName, 'f', result)
+                testlink.reportTCResult(3074, testPlsanID, buildName, 'f', result)
         else:
             Common_Var.form.update_passed()
             Common_Var.run_status = "Passed"
@@ -4072,9 +4121,9 @@ class Worklist:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Test 병원 선택
         time.sleep(1)
@@ -4121,7 +4170,7 @@ class Worklist:
             reason.append("1 steps failed\n") 
         
         # All List > 정렬이 가능한 컬럼 저장
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab_all_list").click()
         time.sleep(1)
         columns = driver.find_elements(By.CSS_SELECTOR,"#refer-assigned-list_wrapper > div.dataTables_scroll > div.dataTables_scrollHead > div > table > thead > tr > th")
         column_list = []

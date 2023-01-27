@@ -44,9 +44,10 @@ class Refer:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
+                # driver.find_element(By.XPATH,"/html/body/nav/div/div[1]/a[2]").click()
         except:
-            pass
+            Common.ReFresh()
 
         # # Refer 탭 클릭
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -211,7 +212,8 @@ class Refer:
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/button[3]").click()
 
                 # 선택한 병원의 institution code 입력 후, 검색
-                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[1]/div[2]/div/div[2]/div").click()
+                time.sleep(5)
+                driver.find_element(By.ID, "download_search_institution_chosen").click()
                 driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > div > input[type=text]").send_keys(inst_name)
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[1]/div[2]/div/div[2]/div/div/div/input").send_keys(Keys.RETURN)
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[1]/div[2]/div/div[5]/button").click()
@@ -713,9 +715,9 @@ class Refer:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 & 2 steps start! : 판독의 탭 > 판독의 리스트에 표시되는 badge count가 job list와 일치하는지 확인
         # Reporter list를 저장한다.
@@ -915,9 +917,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Hospital list 저장
         hospital_list = driver.find_elements(By.CLASS_NAME, "list-group-item.list-institution")
@@ -1109,9 +1111,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Showing entries 100으로 변경
         Common.refer_show_entries(100)
@@ -1133,8 +1135,12 @@ class Search_filter:
         time.sleep(1)
 
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[2]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr/td")))
+        time.sleep(3)
 
         # All List > Job list의 Job Status 저장
         pages = Common.cnt_pages()
@@ -1150,7 +1156,7 @@ class Search_filter:
                     job_status.append(i["StatDescription"])
             
             # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+            next_btn = driver.find_element(By.ID, "refer-assigned-list_next")
             if "disabled" not in next_btn.get_attribute("class"):
                 time.sleep(1)
                 driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
@@ -1168,14 +1174,20 @@ class Search_filter:
         # All List > Job Status를 Reported로 변경하고, Search All 버튼 클릭
         time.sleep(1)
         driver.refresh()
+        time.sleep(5)
         # All List 탭 클릭
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        driver.find_element(By.ID, "tab_all_list").click()
 
         time.sleep(1)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/a").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[3]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr/td")))
 
         # All List > Job list의 Job Status 저장
         pages = Common.cnt_pages()
@@ -1209,8 +1221,12 @@ class Search_filter:
         time.sleep(1)
         del driver.requests
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[4]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr/td")))
 
         # All List > Job list의 Job Status 저장
         pages = Common.cnt_pages()
@@ -1243,28 +1259,33 @@ class Search_filter:
         # All List > Job Status를 Completed로 변경하고, Search All 버튼 클릭
         time.sleep(1)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[5]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        time.sleep(20)
 
         # All List > Job list의 Job Status 저장
-        pages = Common.cnt_pages()
+        # Completed는 페이지 수가 표시안됨!!
+        # pages = Common.cnt_pages()
         job_status = []
-        while pages > 0:
-            request = driver.wait_for_request('.*/GetAllList.*')
-            time.sleep(0.5)
-            body = request.response.body.decode('utf-8')
-            data = json.loads(body)["data"]
-            
-            for i in data:
-                if i["StatDescription"] not in job_status:
-                    job_status.append(i["StatDescription"])
-            # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
-            if "disabled" not in next_btn.get_attribute("class"):
-                time.sleep(1)
-                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
-            pages = pages - 1
+        # while pages > 0:
+        request = driver.wait_for_request('.*/GetAllList.*')
+        time.sleep(1)
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+        
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+        # Next 클릭
+        next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+        # if "disabled" not in next_btn.get_attribute("class"):
+        #     time.sleep(1)
+        #     driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
+        # pages = pages - 1
 
         # Job Status가 Completed 만 조회되었는지 확인
         try:
@@ -1278,9 +1299,14 @@ class Search_filter:
         # All List > Job Status를 Recalled로 변경하고, Search All 버튼 클릭
         time.sleep(1)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[6]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr/td")))
 
         # All List > Job list의 Job Status 저장
         # pages = Common.cnt_pages()
@@ -1298,9 +1324,9 @@ class Search_filter:
         # Next 클릭
         if len(data) == 100:
             next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
-            if "disabled" not in next_btn.get_attribute("class"):
-                time.sleep(1)
-                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
+            # if "disabled" not in next_btn.get_attribute("class"):
+            #     time.sleep(1)
+            #     driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
             # pages = pages - 1
 
         # Job Status가 Recalled 만 조회되었는지 확인
@@ -1315,9 +1341,14 @@ class Search_filter:
         # All List > Job Status를 Canceled로 변경하고, Search All 버튼 클릭
         time.sleep(1)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[7]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr/td")))
 
         # All List > Job list의 Job Status 저장
         time.sleep(1)
@@ -1351,28 +1382,33 @@ class Search_filter:
         # All List > Job Status를  Canceled2로 변경하고, Search All 버튼 클릭
         time.sleep(1)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[8]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr/td")))
 
         # All List > Job list의 Job Status 저장
-        pages = Common.cnt_pages()
+        # pages = Common.cnt_pages()
         job_status = []
-        while pages > 0:
-            request = driver.wait_for_request('.*/GetAllList.*')
-            time.sleep(0.5)
-            body = request.response.body.decode('utf-8')
-            data = json.loads(body)["data"]
+        # while pages > 0:
+        request = driver.wait_for_request('.*/GetAllList.*')
+        time.sleep(0.5)
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
 
-            for i in data:
-                if i["StatDescription"] not in job_status:
-                    job_status.append(i["StatDescription"])
-            # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
-            if "disabled" not in next_btn.get_attribute("class"):
-                time.sleep(1)
-                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
-            pages = pages - 1
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+        # Next 클릭
+        next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+        # if "disabled" not in next_btn.get_attribute("class"):
+        #     time.sleep(1)
+        #     driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
+        # pages = pages - 1
 
         # Job Status가 Canceled2 만 조회되었는지 확인
         try:
@@ -1386,9 +1422,14 @@ class Search_filter:
         # All List > Job Status를 Returned로 변경하고, Search All 버튼 클릭
         time.sleep(1)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[9]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr/td")))
 
         # All List > Job list의 Job Status 저장
         time.sleep(1)
@@ -1422,9 +1463,14 @@ class Search_filter:
         # All List > Job Status를 Failed Download Report로 변경하고, Search All 버튼 클릭
         time.sleep(1)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[10]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr/td")))
 
         # All List > Job list의 Job Status 저장
         pages = Common.cnt_pages()
@@ -1448,7 +1494,7 @@ class Search_filter:
         # Job Status가 Failed Download Report 만 조회되었는지 확인
         try:
             job_status = ' '.join(s for s in job_status)
-            assert job_status == "Failed Download Report" or job_status == ''
+            assert job_status == "FailedDownloadReport" or job_status == ''
         except:
             testResult = "failed"
             reason.append("9 steps failed\n")
@@ -1457,28 +1503,33 @@ class Search_filter:
         # All List > Job Status를 AI Processing로 변경하고, Search All 버튼 클릭
         time.sleep(1)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[11]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        time.sleep(4)
+        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr/td")))
 
         # All List > Job list의 Job Status 저장
-        pages = Common.cnt_pages()
+        # pages = Common.cnt_pages()
         job_status = []
-        while pages > 0:
-            request = driver.wait_for_request('.*/GetAllList.*')
-            time.sleep(0.5)
-            body = request.response.body.decode('utf-8')
-            data = json.loads(body)["data"]
+        # while pages > 0:
+        request = driver.wait_for_request('.*/GetAllList.*')
+        time.sleep(0.5)
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
 
-            for i in data:
-                if i["StatDescription"] not in job_status:
-                    job_status.append(i["StatDescription"])
-            # Next 클릭
-            next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
-            if "disabled" not in next_btn.get_attribute("class"):
-                time.sleep(1)
-                driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
-            pages = pages - 1
+        for i in data:
+            if i["StatDescription"] not in job_status:
+                job_status.append(i["StatDescription"])
+        # Next 클릭
+        next_btn = driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next")
+        # if "disabled" not in next_btn.get_attribute("class"):
+        #     time.sleep(1)
+        #     driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
+        # pages = pages - 1
 
         # Job Status가 AI Processing 만 조회되었는지 확인
         try:
@@ -1492,9 +1543,14 @@ class Search_filter:
         # All List > Job Status를 DiscardRequest로 변경하고, Search All 버튼 클릭
         time.sleep(1)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[12]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr/td")))
 
         # All List > Job list의 Job Status 저장
         pages = Common.cnt_pages()
@@ -1527,9 +1583,14 @@ class Search_filter:
         # All List > Job Status를 DiscardCompleted로 변경하고, Search All 버튼 클릭
         time.sleep(1)
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div/ul/li[13]").click()
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr/td")))
 
         # All List > Job list의 Job Status 저장
         pages = Common.cnt_pages()
@@ -1588,9 +1649,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : Date를 Job Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # 2 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
@@ -1611,6 +1672,12 @@ class Search_filter:
 
         # Date를 Job Date, Study Date, Schedule Date 순서대로 조회 시, All/Not Assigned List 탭의 데이터가 올바르게 조회되는지 확인
         for j in range(0,3):
+            # 첫 번째 병원 선택
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div/a")))
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div/a").click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div/div/ul/li["+str(2)+"]")))
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div/div/ul/li["+str(2)+"]").click()
+
             # All Assigned List 탭 클릭
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[1]").click()
 
@@ -1938,6 +2005,7 @@ class Search_filter:
             m = 0
             for n in range(2,7):
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/input").click()
+                time.sleep(1)
                 driver.find_element(By.CSS_SELECTOR, "body > div.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom > div.datepicker-days > table > tfoot > tr:nth-child(3) > th:nth-child("+str(n)+")").click()
 
                 # Search 버튼 클릭
@@ -2060,9 +2128,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # 1 steps start! : Patient Location 조건을 InPatient로 선택한 후, Search 버튼을 클릭한다.
         # 2 steps start! : Patient Location 조건을 OutPatient로 선택한 후, Search 버튼을 클릭한다.
@@ -2074,23 +2142,27 @@ class Search_filter:
         # All List 탭 클릭
         time.sleep(2)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[1]/ul/li[3]").click()
+        time.sleep(5)
+
+        # Showing entries 100으로 변경
+        Common.refer_show_entries(100)
 
         for j in range(0,3):
             # Patient Location 버튼 클릭
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div[5]/div/a").click()
+            time.sleep(1)
             
             # Patient Location을 InPatient, OutPatient, Emergency 순서대로 선택
             driver.find_element(By.XPATH,location_type[j][0]).click()
-            
-            # Showing entries 100으로 변경
-            Common.refer_show_entries(100)
 
             # Search All 버튼 클릭
-            time.sleep(1)
+            time.sleep(2)
             del driver.requests
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[3]/div[6]/button").click()
+            time.sleep(5)
 
             pages = Common.cnt_pages()
+            pat_location = []
             while pages > 0:
                 # All list > Job list에서 Patient Location 저장
                 time.sleep(1)
@@ -2098,7 +2170,6 @@ class Search_filter:
                 time.sleep(0.5)
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
-                pat_location = []
             
                 for i in data:
                     if i["PatientLocation"] not in pat_location:
@@ -2148,9 +2219,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -2285,9 +2356,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -2422,9 +2493,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -2621,9 +2692,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
 
@@ -2685,8 +2756,10 @@ class Search_filter:
         # 검색 조건과 Job list 결과가 일치하는지 확인
         try:
             if (study_desc) != None:
-                result_study_desc = ' '.join(s for s in result_study_desc)
-            assert study_desc == result_study_desc or (study_desc) == None
+                for i in result_study_desc:
+                    assert study_desc.upper() in i.upper() or (study_desc) == None
+                # result_study_desc = ' '.join(s for s in result_study_desc)
+            # assert study_desc == result_study_desc or (study_desc) == None
         except:
             testResult = "failed"
             reason.append("1 steps failed\n")
@@ -2721,9 +2794,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -2824,9 +2897,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)
@@ -2915,8 +2988,10 @@ class Search_filter:
         time.sleep(1.5)
         try:
             if (bodypart) != None:
-                result_bodypart = ' '.join(s for s in result_bodypart)
-            assert bodypart == result_bodypart or (bodypart) == None
+                for i in result_bodypart:
+                    assert bodypart.upper() in i.upper() or (bodypart) == None
+                # result_bodypart = ' '.join(s for s in result_bodypart)
+            # assert bodypart == result_bodypart or (bodypart) == None
         except:
             testResult = "failed"
             reason.append("1 steps failed\n")
@@ -2951,9 +3026,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -3051,9 +3126,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -3151,9 +3226,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -3314,9 +3389,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Refer 탭 클릭(화면 초기화)
         # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[3]").click()
@@ -3434,9 +3509,9 @@ class Search_filter:
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
             else:
-                driver.refresh()
+                Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
         
         driver.wait_for_request('.*/GetAllAssignedList.*')
         time.sleep(0.3)

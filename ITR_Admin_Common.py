@@ -29,11 +29,11 @@ driver = None
 # options = webdriver.ChromeOptions()
 # options.add_experimental_option("excludeSwitches", ["enable-logging"])
 # driver = webdriver.Chrome(options=options)
-# name = driver.name
 # baseUrl = 'http://stagingadmin.onpacs.com'
+# driver.get(baseUrl)
+# name = driver.name
 # baseUrl = 'http://vm-onpacs:8082'
 # baseUrl = Common_Var.base_admin_url
-# driver.get(baseUrl)
 
 if Common_Var.web_driver == "Edge":
     options = webdriver.EdgeOptions()
@@ -81,7 +81,7 @@ class Var:
     WorklistUrl = 'http://vm-onpacs'
     StagingAdmin = 'http://stagingadmin.onpacs.com/'
     today = datetime.now()
-    test_hospital = "Cloud Team"
+    test_hospital = "CloudTeam"
     test_hospital_code = '997'
     start = time.time()
     search_text = "test" #DirectMessageBox_Search

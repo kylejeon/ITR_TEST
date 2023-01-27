@@ -261,7 +261,7 @@ class Form(QMainWindow, form_class):
     
     pyqtSlot()
     def signal_exception(self):
-        Common_Var.test_status_exception -= 1
+        Common_Var.test_status_exception += 1
         Common_Var.form.label_exception.setText(str(Common_Var.test_status_exception))
         self.progressBar.setValue(int(Common_Var.progress_bar))
         Common_Var.form.label_executed.setText(str(Common_Var.executed) + "% executed")
@@ -280,8 +280,8 @@ class Form(QMainWindow, form_class):
             self.text_bn.setEnabled(True)
 
     def set_testlink(self):
-        Common_Var.planid = self.text_planid.toPlainText()
-        Common_Var.bn = self.text_bn.toPlainText()
+        Common_Var.planid = self.text_planid.text()
+        Common_Var.bn = self.text_bn.text()
 
     def change_server(self):
         if self.comboBox_server.currentText() == "Staging Server":
