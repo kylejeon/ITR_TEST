@@ -26,28 +26,28 @@ buildName = Common_Var.bn
 driver = None
 
 # 브라우저 설정
-# options = webdriver.ChromeOptions()
-# options.add_experimental_option("excludeSwitches", ["enable-logging"])
-# driver = webdriver.Chrome(options=options)
-# baseUrl = 'http://stagingadmin.onpacs.com'
-# driver.get(baseUrl)
+options = webdriver.ChromeOptions()
+options.add_experimental_option("excludeSwitches", ["enable-logging"])
+driver = webdriver.Chrome(options=options)
+baseUrl = 'http://stagingadmin.onpacs.com'
+driver.get(baseUrl)
 # name = driver.name
 # baseUrl = 'http://vm-onpacs:8082'
 # baseUrl = Common_Var.base_admin_url
 
-if Common_Var.web_driver == "Edge":
-    options = webdriver.EdgeOptions()
-    options.binary_location = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-    driver = webdriver.Edge(options=options)
-    baseUrl = Common_Var.base_admin_url
-else:
-    options = webdriver.ChromeOptions()
-    options.add_experimental_option("excludeSwitches", ["enable-logging"])
-    if Common_Var.check == "Unchecked":
-        options.add_argument("headless")
-    # options.add_argument("disable-gpu")
-    driver = webdriver.Chrome(options=options)
-    baseUrl = Common_Var.base_admin_url
+# if Common_Var.web_driver == "Edge":
+#     options = webdriver.EdgeOptions()
+#     options.binary_location = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+#     driver = webdriver.Edge(options=options)
+#     baseUrl = Common_Var.base_admin_url
+# else:
+#     options = webdriver.ChromeOptions()
+#     options.add_experimental_option("excludeSwitches", ["enable-logging"])
+#     if Common_Var.check == "Unchecked":
+#         options.add_argument("headless")
+#     # options.add_argument("disable-gpu")
+#     driver = webdriver.Chrome(options=options)
+#     baseUrl = Common_Var.base_admin_url
 
 # Notice 창 닫기
 if Common_Var.web_driver != None and Common_Var.web_driver != "":
@@ -66,19 +66,19 @@ class Var:
     adminPW = 'Server123!@#'
     stg_adminID = "INF_JH"
     stg_adminPW = "Server123!@#"
-    subadminID = 'testSubadmin'
-    subadminPW = 'Server123!@#'
+    subadminID = 'yhjeonSub'
+    subadminPW = 'server123!@#'
     reporterID = 'testReporter'
     reporterPW = 'Server123!@#'
     wk_id = "testInfReporter"
     wk_pw = "Server123!@#"
     wk_id_2 = "ITRTestUsers" #DownloadControl_User_Add / DownloadControl_User_Modify / DownloadControl_Institution_Add / DownloadControl_Institution_Modify / UserManagement_Registartion_Modify
     wk_pw_2 = "1234qwer!@"#DownloadControl_User_Add / DownloadControl_User_Modify / DownloadControl_Institution_Add / DownloadControl_Institution_Modify 
-    search_id = "testInfReporter" #DirectMessageBox_Search / DirectMessageSetting_Search
-    search_username = "TestINFReporter" #DirectMessageBox_Search / DirectMessageSetting_Search
+    search_id = "inftest" #DirectMessageBox_Search / DirectMessageSetting_Search
+    search_username = "전용혁_Tester" #DirectMessageBox_Search / DirectMessageSetting_Search
 
     # 공통 변수
-    WorklistUrl = 'http://vm-onpacs'
+    WorklistUrl = 'http://stagingworklist.onpacs.com'
     StagingAdmin = 'http://stagingadmin.onpacs.com/'
     today = datetime.now()
     test_hospital = "CloudTeam"
@@ -87,16 +87,16 @@ class Var:
     search_text = "test" #DirectMessageBox_Search
     search_institution = "INFINITT" #NewDirectMessage_Institution
     search_institution_2 = "Cloud" #MultiReadingCenterRule / Institution_SearchFilter / DownloadControl_Institution_Add / DownloadControl_Institution_Modify / UserManageMent_UserRegistartion_Add
-    search_institution_3 = "Cloud Team" #Institution_Modify / DownloadControl_User_Add
+    search_institution_3 = "CloudTeam" #Institution_Modify / DownloadControl_User_Add
     #search_institution_code = "997" #Institution_SearchFilter / Institution_Add
-    search_center = "인피니트" #NewDirectMessage_Center_Search / MultiReadingCenterRule / Institution_Add / UserManageMent_UserRegistartion_Add
+    search_center = "인피니트헬스케어" #NewDirectMessage_Center_Search / MultiReadingCenterRule / Institution_Add / UserManageMent_UserRegistartion_Add
     search_center_2 = "인피니트테스트" #MultiReadingCenterRule
-    search_reporter = "TestINFReporter" #NewDirectMessage_Center_Reporter
+    search_reporter = "inftest" #NewDirectMessage_Center_Reporter
     unauth_search_id = "TEST_MAP" #DirectMessageSetting_Search
     unauth_search_username = "김태호" #DirectMessageSetting_Search
     add_test_id = "TestA" #+난수 # DirectMessageSetting_Authorize / UserManageMent_UserRegistartion_Add / UserMangement_UserRegistartion_Delete / UserManagement_Registration_Add
     add_test_pw = "1234qwer!" #DirectMessageSetting_Authorize / UserManageMent_UserRegistartion_Add
-    upload_pic = "C:\\Users\\INFINITT\\Desktop\\uploadtest.png" # NoticeList_NoticeEditBoard
+    upload_pic = "C:\\INFINITT\\uploadimage\\uploadtest.png" # NoticeList_NoticeEditBoard
     upload_pic_url = "https://i.ytimg.com/vi/gREpAVOERis/maxresdefault.jpg" # NoticeList_NoticeEditBoards
     specialty = "ITRTest" #DownloadControl_Add / Specialty_SpecialtyList_Search
     specialty_add = "SpTest" #Specialty_SpecialtyList_Add
@@ -109,6 +109,12 @@ class Common:
         select.select_by_value(str(num))
     def config_show_entries(num):
         select = Select(driver.find_element(By.CSS_SELECTOR,"#download-list_length > label > select"))
+        select.select_by_value(str(num))
+    def institution_show_entries(num):
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#institutions-list_length > label > select"))
+        select.select_by_value(str(num))
+    def multicenter_show_entries(num):
+        select = Select(driver.find_element(By.CSS_SELECTOR,"#multi-center-rule-list_length > label > select"))
         select.select_by_value(str(num))
     def cnt_pages():
         # 현재 Job list 페이지의 job count 리턴

@@ -15,104 +15,110 @@ import sys
 
 full_test_case = [
     # Sign
-    ITR_Admin_Login.Sign.Sign_InOut, # ITR-1
-    ITR_Admin_Login.Sign.Rememeber_Me, # ITR-2
-    # Topbar
-    ITR_Admin_Login.Topbar.Search_Schedule_List, # ITR-3
-    # Refer
-    ITR_Admin_Refer.Refer.Hospital_List, # ITR-7
-    ITR_Admin_Refer.Refer.Reporter_List, # ITR-8
-    # Search filter
-    ITR_Admin_Refer.Search_filter.Priority, # ITR-9
-    ITR_Admin_Refer.Search_filter.Job_Status, # ITR-10
-    ITR_Admin_Refer.Search_filter.Date, # ITR-11
-    ITR_Admin_Refer.Search_filter.Patient_Location, # ITR-12
-    ITR_Admin_Refer.Search_filter.Patient_ID, # ITR-13
-    ITR_Admin_Refer.Search_filter.Patient_Name, # ITR-14
-    ITR_Admin_Refer.Search_filter.Age, # ITR-15
-    ITR_Admin_Refer.Search_filter.Study_Description, # ITR-16
-    ITR_Admin_Refer.Search_filter.Modality, # ITR-17
-    ITR_Admin_Refer.Search_filter.Bodypart, # ITR-18
-    ITR_Admin_Refer.Search_filter.Department, # ITR-19
-    ITR_Admin_Refer.Search_filter.Request_Name, # ITR-20
-    ITR_Admin_Refer.Search_filter.Search_All, # ITR-21
-    ITR_Admin_Refer.Search_filter.RealTime, # ITR-22
-    ITR_Admin_Refer.Search_filter.ShortCut, # ITR-23
-    # Worklist
-    ITR_Admin_Worklist.Worklist.All_Assigned_List, # ITR-24
-    ITR_Admin_Worklist.Worklist.Not_Assigned_List, # ITR-25
-    ITR_Admin_Worklist.Worklist.All_List, # ITR-26
-    ITR_Admin_Worklist.Worklist.Schedule, # ITR-27
-    ITR_Admin_Worklist.Worklist.Priority, # ITR-28
-    ITR_Admin_Worklist.Worklist.Canceled, # ITR-29
-    ITR_Admin_Worklist.Worklist.Refer, # ITR-30
-    ITR_Admin_Worklist.Worklist.Refer_Cancel, # ITR-31
-    ITR_Admin_Worklist.Worklist.Refer_Cancel_And_Refer, # ITR-32
-    ITR_Admin_Worklist.Worklist.Set_Schedule, # ITR-34
-    ITR_Admin_Worklist.Worklist.Schedule_Cancel, # ITR-35
-    ITR_Admin_Worklist.Worklist.Revised, # ITR-36
-    ITR_Admin_Worklist.Worklist.Discard, # ITR-37
-    ITR_Admin_Worklist.Worklist.Retry_Request, # ITR-38
-    ITR_Admin_Worklist.Worklist.Columns, # ITR-39
-    ITR_Admin_Worklist.Worklist.Show_Entries, # ITR-40
-    ITR_Admin_Worklist.Worklist.Use_Related_Worklist, # ITR-224
-    ITR_Admin_Worklist.Worklist.Sort_By, # ITR-41
-    # Statistics
-    # ITR_Admin_Login.signInOut.subadmin_sign_out, # SubAdmin logout
-    # ITR_Admin_Login.signInOut.admin_sign_in, # Admin login
-    ITR_Admin_Statistics.Statistics.SearchFilter_Date, # ITR-44
-    ITR_Admin_Statistics.Statistics.SearchFilter_Hospital, # ITR-45
-    ITR_Admin_Statistics.Statistics.SearchFilter_Reporter, # ITR-46
-    ITR_Admin_Statistics.Statistics.SearchFilter_Modality, # ITR-47
-    ITR_Admin_Statistics.Statistics.Columns, # ITR-42
-    ITR_Admin_Statistics.Statistics.Show_Entries, # ITR-43
-    # Confiuration - User Management
-    ITR_Admin_Configuration.UserManagement.SearchFilter_Class, # ITR-49
-    ITR_Admin_Configuration.UserManagement.SearchFilter_Institution, # ITR-50
-    ITR_Admin_Configuration.UserManagement.SearchFilter_UserID, # ITR-51
-    ITR_Admin_Configuration.UserManagement.SearchFilter_UserName, # ITR-52
-    ITR_Admin_Configuration.UserManagement.SearchFilter_ShowWithMappingID, # ITR-53
-    ITR_Admin_Configuration.UserManagement.UserRegistartion_Add, # ITR-54
-    ITR_Admin_Configuration.UserManagement.UserRegistartion_Delete, # ITR-218
-    ITR_Admin_Configuration.UserManagement.UserRegistartion_Modify, # ITR-56
-    # Confiuration - Specialty
-    ITR_Admin_Configuration.Specialty.SpecialtyList_Search, # ITR-56
-    ITR_Admin_Configuration.Specialty.SpecialtyList_Add, # ITR-57
-    ITR_Admin_Configuration.Specialty.SpecialtyList_Delete, # ITR-58
-    ITR_Admin_Configuration.Specialty.SpecialtyList_Modify, # ITR-59
-    ITR_Admin_Configuration.Specialty.InstitutionList_Search, # ITR-60
-    ITR_Admin_Configuration.Specialty.InstitutionList_Add, # ITR-61
-    ITR_Admin_Configuration.Specialty.InstitutionList_Delete, # ITR-64
-    ITR_Admin_Configuration.Specialty.InstitutionList_Modify, # ITR-65
-    ITR_Admin_Configuration.Specialty.InstitutionList_Modify_Search, # ITR-68
-    # Confiuration - Download Control
-    ITR_Admin_Configuration.DownloadControl.User_SearchFilter_Class, # ITR-69
-    ITR_Admin_Configuration.DownloadControl.User_SearchFilter_Institution, # ITR-70
-    ITR_Admin_Configuration.DownloadControl.User_SearchFilter_UserID, # ITR-71
-    ITR_Admin_Configuration.DownloadControl.User_SearchFilter_UserName, # ITR-72
-    ITR_Admin_Configuration.DownloadControl.User_Add, # ITR-73
-    ITR_Admin_Configuration.DownloadControl.User_Delete, # ITR-74
-    ITR_Admin_Configuration.DownloadControl.User_Modify, # ITR-75
-    ITR_Admin_Configuration.DownloadControl.Institution_SearchFilter_Class, # ITR-76
-    ITR_Admin_Configuration.DownloadControl.Institution_SearchFilter_Institution, # ITR-77
-    ITR_Admin_Configuration.DownloadControl.Institution_SearchFilter_UserID, # ITR-78
-    ITR_Admin_Configuration.DownloadControl.Institution_SearchFilter_UserName, # ITR-79
-    ITR_Admin_Configuration.DownloadControl.Institution_Add, # ITR-80
-    ITR_Admin_Configuration.DownloadControl.Institution_Delete, # ITR-81
-    ITR_Admin_Configuration.DownloadControl.Institution_Modify, # ITR-82
-    # Confiuration - Institutions
-    ITR_Admin_Configuration.Institution.SearchFilter_Institution_Code, # ITR-83
-    ITR_Admin_Configuration.Institution.SearchFilter_Institution_Name, # ITR-84
-    ITR_Admin_Configuration.Institution.Add, # ITR-85
-    ITR_Admin_Configuration.Institution.Delete, # ITR-86
-    ITR_Admin_Configuration.Institution.Modify, # ITR-87
-    # Add > GroupAdd > GroupModify > Modify > Delete
-    # Confiuration - Standard Report
-    ITR_Admin_Configuration.StandardReport.All, # ITR-88~93
-    # Confiuration - Multi Reading Center Rule
+    # ITR_Admin_Login.Sign.Sign_InOut, # ITR-1
+    # ITR_Admin_Login.Sign.Rememeber_Me, # ITR-2
+    # # Topbar
+    # ITR_Admin_Login.Topbar.Search_Schedule_List, # ITR-3
+    # # Refer
+    # ITR_Admin_Refer.Refer.Hospital_List, # ITR-7
+    # ITR_Admin_Refer.Refer.Reporter_List, # ITR-8
+    # # Search filter
+    # ITR_Admin_Refer.Search_filter.Priority, # ITR-9
+    # ITR_Admin_Refer.Search_filter.Job_Status, # ITR-10
+    # ITR_Admin_Refer.Search_filter.Date, # ITR-11
+    # ITR_Admin_Refer.Search_filter.Patient_Location, # ITR-12
+    # ITR_Admin_Refer.Search_filter.Patient_ID, # ITR-13
+    # ITR_Admin_Refer.Search_filter.Patient_Name, # ITR-14
+    # ITR_Admin_Refer.Search_filter.Age, # ITR-15
+    # ITR_Admin_Refer.Search_filter.Study_Description, # ITR-16
+    # ITR_Admin_Refer.Search_filter.Modality, # ITR-17
+    # ITR_Admin_Refer.Search_filter.Bodypart, # ITR-18
+    # ITR_Admin_Refer.Search_filter.Department, # ITR-19
+    # ITR_Admin_Refer.Search_filter.Request_Name, # ITR-20
+    # ITR_Admin_Refer.Search_filter.Search_All, # ITR-21
+    # ITR_Admin_Refer.Search_filter.RealTime, # ITR-22
+    # ITR_Admin_Refer.Search_filter.ShortCut, # ITR-23
+    # # Worklist
+    # ITR_Admin_Worklist.Worklist.All_Assigned_List, # ITR-24
+    # ITR_Admin_Worklist.Worklist.Not_Assigned_List, # ITR-25
+    # ITR_Admin_Worklist.Worklist.All_List, # ITR-26
+    # ITR_Admin_Worklist.Worklist.Schedule, # ITR-27
+    # ITR_Admin_Worklist.Worklist.Priority, # ITR-28
+    # ITR_Admin_Worklist.Worklist.Canceled, # ITR-29
+    # ITR_Admin_Worklist.Worklist.Refer, # ITR-30
+    # ITR_Admin_Worklist.Worklist.Refer_Cancel, # ITR-31
+    # ITR_Admin_Worklist.Worklist.Refer_Cancel_And_Refer, # ITR-32
+    # ITR_Admin_Worklist.Worklist.Set_Schedule, # ITR-34
+    # ITR_Admin_Worklist.Worklist.Schedule_Cancel, # ITR-35
+    # ITR_Admin_Worklist.Worklist.Revised, # ITR-36
+    # ITR_Admin_Worklist.Worklist.Discard, # ITR-37
+    # ITR_Admin_Worklist.Worklist.Retry_Request, # ITR-38
+    # ITR_Admin_Worklist.Worklist.Columns, # ITR-39
+    # ITR_Admin_Worklist.Worklist.Show_Entries, # ITR-40
+    # ITR_Admin_Worklist.Worklist.Sort_By, # ITR-41
+    # ITR_Admin_Worklist.Worklist.Use_Related_Worklist, # ITR-224
+    # # Statistics
+    # ITR_Admin_Statistics.Statistics.SearchFilter_Date, # ITR-44
+    # ITR_Admin_Statistics.Statistics.SearchFilter_Hospital, # ITR-45
+    # ITR_Admin_Statistics.Statistics.SearchFilter_Reporter, # ITR-46
+    # ITR_Admin_Statistics.Statistics.SearchFilter_Modality, # ITR-47
+    # ITR_Admin_Statistics.Statistics.Columns, # ITR-42
+    # ITR_Admin_Statistics.Statistics.Show_Entries, # ITR-43
+    # # Confiuration - User Management
+    # ITR_Admin_Configuration.UserManagement.SearchFilter_Class, # ITR-49
+    # ITR_Admin_Configuration.UserManagement.SearchFilter_Institution, # ITR-50
+    # ITR_Admin_Configuration.UserManagement.SearchFilter_UserID, # ITR-51
+    # ITR_Admin_Configuration.UserManagement.SearchFilter_UserName, # ITR-52
+    # ITR_Admin_Configuration.UserManagement.SearchFilter_ShowWithMappingID, # ITR-53
+    # ITR_Admin_Configuration.UserManagement.UserRegistartion_Add, # ITR-54
+    # ITR_Admin_Configuration.UserManagement.UserRegistartion_Modify, # ITR-56
+    # ITR_Admin_Configuration.UserManagement.UserRegistartion_Delete, # ITR-218
+    # # Confiuration - Specialty
+    # ITR_Admin_Configuration.Specialty.SpecialtyList_Search, # ITR-56
+    # ITR_Admin_Configuration.Specialty.SpecialtyList_Add, # ITR-57
+    # ITR_Admin_Configuration.Specialty.SpecialtyList_Modify, # ITR-59
+    # ITR_Admin_Configuration.Specialty.SpecialtyList_Delete, # ITR-58
+    # ITR_Admin_Configuration.Specialty.InstitutionList_Search, # ITR-60
+    # ITR_Admin_Configuration.Specialty.InstitutionList_Add, # ITR-61
+    # ITR_Admin_Configuration.Specialty.InstitutionList_Modify, # ITR-65
+    # ITR_Admin_Configuration.Specialty.InstitutionList_Modify_Search, # ITR-68
+    # ITR_Admin_Configuration.Specialty.InstitutionList_Delete, # ITR-64
+    # # Confiuration - Download Control
+    # ITR_Admin_Configuration.DownloadControl.User_SearchFilter_Class, # ITR-69
+    # ITR_Admin_Configuration.DownloadControl.User_SearchFilter_Institution, # ITR-70
+    # ITR_Admin_Configuration.DownloadControl.User_SearchFilter_UserID, # ITR-71
+    # ITR_Admin_Configuration.DownloadControl.User_SearchFilter_UserName, # ITR-72
+    # ITR_Admin_Configuration.DownloadControl.User_Add, # ITR-73
+    # ITR_Admin_Configuration.DownloadControl.User_Modify, # ITR-75
+    # ITR_Admin_Configuration.DownloadControl.User_Delete, # ITR-74
+    # ITR_Admin_Configuration.DownloadControl.Institution_SearchFilter_Class, # ITR-76
+    # ITR_Admin_Configuration.DownloadControl.Institution_SearchFilter_Institution, # ITR-77
+    # ITR_Admin_Configuration.DownloadControl.Institution_SearchFilter_UserID, # ITR-78
+    # ITR_Admin_Configuration.DownloadControl.Institution_SearchFilter_UserName, # ITR-79
+    # ITR_Admin_Configuration.DownloadControl.Institution_Add, # ITR-80
+    # ITR_Admin_Configuration.DownloadControl.Institution_Modify, # ITR-82
+    # ITR_Admin_Configuration.DownloadControl.Institution_Delete, # ITR-81
+    # # Confiuration - Institutions
+    # ITR_Admin_Configuration.Institution.SearchFilter_Institution_Code, # ITR-83
+    # ITR_Admin_Configuration.Institution.SearchFilter_Institution_Name, # ITR-84
+    # ITR_Admin_Configuration.Institution.Add, # ITR-85
+    # ITR_Admin_Configuration.Institution.Modify, # ITR-87
+    # ITR_Admin_Configuration.Institution.Delete, # ITR-86
+    # # Add > GroupAdd > GroupModify > Modify > Delete
+    # # Confiuration - Standard Report
+    # # ITR_Admin_Configuration.StandardReport.All, # ITR-88~93
+    # ITR_Admin_Configuration.StandardReport.Add,
+    # ITR_Admin_Configuration.StandardReport.GroupAdd,
+    # ITR_Admin_Configuration.StandardReport.GroupModify,
+    # ITR_Admin_Configuration.StandardReport.Modify,
+    # ITR_Admin_Configuration.StandardReport.Delete,
+    # # Confiuration - Multi Reading Center Rule
     ITR_Admin_Configuration.MultiReadingCenterRule.SearchFilter, # ITR-94
+    ITR_Admin_Configuration.MultiReadingCenterRule.Add, # ITR-95
+    ITR_Admin_Configuration.MultiReadingCenterRule.Modify, # ITR-97
+    ITR_Admin_Configuration.MultiReadingCenterRule.Delete, # ITR-96
     # MultiReadingCenterRule.Add() > MultiReadingCenterRule.Modify() > MultiReadingCenterRule.Delete()
-    ITR_Admin_Configuration.MultiReadingCenterRule.All, # ITR-95~97
+    # ITR_Admin_Configuration.MultiReadingCenterRule.All, # ITR-95~97
     # Audit Log
     ITR_Admin_Auditlog.Auditlog.Auditlog_Search, # ITR-98
     ITR_Admin_Auditlog.Auditlog.Auditlog_Export, # ITR-99
@@ -125,8 +131,8 @@ full_test_case = [
     ITR_Admin_Notice.Notice.NoticeList_Delete, # ITR-105
     ITR_Admin_Notice.Notice.NoticeList_NoticeDisplay, # ITR-106
     # Direct Message
-    ITR_Admin_Login.signInOut.admin_sign_out, # SubAdmin login
-    ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
+    # ITR_Admin_Login.signInOut.admin_sign_out, # SubAdmin login
+    # ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
     ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Search, # ITR-107
     ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_ShowEntries, # ITR-108
     ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Sorting, # ITR-109
@@ -181,7 +187,7 @@ test_index_list = [
     ["Worklist Columns",6],
     ["Show entries",4],
     ["Sort by",1],
-    ["User Related Wokrlist",1],
+    ["Use Related Worklist",1],
     ["Statistics Date",5],
     ["Hospital",1],
     ["Reporter",1],
@@ -189,7 +195,7 @@ test_index_list = [
     ["Statistics Columns",4],
     ["Statistics Show entries",4],
     ["Class",1],
-    ["Insitution",1],
+    ["Institution",1],
     ["User ID",1],
     ["User Name",1],
     ["Show with Mapping ID",1],
@@ -198,41 +204,41 @@ test_index_list = [
     ["User Registration Delete",4],
     ["Specialty Search",2],
     ["Specialty Add",3],
-    ["Specialty Delete",4],
     ["Specialty Modify",10],
+    ["Specialty Delete",4],
     ["Institution List Search",1],
     ["Specialty Institution Add",5],
-    ["Specialty Institution Delete",4],
     ["Specialty Institution Modify",3],
     ["Specialty Institution Modify - Search",7],
+    ["Specialty Institution Delete",4],
     ["User Search Filter - Class",1],
     ["User Search Filter - Institution",1],
     ["User Search Filter - User ID",1],
     ["User Search Filter - User Name",1],
     ["User Add",13],
-    ["User Delete",4],
     ["User Modify",14],
+    ["User Delete",4],
     ["Institution Search Filter - Class", 1],
     ["Institution Search Filter - Institution",1],
     ["Institution Search Filter - User ID",1],
     ["Institution Search Filter - User Name",1],
     ["D.C. Institution Add",13],
-    ["D.C. Institution Delete",4],
     ["D.C. Institution Modify",14],
+    ["D.C. Institution Delete",4],
     ["Institution Code",1],
     ["Institution Name",1],
     ["Institution Add",14],
-    ["Institution Delete",4],
     ["Institution Modify",13],
-    ["Group Add",3],
+    ["Institution Delete",4],
     ["Standard Report Add",10],
-    ["Standard Report Delete",4],
+    ["Group Add",3],
     ["Group Modify",4],
     ["Standard Report Modify",10],
+    ["Standard Report Delete",4],
     ["Multi Reading Search Filter",12],
     ["Multi Reading Add",12],
-    ["Multi Reading Delete",1],
     ["Multi Reading Modify",9],
+    ["Multi Reading Delete",1],
     ["Audit Log Search",1],
     ["Audit Log Export",1],
     ["Audit Log Show entries",3],
@@ -417,6 +423,7 @@ class Test:
                         if full_test_case[testidx] not in failed_test_list:
                             failed_test_list.append(full_test_case[testidx])
                         print("Retry ("+str(i+1)+"/3)")
+                        time.sleep(3)
                         full_test_case[testidx]()
                         failed_test_list.remove(full_test_case[testidx])
                         testnum += 1
@@ -439,4 +446,4 @@ class Test:
         ITR_Admin_Common.driver.quit()
 
     # full test 
-    # full_test()
+    full_test()

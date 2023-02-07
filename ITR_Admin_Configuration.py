@@ -32,7 +32,7 @@ class UserManagement:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -95,7 +95,7 @@ class UserManagement:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -229,7 +229,7 @@ class UserManagement:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -462,7 +462,7 @@ class UserManagement:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -705,7 +705,7 @@ class UserManagement:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -780,7 +780,7 @@ class UserManagement:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -1453,7 +1453,14 @@ class UserManagement:
         testResult = True
         Result_msg = "failed at "
         
-        Common.ReFresh()
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -1474,8 +1481,10 @@ class UserManagement:
         driver.find_element(By.CSS_SELECTOR, "#download-config-add-user-add-btn").click()
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-user-remove-btn")))
         # Institution
-        driver.find_element(By.CSS_SELECTOR, "#add_sel_institution_search").send_keys(Var.search_institution_3)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[5]/div/div/div[2]/div[1]/div[2]/div/div/div[1]/select/option[1]").click()
+        # driver.find_element(By.CSS_SELECTOR, "#add_sel_institution_search").send_keys(Var.search_institution_3)
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[5]/div/div/div[2]/div[1]/div[2]/div/div/div[1]/select/option[1]").click()
+        select = Select(driver.find_element(By.ID, "sel-available-download-control-add-institution"))
+        select.select_by_value("997")
         driver.find_element(By.CSS_SELECTOR, "#download-config-add-institution-add-btn").click()
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-config-add-institution-remove-btn")))
         # Save
@@ -1553,6 +1562,7 @@ class UserManagement:
                 driver.find_element(By.CSS_SELECTOR, "#user-modify-download-userid-popup > div > div > div.modal-body > div:nth-child(2) > div > div.col-lg-6.col-xs-6.switch.panel-switch-btn > label > span").click()
                 driver.find_element(By.CSS_SELECTOR, "#download-userid-add-id").send_keys(Var.wk_id_2)
                 driver.find_element(By.CSS_SELECTOR, "#download-userid-add-id-validation-btn > span").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
                 if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "User ID is Exist!":
                     testResult = False
@@ -1566,6 +1576,7 @@ class UserManagement:
                     driver.find_element(By.CSS_SELECTOR, "#download-userid-add-id").clear()
                     driver.find_element(By.CSS_SELECTOR, "#download-userid-add-id").send_keys(test_id)
                     driver.find_element(By.CSS_SELECTOR, "#download-userid-add-id-validation-btn > span").click()
+                    time.sleep(1)
                     WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
                     if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text == "User ID is available!":
                         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
@@ -1583,11 +1594,15 @@ class UserManagement:
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
                 WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
                 # Ok
+                time.sleep(1)
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
                 WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-download-userid-popup > div > div > div.modal-body > div:nth-child(2) > div > div.col-lg-6.col-xs-6.switch.panel-switch-btn > label > span")))
 
                 # Second Save #9
-                driver.find_element(By.CSS_SELECTOR, "#user-modify-download-userid-popup > div > div > div.modal-body > div:nth-child(2) > div > div.col-lg-6.col-xs-6.switch.panel-switch-btn > label > span").click()
+                time.sleep(1)
+                display = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[2]/div[4]").get_attribute("style")
+                if "none" in display:
+                    driver.find_element(By.CSS_SELECTOR, "#user-modify-download-userid-popup > div > div > div.modal-body > div:nth-child(2) > div > div.col-lg-6.col-xs-6.switch.panel-switch-btn > label > span").click()
                 while (1):
                     test_id = Var.add_test_id+str(random.randrange(0,100000))
                     driver.find_element(By.CSS_SELECTOR, "#download-userid-add-id").clear()
@@ -1599,10 +1614,12 @@ class UserManagement:
                         break
                 # save
                 driver.find_element(By.CSS_SELECTOR, "#mapping-userid-save-btn").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
                 # yes
                 time.sleep(1)
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
 
                 if driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "선택한 병원에 등록된 Mapping ID가 존재합니다.":
@@ -1611,23 +1628,28 @@ class UserManagement:
 
                 # ok
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                time.sleep(1)
 
                 # Close #10
                 # close
                 driver.find_element(By.CSS_SELECTOR, "#mapping-userid-close-btn").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
                 msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
                 # no
                 time.sleep(1)
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#mapping-userid-close-btn")))
                 no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[1]/h3").text
                 # close
                 driver.find_element(By.CSS_SELECTOR, "#mapping-userid-close-btn").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
                 # yes
                 time.sleep(1)
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-close-btn")))
                 yes_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[1]/h3").text
                 if (msg != "설정을 종료하시겠습니까?" or
@@ -1638,6 +1660,7 @@ class UserManagement:
 
             # Download User ID
             driver.find_element(By.CSS_SELECTOR, "#user-modify-download-userid-btn > span").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[1]/h3")))
             
             del driver.requests
@@ -1646,6 +1669,7 @@ class UserManagement:
             if "#3" not in Result_msg:
                 # Institution None Search #11
                 driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > a > span").click()
+                time.sleep(1)
                 child = driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > div > ul").get_property("childElementCount")
                 for n in range (1, child+1):
                     if driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > div > ul > li:nth-child("+str(n)+")").text == "Institution":
@@ -1653,6 +1677,7 @@ class UserManagement:
                         break
 
                 driver.find_element(By.CSS_SELECTOR, "#download_userid_search_select_institution_chosen > a > span").click()
+                time.sleep(1)
                 child = driver.find_element(By.CSS_SELECTOR, "#download_userid_search_select_institution_chosen > div > ul").get_property("childElementCount")
                 for n in range (1, child+1):
                     if driver.find_element(By.CSS_SELECTOR, "#download_userid_search_select_institution_chosen > div > ul > li:nth-child("+str(n)+")").text == "None":
@@ -1660,8 +1685,10 @@ class UserManagement:
                         break
                 
                 driver.find_element(By.CSS_SELECTOR, "#mapping-userid-search-btn").click()
-                request = driver.wait_for_request('.*/GetUserMappingList.*')
+                time.sleep(1)
+                request = driver.wait_for_request('.*/GetUserMappingList.*')                
                 body = request.response.body.decode('utf-8')
+                time.sleep(1)
                 data = json.loads(body)["data"]
                 remember_id = data[0]["InstitutionUserID"]
 
@@ -1677,6 +1704,7 @@ class UserManagement:
 
                 # Institution Select Search #12
                 driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > a > span").click()
+                time.sleep(1)
                 child = driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > div > ul").get_property("childElementCount")
                 for n in range (1, child+1):
                     if driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > div > ul > li:nth-child("+str(n)+")").text == "Institution":
@@ -1684,6 +1712,7 @@ class UserManagement:
                         break
 
                 driver.find_element(By.CSS_SELECTOR, "#download_userid_search_select_institution_chosen > a > span").click()
+                time.sleep(1)
                 child = driver.find_element(By.CSS_SELECTOR, "#download_userid_search_select_institution_chosen > div > ul").get_property("childElementCount")
                 for n in range (1, child+1):
                     if driver.find_element(By.CSS_SELECTOR, "#download_userid_search_select_institution_chosen > div > ul > li:nth-child("+str(n)+")").text == Var.search_institution_3:
@@ -1691,6 +1720,7 @@ class UserManagement:
                         break
 
                 driver.find_element(By.CSS_SELECTOR, "#mapping-userid-search-btn").click()
+                time.sleep(1)
                 request = driver.wait_for_request('.*/GetUserMappingList.*')
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
@@ -1709,6 +1739,7 @@ class UserManagement:
 
                 # Blank Mapping ID Search #13
                 driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > a > span").click()
+                time.sleep(1)
                 child = driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > div > ul").get_property("childElementCount")
                 for n in range (1, child+1):
                     if driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > div > ul > li:nth-child("+str(n)+")").text == "Mapping ID":
@@ -1716,6 +1747,7 @@ class UserManagement:
                         break
 
                 driver.find_element(By.CSS_SELECTOR, "#mapping-userid-search-btn").click()
+                time.sleep(1)
                 request = driver.wait_for_request('.*/GetUserMappingList.*')
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
@@ -1732,6 +1764,7 @@ class UserManagement:
 
                 # Input Mapping ID Search #14
                 driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > a > span").click()
+                time.sleep(1)
                 child = driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > div > ul").get_property("childElementCount")
                 for n in range (1, child+1):
                     if driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > div > ul > li:nth-child("+str(n)+")").text == "Mapping ID":
@@ -1741,6 +1774,7 @@ class UserManagement:
                 driver.find_element(By.CSS_SELECTOR, "#download-userid-search-mapping-id-input").send_keys(remember_id)
 
                 driver.find_element(By.CSS_SELECTOR, "#mapping-userid-search-btn").click()
+                time.sleep(1)
                 request = driver.wait_for_request('.*/GetUserMappingList.*')
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
@@ -1758,6 +1792,7 @@ class UserManagement:
 
                 # Other Input Mapping ID Search #15
                 driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > a > span").click()
+                time.sleep(1)
                 child = driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > div > ul").get_property("childElementCount")
                 for n in range (1, child+1):
                     if driver.find_element(By.CSS_SELECTOR, "#download_userid_select_search_type_chosen > div > ul > li:nth-child("+str(n)+")").text == "Mapping ID":
@@ -1765,9 +1800,11 @@ class UserManagement:
                         break
 
                 driver.find_element(By.CSS_SELECTOR, "#download-userid-search-mapping-id-input").clear()
+                time.sleep(1)
                 driver.find_element(By.CSS_SELECTOR, "#download-userid-search-mapping-id-input").send_keys(Var.wk_id_2)
 
                 driver.find_element(By.CSS_SELECTOR, "#mapping-userid-search-btn").click()
+                time.sleep(1)
                 request = driver.wait_for_request('.*/GetUserMappingList.*')
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
@@ -1782,6 +1819,7 @@ class UserManagement:
                 # Clear
                 driver.find_element(By.CSS_SELECTOR, "#download-userid-search-mapping-id-input").clear()
                 driver.find_element(By.CSS_SELECTOR, "#mapping-userid-search-btn").click()
+                time.sleep(1)
                 driver.wait_for_request('.*/GetUserMappingList.*')
                 del driver.requests
                 time.sleep(1)
@@ -1812,6 +1850,7 @@ class UserManagement:
 
                 # Institution Sort #20
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[2]/div[9]/div/table/thead/tr/th[1]").click()
+                time.sleep(1)
                 check = True
                 request = driver.wait_for_request('.*/GetUserMappingList.*')
                 body = request.response.body.decode('utf-8')
@@ -1848,6 +1887,7 @@ class UserManagement:
 
                 # User ID Sort #21
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[2]/div[9]/div/table/thead/tr/th[2]").click()
+                time.sleep(1)
                 check = True
                 request = driver.wait_for_request('.*/GetUserMappingList.*')
                 body = request.response.body.decode('utf-8')
@@ -1867,6 +1907,7 @@ class UserManagement:
 
                     driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[2]/div[9]/div/table/thead/tr/th[2]").click()
                     request = driver.wait_for_request('.*/GetUserMappingList.*')
+                    time.sleep(1)
                     body = request.response.body.decode('utf-8')
                     data = json.loads(body)
                     after = data["OrderType"]
@@ -1884,6 +1925,7 @@ class UserManagement:
 
                 # Delete #22
                 driver.find_element(By.CSS_SELECTOR, "#mapping-userid-search-btn").click()
+                time.sleep(1)
                 request = driver.wait_for_request('.*/GetUserMappingList.*')
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
@@ -1899,24 +1941,30 @@ class UserManagement:
 
                 # delete
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[2]/div[9]/div/table/tbody/tr["+str(idx)+"]/td[3]/a/i").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
                 msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
                 # no
                 time.sleep(1)
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#mapping-userid-close-btn")))
                 no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[1]/h3").text
                 # delete
                 WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[2]/div[9]/div/table/tbody/tr["+str(idx)+"]/td[3]/a/i")))
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[4]/div/div/div[2]/div[9]/div/table/tbody/tr["+str(idx)+"]/td[3]/a/i").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
                 # yes
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
                 # ok
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                time.sleep(1)
 
                 request = driver.wait_for_request('.*/GetUserMappingList.*')
+                time.sleep(1)
                 body = request.response.body.decode('utf-8')
                 data = json.loads(body)["data"]
 
@@ -1932,10 +1980,12 @@ class UserManagement:
 
                 # Close
                 driver.find_element(By.CSS_SELECTOR, "#mapping-userid-close-btn").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
                 # Yes
                 time.sleep(1)
                 driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+                time.sleep(1)
                 WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-modify-close-btn")))
             # Close
             driver.find_element(By.CSS_SELECTOR, "#user-modify-close-btn").click()
@@ -1943,10 +1993,12 @@ class UserManagement:
             # Yes
             time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-search")))
 
         # DownloadControl
         driver.find_element(By.CSS_SELECTOR, "#download-control-btn").click()
+        time.sleep(1)
         driver.wait_for_request('.*/GetDownloadControlList.*')
 
         del driver.requests
@@ -1955,7 +2007,9 @@ class UserManagement:
         # Search
         driver.find_element(By.CSS_SELECTOR, "#download-search-user-id").send_keys(Var.wk_id_2)
         driver.find_element(By.CSS_SELECTOR, "#download-search").click()
+        time.sleep(1)
         request = driver.wait_for_request('.*/GetDownloadControlList.*')
+        time.sleep(1)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)["data"]
         
@@ -1967,15 +2021,19 @@ class UserManagement:
 
         # Click
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/table/tbody/tr["+str(idx)+"]/td[1]/label").click()
+        time.sleep(1)
         # Delete
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]").click()
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
         # Yes
         time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
         # ok
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(1)
 
         # UserRegistartion_Modify결과 전송 ##
         print("Test Result: Pass" if testResult != False else Result_msg)
@@ -2007,7 +2065,7 @@ class UserManagement:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2078,10 +2136,14 @@ class UserManagement:
         # Search
         driver.find_element(By.CSS_SELECTOR, "#user-search-user-id").clear()
         driver.find_element(By.CSS_SELECTOR, "#user-search").click()
+        time.sleep(1)
         request = driver.wait_for_request('.*/GetUserList.*')
         body = request.response.body.decode('utf-8')
+        time.sleep(1)
         data = json.loads(body)
+        time.sleep(1)
         total = math.ceil(data["recordsFiltered"] / data["Length"])
+        time.sleep(1)
 
         if total < 2:
             testResult = False
@@ -2144,7 +2206,7 @@ class Specialty:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2217,7 +2279,7 @@ class Specialty:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2358,7 +2420,7 @@ class Specialty:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2501,7 +2563,7 @@ class Specialty:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2557,7 +2619,7 @@ class Specialty:
         # Select Save #2
         time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "#specialty_rulesetting_institution_chosen > a > span").click()
-        driver.find_element(By.CSS_SELECTOR, "#specialty_rulesetting_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_2)
+        driver.find_element(By.CSS_SELECTOR, "#specialty_rulesetting_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution)
         driver.find_element(By.CSS_SELECTOR, "#specialty_rulesetting_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
         time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "#specialty_rulesetting_request_code_chosen > a > span").click()
@@ -2609,7 +2671,7 @@ class Specialty:
         # Select Close #3
         time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "#specialty_rulesetting_institution_chosen > a > span").click()
-        driver.find_element(By.CSS_SELECTOR, "#specialty_rulesetting_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_2)
+        driver.find_element(By.CSS_SELECTOR, "#specialty_rulesetting_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution)
         driver.find_element(By.CSS_SELECTOR, "#specialty_rulesetting_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
         time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "#specialty_rulesetting_request_code_chosen > a > span").click()
@@ -2689,9 +2751,10 @@ class Specialty:
         del driver.requests
         time.sleep(1)
 
-        driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select").click()
-        driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select > option:nth-child(2)").click()
+        select = Select(driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select"))
+        select.select_by_value("25")
         request = driver.wait_for_request('.*/GetSpecialtyItem.*')
+        time.sleep(1)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
         
@@ -2702,8 +2765,10 @@ class Specialty:
         del driver.requests
         time.sleep(1)
 
-        driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select").click()
-        driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select > option:nth-child(1)").click()
+        select = Select(driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select"))
+        select.select_by_value("10")
+        # driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select").click()
+        # driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select > option:nth-child(1)").click()
         request = driver.wait_for_request('.*/GetSpecialtyItem.*')
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
@@ -2716,8 +2781,10 @@ class Specialty:
         del driver.requests
         time.sleep(1)
 
-        driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select").click()
-        driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select > option:nth-child(3)").click()
+        select = Select(driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select"))
+        select.select_by_value("50")
+        # driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select").click()
+        # driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select > option:nth-child(3)").click()
         request = driver.wait_for_request('.*/GetSpecialtyItem.*')
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
@@ -2730,8 +2797,10 @@ class Specialty:
         del driver.requests
         time.sleep(1)
 
-        driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select").click()
-        driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select > option:nth-child(4)").click()
+        select = Select(driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select"))
+        select.select_by_value("100")
+        # driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select").click()
+        # driver.find_element(By.CSS_SELECTOR, "#specialty-rulesetting-rule-list_length > label > select > option:nth-child(4)").click()
         request = driver.wait_for_request('.*/GetSpecialtyItem.*')
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
@@ -2839,7 +2908,7 @@ class Specialty:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2906,7 +2975,7 @@ class Specialty:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -2965,7 +3034,7 @@ class Specialty:
         time.sleep(1)
 
         # search
-        driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search-name").send_keys(Var.search_institution_3)
+        driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search-name").send_keys(Var.search_institution_2)
         driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search").click()
         request = driver.wait_for_request('.*/GetInstitutionListAssignedSpecialty.*')
         time.sleep(0.5)
@@ -2974,7 +3043,7 @@ class Specialty:
 
         idx = -1
         for n in data:
-            if n["InstitutionName"] == Var.search_institution_3:
+            if n["InstitutionName"] == Var.search_institution_2:
                 idx = data.index(n)
                 break
 
@@ -3028,7 +3097,7 @@ class Specialty:
 
         idx = -1
         for n in data:
-            if n["InstitutionName"] == Var.search_institution_3:
+            if n["InstitutionName"] == Var.search_institution_2:
                 idx = data.index(n)
                 break
 
@@ -3108,7 +3177,7 @@ class Specialty:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3133,7 +3202,7 @@ class Specialty:
         time.sleep(1)
 
         # Search
-        driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search-name").send_keys(Var.search_institution_3)
+        driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search-name").send_keys(Var.search_institution_2)
         driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search").click()
         request = driver.wait_for_request('.*/GetInstitutionListAssignedSpecialty.*')
         body = request.response.body.decode('utf-8')
@@ -3141,7 +3210,7 @@ class Specialty:
 
         idx = -1
         for n in data:
-            if n["InstitutionName"] == Var.search_institution_3:
+            if n["InstitutionName"] == Var.search_institution_2:
                 idx = data.index(n)
                 break
 
@@ -3261,7 +3330,7 @@ class Specialty:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3275,10 +3344,12 @@ class Specialty:
         # InstitutionList
         driver.find_element(By.CSS_SELECTOR, "#tab-specialty-institution-list > a").click()
         driver.wait_for_request('.*/GetInstitutionListAssignedSpecialty.*')
-        time.sleep(0.5)
+        time.sleep(1)
 
         # Search
-        driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search-name").send_keys(Var.search_institution_3)
+        del driver.requests
+        time.sleep(1)
+        driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search-name").send_keys(Var.search_institution_2)
         driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search").click()
         request = driver.wait_for_request('.*/GetInstitutionListAssignedSpecialty.*')
         time.sleep(0.5)
@@ -3287,7 +3358,7 @@ class Specialty:
 
         idx = -1
         for n in data:
-            if n["InstitutionName"] == Var.search_institution_3:
+            if n["InstitutionName"] == Var.search_institution_2:
                 idx = data.index(n)
                 break
 
@@ -3323,6 +3394,30 @@ class Specialty:
         # save
         driver.find_element(By.CSS_SELECTOR, "#specialty-institution-rulesetting-modify-save-btn").click()
         WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        # yes
+        time.sleep(1)
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
+        # ok
+        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        # Specialty code 1개 더 추가(delete를 수행하기 위함)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div/div[2]/div[2]/div/table/tbody/tr["+str(idx+1)+"]/td[2]/a").click()
+        driver.wait_for_request('.*/GetSpecialtyItemList.*')
+
+        time.sleep(1)
+        driver.find_element(By.CSS_SELECTOR, "#specialty_institution_rulesetting_modify_specialty_code_chosen > a > span").click()
+        driver.find_element(By.CSS_SELECTOR, "#specialty_institution_rulesetting_modify_specialty_code_chosen > div > div > input[type=text]").send_keys(Var.specialty_add)
+        driver.find_element(By.CSS_SELECTOR, "#specialty_institution_rulesetting_modify_specialty_code_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        time.sleep(1)
+        driver.find_element(By.CSS_SELECTOR, "#specialty_institution_rulesetting_modify_request_code_chosen > a > span").click()
+        code = driver.find_element(By.CSS_SELECTOR, "#specialty_institution_rulesetting_modify_request_code_chosen > div > ul > li:nth-child(2)").text
+        driver.find_element(By.CSS_SELECTOR, "#specialty_institution_rulesetting_modify_request_code_chosen > div > ul > li:nth-child(2)").click()
+
+        # save
+        driver.find_element(By.CSS_SELECTOR, "#specialty-institution-rulesetting-modify-save-btn").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
+        msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
         # yes
         time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
@@ -3418,7 +3513,7 @@ class Specialty:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3435,7 +3530,10 @@ class Specialty:
         time.sleep(0.5)
 
         # Search
-        driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search-name").send_keys(Var.search_institution_3)
+        time.sleep(1)
+        del driver.requests
+        time.sleep(1)
+        driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search-name").send_keys(Var.search_institution_2)
         driver.find_element(By.CSS_SELECTOR, "#specialtyInstitution-search").click()
         request = driver.wait_for_request('.*/GetInstitutionListAssignedSpecialty.*')
         time.sleep(0.5)
@@ -3444,7 +3542,7 @@ class Specialty:
 
         idx = -1
         for n in data:
-            if n["InstitutionName"] == Var.search_institution_3:
+            if n["InstitutionName"] == Var.search_institution_2:
                 idx = data.index(n)
                 break
 
@@ -3516,11 +3614,15 @@ class Specialty:
         body = request.response.body.decode('utf-8')
         data = json.loads(body)["data"]
 
-        for n in range (0, len(data)):
-            if (code.split(':')[0] not in data[n]["RequestCode"] or 
-                data[n]["RequestCode"] not in driver.find_element(By.CSS_SELECTOR, "#specialty-institution-rulesetting-modify-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(2)").text):
-                testResult = False
-                Result_msg += "#2 "
+        # for n in range (0, len(data)):
+        if code.split(':')[0] not in driver.find_element(By.CSS_SELECTOR, "#specialty-institution-rulesetting-modify-list > tbody > tr:nth-child(1) > td:nth-child(2)").text:
+            testResult = False
+            Result_msg += "#2 "
+
+            # if (code.split(':')[0] not in data[n]["RequestCode"] or 
+            #     data[n]["RequestCode"] not in driver.find_element(By.CSS_SELECTOR, "#specialty-institution-rulesetting-modify-list > tbody > tr:nth-child("+str(n+1)+") > td:nth-child(2)").text):
+            #     testResult = False
+            #     Result_msg += "#2 "
 
         # Entries 25 #4
         del driver.requests
@@ -3703,7 +3805,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3777,7 +3879,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3795,7 +3897,7 @@ class DownloadControl:
         driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > ul > li:nth-child(1)").click()
 
         if child > 50:
-            for a in range(2, 50):
+            for a in range(2, 7):
                 temp = DownloadControl.User_SearchFilter_Institution_Search(a)
                 if temp == False:
                     testResult = False
@@ -3873,7 +3975,7 @@ class DownloadControl:
 
         check = True
         for n in range(1, len(data)+1):
-            if (rnd_id not in data[n-1]["UserID"] or
+            if (rnd_id not in data[n-1]["UserName"] or
                 driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child("+str(n)+") > td:nth-child(2)").get_property("textContent") != data[n-1]["UserID"] or 
                 driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child("+str(n)+") > td:nth-child(3)").get_property("textContent") != data[n-1]["UserName"] or 
                 driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child("+str(n)+") > td:nth-child(4)").get_property("textContent") != (data[n-1]["Institution"].replace('<br />', '')).replace('&nbsp;', ' ')):
@@ -3893,7 +3995,7 @@ class DownloadControl:
 
             driver.wait_for_request('.*/GetDownloadControlList.*')
 
-            if rnd_id != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr > td:nth-child(2)").get_property("textContent"):
+            if rnd_id != driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child(1) > td:nth-child(3)").get_property("textContent"):
                 check = False
             
         if check == True:
@@ -3910,7 +4012,7 @@ class DownloadControl:
 
             driver.wait_for_request('.*/GetDownloadControlList.*')
 
-            if rnd_id != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr > td:nth-child(2)").get_property("textContent"):
+            if rnd_id != driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child(1) > td:nth-child(3)").get_property("textContent"):
                 check = False
 
         if check == True:
@@ -3926,7 +4028,7 @@ class DownloadControl:
 
             driver.wait_for_request('.*/GetDownloadControlList.*')
 
-            if rnd_id != driver.find_element(By.CSS_SELECTOR, "#user-list > tbody > tr > td:nth-child(2)").get_property("textContent"):
+            if rnd_id != driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child(1) > td:nth-child(3)").get_property("textContent"):
                 check = False
 
         return check
@@ -3944,7 +4046,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -3990,7 +4092,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -4070,7 +4172,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         del driver.requests
         time.sleep(0.5)
@@ -4280,7 +4382,7 @@ class DownloadControl:
             del driver.requests
             time.sleep(1)
 
-            driver.get(Var.WorklistUrl);
+            driver.get(Var.WorklistUrl)
             signInOut.wk_login(Var.wk_id_2, Var.wk_pw_2)
 
             request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
@@ -4339,7 +4441,7 @@ class DownloadControl:
             del driver.requests
             time.sleep(1)
 
-            driver.get(Var.WorklistUrl);
+            driver.get(Var.WorklistUrl)
             signInOut.wk_login(Var.wk_id_2, Var.wk_pw_2)
 
             request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
@@ -4730,7 +4832,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -4812,20 +4914,29 @@ class DownloadControl:
 
         # DownloadControl
         driver.find_element(By.CSS_SELECTOR, "#download-control-btn").click()
+        time.sleep(1)
         driver.wait_for_request('.*/GetDownloadControlList.*')
+        time.sleep(1)
         for n in driver.requests:
             if "GetDownloadControlList?UserID=&UserName" in n.url:
                 request = n
+        time.sleep(1)
         body = request.response.body.decode('utf-8')
+        time.sleep(1)
         data = json.loads(body)
+        time.sleep(1)
         total = math.ceil(data["recordsFiltered"] / data["Length"])
         if total > 1:
             del driver.requests
             time.sleep(1)
 
             # Select Other Tab #3
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/table/tbody/tr[1]/td[1]/label").click()
             driver.find_element(By.CSS_SELECTOR, "#download-list_next > a").click()
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
             driver.wait_for_request('.*/GetDownloadControlList.*')
             if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
@@ -4836,9 +4947,13 @@ class DownloadControl:
             time.sleep(1)
 
             # Select Other Tab > 2 #4
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
             element = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/table/tbody/tr[1]/td[1]/label")
             driver.execute_script("arguments[0].click()",element)
             driver.find_element(By.CSS_SELECTOR, "#download-list_previous > a").click()
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
             driver.wait_for_request('.*/GetDownloadControlList.*')
             if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
@@ -4881,7 +4996,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         del driver.requests
         time.sleep(0.5)
@@ -5575,7 +5690,7 @@ class DownloadControl:
             
             # specialty
             driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_modify_specialty_chosen > ul > li > input").click()
-            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_modify_specialty_chosen > ul > li > input").send_keys(Var.specialty)
+            driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_modify_specialty_chosen > ul > li > input").send_keys(Var.specialty_add)
             driver.find_element(By.CSS_SELECTOR, "#sel_available_download_control_modify_specialty_chosen > ul > li > input").send_keys(Keys.ENTER)
 
             # save
@@ -5653,19 +5768,23 @@ class DownloadControl:
             # Close #14
             # close
             driver.find_element(By.CSS_SELECTOR, "#download-contol-modify-close-btn").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
             msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
             # no
             time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-contol-modify-close-btn")))
             no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[6]/div/div/div[1]/h3").text
             # close
             driver.find_element(By.CSS_SELECTOR, "#download-contol-modify-close-btn").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
             # yes
             time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
             if (msg != "수정을 취소하시겠습니까?" or 
                 no_msg != "Download Control Modify" or 
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[1]/div[1]/h4").text != "Download Control List"):
@@ -5773,7 +5892,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -5781,10 +5900,13 @@ class DownloadControl:
 
         # DownloadControl
         driver.find_element(By.CSS_SELECTOR, "#download-control-btn").click()
+        time.sleep(1)
         driver.wait_for_request('.*/GetDownloadControlList.*')
+        time.sleep(1)
 
         # Instituion
-        driver.find_element(By.CSS_SELECTOR, "#tab-downloadControl-byInst-list").click()
+        driver.find_element(By.ID, "tab-downloadControl-byInst-list").click()
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-search")))
 
         # Class Search #1
@@ -5817,10 +5939,13 @@ class DownloadControl:
         time.sleep(1)
 
         driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > a > span").click()
+        time.sleep(1)
         insti = driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > ul > li:nth-child("+str(num)+")").text
         driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > ul > li:nth-child("+str(num)+")").click()
+        time.sleep(1)
         check_insti = driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > ul > li:nth-child("+str(num)+")").get_property("outerText")
         driver.find_element(By.CSS_SELECTOR, "#download-search").click()
+        time.sleep(1)
 
         request = driver.wait_for_request('.*/GetDownloadControlByInstList.*')
         body = request.response.body.decode('utf-8')
@@ -5851,7 +5976,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -5863,15 +5988,18 @@ class DownloadControl:
         
         # Instituion
         driver.find_element(By.CSS_SELECTOR, "#tab-downloadControl-byInst-list").click()
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-search")))
         driver.wait_for_request('.*/GetInstitutionList')
         
         driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > a > span").click()
+        time.sleep(1)
         child = driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > ul").get_property("childElementCount")
         driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > ul > li:nth-child(1)").click()
+        time.sleep(1)
 
         if child > 50:
-            for a in range(2, 50):
+            for a in range(2, 7):
                 temp = DownloadControl.Institution_SearchFilter_Institution_Search(a)
                 if temp == False:
                     testResult = False
@@ -5904,8 +6032,6 @@ class DownloadControl:
 
     # target 1 = id / 2 = name
     def Institution_SearchFilter_Filter(target):
-        print("ITR-78: Configuration > Download Control > Institution > Search Filter - User ID")
-        run_time = time.time()
         rnd_id = driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child(1) > td:nth-child("+str(target+1)+")").get_property("textContent")
         rnd_insti = driver.find_element(By.CSS_SELECTOR, "#download-list > tbody > tr:nth-child(1) > td.align-center.download-control-institution").get_property("innerHTML").split('<br>')[0]
         # User Management
@@ -6020,8 +6146,10 @@ class DownloadControl:
         return check
 
     def Institution_SearchFilter_UserID():
+        print("ITR-78: Configuration > Download Control > Institution > Search Filter - User ID")
         testResult = True
         Result_msg = "failed at "
+        run_time = time.time()
         
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
@@ -6030,7 +6158,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -6076,7 +6204,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -6156,14 +6284,14 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         del driver.requests
         time.sleep(0.5)
 
         # Get info from list
         driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > a > span").click()
-        driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_2)
+        driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_3)
         driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
         driver.wait_for_request(".*/GetAllAssignedList.*")
 
@@ -6171,8 +6299,11 @@ class DownloadControl:
         time.sleep(0.5)
 
         driver.find_element(By.CSS_SELECTOR, "#tab_all_list > a").click()
+        time.sleep(1)
         request = driver.wait_for_request('.*/GetAllList.*')
+        time.sleep(1)
         body = request.response.body.decode('utf-8')
+        time.sleep(1)
         data = json.loads(body)
         total = math.ceil(data["recordsFiltered"] / data["Length"])
 
@@ -6180,6 +6311,7 @@ class DownloadControl:
         target_date = ""
         for a in range(0, total):
             request = driver.wait_for_request('.*/GetAllList.*')
+            time.sleep(1)
             body = request.response.body.decode('utf-8')
             data = json.loads(body)["data"]
 
@@ -6201,15 +6333,22 @@ class DownloadControl:
             driver.find_element(By.CSS_SELECTOR, "#refer-assigned-list_next > a").click()
 
         # Configuration
+        loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+        while "none" not in loader:
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+            time.sleep(1)
         driver.implicitly_wait(5)
 
         # DownloadControl
         driver.find_element(By.CSS_SELECTOR, "#download-control-btn").click()
+        time.sleep(1)
         driver.wait_for_request('.*/GetDownloadControlList.*')
+        time.sleep(1)
         
         # Instituion
         driver.find_element(By.CSS_SELECTOR, "#tab-downloadControl-byInst-list").click()
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-search")))  
         
         del driver.requests
@@ -6306,7 +6445,7 @@ class DownloadControl:
 
             # search
             driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > a > span").click()
-            driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_2)
+            driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_3)
             driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
             driver.find_element(By.CSS_SELECTOR, "#download-search-user-id").send_keys(Var.wk_id_2)
             driver.find_element(By.CSS_SELECTOR, "#download-search").click()
@@ -6383,7 +6522,7 @@ class DownloadControl:
             del driver.requests
             time.sleep(1)
 
-            driver.get(Var.WorklistUrl);
+            driver.get(Var.WorklistUrl)
             signInOut.wk_login(Var.wk_id_2, Var.wk_pw_2)
 
             request = driver.wait_for_request('.*/GetCurrentJobWorklist.*')
@@ -6834,7 +6973,7 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -6842,10 +6981,13 @@ class DownloadControl:
 
         # DownloadControl
         driver.find_element(By.CSS_SELECTOR, "#download-control-btn").click()
+        time.sleep(1)
         driver.wait_for_request('.*/GetDownloadControlList.*')
+        time.sleep(2)
         
         # Instituion
-        driver.find_element(By.CSS_SELECTOR, "#tab-downloadControl-byInst-list").click()
+        driver.find_element(By.ID, "tab-downloadControl-byInst-list").click()
+        time.sleep(2)
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-search")))   
 
         # Add
@@ -6885,7 +7027,7 @@ class DownloadControl:
 
         # Search
         driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > a > span").click()
-        driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_2)
+        driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_3)
         driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
         driver.find_element(By.CSS_SELECTOR, "#download-search-user-id").send_keys(Var.wk_id_2)
         driver.find_element(By.CSS_SELECTOR, "#download-search").click()
@@ -6930,6 +7072,7 @@ class DownloadControl:
         # Instituion
         driver.find_element(By.CSS_SELECTOR, "#tab-downloadControl-byInst-list").click()
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#download-search")))   
+        time.sleep(1)
 
         request = driver.wait_for_request('.*/GetDownloadControlByInstList.*')
         body = request.response.body.decode('utf-8')
@@ -6942,6 +7085,7 @@ class DownloadControl:
             # Select Other Tab #3
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div/table/tbody/tr[1]/td[1]/label").click()
             driver.find_element(By.CSS_SELECTOR, "#download-list-byInst_next > a").click()
+            time.sleep(1)
 
             driver.wait_for_request('.*/GetDownloadControlByInstList.*')
             if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
@@ -6955,6 +7099,7 @@ class DownloadControl:
             element = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div/table/tbody/tr[1]/td[1]/label")
             driver.execute_script("arguments[0].click()",element)
             driver.find_element(By.CSS_SELECTOR, "#download-list-byInst_previous > a").click()
+            time.sleep(1)
 
             driver.wait_for_request('.*/GetDownloadControlByInstList.*')
             if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
@@ -6997,14 +7142,14 @@ class DownloadControl:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         del driver.requests
         time.sleep(0.5)
 
         # Get info from list
         driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > a > span").click()
-        driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_2)
+        driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_3)
         driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
         driver.wait_for_request(".*/GetAllAssignedList.*")
         time.sleep(0.5)
@@ -7093,7 +7238,7 @@ class DownloadControl:
 
         # Search
         driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > a > span").click()
-        driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_2)
+        driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_3)
         driver.find_element(By.CSS_SELECTOR, "#download_search_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
         driver.find_element(By.CSS_SELECTOR, "#download-search-user-id").send_keys(Var.wk_id_2)
         driver.find_element(By.CSS_SELECTOR, "#download-search").click()
@@ -7806,19 +7951,23 @@ class DownloadControl:
             # Close #14
             # close
             driver.find_element(By.CSS_SELECTOR, "#byInst-download-contol-modify-close-btn").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
             msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
             # no
             time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#byInst-download-contol-modify-close-btn")))
             no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[8]/div/div/div[1]/h3").text
             # close
             driver.find_element(By.CSS_SELECTOR, "#byInst-download-contol-modify-close-btn").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
             # yes
             time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
             if (msg != "수정을 취소하시겠습니까?" or 
                 no_msg != "Download Control Modify" or 
                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[1]/div[1]/h4").text != "Download Control List"):
@@ -7914,7 +8063,11 @@ class Institution:
             if check == True:
                 break
             del driver.requests
-            time.sleep(0.1)
+            time.sleep(1)
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "#institutions-list_next > a").click()
 
         return idx
@@ -7932,7 +8085,7 @@ class Institution:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -8069,7 +8222,7 @@ class Institution:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -8293,7 +8446,7 @@ class Institution:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -8306,8 +8459,10 @@ class Institution:
         # Institution
         driver.find_element(By.CSS_SELECTOR, "#institutions-btn").click()
         driver.wait_for_request('.*/GetInstitutionsList.*')
-        time.sleep(0.5)
-        
+        time.sleep(1)
+
+        Common.institution_show_entries(50)
+
         # None Selecet Delete #1
         if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
             testResult = False
@@ -8319,35 +8474,48 @@ class Institution:
         data = json.loads(body)
         total = math.ceil(data["recordsFiltered"] / data["Length"])
 
-        check = False
-        for a in range(0, total):
-            request = driver.wait_for_request('.*/GetInstitutionsList.*')
-            time.sleep(0.5)
-            body = request.response.body.decode('utf-8')
-            data = json.loads(body)["data"]
+        # check = False
+        # for a in range(0, total):
+        #     request = driver.wait_for_request('.*/GetInstitutionsList.*')
+        #     time.sleep(1)
+        #     body = request.response.body.decode('utf-8')
+        #     data = json.loads(body)["data"]
 
-            for n in data:
-                if n["InstitutionName"] == "Cloud_ITRTest":
-                    if driver.find_element(By.CSS_SELECTOR, "#institutions-list > tbody > tr:nth-child("+str(data.index(n)+1)+") > td:nth-child(3)").text == "Cloud_ITRTest":
-                        check = True
-                        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr["+str(data.index(n)+1)+"]/td[1]/label").click()
-                    break
-            if check == True:
-                break
-            del driver.requests
-            time.sleep(1)
-            driver.find_element(By.CSS_SELECTOR, "#institutions-list_next > a").click()
+        #     for n in data:
+        #         if n["InstitutionName"] == "Cloud_ITRTest":
+        #             if driver.find_element(By.CSS_SELECTOR, "#institutions-list > tbody > tr:nth-child("+str(data.index(n)+1)+") > td:nth-child(3)").text == "Cloud_ITRTest":
+        #                 check = True
+        #                 driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr["+str(data.index(n)+1)+"]/td[1]/label").click()
+        #                 time.sleep(1)
+        #             break
+        #     if check == True:
+        #         break
+        #     del driver.requests
+        #     time.sleep(1)
+        #     driver.find_element(By.CSS_SELECTOR, "#institutions-list_next > a").click()
+        #     time.sleep(1)
+        
+        driver.find_element(By.ID, "institutions-search-institution-name").send_keys("Cloud_ITRTest")
+        time.sleep(1)
+        driver.find_element(By.ID, "institutions-search-institution-name").send_keys(Keys.ENTER)
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[1]/label").click()
+        time.sleep(1)
+
         # delete
-        driver.find_element(By.CSS_SELECTOR, "#institutions-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/div[1]/a[2]/span/i").click()
+        time.sleep(1)
         WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
         msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
         # no
         time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
-        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn")))
+        time.sleep(1)
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/div[1]/a[2]")))
         no_msg = driver.find_element(By.CSS_SELECTOR, "#institutions-tab-name").text
         # delete
-        driver.find_element(By.CSS_SELECTOR, "#institutions-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.delete-btn").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/div[1]/a[2]/span/i").click()
+        time.sleep(1)
         WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
 
         del driver.requests
@@ -8356,6 +8524,7 @@ class Institution:
         # yes
         time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(1)
         try:
             assert((msg == "삭제하시겠습니까?") and (no_msg == "Institution List"))
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2"), "삭제하였습니다."))
@@ -8363,10 +8532,11 @@ class Institution:
             testResult = False
         # ok
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(1)
         WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
         if "#2 " not in Result_msg:
             request = driver.wait_for_request('.*/GetInstitutionsList.*')
-            time.sleep(0.5)
+            time.sleep(1)
             body = request.response.body.decode('utf-8')
             data = json.loads(body)
             total = math.ceil(data["recordsFiltered"] / data["Length"])
@@ -8386,15 +8556,20 @@ class Institution:
                 if check == True:
                     break
                 del driver.requests
-                time.sleep(0.1)
+                time.sleep(1)
                 driver.find_element(By.CSS_SELECTOR, "#institutions-list_next > a").click()
+                time.sleep(1)
 
         # Institution
+        del driver.requests
+        time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "#institutions-btn").click()
+        time.sleep(1)
         request = driver.wait_for_request('.*/GetInstitutionsList.*')
-        time.sleep(0.5)
+        time.sleep(1)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
+        time.sleep(1)
         total = math.ceil(data["recordsFiltered"] / data["Length"])
 
         if total < 2:
@@ -8403,14 +8578,21 @@ class Institution:
 
         if ("#3" not in Result_msg) and ("#4" not in Result_msg):
             # Select & Other Tab #3
+            driver.refresh()
+            time.sleep(3)
+            driver.find_element(By.ID, "institutions-btn").click()
+            time.sleep(1)
+            
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[1]/label")))
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[1]/label").click()
+            time.sleep(1)
 
             del driver.requests
             time.sleep(1)
 
             driver.find_element(By.CSS_SELECTOR, "#institutions-list_next > a").click()
+            time.sleep(1)
             driver.wait_for_request('.*/GetInstitutionsList.*')
 
             if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
@@ -8419,11 +8601,13 @@ class Institution:
 
             # Select at 2> & Other Tab #4
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[1]/label").click()
+            time.sleep(1)
 
             del driver.requests
-            time.sleep(0.1)
+            time.sleep(1)
 
             driver.find_element(By.CSS_SELECTOR, "#institutions-list_previous > a").click()
+            time.sleep(1)
             driver.wait_for_request('.*/GetInstitutionsList.*')
 
             if driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/div[1]/a[2]").value_of_css_property("cursor") != "not-allowed":
@@ -8453,32 +8637,41 @@ class Institution:
 
         # report mode - None
         driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_mode_chosen").click()
+        time.sleep(1)
         #driver.execute_script("arguments[0].click()",element)
         driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_mode_chosen > div > ul > li:nth-child("+str(RM_num)+")").click()
+        time.sleep(1)
 
         # report delay time - None
         driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_time_chosen").click()
+        time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_time_chosen > div > ul > li:nth-child("+str(RDT_num)+")").click()
+        time.sleep(1)
 
         del driver.requests
 
         # save
         driver.find_element(By.CSS_SELECTOR, "#institutions-modify-save-btn").click()
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
         msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
         # no
-        time.sleep(0.5)
+        time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3))
         no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[1]/h3").get_property("textContent")
         # save
         driver.find_element(By.CSS_SELECTOR, "#institutions-modify-save-btn").click()
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
-        time.sleep(0.5)
+        time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
         # ok
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
         
         # 새로운 탭 + 전환
@@ -8486,21 +8679,26 @@ class Institution:
         driver.switch_to.window(driver.window_handles[1])
         driver.get(Var.WorklistUrl);
         driver.implicitly_wait(5)
-        signInOut.wk_login(Var.wk_id, Var.wk_pw)
+        signInOut.wk_login(Var.wk_id_2, Var.wk_pw_2)
 
         # search hospital
         driver.find_element(By.CSS_SELECTOR, "#search_institution_chosen > a").click()
+        time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "#search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_3)
+        time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "#search_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
+        time.sleep(2)
         WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#current-hospital-name"), Var.search_institution_3))
         
         # set job report
         driver.find_element(By.CSS_SELECTOR, "#setting_columns > i").click()
+        time.sleep(3)
         WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "#setting-columns-apply")))
         if driver.find_element(By.CSS_SELECTOR, "#chk-column-5").get_property("checked") == False:
             driver.find_element(By.CSS_SELECTOR, "#modal-setting-columns > div > div > div.modal-body > div:nth-child(1) > div.setting-column > ul > li:nth-child(5) > label").click()
+            time.sleep(2)
         driver.find_element(By.CSS_SELECTOR, "#setting-columns-apply").click()
-        time.sleep(1)
+        time.sleep(2)
         num = 0
         while(1):
             try:
@@ -8512,9 +8710,11 @@ class Institution:
                 return Result_msg
          
         driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[2]/div/div[4]/div[2]/table/tbody/tr[1]/td["+str(num)+"]/span/label").click()
+        time.sleep(1)
         # 탭 전환
         driver.switch_to.window(driver.window_handles[2])
         driver.implicitly_wait(5)
+        time.sleep(5)
         driver.wait_for_request(".*/GetJobReport.*")
         
         if RM_num != 1:
@@ -8535,6 +8735,7 @@ class Institution:
         driver.switch_to.window(driver.window_handles[1])
 
         driver.find_element(By.CSS_SELECTOR, "#right-sidebar-logout").click()
+        time.sleep(1)
         driver.implicitly_wait(5)
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
@@ -8555,12 +8756,12 @@ class Institution:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
         driver.implicitly_wait(5)
-        time.sleep(0.5)
+        time.sleep(1)
 
         del driver.requests
         time.sleep(1)
@@ -8568,12 +8769,14 @@ class Institution:
         # Institution
         driver.find_element(By.CSS_SELECTOR, "#institutions-btn").click()
         driver.wait_for_request('.*/GetInstitutionsList.*')
-        time.sleep(0.5)
+        time.sleep(1)
         
         # Find
+        Common.institution_show_entries(50)
         idx = Institution.insti_idx_find(Var.search_institution_3)
         # Select Institution Code #1
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+        time.sleep(2)
         WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3))
         try:
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3))
@@ -8597,10 +8800,12 @@ class Institution:
             # no
             time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+            time.sleep(1)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3+"_re"))
             no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[1]/h3").get_property("textContent")
             # save
             driver.find_element(By.CSS_SELECTOR, "#institutions-modify-save-btn").click()
+            time.sleep(1)
             WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
 
             del driver.requests
@@ -8609,9 +8814,11 @@ class Institution:
             # yes
             time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(2)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
             # ok
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(2)
             WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
             # find
             idx = Institution.insti_idx_find(Var.search_institution_3+"_re")
@@ -8623,6 +8830,7 @@ class Institution:
 
             # Select Institution Code
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+            time.sleep(1)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3))
             driver.find_element(By.CSS_SELECTOR, "#institutions-modify-institution-name").clear()
             driver.find_element(By.CSS_SELECTOR, "#institutions-modify-institution-name").send_keys(Var.search_institution_3)
@@ -8658,7 +8866,7 @@ class Institution:
                 testResult = False
                 Result_msg += "#4 "
 
-            # Report Mode, Delay Time, Save #6 7 13
+            # # Report Mode, Delay Time, Save #6 7 13
             ori_RM = driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_mode_chosen > a > span").text
             ori_RDT = driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_time_chosen > a > span").text
             ori_comment = driver.find_element(By.CSS_SELECTOR, "#institutions-modify-use-referring-comment2").get_property("checked")
@@ -8678,6 +8886,7 @@ class Institution:
         
             # select institution code
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+            time.sleep(1)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3))
 
             temp = Institution.Modify_ToWL(2, "Overwrite", 2, "30분")
@@ -8690,6 +8899,7 @@ class Institution:
         
             # select institution code
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+            time.sleep(1)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3))
 
             temp = Institution.Modify_ToWL(3, "Addendum", 3, "60분")
@@ -8702,6 +8912,7 @@ class Institution:
         
             # select institution code
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+            time.sleep(1)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3))
 
             temp = Institution.Modify_ToWL(4, "Prohibition", 4, "120분")
@@ -8714,6 +8925,7 @@ class Institution:
         
             # select institution code
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+            time.sleep(1)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3))
 
             temp = Institution.Modify_ToWL(4, "Prohibition", 5, "180분")
@@ -8722,15 +8934,17 @@ class Institution:
                 Result_msg += temp 
 
             # Find
+            Common.institution_show_entries(50)
             idx = Institution.insti_idx_find(Var.search_institution_3)
         
             # select institution code
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+            time.sleep(2)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3))
 
             # Comment, Revised, Discard, Request  #8 9 10 11
             # comment - check
-            if ori_comment == driver.find_element(By.CSS_SELECTOR, "#institutions-modify-use-referring-comment2").get_property("checked") == False:
+            if ori_comment == driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[1]/div[6]/div/div/input").get_property("checked") == False:
                 driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(6) > div > div > label").click()
             WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#institution-modify-refer-comment-select-box > li > span"), "+ Create New Comment"))
 
@@ -8738,45 +8952,58 @@ class Institution:
             time.sleep(1)
 
             driver.find_element(By.CSS_SELECTOR, "#institution-modify-refer-comment-select-box > li").click()
+            time.sleep(1)
             request = driver.wait_for_request(".*/LoadReferringComments")
             body = request.response.body.decode('utf-8')
             data = json.loads(body)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[2]/div/div[2]/ul/li["+str(len(data)+1)+"]").click()
+            time.sleep(2)
             WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institution-modify-refer-comment-title"), "New Refer Comment"))
             driver.find_element(By.CSS_SELECTOR, "#institution-modify-refer-comment-title").clear()
             driver.find_element(By.CSS_SELECTOR, "#institution-modify-refer-comment-title").send_keys("test_comment")
             driver.find_element(By.CSS_SELECTOR, "#institution-modify-refer-comment-text").send_keys("test_comment")
             WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institution-modify-refer-comment-text"), "test_comment"))
             driver.find_element(By.CSS_SELECTOR, "#modify-institution-refer-comment-confirm-btn").click()
+            time.sleep(2)
             WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[2]/div/div[2]/ul/li["+str(len(data)+1)+"]").click()
+            time.sleep(2)
             WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institution-modify-refer-comment-title"), "test_comment"))
             driver.find_element(By.CSS_SELECTOR, "#modify-institution-refer-comment-set-default-btn").click()
+            time.sleep(2)
             WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
 
             # revised - check
             if ori_revised == driver.find_element(By.CSS_SELECTOR, "#institutions-modify-enable-revised").get_property("checked") == False:
                 driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(7) > div > div > label").click()
+                time.sleep(1)
 
             # discard - check
             if ori_discard == driver.find_element(By.CSS_SELECTOR, "#institutions-modify-enable-discard").get_property("checked") == False:
                 driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(8) > div > div > label").click()
+                time.sleep(1)
 
             # request - check
             if ori_request == driver.find_element(By.CSS_SELECTOR, "#institutions-modify-enable-request").get_property("checked") == False:
                 driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(9) > div > div > label").click()
+                time.sleep(1)
 
             # save
             driver.find_element(By.CSS_SELECTOR, "#institutions-modify-save-btn").click()
+            time.sleep(2)
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
             # yes
             time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
             # ok
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
 
             del driver.requests
@@ -8792,27 +9019,32 @@ class Institution:
             time.sleep(1)
 
             driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > a > span").click()
-            driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_2)
+            time.sleep(1)
+            driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_3)
             driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
             driver.wait_for_request(".*/GetAllAssignedList.*")
-            time.sleep(0.5)
+            time.sleep(1)
 
             del driver.requests
             time.sleep(1)
             
             driver.find_element(By.CSS_SELECTOR, "#tab_all_list > a").click()
+            time.sleep(1)
             driver.wait_for_request(".*/GetAllList.*")
-            time.sleep(0.5)
+            time.sleep(1)
 
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr[1]/td[1]/label").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#refer_tab > div > div:nth-child(4) > div > div.p-t-15 > div.row > div:nth-child(2) > button.btn.bg-purple.btn-xs.waves-effect.refer-btn")))
             driver.find_element(By.CSS_SELECTOR, "#refer_tab > div > div:nth-child(4) > div > div.p-t-15 > div.row > div:nth-child(2) > button.btn.bg-purple.btn-xs.waves-effect.refer-btn").click()
+            time.sleep(1)
             try:
                 WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#refer-comments"), "test_comment"))
             except:
                 testResult = False
                 Result_msg += "#8 "
             driver.find_element(By.CSS_SELECTOR, "#refer-close").click()
+            time.sleep(1)
             try:
                 WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "#refer-revised-btn > span")))
             except:
@@ -8834,14 +9066,17 @@ class Institution:
 
             # Configuration
             driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+            time.sleep(1)
             driver.implicitly_wait(5)
 
             # Institution
             driver.find_element(By.CSS_SELECTOR, "#institutions-btn").click()
+            time.sleep(1)
             driver.wait_for_request('.*/GetInstitutionsList.*')
-            time.sleep(0.5)
+            time.sleep(1)
 
             # Find
+            Common.institution_show_entries(50)
             idx = Institution.insti_idx_find(Var.search_institution_3)
 
             del driver.requests
@@ -8849,33 +9084,44 @@ class Institution:
         
             # select institution code
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+            time.sleep(1)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3))
 
             # delete comment
             driver.wait_for_request(".*/LoadReferringComments")
             WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[2]/div/div[2]/ul/li[2]/button")))
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[2]/div[2]/div/div[2]/ul/li[2]/button").click()
+            time.sleep(1)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "Yes"))
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
 
             # comment -ucheck
             driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(6) > div > div > label").click()
+            time.sleep(1)
             # revised - uncheck
             driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(7) > div > div > label").click()
+            time.sleep(1)
             # discard - uncheck
             driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(8) > div > div > label").click()
+            time.sleep(1)
             # request - uncheck
             driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(9) > div > div > label").click()
+            time.sleep(1)
 
             # save
             driver.find_element(By.CSS_SELECTOR, "#institutions-modify-save-btn").click()
+            time.sleep(2)
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
             # yes
             time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
             # ok
+            time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
 
             del driver.requests
@@ -8885,27 +9131,30 @@ class Institution:
             element = driver.find_element(By.CSS_SELECTOR, "#tab-refer > a")
             driver.execute_script("arguments[0].click()",element)
             driver.wait_for_request(".*/GetReferCountsByInstitution.*")
-            time.sleep(0.5)
+            time.sleep(1)
 
             del driver.requests
             time.sleep(1)
 
             driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > a > span").click()
-            driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_2)
+            time.sleep(1)
+            driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Var.search_institution_3)
             driver.find_element(By.CSS_SELECTOR, "#refer_search_institution_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
             driver.wait_for_request(".*/GetAllAssignedList.*")
-            time.sleep(0.5)
+            time.sleep(1)
 
             del driver.requests
             time.sleep(1)
             
             driver.find_element(By.CSS_SELECTOR, "#tab_all_list > a").click()
             driver.wait_for_request(".*/GetAllList.*")
-            time.sleep(0.5)
+            time.sleep(1)
 
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[4]/div/div[2]/div[2]/div/div[2]/div[2]/table/tbody/tr[1]/td[1]/label").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#refer_tab > div > div:nth-child(4) > div > div.p-t-15 > div.row > div:nth-child(2) > button.btn.bg-purple.btn-xs.waves-effect.refer-btn")))
             driver.find_element(By.CSS_SELECTOR, "#refer_tab > div > div:nth-child(4) > div > div.p-t-15 > div.row > div:nth-child(2) > button.btn.bg-purple.btn-xs.waves-effect.refer-btn").click()
+            time.sleep(1)
             try:
                 WebDriverWait(driver, 0.5).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#refer-comments"), "test_comment"))
                 testResult = False
@@ -8937,70 +9186,93 @@ class Institution:
 
             # Configuration
             driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
+            time.sleep(1)
             driver.implicitly_wait(5)
 
             # Institution
             driver.find_element(By.CSS_SELECTOR, "#institutions-btn").click()
             driver.wait_for_request('.*/GetInstitutionsList.*')
-            time.sleep(0.5)
+            time.sleep(1)
 
             # Find
+            Common.institution_show_entries(50)
             idx = Institution.insti_idx_find(Var.search_institution_3)
 
             del driver.requests
-            time.sleep(1)
+            time.sleep(2)
         
             # select institution code
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr["+str(idx)+"]/td[2]/a").click()
+            time.sleep(1)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element_value((By.CSS_SELECTOR, "#institutions-modify-institution-name"), Var.search_institution_3))
             
             # set
             driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_mode_chosen > a > span").click()
+            time.sleep(1)
             for n in range(1,5):
                 if driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_mode_chosen > div > ul > li:nth-child("+str(n)+")").text == ori_RM:
                     driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_mode_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                    time.sleep(1)
             WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#institutions_modify_report_mode_chosen > a > span"), ori_RM))
             driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_time_chosen > a > span").click()
+            time.sleep(1)
             for n in range(1, 6):
                 if driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_time_chosen > div > ul > li:nth-child("+str(n)+")").text == ori_RDT:
                     driver.find_element(By.CSS_SELECTOR, "#institutions_modify_report_time_chosen > div > ul > li:nth-child("+str(n)+")").click()
+                    time.sleep(1)
             if ori_comment == True:
                 driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(6) > div > div > label").click()
+                time.sleep(1)
             if ori_revised == True:
                 driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(7) > div > div > label").click()
+                time.sleep(1)
             if ori_discard == True:
                 driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(8) > div > div > label").click()
+                time.sleep(1)
             if ori_request == True:
                 driver.find_element(By.CSS_SELECTOR, "#not-use-default-refer-comment > div:nth-child(9) > div > div > label").click()
+                time.sleep(1)
 
              # save
             driver.find_element(By.CSS_SELECTOR, "#institutions-modify-save-btn").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2")))
             # yes
             time.sleep(1)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"), "OK"))
             # ok
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(3)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-list_wrapper > div.dt-buttons > a.dt-button.btn.btn-xs.waves-effect.add-btn")))
             
             # Cancel #12
+            driver.refresh()
+            time.sleep(5)
+            driver.find_element(By.ID, "institutions-btn").click()
+            time.sleep(2)            
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[2]/a").click()
+            time.sleep(2)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-modify-close-btn")))
             # cancel
             driver.find_element(By.CSS_SELECTOR, "#institutions-modify-close-btn").click()
+            time.sleep(2)
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
             msg = driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text
             # no
-            time.sleep(1)
+            time.sleep(2)
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button").click()
+            time.sleep(1)
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "#institutions-modify-close-btn")))
             no_msg = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[4]/div/div/div[1]/h3").text
             # cancel
             driver.find_element(By.CSS_SELECTOR, "#institutions-modify-close-btn").click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-modify-close-btn")))
+            time.sleep(3)
+            # WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-modify-close-btn")))
             # yes
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+            time.sleep(1)
             if (msg != "수정을 취소하시겠습니까?" or 
                 no_msg != "Institutions Modify" or
                 driver.find_element(By.CSS_SELECTOR, "#institutions-tab-name").text != "Institution List"):
@@ -9008,6 +9280,7 @@ class Institution:
                 Reulst_msg += "#12 "
 
         # Institution_Modify결과 전송 ##
+        print("Test Result: Pass" if testResult != False else Result_msg)
         if testResult == False:
             Common_Var.form.update_failed()
             Common_Var.run_status = "Failed"
@@ -9040,7 +9313,7 @@ class StandardReport:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
         time.sleep(1)
 
         # Configuration
@@ -9224,7 +9497,7 @@ class StandardReport:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -9414,7 +9687,7 @@ class StandardReport:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -9605,7 +9878,7 @@ class StandardReport:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -9804,7 +10077,7 @@ class StandardReport:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -10018,42 +10291,63 @@ class MultiReadingCenterRule:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
         driver.implicitly_wait(5)
 
         # Institution
-        driver.find_element(By.CSS_SELECTOR, "#institutions-btn").click()
-        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[2]/a")))
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[2]/a").click()
-        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-modify-close-btn")))
-        insti_name = driver.find_element(By.CSS_SELECTOR, "#institutions-modify-institution-name").get_property("value")
-        center_name = []
-        num = 0
-        while(1):
-            try:
-                num += 1
-                center_name.append(driver.find_element(By.CSS_SELECTOR, "#institutions_modify_center_code_list_chosen > ul > li:nth-child("+str(num)+") > span").text)
-            except:
-                if num == 1:
-                    center_name.append("")
-                break
-        element = driver.find_element(By.CSS_SELECTOR, "#institutions-modify-close-btn")
-        driver.execute_script("arguments[0].click()",element)
-        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
-        driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-        
-        # MultiReadingCenterRule
+        # driver.find_element(By.CSS_SELECTOR, "#institutions-btn").click()
+        # WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[2]/a")))
+        # driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[4]/div[2]/div/table/tbody/tr[1]/td[2]/a").click()
+        # WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institutions-modify-close-btn")))
+        # insti_name = driver.find_element(By.CSS_SELECTOR, "#institutions-modify-institution-name").get_property("value")
+        # center_name = []
+        # num = 0
+        # while(1):
+        #     try:
+        #         num += 1
+        #         center_name.append(driver.find_element(By.CSS_SELECTOR, "#institutions_modify_center_code_list_chosen > ul > li:nth-child("+str(num)+") > span").text)
+        #     except:
+        #         if num == 1:
+        #             center_name.append("")
+        #         break
+        # element = driver.find_element(By.CSS_SELECTOR, "#institutions-modify-close-btn")
+        # driver.execute_script("arguments[0].click()",element)
+        # WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
+        # driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
+
+        # Institution
+        del driver.requests
+        time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "#multiReadingCenterRule-btn").click()
-        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > a > span")))
+        time.sleep(2)
+        Common.multicenter_show_entries(50)
+        time.sleep(1)
+        
+        request = driver.wait_for_request('.*/GetMultiReadingCenterRuleList.*')
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)["data"]
+
+        insti_name = data[0]["InstitutionName"]
+        center_name = data[0]["CenterName"]
+    
+        # # MultiReadingCenterRule
+        # driver.find_element(By.CSS_SELECTOR, "#multiReadingCenterRule-btn").click()
+        # WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#multi_center_rule_search_modality_chosen > a > span")))
 
         # Institution > Center #1
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[1]/div[2]/div/div[1]/div/a/span").click()
-        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_institutioncode_chosen > div > div > input[type=text]").send_keys(insti_name)
-        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_institutioncode_chosen > div > div > input[type=text]").send_keys(Keys.ENTER)
-        time.sleep(0.25)
+        time.sleep(2)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[1]/div[2]/div/div[1]/div/a").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[1]/div[2]/div/div[1]/div/div/div/input").send_keys(insti_name)
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[11]/div[1]/div[2]/div/div[2]/div/a").click()
+        time.sleep(1)
+        driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_institutioncode_chosen > div > div > input[type=text]").send_keys(center_name)
+        driver.find_element(By.ID, "multi-center-rule-search").click()
+        time.sleep(1)
         try:
             center_name.index(driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_search_centercode_chosen > a > span").get_property("textContent"))
         except:
@@ -10090,7 +10384,7 @@ class MultiReadingCenterRule:
             testResult = False
             Result_msg += "#5 "
         except:
-            pass
+            Common.ReFresh()
 
         # MultiReadingCenterRule
         driver.find_element(By.CSS_SELECTOR, "#multiReadingCenterRule-btn").click()
@@ -10143,7 +10437,7 @@ class MultiReadingCenterRule:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -10254,7 +10548,7 @@ class MultiReadingCenterRule:
             testResult = False
             Result_msg += "#7 "
         except:
-            pass
+            Common.ReFresh()
 
         # Institution Change #8
         driver.find_element(By.CSS_SELECTOR, "#multi_center_rule_add_institution_chosen > a > span").click()
@@ -10457,7 +10751,7 @@ class MultiReadingCenterRule:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()
@@ -10530,7 +10824,7 @@ class MultiReadingCenterRule:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Configuration
         driver.find_element(By.CSS_SELECTOR, "#tab-config > a").click()

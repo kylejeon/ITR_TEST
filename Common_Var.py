@@ -23,8 +23,8 @@ check = "Unchecked"
 btn_play = "Pause"
 
 # TestLink
-planid = "2862"
-bn = "3.6.4"
+planid = ""
+bn = ""
 
 # Server URL
 staging_admin = "http://stagingadmin.onpacs.com"

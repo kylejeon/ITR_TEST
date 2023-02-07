@@ -3479,6 +3479,9 @@ class Worklist:
         try:
             sample_job = random.choice(job_list)
             job_key = sample_job["JobKey"]
+            patient_id = sample_job["PatientID"]
+            time.sleep(1)
+            driver.find_element(By.ID, "refer-search-patient-id").send_keys(patient_id)
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[6]/button").click()
             time.sleep(3)
@@ -4099,14 +4102,14 @@ class Worklist:
             Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
             Common_Var.form.update_table()
             if Common_Var.planid != "":
-                testlink.reportTCResult(3074, testPlsanID, buildName, 'f', result)
+                testlink.reportTCResult(2928, testPlanID, buildName, 'f', result)
         else:
             Common_Var.form.update_passed()
             Common_Var.run_status = "Passed"
             Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
             Common_Var.form.update_table()
             if Common_Var.planid != "":
-                testlink.reportTCResult(3074, testPlanID, buildName, 'p', "Use Related Worklist Passed")  
+                testlink.reportTCResult(2928, testPlanID, buildName, 'p', "Use Related Worklist Passed")  
 
     def Sort_By():
         print("ITR-41: Worklist > Sort By")

@@ -82,11 +82,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Direct Message Tab #1
         del driver.requests
@@ -208,11 +208,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -314,11 +314,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -419,11 +419,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessageBox
         del driver.requests
@@ -489,11 +489,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         del driver.requests
         time.sleep(1)
@@ -541,8 +541,6 @@ class DirectMessage:
 
     # search = Institution, Center, Reporter
     def NewDirectMessage_Search_fun(search, search_target):
-        print("ITR-112: Direct Message > Direct Message Box > Institution - Search")
-        run_time = time.time()
         testResult = True
         Result_msg = ""
         driver.wait_for_request('.*/GetAccess'+search+'List*')
@@ -552,12 +550,14 @@ class DirectMessage:
         driver.find_element(By.CSS_SELECTOR, "#direct_message_send_search_value").send_keys(search_target) 
         driver.find_element(By.CSS_SELECTOR, "#direct_message_send_search > i").click()
         request = driver.wait_for_request('.*/GetAccess'+search+'List*')
+        time.sleep(1)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
         total = math.ceil(data["recordsFiltered"] / data["Length"])
 
         for a in range (1, total+1):
             request = driver.wait_for_request('.*/GetAccess'+search+'List*')
+            time.sleep(1)
             body = request.response.body.decode('utf-8')
             data = json.loads(body)["data"]
             for b in range (1, len(data)+1):
@@ -576,6 +576,7 @@ class DirectMessage:
                 try:
                     if search == "Reporter":
                         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div/div[1]/div[2]/div[6]/div/table/tbody/tr["+str(len(data))+"]/td[1]/label").click()
+                        time.sleep(1)
                     else:
                         driver.find_element(By.CSS_SELECTOR, "#add_dm_access_"+search.lower()+"_list > tbody > tr:nth-child("+str(len(data))+") > td.th-check.align-center.dm-th-check > label").click()
                     WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#selected_recipient_list_wrapper > button")))
@@ -587,13 +588,14 @@ class DirectMessage:
                     testResult = False
                     Result_msg += "#2 "
                 driver.find_element(By.CSS_SELECTOR, "#selected_recipient_list_wrapper > button").click()
-                time.sleep(0.25)
+                time.sleep(1)
                 if driver.find_element(By.CSS_SELECTOR, "#add_dm_access_"+search.lower()+"_list > tbody > tr:nth-child("+str(len(data))+") > td.th-check.align-center.dm-th-check > label").is_selected == True:
                     testResult = False
                     Result_msg += "#3 "
                 break
             del driver.requests
             driver.find_element(By.CSS_SELECTOR, "#add_dm_access_"+search.lower()+"_list_next > a").click()
+            time.sleep(1)
 
         return Result_msg
 
@@ -608,22 +610,27 @@ class DirectMessage:
         del driver.requests
         driver.find_element(By.CSS_SELECTOR, "#direct_message_send_search_value").send_keys(search_target) 
         driver.find_element(By.CSS_SELECTOR, "#direct_message_send_search > i").click()
+        time.sleep(1)
         driver.wait_for_request('.*/GetAccess'+search+'List*')
 
         # Send #1
         driver.find_element(By.CSS_SELECTOR, "#add_dm_access_"+search.lower()+"_list > tbody > tr:nth-child(1) > td.th-check.align-center.dm-th-check > label").click()
+        time.sleep(1)
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#selected_recipient_list_wrapper > button")))
         driver.find_element(By.CSS_SELECTOR, "#add_direct_message_textarea").send_keys("NewDirectMessage_"+search+"_Message Test")
+        time.sleep(1)
         driver.find_element(By.CSS_SELECTOR, "#add_direct_message").click()
+        time.sleep(7)
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
-        if "Direct Message를 전송하였습니다" != driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text:
+        if "Direct Message를 전송하였습니다." != driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text:
             Result_msg += "#1 "
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-        time.sleep(0.5)
+        time.sleep(1)
 
         # Search
         del driver.requests
         driver.find_element(By.CSS_SELECTOR, "#message-add-tab > div:nth-child(2) > div > div.col-lg-5 > div:nth-child(1) > ul > li:nth-child("+str(num)+") > a").click()
+        time.sleep(1)
         driver.wait_for_request('.*/GetAccess'+search+'List*')
         del driver.requests
         driver.find_element(By.CSS_SELECTOR, "#direct_message_send_search_value").send_keys(search_target) 
@@ -632,13 +639,15 @@ class DirectMessage:
         
         # no input send #2
         driver.find_element(By.CSS_SELECTOR, "#add_dm_access_"+search.lower()+"_list > tbody > tr:nth-child(1) > td.th-check.align-center.dm-th-check > label").click()
+        time.sleep(1)
+
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#selected_recipient_list_wrapper > button")))
         driver.find_element(By.CSS_SELECTOR, "#add_direct_message").click()
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
-        if "Message 내용을 입력해주세요" != driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text:
+        if "Message 내용을 입력해주세요." != driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text:
             Result_msg += "#2 "
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-        time.sleep(0.5)
+        time.sleep(1)
 
         # Cancel #3
         driver.find_element(By.CSS_SELECTOR, "#add_direct_message_textarea").send_keys("NewDirectMessage_"+search+"_Message Test")
@@ -646,33 +655,38 @@ class DirectMessage:
         # text안의 값이 바뀐 경우 처리
         if driver.find_element(By.CSS_SELECTOR, "#add_direct_message_textarea").get_property("value") != "NewDirectMessage_"+search+"_Message Test":
             Result_msg += "#3 "
-        time.sleep(0.25)
+        time.sleep(1)
 
         return Result_msg
 
     def NewDirectMessage_Institution_Search():
+        print("ITR-112: Direct Message > Direct Message Box > Institution - Search")
+        run_time = time.time()
         testResult = True
         Result_msg = "failed at "
         
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
+        time.sleep(1)
         driver.implicitly_wait(5)
 
         # NewDirectMessage
         driver.find_element(By.CSS_SELECTOR, "#direct-message-add-btn").click()
+        time.sleep(1)
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#add_direct_message")))
 
         # Search & Select & Selected select #1 2 3
         driver.find_element(By.CSS_SELECTOR, "#message-add-tab > div:nth-child(2) > div > div.col-lg-5 > div:nth-child(1) > ul > li:nth-child(1) > a").click()
+        time.sleep(1)
         temp = DirectMessage.NewDirectMessage_Search_fun("Institution", Var.search_institution)
         if temp != "":
             testResult = False
@@ -704,11 +718,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -751,11 +765,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -798,11 +812,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -846,11 +860,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -893,11 +907,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessageBox
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -972,11 +986,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessage
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -1022,11 +1036,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessage
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()
@@ -1051,7 +1065,7 @@ class DirectMessage:
         color = driver.find_element(By.CSS_SELECTOR, "#selected_reporter_box > button").value_of_css_property("background-color")
         driver.find_element(By.CSS_SELECTOR, "#remove_direct_message_authentication_btn > i").click()
         WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
-        if color != "rgba(242, 222, 222, 1)" or driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Direct Messsage 권한을 삭제하였습니다":
+        if color != "rgba(242, 222, 222, 1)" or driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Direct Message 권한을 삭제하였습니다.":
             testResult = False
             Result_msg += "#2 "
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
@@ -1072,7 +1086,7 @@ class DirectMessage:
         color = driver.find_element(By.CSS_SELECTOR, "#selected_reporter_box > button").value_of_css_property("background-color")
         driver.find_element(By.CSS_SELECTOR, "#grant_direct_message_authentication_btn > i").click()
         WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
-        if color != "rgba(255, 152, 0, 1)" or driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Direct Messsage 권한을 추가하였습니다":
+        if color != "rgba(255, 152, 0, 1)" or driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text != "Direct Message 권한을 추가하였습니다.":
             testResult = False
             Result_msg += "#1 "
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
@@ -1175,11 +1189,11 @@ class DirectMessage:
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
-                ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                ITR_Admin_Login.signInOut.subadmin_sign_in()
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # DirectMessage
         driver.find_element(By.CSS_SELECTOR, "#tab-direct-message > a").click()

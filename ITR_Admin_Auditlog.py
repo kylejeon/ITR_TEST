@@ -27,7 +27,7 @@ class Auditlog:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Get Job Key & Insti Name
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
@@ -88,7 +88,7 @@ class Auditlog:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Get Job Key & Insti Name
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
@@ -122,7 +122,12 @@ class Auditlog:
             if Common_Var.planid != "":
                 testlink.reportTCResult(2172, testPlanID, buildName, 'f', Result_msg)            
         else:
-            testlink.reportTCResult(2172, testPlanID, buildName, 'p', "Auditlog_Export Test Passed")
+            Common_Var.form.update_passed()
+            Common_Var.run_status = "Passed"
+            Common_Var.runtime = str(round((int(time.time() - run_time)/60),2))
+            Common_Var.form.update_table()
+            if Common_Var.planid != "":
+                testlink.reportTCResult(2172, testPlanID, buildName, 'p', "Auditlog_Export Test Passed")
 
     def Auditlog_Showentries_fun(entries, num):
         Result_msg = ""
@@ -157,7 +162,7 @@ class Auditlog:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Get Job Key & Insti Name
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
@@ -207,7 +212,7 @@ class Auditlog:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Get Job Key
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/div[4]/div[1]/div/div[1]").click()
@@ -283,7 +288,7 @@ class Auditlog:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Auditlog
         driver.find_element(By.CSS_SELECTOR, "#tab-auditlog > a").click()

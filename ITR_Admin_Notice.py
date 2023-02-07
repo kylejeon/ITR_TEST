@@ -27,7 +27,7 @@ class Notice:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Notice
         driver.find_element(By.CSS_SELECTOR, "#tab-notice > a").click()
@@ -48,12 +48,14 @@ class Notice:
         # Board Bold #3 4
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys(Keys.CONTROL + "a")
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-bold > i").click()
+        time.sleep(1)
         try:
             WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/b")))
         except:
             testResult = False
             Result_msg += "#3 "
-        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-bold > i").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[2]/div[1]/button[1]/i").click()        
+        time.sleep(1)
         try:
             WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/b")))
             testResult = False
@@ -62,7 +64,9 @@ class Notice:
             pass
        
         # Board Italic #5 6
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys(Keys.CONTROL + "a")
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-italic").click()
+        time.sleep(1)        
         try:
             WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/i")))
         except:
@@ -77,12 +81,14 @@ class Notice:
             pass
         
         # Board Underline #7 8
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys(Keys.CONTROL + "a")
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-underline").click()
         try:
             WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/u")))
         except:
             testResult = False
             Result_msg += "#7 "
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys(Keys.CONTROL + "a")
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-underline").click()
         try:
             WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/u")))
@@ -92,12 +98,14 @@ class Notice:
             pass
         
         # Board Strikethrough #9 10
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys(Keys.CONTROL + "a")
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-strikethrough").click()
         try:
             WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/strike")))
         except:
             testResult = False
             Result_msg += "#9 "
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys(Keys.CONTROL + "a")
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-strikethrough").click()
         try:
             WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/strike")))
@@ -106,10 +114,11 @@ class Notice:
         except:
             pass
         
-        # Board Remove #11
+        # Board Remove #11        
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button.note-btn.btn.btn-default.btn-sm.note-btn-strikethrough").click()
         WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/strike")))
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button:nth-child(5) > i").click()
+        time.sleep(1)
         try:
             WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div/section[1]/div[2]/div[2]/div/div[4]/div[3]/div[2]/p/strike")))
             testResult = False
@@ -118,10 +127,12 @@ class Notice:
             pass
 
         # Board Color #12
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys(Keys.CONTROL + "a")
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-color > div.note-btn-group.btn-group.note-color.note-color-fore > button.note-btn.btn.btn-default.btn-sm.dropdown-toggle > span").click()
         try:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-color > div.note-btn-group.btn-group.note-color.note-color-fore.open > ul > div > div.note-holder > div > div:nth-child(2) > button:nth-child(1)")))
             driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-color > div.note-btn-group.btn-group.note-color.note-color-fore.open > ul > div > div.note-holder > div > div:nth-child(2) > button:nth-child(1)").click()
+            time.sleep(1)
             WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable > p > font")))
             assert(driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable > p > font").value_of_css_property("color") == "rgba(255, 0, 0, 1)")
         except:
@@ -130,19 +141,24 @@ class Notice:
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button:nth-child(5) > i").click()
 
         # Board Backgorund color #13
+        driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable").send_keys(Keys.CONTROL + "a")
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-color > div.note-btn-group.btn-group.note-color.note-color-all > button.note-btn.btn.btn-default.btn-sm.dropdown-toggle > span").click()
+        time.sleep(1)
         try:
             WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-color > div.note-btn-group.btn-group.note-color.note-color-all.open > ul > div:nth-child(1) > div.note-holder > div > div:nth-child(2) > button:nth-child(1)")))
             driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-color > div.note-btn-group.btn-group.note-color.note-color-all.open > ul > div:nth-child(1) > div.note-holder > div > div:nth-child(2) > button:nth-child(1)").click()
+            time.sleep(1)
             WebDriverWait(driver, 0.1).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable > p > span")))
             assert(driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.note-editing-area > div.note-editable > p > span").value_of_css_property("background-color") == "rgba(255, 0, 0, 1)")
         except:
             testResult = False
             Result_msg += "#13 "
         driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-style > button:nth-child(5) > i").click()
+        time.sleep(1)
         
         # Picture select #14
         driver.find_element(By.CSS_SELECTOR,"#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.panel-heading.note-toolbar > div.note-btn-group.btn-group.note-insert > button > i").click()
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.modal.note-modal.in > div > div > div.modal-header > h4")))
         if "Insert Image" != driver.find_element(By.CSS_SELECTOR, "#user-search-option > div > div.note-editor.note-frame.panel.panel-default > div.modal.note-modal.in > div > div > div.modal-header > h4").text:
             testResult = False
@@ -391,7 +407,7 @@ class Notice:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Notice
         driver.find_element(By.CSS_SELECTOR, "#tab-notice > a").click()
@@ -553,7 +569,7 @@ class Notice:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Notice
         driver.find_element(By.CSS_SELECTOR, "#tab-notice > a").click()
@@ -613,7 +629,7 @@ class Notice:
             else:
                 Common.ReFresh()
         except:
-            pass
+            Common.ReFresh()
 
         # Notice
         driver.find_element(By.CSS_SELECTOR, "#tab-notice > a").click()

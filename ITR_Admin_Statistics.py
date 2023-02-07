@@ -5,7 +5,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 import time
 import math
-from dateutil.relativedelta import relativedelta
 import random
 import cx_Oracle
 import os
@@ -15,7 +14,9 @@ from ITR_Admin_Common import testlink
 from ITR_Admin_Common import testPlanID
 from ITR_Admin_Common import buildName
 from ITR_Admin_Common import Var
+from ITR_Admin_Common import Common
 import Common_Var
+import json
 
 class Statistics:
     def SearchFilter_Date():
@@ -29,28 +30,27 @@ class Statistics:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
             else:
-                driver.refresh()
+                Common.ReFresh()
+                # Statistics 탭 클릭
+                time.sleep(0.5)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
         except:
-            pass
+            Common.ReFresh()
+            # Statistics 탭 클릭
+            time.sleep(0.5)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
 
         # DB 접속
         os.putenv('NLS_LANG', '.UTF8')
-        cx_Oracle.init_oracle_client(lib_dir=r"D:\app\user\instantclient_21_7")
+        cx_Oracle.init_oracle_client(lib_dir=r"D:\app\yhjeon\instantclient_21_8")
         connection = cx_Oracle.connect("pantheon","pantheon",Var.staging_tns, encoding="UTF-8")
         cursor = connection.cursor()
 
-        # # Staging Admin으로 탭 전환
-        # driver.execute_script("window.open()")
-        # driver.switch_to.window(driver.window_handles[1])
-        # driver.get(Var.StagingAdmin)
-
-        # ITR_Admin_Login.signInOut.stg_admin_sign_in()
-
         # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
-        # Statistics 탭 클릭
-        time.sleep(0.5)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
+        time.sleep(3)
 
         # Show entries 100 변경
         select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
@@ -93,9 +93,14 @@ class Statistics:
             # Searh 클릭
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
             # Showing entry 결과 저장
             time.sleep(4)
+            driver.implicitly_wait(60)
             temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
             temp_cnt = temp_cnt.split()
             list_cnt = temp_cnt[5]
@@ -113,7 +118,9 @@ class Statistics:
             for i in result_list:
                 pat_list.append(i.get_property("outerText").split('\t')[2])
             driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-            time.sleep(2)
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
         
         # DB에서 선택한 병원을 동일한 조건으로 조회
         end_date = str(Var.today.strftime('%Y%m%d'))
@@ -168,20 +175,28 @@ class Statistics:
         inst_code = []
         while list_cnt == '0':
             # 임의의 병원 선택
+            driver.implicitly_wait(60)
             driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            driver.implicitly_wait(60)
             time.sleep(1)
             select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
             hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
             hospital.click()
+            driver.implicitly_wait(60)
             index = (hospital.get_attribute("for")).split('-')[2]
             inst_code.append(driver.find_element(By.CSS_SELECTOR, "#hospital-index-"+str(index)+"-view").get_attribute("value"))
 
             # Searh 클릭
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
             # Showing entry 결과 저장
             time.sleep(4)
+            driver.implicitly_wait(60)
             temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
             temp_cnt = temp_cnt.split()
             list_cnt = temp_cnt[5]
@@ -200,7 +215,9 @@ class Statistics:
             for i in result_list:
                 pat_list.append(i.get_property("outerText").split('\t')[2])
             driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-            time.sleep(2)
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
         # DB에서 선택한 병원을 동일한 조건으로 조회
         end_date = str(Var.today.strftime('%Y%m%d'))
@@ -242,6 +259,7 @@ class Statistics:
         time.sleep(2)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
         time.sleep(1)
+        driver.implicitly_wait(60)
         driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
         start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
         start_date = start_date.replace("-","")
@@ -255,7 +273,9 @@ class Statistics:
         inst_code = []
         while list_cnt == '0':
             # 임의의 병원 선택
+            driver.implicitly_wait(60)
             driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            driver.implicitly_wait(60)
             time.sleep(1)
             select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
             hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
@@ -266,6 +286,10 @@ class Statistics:
             # Searh 클릭
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
             # Showing entry 결과 저장
             time.sleep(4)
@@ -288,7 +312,9 @@ class Statistics:
                 pat_list.append(i.get_property("outerText").split('\t')[2])
             
             driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-            time.sleep(2)
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
         # DB에서 선택한 병원을 동일한 조건으로 조회
         end_date = str(Var.today.strftime('%Y%m%d'))
@@ -331,6 +357,7 @@ class Statistics:
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").click()
         time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/div[4]/div[1]/table/tfoot/tr[2]/th[2]").click()
+        driver.implicitly_wait(60)
         start_date = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[1]/input").get_property("value")
         start_date = start_date.replace("-","")
 
@@ -344,8 +371,10 @@ class Statistics:
         while list_cnt == '0':
             # 임의의 병원 선택
             time.sleep(1)
+            driver.implicitly_wait(60)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#statistics-search-hospital")))
             driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            driver.implicitly_wait(60)
             time.sleep(1)
             select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
             hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
@@ -356,6 +385,10 @@ class Statistics:
             # Searh 클릭
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
             # Showing entry 결과 저장
             time.sleep(4)
@@ -377,7 +410,9 @@ class Statistics:
             for i in result_list:
                 pat_list.append(i.get_property("outerText").split('\t')[2])
             driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-            time.sleep(2)
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
         # DB에서 선택한 병원을 동일한 조건으로 조회
         end_date = str(Var.today.strftime('%Y%m%d'))
@@ -413,14 +448,18 @@ class Statistics:
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
         driver.find_element(By.XPATH, "/html[1]/body[1]/section[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]").click()
         time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[5]").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]/div/div/ul/li[5]").click()        
 
         # Date 선택
         time.sleep(2)
-        close_year = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[1]/div/a").get_property("textContent")
+        # 2022년으로 선택
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[1]/div").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[1]/div/div/ul/li[2]").click()
+        close_year = "2022"
+        close_month = random.randrange(1,13)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[2]/div/a").click()
-        close_month = int(Var.today.strftime('%m')) - 2
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[3]/div[2]/div/div/ul/li["+str(close_month)+"]").click()
+        driver.implicitly_wait(60)
         time.sleep(1)
 
         # Showing entry 결과 저장
@@ -432,7 +471,9 @@ class Statistics:
         inst_code = []
         while list_cnt == '0':
             # 임의의 병원 선택
+            driver.implicitly_wait(60)
             driver.find_element(By.CSS_SELECTOR, "#statistics-search-hospital").click()
+            driver.implicitly_wait(60)
             time.sleep(1)
             select_hospital = temp_hospital_cnt_list.pop(temp_hospital_cnt_list.index(random.choice(temp_hospital_cnt_list)))
             hospital = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/div/ul/li["+str(select_hospital)+"]/label")
@@ -443,6 +484,10 @@ class Statistics:
             # Searh 클릭
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
             # Showing entry 결과 저장
             time.sleep(4)
@@ -464,7 +509,9 @@ class Statistics:
             for i in result_list:
                 pat_list.append(i.get_property("outerText").split('\t')[2])
             driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-            time.sleep(2)
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
         # DB에서 선택한 병원을 동일한 조건으로 조회
         end_date = str(Var.today.strftime('%Y%m%d'))
@@ -520,24 +567,36 @@ class Statistics:
         testResult = ''
         reason = list()
 
-        # DB 접속
-        os.putenv('NLS_LANG', '.UTF8')
-        cx_Oracle.init_oracle_client(lib_dir=r"D:\app\user\instantclient_21_7")
-        connection = cx_Oracle.connect("pantheon","pantheon","211.43.8.73:1521/spectra", encoding="UTF-8")
-        cursor = connection.cursor()
-
-        # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
-        # 페이지 초기화
+        # 새로고침
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
             else:
-                driver.refresh()
+                Common.ReFresh()
+                # Statistics 탭 클릭
+                time.sleep(0.5)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
         except:
-            pass
+            Common.ReFresh()
+            # Statistics 탭 클릭
+            time.sleep(0.5)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
 
+        # DB 접속
+        os.putenv('NLS_LANG', '.UTF8')
+        try:
+            cx_Oracle.init_oracle_client(lib_dir=r"D:\app\yhjeon\instantclient_21_8")
+        except:
+            pass        
+        connection = cx_Oracle.connect("pantheon","pantheon","211.43.8.73:1521/spectra", encoding="UTF-8")
+        cursor = connection.cursor()
+
+        # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # Show entries 100 변경
+        time.sleep(3)
         select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
         select.select_by_value(str(100))
 
@@ -578,6 +637,10 @@ class Statistics:
             # Searh 클릭
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
             # Showing entry 결과 저장
             time.sleep(4)
@@ -598,7 +661,9 @@ class Statistics:
             for i in result_list:
                 pat_list.append(i.get_property("outerText").split('\t')[2])
             driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-            time.sleep(2)
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
         
         # DB에서 선택한 병원을 동일한 조건으로 조회
         end_date = str(Var.today.strftime('%Y%m%d'))
@@ -650,24 +715,36 @@ class Statistics:
         testResult = ''
         reason = list()
 
-        # DB 접속
-        os.putenv('NLS_LANG', '.UTF8')
-        cx_Oracle.init_oracle_client(lib_dir=r"D:\app\user\instantclient_21_7")
-        connection = cx_Oracle.connect("pantheon","pantheon","211.43.8.73:1521/spectra", encoding="UTF-8")
-        cursor = connection.cursor()
-
-        # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
-        # 페이지 초기화
+        # 새로고침
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
             else:
-                driver.refresh()
+                Common.ReFresh()
+                # Statistics 탭 클릭
+                time.sleep(0.5)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
         except:
-            pass
+            Common.ReFresh()
+            # Statistics 탭 클릭
+            time.sleep(0.5)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
 
+        # DB 접속
+        os.putenv('NLS_LANG', '.UTF8')
+        try:
+            cx_Oracle.init_oracle_client(lib_dir=r"D:\app\yhjeon\instantclient_21_8")
+        except:
+            pass 
+        connection = cx_Oracle.connect("pantheon","pantheon","211.43.8.73:1521/spectra", encoding="UTF-8")
+        cursor = connection.cursor()
+
+        # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # Show entries 100 변경
+        time.sleep(3)
         select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
         select.select_by_value(str(100))
 
@@ -709,6 +786,10 @@ class Statistics:
             # Searh 클릭
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
             # Showing entry 결과 저장
             time.sleep(4)
@@ -733,7 +814,9 @@ class Statistics:
                     reporter_list.append(i.get_property("outerText").split('\t')[1])
             WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institution-interpretation-list_next > a")))
             driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-            time.sleep(2)
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
         
         # 조회 결과 내에서 임의의 Reporter 선택
         select_reporter = random.choice(reporter_list)
@@ -784,12 +867,13 @@ class Statistics:
         pages = math.ceil(int(list_cnt) / 100)
         
         for page in range(1, pages +1):
-            # result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
             for i in result_list:
                 pat_list.append(i.get_property("outerText").split('\t')[2])
                 reporter_list.append(i.get_property("outerText").split('\t')[1])
             driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-            time.sleep(2)
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
         # DB에서 선택한 병원을 동일한 조건으로 조회
         end_date = str(Var.today.strftime('%Y%m%d'))
@@ -842,25 +926,37 @@ class Statistics:
         testResult = ''
         reason = list()
 
-        # DB 접속
-        os.putenv('NLS_LANG', '.UTF8')
-        cx_Oracle.init_oracle_client(lib_dir=r"D:\app\user\instantclient_21_7")
-        connection = cx_Oracle.connect("pantheon","pantheon","211.43.8.73:1521/spectra", encoding="UTF-8")
-        cursor = connection.cursor()
-
-        # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
-        # 페이지 초기화
+        # 새로고침
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
             else:
-                driver.refresh()
+                Common.ReFresh()
+                # Statistics 탭 클릭
+                time.sleep(0.5)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
         except:
-            pass
+            Common.ReFresh()
+            # Statistics 탭 클릭
+            time.sleep(0.5)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
 
+        # DB 접속
+        os.putenv('NLS_LANG', '.UTF8')
+        try:
+            cx_Oracle.init_oracle_client(lib_dir=r"D:\app\yhjeon\instantclient_21_8")
+        except:
+            pass 
+        connection = cx_Oracle.connect("pantheon","pantheon","211.43.8.73:1521/spectra", encoding="UTF-8")
+        cursor = connection.cursor()
+
+        # 1 steps start! : Date를 Study Date로 선택하고, 임의의 기간을 입력한 후, Search 버튼을 클릭한다.
         # Show entries 100 변경
-        select = Select(driver.find_element(By.CSS_SELECTOR,"#institution-interpretation-list_length > label > select"))                
+        time.sleep(3)
+        select = Select(driver.find_element(By.XPATH,"/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[2]/label/select"))                
         select.select_by_value(str(100))
 
         # Showing entry 결과 저장
@@ -900,7 +996,13 @@ class Statistics:
 
             # Searh 클릭
             time.sleep(1)
+            del driver.requests
+            time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
             # Showing entry 결과 저장
             time.sleep(4)
@@ -911,21 +1013,23 @@ class Statistics:
         inst_code = "','".join(s for s in inst_code)
 
         # 조회 결과 저장
-        result_list = []
-        pat_list = []
-        modality_list = []
-        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
         pages = math.ceil(int(list_cnt) / 100)
-        
+
         for page in range(1, pages +1):
-            result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
-            for i in result_list:
-                pat_list.append(i.get_property("outerText").split('\t')[2])
-                if i.get_property("outerText").split('\t')[1] not in modality_list:
-                    modality_list.append(i.get_property("outerText").split('\t')[8])
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#institution-interpretation-list_next > a")))
+            request = driver.wait_for_request('.*/GetInstitutionInterpretationCondition*')
+            time.sleep(0.3)
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+            modality_list = []
+
+            for i in data:
+                if i["Modality"] not in modality_list:
+                    modality_list.append(i["Modality"])
+
             driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-            time.sleep(2)
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
         
         # 조회 결과 내에서 임의의 Modality 선택
         select_modality = random.choice(modality_list)
@@ -954,6 +1058,8 @@ class Statistics:
 
         # Search filter에 임의의 Modality 입력 후, Search 클릭
         time.sleep(1)
+        del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[3]/div").click()
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[3]/div/ul/li/input").send_keys(select_modality)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[3]/div/ul/li/input").send_keys(Keys.ENTER)
@@ -969,20 +1075,23 @@ class Statistics:
 
         # 조회 결과 저장
         time.sleep(4)
-        result_list = []
         pat_list = []
         modality_list = []
-        result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
         pages = math.ceil(int(list_cnt) / 100)
         
         for page in range(1, pages +1):
-            result_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table/tbody/tr")
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[3]/div[2]/table")))
-            for i in result_list:
-                pat_list.append(i.get_property("outerText").split('\t')[2])
-                modality_list.append(i.get_property("outerText").split('\t')[1])
+            request = driver.wait_for_request('.*/GetInstitutionInterpretationCondition*')
+            time.sleep(0.3)
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)["data"]
+
+            for i in data:
+                pat_list.append(i["PatientID"])
+
             driver.find_element(By.CSS_SELECTOR, "#institution-interpretation-list_next > a").click()
-            time.sleep(2)
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
         # DB에서 선택한 병원을 동일한 조건으로 조회
         end_date = str(Var.today.strftime('%Y%m%d'))
@@ -1029,27 +1138,31 @@ class Statistics:
             if Common_Var.planid != "":
                 testlink.reportTCResult(1785, testPlanID, buildName, 'p', "Search Filter > Modality Passed")  
 
-    def Columns():
-        # Statistics 탭 클릭
-        time.sleep(0.5)
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
-
+    def Columns():    
         print("ITR-42: Statistics > Columns")
         run_time = time.time()
         testResult = ''
         reason = list()
 
-        # 1 steps start! : Columns 버튼을 클릭한다.
-        # 페이지 초기화
+        # 새로고침
         try:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
             else:
-                driver.refresh()
+                Common.ReFresh()
+                # Statistics 탭 클릭
+                time.sleep(0.5)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
         except:
-            pass
+            Common.ReFresh()
+            # Statistics 탭 클릭
+            time.sleep(0.5)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
 
+        # 1 steps start! : Columns 버튼을 클릭한다.
         # Columns 클릭
         time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[2]/button").click()
@@ -1200,10 +1313,18 @@ class Statistics:
             if driver.find_element(By.CSS_SELECTOR, "#user-id").get_attribute("name") == "userId":
                 time.sleep(0.5)
                 ITR_Admin_Login.signInOut.stg_admin_sign_in()
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
             else:
-                driver.refresh()
+                Common.ReFresh()
+                # Statistics 탭 클릭
+                time.sleep(0.5)
+                driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
         except:
-            pass
+            Common.ReFresh()
+            # Statistics 탭 클릭
+            time.sleep(0.5)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[4]").click()
 
         # Showing entry 결과 저장
         temp_cnt = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[4]").text
@@ -1221,8 +1342,6 @@ class Statistics:
         # 임의의 병원 선택
         time.sleep(1)
         temp_hospital_cnt_list = []
-        # hospital_list = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div/ul/li")
-        # hospital_cnt = len(hospital_list) - 1
         hospital_cnt = driver.find_element(By.CSS_SELECTOR, "#statistics-hospital-list-drop-box > ul").get_property("childElementCount")
 
         # for i in range(2, hospital_cnt):
@@ -1242,6 +1361,10 @@ class Statistics:
             # Searh 클릭
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div/div/div[1]/div[4]/button").click()
+            loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+            while "none" not in loader:
+                loader = driver.find_element(By.XPATH, "/html/body/div[1]").get_attribute("style")
+                time.sleep(1)
 
             # Showing entry 결과 저장
             time.sleep(4)
