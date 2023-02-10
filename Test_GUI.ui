@@ -1224,6 +1224,294 @@
         </item>
        </item>
       </item>
+      <item>
+       <property name="text">
+        <string>16</string>
+       </property>
+       <property name="text">
+        <string>[W] Login</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>16.01</string>
+        </property>
+        <property name="text">
+         <string>[W] Login In/Out</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>16.02</string>
+        </property>
+        <property name="text">
+         <string>[W] Remember Me</string>
+        </property>
+       </item>
+      </item>
+      <item>
+       <property name="text">
+        <string>17</string>
+       </property>
+       <property name="text">
+        <string>[W] Top Menu</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>17.01</string>
+        </property>
+        <property name="text">
+         <string>[W] Badge Emergency</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>17.02</string>
+        </property>
+        <property name="text">
+         <string>[W] Badge Refer</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>17.03</string>
+        </property>
+        <property name="text">
+         <string>[W] Badge AutoRefer</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>17.04</string>
+        </property>
+        <property name="text">
+         <string>[W] Badge Schedule</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>17.05</string>
+        </property>
+        <property name="text">
+         <string>[W] Badge Today</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>17.06</string>
+        </property>
+        <property name="text">
+         <string>[W] Home</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>17.07</string>
+        </property>
+        <property name="text">
+         <string>[W] New Message</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>17.08</string>
+        </property>
+        <property name="text">
+         <string>[W] Message</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>17.09</string>
+        </property>
+        <property name="text">
+         <string>[W] View More Messages</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>17.10</string>
+        </property>
+        <property name="text">
+         <string>[W] Setting</string>
+        </property>
+       </item>
+      </item>
+      <item>
+       <property name="text">
+        <string>18</string>
+       </property>
+       <property name="text">
+        <string>[W] Report List</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>18.01</string>
+        </property>
+        <property name="text">
+         <string>[W] Report Search Filter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>18.02</string>
+        </property>
+        <property name="text">
+         <string>[W] Report Add</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>18.03</string>
+        </property>
+        <property name="text">
+         <string>[W] Report Modify</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>18.04</string>
+        </property>
+        <property name="text">
+         <string>[W] Report Delete</string>
+        </property>
+       </item>
+      </item>
+      <item>
+       <property name="text">
+        <string>19</string>
+       </property>
+       <property name="text">
+        <string>[W] Profile List</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>19.01</string>
+        </property>
+        <property name="text">
+         <string>[W] Profile Worklist</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>19.02</string>
+        </property>
+        <property name="text">
+         <string>[W] Profile Standard Report</string>
+        </property>
+       </item>
+      </item>
+      <item>
+       <property name="text">
+        <string>20</string>
+       </property>
+       <property name="text">
+        <string>[W] Worklist</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>20.01</string>
+        </property>
+        <property name="text">
+         <string>[W] Hospital List</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.02</string>
+        </property>
+        <property name="text">
+         <string>[W] SearchFilter - JobStatus</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.03</string>
+        </property>
+        <property name="text">
+         <string>[W] SearchFilter - JobDate</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.04</string>
+        </property>
+        <property name="text">
+         <string>[W] SearchFilter - Etc</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.05</string>
+        </property>
+        <property name="text">
+         <string>[W] SearchFilter - ScheduleDate</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.06</string>
+        </property>
+        <property name="text">
+         <string>[W] SearchFilter - Shortcut</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.07</string>
+        </property>
+        <property name="text">
+         <string>[W] Columns</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.08</string>
+        </property>
+        <property name="text">
+         <string>[W] Sortby</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.09</string>
+        </property>
+        <property name="text">
+         <string>[W] Worklist</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.10</string>
+        </property>
+        <property name="text">
+         <string>[W] JobReport</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.11</string>
+        </property>
+        <property name="text">
+         <string>[W] JobReport - Reading History</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.12</string>
+        </property>
+        <property name="text">
+         <string>[W] JobReport - Report Settings</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>20.13</string>
+        </property>
+        <property name="text">
+         <string>[W] Related Exam</string>
+        </property>
+       </item>
+      </item>
      </widget>
      <widget class="QPushButton" name="btn_close">
       <property name="geometry">

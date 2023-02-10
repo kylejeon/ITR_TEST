@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
-
-from testlink import TestlinkAPIClient, TestLinkHelper
-from bs4 import BeautifulSoup
+# from testlink import TestlinkAPIClient, TestLinkHelper
+# from bs4 import BeautifulSoup
 from urllib.parse import quote_plus
-from bs4 import BeautifulSoup
 #from selenium import webdriver
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
@@ -14,29 +11,43 @@ import json, math, time
 import Common_Var
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-# User: kyle
-URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'
-DevKey = 'adcb86843d0c77e6e0c9950f80a143c0'
-# testlink 초기화
-tl_helper = TestLinkHelper()
-testlink = tl_helper.connect(TestlinkAPIClient) 
-testlink.__init__(URL, DevKey)
-testlink.checkDevKey()
+from ITR_Admin_Common import driver
+from ITR_Admin_Common import testlink
+from ITR_Admin_Common import testPlanID
+from ITR_Admin_Common import buildName
+from ITR_Admin_Common import Common
+from ITR_Admin_Common import Var
+import ITR_Admin_Login
+import random
+
+# # User: kyle
+# URL = 'http://testserver-win:81/testlink/lib/api/xmlrpc/v1/xmlrpc.php'
+# DevKey = 'adcb86843d0c77e6e0c9950f80a143c0'
+# # testlink 초기화
+# tl_helper = TestLinkHelper()
+# testlink = tl_helper.connect(TestlinkAPIClient) 
+# testlink.__init__(URL, DevKey)
+# testlink.checkDevKey()
 
 # 브라우저 설정
 # WorklistUrl = 'http://vm-onpacs'
-# AdminUrl = 'http://vm-onpacs:8082'
+# Var.StagingAdmin = 'http://vm-onpacs:8082'
 WorklistUrl = Common_Var.base_worklist_url
-adminUrl = Common_Var.base_admin_url
+Var.StagingAdmin = Common_Var.base_admin_url
 #WorklistUrl = 'https://stagingworklist.onpacs.com'
-#AdminUrl = 'http://stagingadmin.onpacs.com/'
+#Var.StagingAdmin = 'http://stagingadmin.onpacs.com/'
 
 #id password
-worklist_id = "testInfReporter"
-worklist_pw = "Server123!@#"
-remember_id = "testInfReporter"
-admin_id = "testSubadmin"
-admin_pw = "Server123!@#"
+# worklist_id = "testInfReporter"
+worklist_id = Var.wk_id
+worklist_pw = Var.wk_pw
+# remember_id = "testInfReporter"
+remember_id = Var.wk_id
+# admin_id = "testSubadmin"
+admin_id = Var.stg_adminID
+admin_pw = Var.stg_adminPW
+sub_admin_id = Var.subadminID
+sub_admin_pw = Var.subadminPW
 #worklist_id = "yhjeon"
 #worklist_pw = "1"
 #remember_id = "yhjeon"
@@ -44,23 +55,23 @@ admin_pw = "Server123!@#"
 #admin_pw = "Server123!@#"
 
 #url = baseUrl + quote_plus(plusUrl)
-driver = webdriver.Chrome()
-driver.get(WorklistUrl)
+# driver = webdriver.Chrome()
+# driver.get(WorklistUrl)
 #ITR_Admin_Common.close_popup()
 # Notice 창 닫기
-popup = driver.window_handles
-while len(popup) != 1:
-    driver.switch_to.window(popup[1])
-    #driver.close()
-    driver.find_element(By.ID, "notice_modal_cancel_week").click()
-    popup = driver.window_handles
-driver.switch_to.window(popup[0])
-html = driver.page_source
+# popup = driver.window_handles
+# while len(popup) != 1:
+#     driver.switch_to.window(popup[1])
+#     #driver.close()
+#     driver.find_element(By.ID, "notice_modal_cancel_week").click()
+#     popup = driver.window_handles
+# driver.switch_to.window(popup[0])
+# html = driver.page_source
 #soup = BeautifulSoup(html)
 
 # TestPlanID = AutoTest 버전 테스트
-testPlanID = 2996
-buildName = 1
+testPlanID = Common_Var.planid
+buildName = Common_Var.bn
 
 #Report 용 / Test Hospital 변경 시, 코드 변경 필요 
 testHospital = "Cloud Team"
@@ -108,13 +119,21 @@ class Login:
         testResult = True
         Result_msg = "failed at "
 
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
+
         # 잘못된 user ID를 입력하고 sign in을 클릭한다
         signInOut.admin_sign_in('administrator','Server123!@#')
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
-        time.sleep(0.1)
+        time.sleep(1)
         # User not found
         try:
-            assert driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/label").get_property("textContent")=="Please confirm the password by retyping it in the confirm field."
+            assert driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/label").text == "Please confirm the password by retyping it in the confirm field."
         except:
             testResult = False
             Result_msg+="#3 "
@@ -122,16 +141,16 @@ class Login:
         # 정상적인 계정으로 로그인 한다.
         signInOut.normal_login()
         try:
-            assert driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[7]/a/span").text == "Logout"
+            assert driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[8]/a/span").text == "Sign out"
         except:
             testResult = False
             Result_msg+="#2 "
 
         # 로그아웃 후, 로그인 페이지를 확인한다.
-        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[7]/a/span").click()
+        driver.find_element(By.ID, "right-sidebar-logout").click()
         driver.implicitly_wait(5)
         try:
-            assert driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[1]").text == "Sign in to start your session"
+            assert driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[1]").text == "Sign in to start your session."
         except:
             testResult = False
             Result_msg+="#4 "
@@ -158,12 +177,20 @@ class Login:
         Result_msg = "failed at "
         print("ITR-122: Remember Me > Remember Me")
         run_time = time.time()
+
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
         
         # Remember Me 클릭 후, 정상적인 계정으로 로그인 한다.
         driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[4]/div[1]/label").click()
         signInOut.normal_login()
         # 로그아웃 후, Remember Me와 id를 확인한다.
-        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[7]/a/span").click()
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[8]/a/span").click()
         driver.implicitly_wait(5)
         try:
             assert (driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div/form/div[2]/div/input').get_property('defaultValue'), 
@@ -195,6 +222,16 @@ class TOPMENU:
         Result_msg = "failed at "
         print("ITR-127: Badege > Emergency")
         run_time = time.time()
+
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
+
         # 캡처 초기화
         del driver.requests
         time.sleep(1)
@@ -250,6 +287,16 @@ class TOPMENU:
         Result_msg = "failed at "
         print("ITR-128: Badge > Refer")
         run_time = time.time()
+
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
+
         # 캡처 초기화
         del driver.requests
         time.sleep(1)
@@ -306,6 +353,15 @@ class TOPMENU:
         Result_msg = "failed at "
         print("ITR-129: Badge > Auto Refer")
         run_time = time.time()
+
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # 캡처 초기화
         del driver.requests
@@ -366,6 +422,15 @@ class TOPMENU:
         print("ITR-130: Badge > Schedule")
         run_time = time.time()
 
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
+            
         # 캡처 초기화
         del driver.requests
         time.sleep(1)
@@ -422,6 +487,15 @@ class TOPMENU:
         Result_msg = "failed at "
         print("ITR-131: Badge > Today")
         run_time = time.time()
+
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # 캡처 초기화
         del driver.requests
@@ -487,7 +561,14 @@ class TOPMENU:
         print("ITR-132: Top Menu > Home")
         run_time = time.time()
 
-        ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
         
         # Direct Message 접속 및 Home 버튼 클릭
         driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a").click()
@@ -565,7 +646,16 @@ class TOPMENU:
         Result_msg = "failed at "
         print("ITR-133: Top Menu > Direct Message > New Message")
         run_time = time.time()
-        ReFresh()
+        # ReFresh()
+
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()            
 
         # READ_FLAG T or F 확인 (파란색 회색 확인) 및 읽지 않은 메시지 수 확인 #2
         element = driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/span")
@@ -599,7 +689,8 @@ class TOPMENU:
         # new message 접속 및 패킷에서 정보 획득 #3
         element = driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[2]/div/ul/li/a")
         driver.execute_script("arguments[0].click();", element)
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[1]")))
+        time.sleep(2)
+        # WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[1]")))
 
         # msg_Center
         request = driver.wait_for_request('.*/GetAccessCenterList.*')
@@ -618,22 +709,39 @@ class TOPMENU:
         # msg_Reporter
         request = driver.wait_for_request('.*/GetAccessReporterList.*')
         body = request.response.body.decode('utf-8')
-        data = json.loads(body)['data']
+        data = json.loads(body)
+        data2 = json.loads(body)['data']
         msg_reporter = []
-        for n in data:
+        for n in data2:
             msg_reporter.append(n['USER_NAME'])
 
+        if data["recordsTotal"] > 10:
+            driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]/a").click()
+            time.sleep(1)
+            while "disabled" not in driver.find_element(By.ID, "dm_access_reporter_list_next").get_property("className"):
+                del driver.requests
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/div[4]/ul/li[4]/a").click()
+                time.sleep(0.5)
+                
+                request = driver.wait_for_request('.*/GetAccessReporterList.*')
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)["data"]
+
+                for i in data:
+                    msg_reporter.append(i["USER_NAME"])
+                
         # Admin에서 정보 획득 시작
         # 새로운 탭 + 전환
         driver.execute_script("window.open()")
         driver.switch_to.window(driver.window_handles[1])
-        driver.get(AdminUrl);
+        driver.get(Var.StagingAdmin)
 
         # admin 사이트 로그인
         driver.find_element(By.ID, 'user-id').clear()
-        driver.find_element(By.ID, 'user-id').send_keys(admin_id)
+        driver.find_element(By.ID, 'user-id').send_keys(sub_admin_id)
         driver.find_element(By.ID, 'user-password').clear()
-        driver.find_element(By.ID, 'user-password').send_keys(admin_pw)
+        driver.find_element(By.ID, 'user-password').send_keys(sub_admin_pw)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)
 
@@ -648,8 +756,10 @@ class TOPMENU:
         # 아이디 검색 및 패킷에서 center 정보 습득
         driver.find_element(By.XPATH, '/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[1]/div[2]/div/div[3]/div/div/input').send_keys(worklist_id)
         driver.find_element(By.XPATH, '/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[1]/div[2]/div/div[6]/div/button').click()
+        time.sleep(2)
         driver.implicitly_wait(5)
         request = driver.wait_for_request('.*/GetUserList.*')
+        time.sleep(0.5)
         body = request.response.body.decode('utf-8')
         data = (json.loads(body))['data']
         adm_center = ""
@@ -663,14 +773,17 @@ class TOPMENU:
         driver.implicitly_wait(5)
         # 캡처 초기화
         del driver.requests
+        time.sleep(1)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[1]/div[2]/div/div[3]/div/div/input").send_keys(worklist_id)
         driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[1]/div[2]/div/div[5]/button").click()
+        time.sleep(5)
         # 캡처 및 institution 정보 획득
         try:
             WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[3]/div/div[1]/a[2]/span")))
         except:
             pass
         request = driver.wait_for_request('.*/GetDownloadControlByInstList.*'+worklist_id+'.*')
+        time.sleep(0.5)
         body = request.response.body.decode('utf-8')
         data = (json.loads(body))['data']
         adm_insti = []
@@ -679,13 +792,16 @@ class TOPMENU:
                 adm_insti.append(n['InstitutionName'])
 
         # Direct Message Setting, reporter 정보 획득
-        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[7]/a").click()
+        driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[1]/ul/li[7]").click()
+        time.sleep(3)
         driver.implicitly_wait(5)
-        element = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[1]/div[2]/button[3]")
-        driver.execute_script("arguments[0].click();", element)
+        element = driver.find_element(By.ID, "direct-message-setting-btn").click()
+        # driver.execute_script("arguments[0].click();", element)
+        time.sleep(1)
         driver.implicitly_wait(5)
         # 첫 페이지 캡처
         request = driver.wait_for_request('.*/GetDirectMessageAuthorizedReporter.*')
+        time.sleep(1)
         body = request.response.body.decode('utf-8')
         data = (json.loads(body))
         adm_reporter = []
@@ -693,24 +809,19 @@ class TOPMENU:
             adm_reporter.append(n['USER_NAME'])
 
         # 복수 페이지 확인 및 캡처 진행
-        total = math.trunc(data['recordsTotal'] / data['Length'])
-        for repeat in range(0,total):
+        if "disabled" not in driver.find_element(By.ID, "center_authorized_reporter_list_next").get_property("className"):
+            del driver.requests
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div[3]/div/div/div[4]/ul/li[4]/a").click()
+            time.sleep(1)
+
             request = driver.wait_for_request('.*/GetDirectMessageAuthorizedReporter.*')
             body = request.response.body.decode('utf-8')
             data = (json.loads(body))['data']
 
             for n in data:
-                    adm_reporter.append(n['USER_NAME'])
-
-            # 캡처 초기화 및 다음페이지
-            del driver.requests
-            try:
-                WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div[3]/div/div/div[4]/ul/li[3]/a")))
-            except:
-                pass
-            element = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div[2]/div/div/div/div[2]/div/div[3]/div[4]/div[3]/div/div/div[4]/ul/li[3]/a")
-            driver.execute_script("arguments[0].click();", element)
-        
+                adm_reporter.append(n['USER_NAME'])
+      
         driver.find_element(By.CSS_SELECTOR, "body > nav > div > ul:nth-child(3) > li > a > span").click()
         driver.implicitly_wait(5)
         driver.close()
@@ -732,49 +843,56 @@ class TOPMENU:
 
         # 체크 및 체크 해제 #4
         # Institution
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr[1]/td[1]/label").click()
+        time.sleep(1)        
+        driver.find_element(By.ID, "first_access_tab").click()
+        time.sleep(1)        
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr/td[1]/label").click()
+        time.sleep(1)        
         try:
-            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]")))
         except:
             testResult = False
             Result_msg+="#4 "
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr[1]/td[1]/label").click()
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr/td[1]/label").click()
         try:
-            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
+            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]")))
             testResult = False
             Result_msg+="#4 "
         except:
             pass
 
         # Center
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[2]/a").click()
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label")))
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[2]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label").click()
+        time.sleep(0.5)
         try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]")))
         except:
             testResult = False
             Result_msg+="#4 "
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label").click()
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label").click()
         try:
-            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
+            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]")))
             testResult = False
             Result_msg+="#4 "
         except:
             pass
 
         # Reporter
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]/a").click()
-        WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label")))
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]").click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label").click()
         try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]")))
         except:
             testResult = False
             Result_msg+="#4 "
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label").click()
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label").click()
         try:
-            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
+            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]")))
             testResult = False
             Result_msg+="#4 "
         except:
@@ -782,112 +900,93 @@ class TOPMENU:
 
         # 체크 및 삭제아이콘 선택 #5
         # Institution
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[1]/a").click()
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr[1]/td[1]/label")))
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr[1]/td[1]/label").click()
-        try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
-        except:
-            testResult = False
-            Result_msg+="#5 "
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i").click()
-        try:
-            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
-            testResult = False
-            Result_msg+="#5 "
-        except:
-            pass
-
+        time.sleep(0.5)
+        driver.find_element(By.ID, "first_access_tab").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr/td[1]/label").click()
+        institution = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr/td[2]").text
+        time.sleep(0.5)
+ 
         # Center
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[2]/a").click()
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label")))
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label").click()
-        try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
-        except:
-            testResult = False
-            Result_msg+="#5 "
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i").click()
-        try:
-            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
-            testResult = False
-            Result_msg+="#5 "
-        except:
-            pass
-
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[2]").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label").click()
+        time.sleep(0.5)
+        center = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[2]").text
+        time.sleep(0.5)
+   
         # Reporter
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]/a").click()
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label")))
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label").click()
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label").click()
+        time.sleep(0.5)
+        reporter = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[3]").text
+        time.sleep(0.5)
+   
+        check_instituion = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li[1]/span").text
+        check_center = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li[2]/span").text
+        check_reporter = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li[3]/span").text
+
         try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
+            assert institution == check_instituion and center == check_center and reporter == check_reporter
         except:
             testResult = False
             Result_msg+="#5 "
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i").click()
-        try:
-            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
-            testResult = False
-            Result_msg+="#5 "
-        except:
-            pass
 
         # Recipient를 선택하지 않고, 다음 버튼을 클릭 #7
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[4]").click()
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li[1]/button[2]").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li[1]/button[2]").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li[1]/button[2]").click()
+        time.sleep(0.5)
+                
+        # Next 버튼 클릭
+        driver.find_element(By.ID, "next_step_add_direct_message").click()
+        time.sleep(1)
         try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[13]/div[7]/div/button")))
-            driver.find_element(By.XPATH, "/html/body/div[13]/div[7]/div/button").click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[14]/div[7]/div/button")))
+            driver.find_element(By.XPATH, "/html/body/div[14]/div[7]/div/button").click()
         except:
             testResult = False 
             Result_msg+="#7 "
       
         # Recipient 선택 후, 다음 버튼 클릭 #6
         # Institution
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[1]/a").click()
-        WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr[1]/td[1]/label")))
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr[1]/td[1]/label").click()
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[4]").click()
-        try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]")))
-            driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]").click()
-        except:
-            testResult = False 
-            Result_msg+="#6 "
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i").click()
-        
+        time.sleep(0.5)
+        driver.find_element(By.ID, "first_access_tab").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr/td[1]/label").click()
+        institution = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[1]/div/div/div/table/tbody/tr/td[2]").text
+        time.sleep(0.5)
+       
         # Center
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[2]/a").click()
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label")))
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label").click()
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[4]").click()
-        try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]")))
-            driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]").click()
-        except:
-            testResult = False
-            Result_msg+="#6 "
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i").click()
-
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[2]").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[1]/label").click()
+        time.sleep(0.5)
+        center = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[2]/div/div/div/table/tbody/tr/td[2]").text
+        time.sleep(0.5)
+        
         # Reporter
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]/a").click()
-        WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label")))
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label").click()
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[4]").click()
-        try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]")))
-            driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]").click()
-        except:
-            testResult = False
-            Result_msg+="#6 "
-
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]").click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label").click()
+        time.sleep(0.5)
+        reporter = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[3]").text
+        time.sleep(0.5)
+        
         # Message 입력창에 메시지를 입력하지 않고, 전송 버튼을 클릭 #10
-        driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[4]").click()
+        driver.find_element(By.ID, "next_step_add_direct_message").click()
+        time.sleep(0.5)
         try:
-            WebDriverWait(driver,5 ).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]")))
-            driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[3]").click()
+            WebDriverWait(driver,5 ).until(EC.element_to_be_clickable((By.ID, "confirm_add_direct_message")))
+            driver.find_element(By.ID, "confirm_add_direct_message").click()
+            time.sleep(0.5)
             try:
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[13]/div[7]/div/button")))
-                driver.find_element(By.XPATH, "/html/body/div[13]/div[7]/div/button").click()
+                WebDriverWait(driver,5 ).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[14]/div[7]/div/button")))
+                driver.find_element(By.XPATH, "/html/body/div[14]/div[7]/div/button").click()
+                time.sleep(0.5)
             except:
                 testResult = False
                 Result_msg+="#10 "
@@ -898,14 +997,17 @@ class TOPMENU:
         # 임의의 메시지를 입력하고, 이전 버튼을 클릭, 그리고 다시 다음 버튼 클릭 #8
         if(testResult == True):
             rnd_msg = "rnd_msg"
-            driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[2]/div/div/div[2]/textarea").send_keys(rnd_msg)
-            driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[2]").click()
+            driver.find_element(By.ID, "add_direct_message_textarea").send_keys(rnd_msg)
+            time.sleep(0.5)
+            driver.find_element(By.ID, "prev_step_add_direct_message").click()
+            time.sleep(1)
             try:
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[4]")))
-                driver.find_element(By.XPATH,"/html/body/div[8]/div/div/div[3]/div/div/button[4]").click()
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "next_step_add_direct_message")))
+                driver.find_element(By.ID, "next_step_add_direct_message").click()
+                time.sleep(1)
                 try:
-                    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[3]")))
-                    assert(driver.find_element(By.XPATH,"/html/body/div[8]/div/div/div[2]/section[2]/div/div/div[2]/textarea").get_property("value")==rnd_msg)
+                    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "confirm_add_direct_message")))
+                    assert(driver.find_element(By.ID, "add_direct_message_textarea").get_property("value")==rnd_msg)
                 except:
                     testResult = False
                     Result_msg+="#8 "
@@ -915,42 +1017,90 @@ class TOPMENU:
         
         # Message 입력창에 메시지를 입력하고, 전송 버튼을 클릭 #9
         if(testResult == True):
-            driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[3]").click()
+            driver.find_element(By.ID, "confirm_add_direct_message").click()
+            time.sleep(1)
             try:
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[12]/div[7]/div/button")))
-                driver.find_element(By.XPATH,"/html/body/div[12]/div[7]/div/button").click()
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[13]/div[7]/div/button")))
+                driver.find_element(By.XPATH, "/html/body/div[13]/div[7]/div/button").click()
+                time.sleep(1)
             except:
                 testResult = False
                 Result_msg+="#9 "
         
         # Message 입력창에 메시지를 입력하고, 취소 버튼을 클릭 #11
         if(testResult == True):
+            time.sleep(0.5)
+            del driver.requests
+            time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
-            try:
-                del driver.requests
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[2]/div/ul/li/a")))
-                driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[2]/div/ul/li/a").click()
-                # new message
-                
-                request = driver.wait_for_request('.*/GetAccessReporterList.*')
-                body = request.response.body.decode('utf-8')
-                data = json.loads(body)["data"]
-                order = 0
-                for n in data:
-                    if n["USER_NAME"].lower() == worklist_id.lower():
-                        order = data.index(n) + 1
-                        break
+            time.sleep(1)
+            request = driver.wait_for_request('.*/GetDirectMessage.*')
+            time.sleep(0.5)
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+            message_cnt = len(data)
 
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#next_step_add_direct_message")))
-                driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]/a").click()                
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr[1]/td[1]/label")))
-                driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+str(order)+"]/td[1]/label").click()
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[1]/div/div[2]/div/ul/li/button[2]/i")))
-                driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[4]").click()
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[1]")))
-                driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[2]/div/div/div[2]/textarea").send_keys("rnd_msg")
-                element = driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[3]/div/div/button[1]")
-                driver.execute_script("arguments[0].click();", element)
+            # new message
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "direct_message_add_btn")))
+            driver.find_element(By.ID, "direct_message_add_btn").click()
+            time.sleep(1)
+
+            driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]").click()
+            time.sleep(0.5)
+            request = driver.wait_for_request('.*/GetAccessReporterList.*')
+            time.sleep(0.5)
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+
+            reporter_cnt = data["recordsTotal"]
+
+            # for i in data:
+            next = int(reporter_cnt) / 10
+            while next > 0:
+                if reporter_cnt > 10:
+                    for i in range(1, 12):
+                        reporter = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i) +"]/td[3]").text
+                        if reporter == "testInfReporter":
+                            driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i) +"]/td[1]/label").click()
+                            next = 0                                
+                            break
+                    next = next - 1
+                elif reporter_cnt < 10:
+                    for i in range(0, reporter_cnt):
+                        reporter = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i+1) +"]/td[3]").text
+                        if reporter == "testInfReporter":
+                            driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i+1) +"]/td[1]/label").click()
+                            break
+                    next = 0
+
+            # Next 클릭
+            driver.find_element(By.ID, "next_step_add_direct_message").click()
+            time.sleep(0.5)
+            # Message 작성
+            driver.find_element(By.ID, "add_direct_message_textarea").send_keys(rnd_msg)
+            time.sleep(0.5)
+            # Send 클릭
+            driver.find_element(By.ID, "confirm_add_direct_message").click()
+            time.sleep(1)
+            # OK 클릭
+            driver.find_element(By.XPATH, "/html/body/div[13]/div[7]/div/button").click()
+            time.sleep(1)
+
+            # Direct message 버튼 클릭
+            del driver.requests
+            time.sleep(0.5)
+            driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
+            time.sleep(1)
+
+            request = driver.wait_for_request('.*/GetDirectMessage.*')
+            time.sleep(0.5)
+            body = request.response.body.decode('utf-8')
+            data = json.loads(body)
+
+            check_message_cnt = len(data)
+
+            try:
+                assert message_cnt + 1 == check_message_cnt
             except:
                 testResult = False
                 Result_msg+="#11 "
@@ -978,107 +1128,189 @@ class TOPMENU:
         print("ITR-134: Top Menu > Direct Message > Message")
         run_time = time.time()
 
-        ReFresh()
-
-        # add msg
-        del driver.requests
-        need_msg_num = 0
+        # ReFresh()
         try:
-            if int(driver.find_element(By.CSS_SELECTOR, "#direct_message_badge_body").text) < 11:
-                need_msg_num = 11 - int(driver.find_element(By.CSS_SELECTOR, "#direct_message_badge_body").text)
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
         except:
-            need_msg_num = 11
-        if need_msg_num != 0:
-            driver.find_element(By.CSS_SELECTOR, "#right-sidebar-direct-message > span").click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#direct_message_add_btn")))
-            driver.find_element(By.CSS_SELECTOR, "#direct_message_add_btn").click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#select_recipient_section > div.col-lg-7 > div > div.header > ul > li:nth-child(3) > a")))
-            
-            
+            Common.ReFresh()            
+
+        del driver.requests
+        time.sleep(1)
+
+        # Step 1 & 2
+        # 읽지 않은 메시지가 없는 경우, 자신에게 메시지 보내기
+        if driver.find_element(By.ID, "direct_message_badge").get_property("className") == "hide":
+            # need_msg_num = 11 - int(driver.find_element(By.CSS_SELECTOR, "#direct_message_badge_body").text)
+            driver.find_element(By.ID, "right-sidebar-direct-message").click()
+            time.sleep(1)
+            driver.find_element(By.ID, "direct_message_add_btn").click()
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]").click()
+            time.sleep(0.5)
             request = driver.wait_for_request('.*/GetAccessReporterList.*')
+            time.sleep(0.5)
             body = request.response.body.decode('utf-8')
-            data = json.loads(body)["data"]
-            order = 0
-            for n in data:
-                if n["USER_NAME"].lower() == worklist_id.lower():
-                    order = data.index(n) + 1
-                    break
-            driver.find_element(By.CSS_SELECTOR, "#cancel_add_direct_message").click()
-            time.sleep(0.25)
-            
-            for n in range (0, need_msg_num):
-                driver.find_element(By.CSS_SELECTOR, "#right-sidebar-direct-message > span").click()
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#direct_message_add_btn")))
-                driver.find_element(By.CSS_SELECTOR, "#direct_message_add_btn").click()
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#select_recipient_section > div.col-lg-7 > div > div.header > ul > li:nth-child(3) > a")))
-                driver.find_element(By.CSS_SELECTOR, "#select_recipient_section > div.col-lg-7 > div > div.header > ul > li:nth-child(3) > a").click()
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#dm_access_reporter_list > thead > tr > th.th-check.align-center.dm-th-check.sorting_disabled > label")))
-                element = driver.find_element(By.XPATH, "/html/body/div[8]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+str(order)+"]/td[1]/input")
-                driver.execute_script("arguments[0].click();", element)
-                driver.find_element(By.CSS_SELECTOR, "#next_step_add_direct_message").click()
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#confirm_add_direct_message")))
-                driver.find_element(By.CSS_SELECTOR, "#add_direct_message_textarea").send_keys(n)
-                driver.find_element(By.CSS_SELECTOR, "#confirm_add_direct_message").click()
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button")))
-                driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#right-sidebar-direct-message > span")))
-                
-        # 1,2는 new_message와 동일
-        del driver.requests
+            data = json.loads(body)
 
-        # Direct Message 아이콘을 클릭 및 리스트 확인 #3
-        driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
-        # waiting loading
-        try:
-            WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]/span")))
-        except:
-            pass
+            reporter_cnt = data["recordsTotal"]
+
+            # for i in data:
+            next = int(reporter_cnt) / 10
+            while next > 0:
+                if reporter_cnt > 10:
+                    for i in range(1, 12):
+                        reporter = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i) +"]/td[3]").text
+                        if reporter == "testInfReporter":
+                            driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i) +"]/td[1]/label").click()
+                            next = 0                                
+                            break
+                    next = next - 1
+                elif reporter_cnt < 10:
+                    for i in range(0, reporter_cnt):
+                        reporter = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i+1) +"]/td[3]").text
+                        if reporter == "testInfReporter":
+                            driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i+1) +"]/td[1]/label").click()
+                            break
+                    next = 0
+
+            # Next 클릭
+            driver.find_element(By.ID, "next_step_add_direct_message").click()
+            time.sleep(0.5)
+            # Message 작성
+            driver.find_element(By.ID, "add_direct_message_textarea").send_keys("rnd_msg")
+            time.sleep(0.5)
+            # Send 클릭
+            driver.find_element(By.ID, "confirm_add_direct_message").click()
+            time.sleep(1)
+            # OK 클릭
+            driver.find_element(By.XPATH, "/html/body/div[13]/div[7]/div/button").click()
+            time.sleep(1)
+            unread_msg_num = 1
         
-        # 10개 이상인 경우 확인
-        request = driver.wait_for_request('.*/GetDirectMessageList')
+        # 읽지 않은 메시지 개수 확인
+        else:
+            unread_msg_num = driver.find_element(By.CSS_SELECTOR, "#direct_message_badge_body").text
+        
+        driver.find_element(By.ID, "right-sidebar-direct-message").click()
+        time.sleep(1)
+        del driver.requests
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[4]/a/div/p").click()
+        time.sleep(1)
+
+        request = driver.wait_for_request('.*/GetDirectMessageListForTable.*')
+        time.sleep(0.5)
         body = request.response.body.decode('utf-8')
         data = json.loads(body)
-        read_count=0
-        for n in data:
-            if(n['READ_FLAG'] == 'F'):
-                read_count = read_count + 1
-
-        if(read_count >= 10):
-            try:
-                WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li[10]/a")))
-            except:
-                testResult = False
-                Result_msg+="#0 "
-
-        # View more messages확인 
+        unread_cnt = data["UnreadMessageCount"]
+        message_cnt = data["recordsTotal"]
+        
         try:
-            assert(driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/ul/li[4]/a/div/p").get_property("outerText")=="View more messages")
+            assert int(unread_msg_num) == unread_cnt
+        except:
+            testResult = False
+            Result_msg+="#1 #2 "
+
+        # Step 3
+        if message_cnt < 12:            
+            time.sleep(1)
+            del driver.requests
+            time.sleep(0.5)
+
+            for repeat in range (11-int(message_cnt)):                
+                driver.find_element(By.ID, "right-sidebar-direct-message").click()
+                time.sleep(1)
+                driver.find_element(By.ID, "direct_message_add_btn").click()
+                time.sleep(1)
+                driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]").click()
+                time.sleep(0.5)
+                request = driver.wait_for_request('.*/GetAccessReporterList.*')
+                time.sleep(0.5)
+                body = request.response.body.decode('utf-8')
+                data = json.loads(body)
+
+                reporter_cnt = data["recordsTotal"]
+                # for i in data:
+                next = int(reporter_cnt) / 10
+                while next > 0:
+                    if reporter_cnt > 10:
+                        for i in range(1, 12):
+                            reporter = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i) +"]/td[3]").text
+                            if reporter == "testInfReporter":
+                                driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i) +"]/td[1]/label").click()
+                                next = 0                                
+                                break
+                        next = next - 1
+                    elif reporter_cnt < 10:
+                        for i in range(0, reporter_cnt):
+                            reporter = driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i+1) +"]/td[3]").text
+                            if reporter == "testInfReporter":
+                                driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[2]/div[3]/div/div/div/div/table/tbody/tr["+ str(i+1) +"]/td[1]/label").click()
+                                break
+                        next = 0
+
+                # Next 클릭
+                driver.find_element(By.ID, "next_step_add_direct_message").click()
+                time.sleep(0.5)
+                # Message 작성
+                driver.find_element(By.ID, "add_direct_message_textarea").send_keys("rnd_msg")
+                time.sleep(0.5)
+                # Send 클릭
+                driver.find_element(By.ID, "confirm_add_direct_message").click()
+                time.sleep(1)
+                # OK 클릭
+                driver.find_element(By.XPATH, "/html/body/div[13]/div[7]/div/button").click()
+                time.sleep(1) 
+        else:
+            driver.find_element(By.ID, "right-sidebar-direct-message").click()
+            time.sleep(1)
+            driver.find_element(By.ID, "direct_message_add_btn").click()
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]").click()
+            time.sleep(1)
+            # show entry 개수 저장
+            temp_msg_cnt = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/div[3]").text
+            temp_msg_cnt = temp_msg_cnt.split()[5]
+            msg_cnt = int(temp_msg_cnt)
+
+        # show entry 개수 저장
+        temp_msg_cnt = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/div[3]").text
+        temp_msg_cnt = temp_msg_cnt.split()[5]
+        msg_cnt = int(temp_msg_cnt)
+        
+        try:
+            assert msg_cnt > 10
         except:
             testResult = False
             Result_msg+="#3 "
 
-        # 임의의 메시지를 클릭 #4
-        # 패킷에서 정보 획득
-        sender = data[0]["WRITER_NAME"]
-        sender_time = data[0]["WRITE_DTTM"]
-        sender_time = sender_time.replace('T',' ')
-        sender_msg = data[0]["MESSAGE_TEXT_LOB"]
+        # Step 4
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
+        time.sleep(1)
 
-        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li[1]/a/div[1]/i").click()
-        # waiting loading
+        random_msg = random.randint(1,msg_cnt)
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li["+str(random_msg)+"]/a").click()
+        time.sleep(1)
+
         try:
-            WebDriverWait(driver, 0.25).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]")))
-        except:
-            pass
-        # 비교
-        try:
-            assert(sender == driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/div[1]/div[2]/span").get_property("value") and
-                   sender_time == driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/div[2]/div[2]/span").get_property("value") and
-                   sender_msg == driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/div[3]/textarea").get_property("value"))
+            assert driver.find_element(By.XPATH, "/html/body/div[10]/div/div/div[3]/button").text == "확 인"
         except:
             testResult = False
             Result_msg+="#4 "
-        driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[3]/button").click()
+
+        reporter = driver.find_element(By.ID, "direct_message_load_writer").text
+        date = driver.find_element(By.ID, "direct_message_load_write_dttm").text
+        msg = driver.find_element(By.ID, "direct_message_load_test").text
+
+        try:
+            assert reporter != "" and date != "" and msg != ""
+        except:
+            testResult = False
+            Result_msg+="#4 "
 
         # message 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)
@@ -1103,7 +1335,15 @@ class TOPMENU:
         print("ITR-135: Top Menu > Direct Message > View More Messages")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # View more messages 접속
         driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
@@ -1291,7 +1531,15 @@ class TOPMENU:
         print("ITR-137: Top Menu > Setting > Setting")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
         driver.execute_script("arguments[0].click();", element)
@@ -1325,7 +1573,15 @@ class TOPMENU:
         print("ITR-138: Top Menu > Setting > Standard Report - Search Filter")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # 캡처 초기화
         del driver.requests
@@ -1528,7 +1784,16 @@ class TOPMENU:
         print("ITR-219: Top Menu > Setting > Standard Report - Add")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
+
         driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[7]/a/span").click()
         driver.implicitly_wait(5)
         signInOut.normal_login()
@@ -1747,7 +2012,15 @@ class TOPMENU:
         print("ITR-139: Top Menu > Setting > Standard Report - Modify")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # Setting 접속
         element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
@@ -1931,7 +2204,15 @@ class TOPMENU:
         run_time = time.time()
 
         # 정상적인 계정으로 로그인
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # Setting 접속
         element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
@@ -2032,7 +2313,15 @@ class TOPMENU:
         run_time = time.time()
 
         # 정상적인 계정으로 로그인
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # Setting + User profile + waiting접속
         TOPMENU.Profile_Worklist_inUserProfile()
@@ -2306,7 +2595,15 @@ class TOPMENU:
         print("ITR-143: Top Menu > Setting > User Profile - Standard Report")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # Setting + User profile + waiting접속
         TOPMENU.Profile_Worklist_inUserProfile()
@@ -2449,14 +2746,22 @@ class WORKLIST:
         Result_msg = "failed at "
         print("ITR-151: Home > Hospital List")
         run_time = time.time()
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # Dropbox & View All Hospital List #1 & 4
         # Admin에서 정보 획득 시작
         # 새로운 탭 + 전환
         driver.execute_script("window.open()")
         driver.switch_to.window(driver.window_handles[1])
-        driver.get(AdminUrl)
+        driver.get(Var.StagingAdmin)
 
         # admin 사이트 로그인
         driver.find_element(By.ID, 'user-id').clear()
@@ -2777,7 +3082,15 @@ class WORKLIST:
         print("ITR-159: Home > Search Filter > Job Status")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # filter hide check
         if driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").value_of_css_property("transform") != "matrix(6.12323e-17, 1, -1, 6.12323e-17, 0, 0)":
@@ -3086,7 +3399,15 @@ class WORKLIST:
         Result_msg = "failed at "
         print("ITR-160: Home > Search Filter > Job Date")
         run_time = time.time()
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # filter hide check
         if driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").value_of_css_property("transform") != "matrix(6.12323e-17, 1, -1, 6.12323e-17, 0, 0)":
@@ -3593,7 +3914,15 @@ class WORKLIST:
         print("ITR-166: Home > Search Filter > Schedule Date")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # filter hide check
         if driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").value_of_css_property("transform") != "matrix(6.12323e-17, 1, -1, 6.12323e-17, 0, 0)":
@@ -3626,7 +3955,15 @@ class WORKLIST:
         print("ITR-175: Home > Search Filter > Short cut")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # filter hide check
         if driver.find_element(By.CSS_SELECTOR, "#search_box_collapse_icon").value_of_css_property("transform") != "matrix(6.12323e-17, 1, -1, 6.12323e-17, 0, 0)":
@@ -3954,7 +4291,15 @@ class WORKLIST:
         print("ITR-154: Home > Columns")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # option #1 
         driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
@@ -4249,7 +4594,15 @@ class WORKLIST:
         print("ITR-156: Home > Sort by")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         context = WORKLIST.option_alloff_before()
         ai_origin = context[0]
@@ -4340,7 +4693,15 @@ class WORKLIST:
         print("ITR-157: Home > Worklist")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # column drop #1
         WORKLIST.option_alloff_before()
@@ -4624,7 +4985,15 @@ class WORKLIST:
         print("ITR-176: Home > Job Report > Job Report")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         driver.find_element(By.CSS_SELECTOR, "#setting_columns > i").click()
         WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting-columns-apply")))
@@ -4722,7 +5091,15 @@ class WORKLIST:
         print("ITR-177: Home > Job Report > Reading History")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
         time.sleep(0.3)
 
         del driver.requests
@@ -5138,7 +5515,15 @@ class WORKLIST:
         print("ITR-178: Home > Job Report > Report Settings")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # set option (column)
         driver.find_element(By.CSS_SELECTOR, "#setting_columns > span").click()
@@ -5347,7 +5732,15 @@ class WORKLIST:
         print("ITR-158: Home > Related Exam List")
         run_time = time.time()
 
-        ReFresh()
+        # ReFresh()
+        try:
+            if driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/form/div[2]/div/input").get_property("name") == "userId":
+                time.sleep(0.5)
+                ITR_Admin_Login.signInOut.wk_login()
+            else:
+                Common.ReFresh()
+        except:
+            Common.ReFresh()
 
         # clear
         del driver.requests
@@ -5500,4 +5893,4 @@ def All_Scenario():
     print("Total Run Time:", round((int(time.time() - start)/60),2),"min")
     print("Failed List: ", failed_list)
 
-All_Scenario()
+# All_Scenario()

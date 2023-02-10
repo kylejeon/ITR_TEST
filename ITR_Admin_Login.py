@@ -47,11 +47,11 @@ class signInOut:
         driver.find_element(By.CSS_SELECTOR, '.pull-right > span').click()
         driver.implicitly_wait(5)
         time.sleep(0.3)
-    def wk_login(work_id, work_pw):
+    def wk_login():
         driver.find_element(By.ID, 'user-id').clear()
-        driver.find_element(By.ID, 'user-id').send_keys(work_id)
+        driver.find_element(By.ID, 'user-id').send_keys(Var.wk_id)
         driver.find_element(By.ID, 'user-password').clear()
-        driver.find_element(By.ID, 'user-password').send_keys(work_pw)
+        driver.find_element(By.ID, 'user-password').send_keys(Var.wk_pw)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
         driver.implicitly_wait(5)    
 

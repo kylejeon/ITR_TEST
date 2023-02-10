@@ -12,6 +12,7 @@ import time
 import Common_Var
 import importlib
 import sys
+import ITR_Worklist
 
 full_test_case = [
     # Sign
@@ -113,40 +114,76 @@ full_test_case = [
     # ITR_Admin_Configuration.StandardReport.Modify,
     # ITR_Admin_Configuration.StandardReport.Delete,
     # # Confiuration - Multi Reading Center Rule
-    ITR_Admin_Configuration.MultiReadingCenterRule.SearchFilter, # ITR-94
-    ITR_Admin_Configuration.MultiReadingCenterRule.Add, # ITR-95
-    ITR_Admin_Configuration.MultiReadingCenterRule.Modify, # ITR-97
-    ITR_Admin_Configuration.MultiReadingCenterRule.Delete, # ITR-96
-    # MultiReadingCenterRule.Add() > MultiReadingCenterRule.Modify() > MultiReadingCenterRule.Delete()
-    # ITR_Admin_Configuration.MultiReadingCenterRule.All, # ITR-95~97
-    # Audit Log
-    ITR_Admin_Auditlog.Auditlog.Auditlog_Search, # ITR-98
-    ITR_Admin_Auditlog.Auditlog.Auditlog_Export, # ITR-99
-    ITR_Admin_Auditlog.Auditlog.Auditlog_Showentries, # ITR-100
-    ITR_Admin_Auditlog.Auditlog.Auditlog_Sorting, # ITR-101
-    ITR_Admin_Auditlog.Auditlog.Auditlog_Data, # ITR-102
-    # Notice
-    ITR_Admin_Notice.Notice.NoticeList_NoticeEditBoard, # ITR-103
-    ITR_Admin_Notice.Notice.NoticeList_Edit, # ITR-104
-    ITR_Admin_Notice.Notice.NoticeList_Delete, # ITR-105
-    ITR_Admin_Notice.Notice.NoticeList_NoticeDisplay, # ITR-106
-    # Direct Message
-    # ITR_Admin_Login.signInOut.admin_sign_out, # SubAdmin login
-    # ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
-    ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Search, # ITR-107
-    ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_ShowEntries, # ITR-108
-    ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Sorting, # ITR-109
-    ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Badge, # ITR-110
-    ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Message, # ITR-111
-    ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Institution_Search, # ITR-112
-    ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Institution_Message, # ITR-113
-    ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Center_Search, # ITR-114
-    ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Center_Message, # ITR-115
-    ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Reporter_Search, # ITR-116
-    ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Reporter_Message, # ITR-117
-    ITR_Admin_DirectMessage.DirectMessage.DirectMessageSetting_Search, # ITR-118
-    ITR_Admin_DirectMessage.DirectMessage.DirectMessageSetting_Authorize, # ITR-119
-    ITR_Admin_DirectMessage.DirectMessage.DirectMessageSetting_Selection # ITR-120
+    # ITR_Admin_Configuration.MultiReadingCenterRule.SearchFilter, # ITR-94
+    # ITR_Admin_Configuration.MultiReadingCenterRule.Add, # ITR-95
+    # ITR_Admin_Configuration.MultiReadingCenterRule.Modify, # ITR-97
+    # ITR_Admin_Configuration.MultiReadingCenterRule.Delete, # ITR-96
+    # # MultiReadingCenterRule.Add() > MultiReadingCenterRule.Modify() > MultiReadingCenterRule.Delete()
+    # # ITR_Admin_Configuration.MultiReadingCenterRule.All, # ITR-95~97
+    # # Audit Log
+    # ITR_Admin_Auditlog.Auditlog.Auditlog_Search, # ITR-98
+    # ITR_Admin_Auditlog.Auditlog.Auditlog_Export, # ITR-99
+    # ITR_Admin_Auditlog.Auditlog.Auditlog_Showentries, # ITR-100
+    # ITR_Admin_Auditlog.Auditlog.Auditlog_Sorting, # ITR-101
+    # ITR_Admin_Auditlog.Auditlog.Auditlog_Data, # ITR-102
+    # # Notice
+    # ITR_Admin_Notice.Notice.NoticeList_NoticeEditBoard, # ITR-103
+    # ITR_Admin_Notice.Notice.NoticeList_Edit, # ITR-104
+    # ITR_Admin_Notice.Notice.NoticeList_Delete, # ITR-105
+    # ITR_Admin_Notice.Notice.NoticeList_NoticeDisplay, # ITR-106
+    # # Direct Message
+    # # ITR_Admin_Login.signInOut.admin_sign_out, # SubAdmin login
+    # # ITR_Admin_Login.signInOut.subadmin_sign_in, # SubAdmin login
+    # ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Search, # ITR-107
+    # ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_ShowEntries, # ITR-108
+    # ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Sorting, # ITR-109
+    # ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Badge, # ITR-110
+    # ITR_Admin_DirectMessage.DirectMessage.DirectMessageBox_Message, # ITR-111
+    # ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Institution_Search, # ITR-112
+    # ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Institution_Message, # ITR-113
+    # ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Center_Search, # ITR-114
+    # ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Center_Message, # ITR-115
+    # ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Reporter_Search, # ITR-116
+    # ITR_Admin_DirectMessage.DirectMessage.NewDirectMessage_Reporter_Message, # ITR-117
+    # ITR_Admin_DirectMessage.DirectMessage.DirectMessageSetting_Search, # ITR-118
+    # ITR_Admin_DirectMessage.DirectMessage.DirectMessageSetting_Authorize, # ITR-119
+    # ITR_Admin_DirectMessage.DirectMessage.DirectMessageSetting_Selection, # ITR-120
+    # # # Worklist - Login
+    # ITR_Worklist.Login.Log_InOut,
+    # ITR_Worklist.Login.Remember_me,
+    # # Worklist - Top Menu
+    # ITR_Worklist.TOPMENU.Badge_Emergency,
+    # ITR_Worklist.TOPMENU.Badge_Refer,
+    # ITR_Worklist.TOPMENU.Badge_AutoRefer,
+    # ITR_Worklist.TOPMENU.Badge_Schedule,
+    # ITR_Worklist.TOPMENU.Badge_Today,
+    # ITR_Worklist.TOPMENU.Home,
+    # ITR_Worklist.TOPMENU.new_message,
+    ITR_Worklist.TOPMENU.Message,
+    ITR_Worklist.TOPMENU.View_More_Messages,
+    ITR_Worklist.TOPMENU.Setting,
+    # Worklsit - TopMenu_Report_List
+    ITR_Worklist.TOPMENU.Report_Search_Filter,
+    ITR_Worklist.TOPMENU.Report_Add,
+    ITR_Worklist.TOPMENU.Report_Modify,
+    ITR_Worklist.TOPMENU.Report_delete,        
+    # Worklsit - TopMenu_Profile_List
+    ITR_Worklist.TOPMENU.Profile_Worklist,
+    ITR_Worklist.TOPMENU.Profile_Standard_Report,        
+    # Worklsit - WorkList_List
+    ITR_Worklist.WORKLIST.HospitalList,
+    ITR_Worklist.WORKLIST.SearchFilter_JobStatus,
+    ITR_Worklist.WORKLIST.SearchFilter_JobDate,
+    ITR_Worklist.WORKLIST.SearchFilter_Etc,
+    ITR_Worklist.WORKLIST.SearchFilter_ScheduleDate,
+    ITR_Worklist.WORKLIST.SearchFilter_Shortcut,
+    ITR_Worklist.WORKLIST.Columns,
+    ITR_Worklist.WORKLIST.Sortby,
+    ITR_Worklist.WORKLIST.Work_list,
+    ITR_Worklist.WORKLIST.JobReport,
+    ITR_Worklist.WORKLIST.JobReport_ReadingHistory,
+    ITR_Worklist.WORKLIST.JobReport_ReportSettings,
+    ITR_Worklist.WORKLIST.Related_Exam
     ]
 
 test_index_list = [
@@ -261,7 +298,38 @@ test_index_list = [
     ["Reporter - Message",3],
     ["Direct Message Setting Search",4],
     ["Authorize",4],
-    ["Selection",6]
+    ["Selection",6],
+    ["[W] Login In/Out",1],
+    ["[W] Remember Me",1],
+    ["[W] Badge Emergency",1],
+    ["[W] Badge Refer",1],
+    ["[W] Badge AutoRefer",1],
+    ["[W] Badge Schedule",1],
+    ["[W] Badge Today",1],
+    ["[W] Home",1],
+    ["[W] New Message",1],
+    ["[W] Message",1],
+    ["[W] View More Messages",1],
+    ["[W] Setting",1],
+    ["[W] Report Search Filter",1],
+    ["[W] Report Add",1],
+    ["[W] Report Modify",1],
+    ["[W] Report Delete",1],
+    ["[W] Profile Worklist",1],
+    ["[W] Profile Standard Report",1],
+    ["[W] Hospital List",1],
+    ["[W] SearchFilter - JobStatus",1],
+    ["[W] SearchFilter - JobDate",1],
+    ["[W] SearchFilter - Etc",1],
+    ["[W] SearchFilter - ScheduleDate",1],
+    ["[W] SearchFilter - Shortcut",1],
+    ["[W] Columns",1],
+    ["[W] Sortby",1],
+    ["[W] Worklist",1],
+    ["[W] JobReport",1],
+    ["[W] JobReport - Reading History",1],
+    ["[W] JobReport - Report Settings",1],
+    ["[W] Related Exam",1]
 ]
 
 def get_name(name):
@@ -346,6 +414,9 @@ class Test:
             try:
                 print("(",str(full_test_case.index(test)+1) + " / " + str(len(full_test_case)),")", round(((full_test_case.index(test)+1)*100/int(len(full_test_case))),1),"%")
                 run_time = time.time()
+                if "ITR_Worklist" in test.__module__:
+                    ITR_Admin_Common.driver.get(Common_Var.base_worklist_url)
+                    ITR_Admin_Common.driver.implicitly_wait(5)
                 test()
             except Exception as e:
                 print(e)
@@ -386,6 +457,7 @@ class Test:
         importlib.reload(sys.modules['ITR_Admin_Notice'])
         importlib.reload(sys.modules['ITR_Admin_Auditlog'])
         importlib.reload(sys.modules['ITR_Admin_DirectMessage'])
+        importlib.reload(sys.modules['ITR_Worklist'])
 
         # from ITR_Admin_Common import driver
         ITR_Admin_Common.driver.get(Common_Var.base_admin_url)
@@ -404,6 +476,9 @@ class Test:
                 # TableWidget 값 추가
                 Common_Var.tc_name = case
                 Common_Var.tc_steps = teststep
+                if "[W]" in case:
+                    ITR_Admin_Common.driver.get(Common_Var.base_worklist_url)
+                    ITR_Admin_Common.driver.implicitly_wait(5)
                 full_test_case[testidx]()
                 while Common_Var.btn_play == "Play":
                     try:
