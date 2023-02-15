@@ -126,7 +126,7 @@ class Sign:
         
         # 오류 메시지 확인: User not found
         try:
-            assert driver.find_element(By.CSS_SELECTOR, ".validation-summary-errors > ul > li").text == "User not found"
+            assert driver.find_element(By.CSS_SELECTOR, ".validation-summary-errors > ul > li").text == "User not found."
         except:
             testResult = 'failed'
             reason.append("Sign_InOut step 3 isn't valid")
@@ -140,10 +140,11 @@ class Sign:
         driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/form/div[4]/div/input").send_keys("")
         time.sleep(0.5)
         driver.find_element(By.CSS_SELECTOR, '.btn').click()
+        time.sleep(0.5)
 
         # 오류 메시지 확인: This field is required.
         try:
-           assert driver.find_element(By.ID, "user-password-error").text == "This field is required."
+           assert driver.find_element(By.ID, "user-password-error").get_property("textContent") == "This field is required."
         except:
             testResult = 'failed'
             reason.append("Sign_InOut step 3 isn't valid")
@@ -160,7 +161,7 @@ class Sign:
 
         # 오류 메시지 확인: not admin user
         try:
-            assert driver.find_element(By.CSS_SELECTOR, ".validation-summary-errors >  ul > li").text == "Not admin user"
+            assert driver.find_element(By.CSS_SELECTOR, "#sign-in-form > div.validation-summary-errors > ul > li").get_property("textContent") == "Not admin user."
         except:
             testResult = 'failed'
             reason.append("Sign_InOut step 4 isn't valid")

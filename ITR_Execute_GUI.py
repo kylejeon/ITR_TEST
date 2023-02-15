@@ -336,6 +336,15 @@ class Form(QMainWindow, form_class):
 
     # Run Test 클릭 시, Test Status 탭으로 이동
     def change_tab(self):
+        Common_Var.rowIndex = 0
+        Common_Var.test_status_passed = 0
+        Common_Var.test_status_failed = 0
+        Common_Var.test_status_notexecuted = 0
+        Common_Var.test_status_exception = 0       
+        Common_Var.progress_bar = 0
+        Common_Var.executed = 0
+        self.init_status()
+        self.tableWidget.clear()
         self.tabWidget.setCurrentIndex(1)
 
     def add_child_all(parent, item, child_Count):
@@ -864,6 +873,6 @@ if __name__ == '__main__':
     Common_Var.form = Form()
     window_ico = resource_path('cop.png')
     Common_Var.form.setWindowIcon(QtGui.QIcon(window_ico))
-    Common_Var.form.setWindowTitle("ITR Automation Test v1.1")    
+    Common_Var.form.setWindowTitle("ITR Automation Test v1.2")    
     Common_Var.form.show()
     sys.exit(app.exec_())

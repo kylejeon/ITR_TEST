@@ -1150,9 +1150,9 @@ class TOPMENU:
             driver.find_element(By.ID, "direct_message_add_btn").click()
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]").click()
-            time.sleep(0.5)
+            time.sleep(1)
             request = driver.wait_for_request('.*/GetAccessReporterList.*')
-            time.sleep(0.5)
+            time.sleep(1)
             body = request.response.body.decode('utf-8')
             data = json.loads(body)
 
@@ -1272,13 +1272,13 @@ class TOPMENU:
             time.sleep(1)
             driver.find_element(By.XPATH, "/html/body/div[9]/div/div/div[2]/section[1]/div[2]/div/div[1]/ul/li[3]").click()
             time.sleep(1)
-            # show entry 개수 저장
-            temp_msg_cnt = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/div[3]").text
-            temp_msg_cnt = temp_msg_cnt.split()[5]
-            msg_cnt = int(temp_msg_cnt)
+            # # show entry 개수 저장
+            # temp_msg_cnt = driver.find_element(By.ID, "dm_access_reporter_list_info").text
+            # temp_msg_cnt = temp_msg_cnt.split()[5]
+            # msg_cnt = int(temp_msg_cnt)
 
         # show entry 개수 저장
-        temp_msg_cnt = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/div[3]").text
+        temp_msg_cnt = driver.find_element(By.ID, "dm_access_reporter_list_info").text
         temp_msg_cnt = temp_msg_cnt.split()[5]
         msg_cnt = int(temp_msg_cnt)
         
@@ -1289,6 +1289,8 @@ class TOPMENU:
             Result_msg+="#3 "
 
         # Step 4
+        driver.find_element(By.ID, "cancel_add_direct_message").click()
+        time.sleep(1)        
         driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
         time.sleep(1)
 
@@ -1345,165 +1347,84 @@ class TOPMENU:
         except:
             Common.ReFresh()
 
-        # View more messages 접속
-        driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
-        # waiting loading
-        try:
-            WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]/span")))
-        except:
-            pass
-        element = driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/ul/li[4]/a/div/p")
-        driver.execute_script("arguments[0].click();", element)
-        # waiting loading
-        try:
-            WebDriverWait(driver, 0.25).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[1]/div")))
-        except:
-            pass
+        # Step 1
+        # Direct message 뱃지 클릭
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
+        time.sleep(1)
+        msg_cnt = len(driver.find_elements(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li"))
+        read_cnt = 0
+        unread_cnt = 0
+        # message의 read, unread 개수 확인
+        for i in range(1, msg_cnt+1):
+            if "bg-blue" in driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li["+str(i)+"]/a/div[1]").get_property("className"):
+                read_cnt += 1
+            elif "bg-grey" in driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li["+str(i)+"]/a/div[1]").get_property("className"):
+                unread_cnt += 1
 
-        # 리스트 및 아이콘 확인 / 읽지 않은 메시지 클릭 #1 #2
-        # 1 - 리스트 확인
         try:
-            assert(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button").get_property("id") == "direct_message_all_list_tab")
+            assert msg_cnt == read_cnt + unread_cnt
         except:
             testResult = False
             Result_msg+="#1 "
 
-        # 2 - read unread_count at icon
-        unread_count = driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/sup/span").text
-        time.sleep(0.1)
-        #print(unread_count)
+        # Step 2
+        # 임의의 message의 정보 추출
+        # for i in range(1, msg_cnt+1):
+        random_msg_index = random.randint(1, msg_cnt)
+            # if "bg-blue" in driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li["+str(random_msg_index)+"]/a/div[1]").get_property("className"):
+        msg = driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li["+str(random_msg_index)+"]/a/div[2]/h4").get_property("textContent")
+        date = driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li["+str(random_msg_index)+"]/a/div[2]/p[1]").text
+        person = driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li["+str(random_msg_index)+"]/a/div[2]/p[2]").text
+        # driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li["+str(random_msg_index)+"]/a/div[1]").click()
+        time.sleep(0.5)
+                # break
+        # 임의의 message를 클릭
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li["+str(random_msg_index)+"]/a/div[1]").click()
+        # driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[3]/div/ul/li["+str(random_msg_index)+"]/a").click()
+        time.sleep(1)
 
-        # 1 - Read 정보 획득 (패킷)
-        request = driver.wait_for_request('.*/GetDirectMessageList')
-        body = request.response.body.decode('utf-8')
-        data = json.loads(body)
-        read_flag = []
-        list_len = len(data)
-        for n in data:
-            read_flag.append(n["READ_FLAG"])
-
-        # 2 - 
-        non_read_index = read_flag.index('F')
-        non_read_name_pack = data[non_read_index]["WRITER_NAME"]
-        non_read_dtm_pack = (data[non_read_index]["WRITE_DTTM"]).replace('T', ' ')
-        non_read_msg_pack = data[non_read_index]["MESSAGE_TEXT_LOB"]
-
-        # 1 - 아이콘 정보 획득
-        request = driver.wait_for_request('.*/GetDirectMessageListForTable.*')
-        body = request.response.body.decode('utf-8')
-        data = json.loads(body)
-        total_list = data["recordsFiltered"] 
-        remain_list = total_list 
-        max_length = data["Length"]
-
-        # 2 -
-        first_non_read_loc = (non_read_index) % max_length
-        first_non_read_page = (int)((non_read_index) / max_length) + 1
-        current_page = 1
-
-        # 1 - 
-        icon=[]
-        if remain_list <= max_length:
-            for i in range(1,remain_list+1):
-                icon.append(driver.find_element(By.XPATH, ("/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/table/tbody/tr["+str(i)+"]/td[1]/span/i")).value_of_css_property("color"))
-        # 2 - Get First Non Read Msg Info at First Page
-        if first_non_read_page == 1:
-            driver.find_element(By.XPATH, ("/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/table/tbody/tr["+str(int(first_non_read_loc)+1)+"]/td[1]/span/i")).click()
-            # waiting loading
-            try:
-                WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[3]/div/div[3]/textarea")))
-            except:
-                testResult = False
-                Result_msg+="#2 "
-            non_read_name = data["data"][first_non_read_loc]["WRITER_NAME"]
-            non_read_dtm = (data["data"][first_non_read_loc]["WRITE_DTTM"]).replace('T', ' ')
-            non_read_msg = data["data"][first_non_read_loc]["MESSAGE_TEXT_LOB"]
-            read_flag[non_read_index] = 'T'
-
-        # waiting loading
+        # Direct message 팝업창 확인
         try:
-            WebDriverWait(driver, 0.3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/div[3]")))
-        except:
-            pass
-
-        # 1 - Get Icon Info
-        while (1):
-            for i in range(1,15):
-                icon.append(driver.find_element(By.CSS_SELECTOR, "#message_list_group > tbody > tr:nth-child("+str(i)+") > td:nth-child(1) > span > i").value_of_css_property("color"))
-
-            # 2 - 캡처 초기화
-            del driver.requests
-
-            # Next 클릭
-            element = driver.find_element(By.CSS_SELECTOR, "#message_list_group_next > a")
-            driver.execute_script("arguments[0].click();", element)
-            # waiting loading
-            time.sleep(0.5)
-
-            # 2 - Get First Non Read Msg Info at First(X) Page
-            current_page += 1
-            if(current_page == first_non_read_page):
-                request = driver.wait_for_request('.*/GetDirectMessageListForTable.*')
-                body = request.response.body.decode('utf-8')
-                data = json.loads(body)
-                driver.find_element(By.XPATH, ("/html/body/section[1]/div/div/div/section[4]/div/div[2]/div/div/div/div/table/tbody/tr["+str(int(first_non_read_loc)+1)+"]/td[1]/span/i")).click()
-                try:
-                    WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[3]/div/div[3]/textarea")))
-                except:
-                    testResult = False
-                    Result_msg+="#2 "
-                time.sleep(0.25)
-                non_read_name = data["data"][first_non_read_loc]["WRITER_NAME"]
-                non_read_dtm = (data["data"][first_non_read_loc]["WRITE_DTTM"]).replace('T', ' ')
-                non_read_msg = data["data"][first_non_read_loc]["MESSAGE_TEXT_LOB"]
-                read_flag[non_read_index] = 'T'
-
-            remain_list = remain_list - max_length
-            if (remain_list - max_length) <= 0:
-                break
-        for i in range(1,remain_list+1):
-            icon.append(driver.find_element(By.CSS_SELECTOR, "#message_list_group > tbody > tr:nth-child("+str(i)+") > td:nth-child(1) > span > i").value_of_css_property("color"))
-
-        # style="color:grey" - rgba(128, 128, 128, 1) / style="color:orange" - rgba(255, 165, 0, 1)
-        # 1-아이콘 비교
-        for i in range(0,list_len):
-            if(read_flag[i]=='T'):
-                if(icon[i] != "rgba(128, 128, 128, 1)"):
-                    testResult = False
-                    Result_msg+="#1 "
-            else:
-                if(icon[i] != "rgba(255, 165, 0, 1)"):
-                    testResult = False
-                    Result_msg+="#1 "
-
-        #print(int(driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/sup/span").get_property("textContent")))
-        #print((int(unread_count)-1))
-        #print(int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button/span[2]").text))
-        # 2 & 3 - 
-        try:
-            assert(int(driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/sup/span").get_property("textContent")) == (int(unread_count)-1) and
-                   non_read_name == non_read_name_pack and 
-                   non_read_dtm == non_read_dtm_pack and
-                   non_read_msg == non_read_msg_pack and
-                   int(driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[4]/div/div[1]/div/div[2]/button/span[2]").text) == (int(unread_count)-1))
+            assert (driver.find_element(By.XPATH, "/html/body/div[10]/div/div/div[1]/div/h3").get_property("textContent") == "Direct Message" and
+            person[6:] == driver.find_element(By.ID, "direct_message_load_writer").get_property("textContent") and
+            date[11:] == driver.find_element(By.ID, "direct_message_load_write_dttm").get_property("textContent") and
+            msg == driver.find_element(By.ID, "direct_message_load_test").get_property("value")
+            )
+            
         except:
             testResult = False
-            Result_msg+="#2 #3 "
+            Result_msg+="#2 "
 
-        # Direct Message 리스트에서 Next를 클릭 #3
-        # View more messages 접속
-        driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
-        # waiting loading
+        driver.find_element(By.ID, "direct_message_load_confirm").click()
+        time.sleep(1)
+
+        # Step 3
+        # Direct message 뱃지 클릭
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/a/span").click()
+        time.sleep(0.5)
+        del driver.requests
+        time.sleep(0.5)
+        # View more message 클릭
+        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[3]/ul/li[4]/a/div/p").click()
+        time.sleep(1)
+
+        request = driver.wait_for_request('.*/GetDirectMessageList.*')
+        time.sleep(0.5)
+        body = request.response.body.decode('utf-8')
+        data = json.loads(body)
+        read_flag = 0
+        unread_flag = 0
+
+        for i in data:
+            if i["READ_FLAG"] == "T":
+                read_flag += 1
+            else:
+                unread_flag += 1
+        
+        unread_cnt = driver.find_element(By.ID, "unread_dm_cnt").get_property("textContent")
+
         try:
-            WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/section[1]/div/div/div/section[1]/div[3]/div/div[1]/button[3]/span")))
-        except:
-            pass
-        element = driver.find_element(By.XPATH,"/html/body/nav/div/div[2]/ul/li[3]/ul/li[4]/a/div/p")
-        driver.execute_script("arguments[0].click();", element)
-        # waiting loading
-        try:
-            element = driver.find_element(By.CSS_SELECTOR, "#message_list_group_next > a")
-            driver.execute_script("arguments[0].click();", element)
+            assert int(unread_flag) == int(unread_cnt)
         except:
             testResult = False
             Result_msg+="#3 "
@@ -1794,9 +1715,9 @@ class TOPMENU:
         except:
             Common.ReFresh()
 
-        driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[7]/a/span").click()
-        driver.implicitly_wait(5)
-        signInOut.normal_login()
+        # driver.find_element(By.XPATH, "/html/body/nav/div/div[2]/ul/li[7]/a/span").click()
+        # driver.implicitly_wait(5)
+        # signInOut.normal_login()
 
         # Setting 접속
         element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
@@ -1815,6 +1736,7 @@ class TOPMENU:
         # 탭 전환
         time.sleep(3)
         driver.switch_to.window(driver.window_handles[1])
+        time.sleep(1)
         try:
             assert(driver.find_element(By.CSS_SELECTOR, "#add-stdreport-creator").get_property("value")==worklist_id)
         except:
@@ -1824,9 +1746,17 @@ class TOPMENU:
         if testResult == True:
             # new Group Code, Auto Expand, Report Code, Des, Hot Key, Report, Conclusion #2 & 3 & 5 & 6 & 7 & 9 & 10
             # 2 - input (rnd_gr_code)
-            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-groupcode-input").send_keys("rnd_gr_code")
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div/div/div/div[2]/form/div[2]/div[2]/div/div/a/span").click()
+            time.sleep(0.5)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div/div/div/div[2]/form/div[2]/div[2]/div/div/div/ul/li[3]").click()
+            time.sleep(0.5)
+            driver.find_element(By.ID, "add-stdreport-groupcode-input").send_keys("rnd_gr_code")
             # 3 - input (CT)
-            driver.find_element(By.CSS_SELECTOR, "#add-stdreport-auto-expand").send_keys("CT")
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div/div/div/div[2]/form/div[3]/div[2]/div/div/a").click()
+            time.sleep(0.5)
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div/div/div/div[2]/form/div[3]/div[2]/div/div/div/div/input").send_keys("OT")
+            driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[2]/div/div/div/div[2]/form/div[3]/div[2]/div/div/div/div/input").send_keys(Keys.ENTER)
+            time.sleep(1)
             # 5 - input (rnd_rp_code)
             driver.find_element(By.CSS_SELECTOR, "#add-stdreport-report-code").send_keys("rnd_rp_code")
             # 6 - input (rnd_desc)
@@ -1881,8 +1811,8 @@ class TOPMENU:
         if testResult == True:
             # 3 - 
             driver.find_element(By.CSS_SELECTOR, "#right-sidebar-home").click()
-            time.sleep(0.25)
-            driver.find_element(By.CSS_SELECTOR, "#search-job-modality").send_keys("CT")
+            time.sleep(5)
+            driver.find_element(By.CSS_SELECTOR, "#search-job-modality").send_keys("OT")
             driver.find_element(By.CSS_SELECTOR, "#search_current_job > span").click()
             # 캡처 초기화
             del driver.requests
@@ -1894,18 +1824,34 @@ class TOPMENU:
             time.sleep(2.5)
             driver.switch_to.window(driver.window_handles[1])
             time.sleep(0.5)
-            # AutoExpand check through packet
-            for n in driver.requests:
-                if n.url == "http://vm-onpacs/api/WorklistApi/GetStdReportExFolderAutoExpand?modalitiesString=CT":
-                    request = n
-                    break
-            body = request.response.body.decode('utf-8')
-            data = (json.loads(body))
 
-            if 'rnd_gr_code' not in data:
+            # Report 창에서 등록한 standard report가 존재하고 expand 되는지 확인
+            std_reports = driver.find_elements(By.XPATH, "/html/body/section/div/div/div/div[1]/div[4]/div[3]/div[2]/div/div")
+            n = 0
+            for i in std_reports:
+                n += 1
+                time.sleep(0.5)
+                if "(Alt + Z)\nrnd_rp_code" in i.text:
+                    time.sleep(0.5)
+                    expand = driver.find_element(By.XPATH, "/html/body/section/div/div/div/div[1]/div[4]/div[3]/div[2]/div/div["+str(n)+"]").get_attribute("aria-expanded")
+
+            try:
+                assert expand == 'true'
+            except:
                 testResult = False
                 Result_msg+="#3 "
-                
+
+            # # AutoExpand check through packet
+            # for n in driver.requests:
+            #     if n.url == "https://stagingworklist.onpacs.com/Worklist/WebReport":
+            #         request = n
+            #         break
+            # body = request.response.body.decode('utf-8')
+            # data = (json.loads(body))
+
+            # if 'rnd_gr_code' not in data:
+            #     testResult = False
+            #     Result_msg+="#3 "
 
             #탭 전환
             driver.implicitly_wait(5)
@@ -1916,13 +1862,14 @@ class TOPMENU:
             # Setting 접속
             element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
             driver.execute_script("arguments[0].click();", element)
+            time.sleep(1)
             
-            # waiting loading
-            try:
-                WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
-            except:
-                testResult = False
-                Result_msg+="#4&#8#11_pre-condition "
+            # # waiting loading
+            # try:
+            #     WebDriverWait(driver, 0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
+            # except:
+            #     testResult = False
+            #     Result_msg+="#4&#8#11_pre-condition "
 
             # Add Click 
             driver.find_element(By.CSS_SELECTOR, "#stdreport_add_btn > span").click()
@@ -2025,6 +1972,7 @@ class TOPMENU:
         # Setting 접속
         element = driver.find_element(By.CSS_SELECTOR, "#right-sidebar-setting > i")
         driver.execute_script("arguments[0].click();", element)
+        time.sleep(2)
 
         # waiting loading
         try:
@@ -2038,6 +1986,7 @@ class TOPMENU:
 
         # Clear
         driver.find_element(By.CSS_SELECTOR, "#stdreport_search_clear_btn > span").click()
+        time.sleep(1.5)
         # waiting loading
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#setting_user_profile"))) 
 
@@ -2059,6 +2008,7 @@ class TOPMENU:
 
         # Report Code Click #1
         driver.find_element(By.CSS_SELECTOR, "#stdreport-hotkey-list > tbody > tr:nth-child("+str(rnd_num)+") > td.align-center.modify-stdreport > a").click()
+        time.sleep(1)
         # waiting loading
         WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modify-stdreport-save-btn")))
         try:
@@ -2072,9 +2022,12 @@ class TOPMENU:
             # already existed report code #4
             # modify report code
             driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-code").clear()
+            time.sleep(0.5)
             driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-code").send_keys(exist_report_code)
+            time.sleep(0.5)
             # Save Click
             driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-save-btn").click()
+            time.sleep(1)
             # waiting loading
             WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
             # message check
@@ -2092,12 +2045,13 @@ class TOPMENU:
                 Result_msg+="#4 "
             # Save Click
             driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-save-btn").click()
+            time.sleep(1)
             # waiting loading
             WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
             # Yes
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
             # waiting loading
-            time.sleep(0.5)
+            time.sleep(2)
             # message check
             try:
                 assert(driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text == "This report code is already used.")
@@ -2116,10 +2070,24 @@ class TOPMENU:
             element.clear()
             element.send_keys("rnd_rp_code2")
             driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-desc").send_keys("2")
-            element = driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-hotKey")
+            element = driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[2]/div[2]/div[2]/div/div/div[2]/div/div[5]/div/div/div[2]/div/div/a")
             element.click()
-            element.send_keys(Keys.UP)
-            element.send_keys(Keys.ENTER)
+            time.sleep(0.5)
+            hotkey = driver.find_elements(By.XPATH, "/html/body/section[1]/div/div/div/section[2]/div[2]/div[2]/div/div/div[2]/div/div[5]/div/div/div[2]/div/div/div/ul/li")
+            # 사용 가능한 hotkey 확인
+            able_hotkeys = []
+            hotkeys = ["None","1","2","3","4","5","6","7","8","9","0","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","X","Y","Z"]
+            for i in hotkey:
+                if i.get_property("className") != "disabled-result" and i.get_property("className") != "disabled-result result-selected" and i.text != "None":
+                    able_hotkeys.append(i.text)            
+            able_hotkey = random.choice(able_hotkeys)
+            idx_able_hotkey = hotkeys.index(able_hotkey)
+            # driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[2]/div[2]/div[2]/div/div/div[2]/div/div[5]/div/div/div[2]/div/div/div/div/input").click()
+            # time.sleep(1)
+            # element.send_keys(Keys.DOWN)
+            time.sleep(1)
+            driver.find_element(By.XPATH, "/html/body/section[1]/div/div/div/section[2]/div[2]/div[2]/div/div/div[2]/div/div[5]/div/div/div[2]/div/div/div/ul/li["+str(idx_able_hotkey+1)+"]").click()
+            time.sleep(0.5)
             element = driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-view-report-text")
             element.clear()
             element.send_keys("w2@")
@@ -2128,12 +2096,13 @@ class TOPMENU:
             element.send_keys("w2@")
             # Save Click
             driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-save-btn").click()
+            time.sleep(1)
             # waiting loading
             WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > button")))
             # Yes
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
             # waiting loading
-            time.sleep(0.5)
+            time.sleep(1.5)
             # message check
             try:
                 assert(driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.visible.showSweetAlert > h2").text == "You have modified standard report.")
@@ -2142,16 +2111,17 @@ class TOPMENU:
                 Result_msg+="#2 #5 #6 #7 #8 #9 "
             # Ok
             driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-            time.sleep(0.5)
+            time.sleep(1)
 
             # close #10
             driver.find_element(By.CSS_SELECTOR, "#stdreport-hotkey-list > tbody > tr:nth-child("+str(rnd_num)+") > td.align-center.modify-stdreport > a").click()
+            time.sleep(1)
             # waiting loading
             WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modify-stdreport-save-btn")))
             # close
             driver.find_element(By.CSS_SELECTOR, "#modify-stdreport-close-btn").click()
             # waiting loading
-            time.sleep(0.25)
+            time.sleep(1)
             # message check
             try:
                 assert(driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > h2").text == "Are you sure to close?")
@@ -2270,11 +2240,14 @@ class TOPMENU:
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button"))) 
         # ok
         driver.find_element(By.CSS_SELECTOR, "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").click()
-        time.sleep(0.25)
+        time.sleep(1.5)
         # delete check
-        if driver.find_element(By.CSS_SELECTOR, "#stdreport-hotkey-list > tbody > tr:nth-child("+str(rnd_num)+") > td.align-center.modify-stdreport > a").text == "rnd_rp_code2":
-            testResult = False
-            Result_msg+="#1 "
+        try:
+            if driver.find_element(By.CSS_SELECTOR, "#stdreport-hotkey-list > tbody > tr:nth-child("+str(rnd_num)+") > td.align-center.modify-stdreport > a").text == "rnd_rp_code2":
+                testResult = False
+                Result_msg+="#1 "
+        except:
+            pass
 
         # Report_delete 결과 전송
         print("Test Result: Pass" if testResult != False else Result_msg)

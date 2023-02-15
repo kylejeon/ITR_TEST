@@ -26,28 +26,27 @@ buildName = Common_Var.bn
 driver = None
 
 # 브라우저 설정
-options = webdriver.ChromeOptions()
-options.add_experimental_option("excludeSwitches", ["enable-logging"])
-driver = webdriver.Chrome(options=options)
-baseUrl = 'http://stagingadmin.onpacs.com'
-driver.get(baseUrl)
+# options = webdriver.ChromeOptions()
+# options.add_experimental_option("excludeSwitches", ["enable-logging"])
+# driver = webdriver.Chrome(options=options)
+# baseUrl = 'http://stagingadmin.onpacs.com'
+# driver.get(baseUrl)
 # name = driver.name
 # baseUrl = 'http://vm-onpacs:8082'
 # baseUrl = Common_Var.base_admin_url
 
-# if Common_Var.web_driver == "Edge":
-#     options = webdriver.EdgeOptions()
-#     options.binary_location = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-#     driver = webdriver.Edge(options=options)
-#     baseUrl = Common_Var.base_admin_url
-# else:
-#     options = webdriver.ChromeOptions()
-#     options.add_experimental_option("excludeSwitches", ["enable-logging"])
-#     if Common_Var.check == "Unchecked":
-#         options.add_argument("headless")
-#     # options.add_argument("disable-gpu")
-#     driver = webdriver.Chrome(options=options)
-#     baseUrl = Common_Var.base_admin_url
+if Common_Var.web_driver == "Edge":
+    options = webdriver.EdgeOptions()
+    options.binary_location = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+    driver = webdriver.Edge(options=options)
+    baseUrl = Common_Var.base_admin_url
+else:
+    options = webdriver.ChromeOptions()
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    if Common_Var.check == "Unchecked":
+        options.add_argument("headless")
+    driver = webdriver.Chrome(options=options)
+    baseUrl = Common_Var.base_admin_url
 
 # Notice 창 닫기
 if Common_Var.web_driver != None and Common_Var.web_driver != "":
